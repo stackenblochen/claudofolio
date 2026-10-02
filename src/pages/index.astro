@@ -1,18 +1,28 @@
 ---
+import Base from '../layouts/Base.astro';
+import HomeHero from '../components/HomeHero.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
+import { getProjects, toCard } from '../lib/projects';
 
+const projects = (await getProjects()).map(toCard);
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-		<h2>My Astro Site</h2>
-	</body>
-</html>
+<Base description="Wolfgang Lattermann is a product designer based in Berlin. Selected work in product design and design systems.">
+  <!-- TODO: pass portrait / portraitColor once the 3D portrait assets are in src/assets/ -->
+  <HomeHero>
+    Hi, I'm <span class="t-serif">Wolfgang</span>, a Product Designer based in Berlin.
+  </HomeHero>
+
+  <!-- Statement (T1) goes here once the copy is final: <Statement>…</Statement> -->
+
+  <section class="work section section--black" aria-labelledby="work">
+    <SectionTitle id="work">Selected work</SectionTitle>
+    <div class="container grid-wrap"><ProjectGrid items={projects} /></div>
+  </section>
+</Base>
+
+<style>
+  .work { padding-top: 0; scroll-margin-top: var(--header-h); }
+  .grid-wrap { margin-top: var(--space-7); }
+</style>

@@ -1,0 +1,26 @@
+---
+/** T5 Sub-chapter: dash + numbered heading-m, nested under a Chapter. Renders an h3. */
+interface Props {
+  title: string;
+  number?: number | string;
+  id?: string;
+}
+const { title, number, id } = Astro.props;
+const hasMedia = Astro.slots.has('media');
+---
+
+<div class="sub">
+  <div class="measure-text reveal">
+    <span class="dash t-heading-m" aria-hidden="true">—</span>
+    <h3 class="t-heading-m" id={id}>{number !== undefined && <span class="num">{number}. </span>}{title}</h3>
+    {Astro.slots.has('default') && <div class="body prose"><slot /></div>}
+  </div>
+  {hasMedia && <div class="media measure-media"><slot name="media" /></div>}
+</div>
+
+<style>
+  .sub { display: flex; flex-direction: column; gap: var(--space-6); padding-top: var(--space-6); }
+  .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
+  .body { margin-top: var(--space-3); }
+  .media { display: flex; flex-direction: column; gap: var(--space-4); }
+</style>

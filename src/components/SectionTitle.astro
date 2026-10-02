@@ -1,0 +1,19 @@
+---
+/** T3 Section title ("Selected work", "Career"). Semantic level is configurable, look is heading-xl. */
+interface Props {
+  level?: 2 | 3;
+  id?: string;
+}
+const { level = 2, id } = Astro.props;
+const Tag = `h${level}` as 'h2' | 'h3';
+---
+
+<div class="container section-title">
+  <div class="measure-text">
+    <Tag class="t-heading-xl" id={id}><slot /></Tag>
+  </div>
+</div>
+
+<style>
+  .section-title { padding-top: var(--space-8); }
+</style>

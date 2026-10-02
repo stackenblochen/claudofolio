@@ -1,0 +1,30 @@
+---
+/** T8 Career entry: dash, company (heading-l), role (heading-m, default colour), dates (label), body. */
+interface Props {
+  company: string;
+  role: string;
+  dates: string;
+}
+const { company, role, dates } = Astro.props;
+---
+
+<article class="career">
+  <div class="container">
+    <div class="measure-text reveal">
+      <span class="dash t-heading-l" aria-hidden="true">—</span>
+      <h3 class="t-heading-l">{company}</h3>
+      <p class="role t-heading-m">{role}</p>
+      <p class="dates t-label">{dates}</p>
+      <div class="body prose"><slot /></div>
+    </div>
+  </div>
+</article>
+
+<style>
+  .career { padding-block: var(--space-6) var(--space-7); }
+  .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
+  .role { color: var(--text-default); margin-top: var(--space-1); }
+  .dates { color: var(--text-default); margin-top: var(--space-2); }
+  .body { margin-top: var(--space-5); }
+  @media (min-width: 768px) { .body { margin-top: var(--space-6); } }
+</style>

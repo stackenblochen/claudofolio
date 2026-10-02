@@ -1,0 +1,35 @@
+---
+/**
+ * I1 Wide figure: single image (diagram, screenshot) with optional caption.
+ * size: "wide" = 10 cols (media measure), "text" = text measure, "full" = 12 cols.
+ * kind: "diagram" = radius 16, "screenshot" = radius 12 + hairline + shadow, "appshot" = transparent PNG outline.
+ */
+import type { ImageMetadata } from 'astro';
+import Img from './Img.astro';
+
+interface Props {
+  src: ImageMetadata | string;
+  alt: string;
+  caption?: string;
+  size?: 'wide' | 'text' | 'full';
+  kind?: 'diagram' | 'screenshot' | 'appshot';
+  loading?: 'lazy' | 'eager';
+}
+const { src, alt, caption, size = 'wide', kind = 'diagram', loading } = Astro.props;
+const measure = { wide: 'measure-media', text: 'measure-text', full: 'measure-wide' }[size];
+const imgClass = {
+  diagram: 'media-l media-hairline',
+  screenshot: 'media-m media-hairline media-shadow',
+  appshot: 'app-shot',
+}[kind];
+---
+
+<figure class={`${measure} reveal`}>
+  <Img src={src} alt={alt} class={imgClass} loading={loading} />
+  {caption && <figcaption class="t-caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  figure { display: flex; flex-direction: column; gap: var(--space-3); }
+  img, :global(img) { width: 100%; }
+</style>

@@ -1,0 +1,40 @@
+---
+# Copy this file to <slug>.mdx (no leading underscore) to publish a case study.
+# Hero, Lead, Meta, Outcome and "Other projects" are rendered by the CaseStudy layout from this frontmatter.
+title: Sentence case title of at most eight words
+shortTitle: Short title
+summary: One line, 160 characters max. Used on the card and as the meta description.
+category: Product Design # Product Design | Design Systems | Design Vision | Research | Prototyping
+tags: []
+cover: ../../assets/placeholders/cover.svg # 16:10, 2560×1600
+coverAlt: What the cover image shows
+heroVariant: mockup # mockup | backdrop
+# heroBackground: ../../assets/projects/<slug>/backdrop.jpg   (only for backdrop)
+confidential: false
+company: Company
+role: Role
+team: Who was on the team
+timeline: Duration
+year: 2026
+platforms: [iOS, Android, Web]
+lead:
+  - Situation.
+  - Why it mattered.
+  - What I did.
+outcome:
+  - Result first, then cause.
+  - Result first, then cause.
+  - Result first, then cause.
+order: 1
+draft: true
+---
+
+import diagram from '../../assets/placeholders/diagram.svg';
+
+<Chapter title="Chapter heading" id="chapter-one">
+  One to three paragraphs of body text, at most four sentences each.
+
+  <Fragment slot="media">
+    <Figure src={diagram} alt="What the image shows and why it matters" caption="Short caption" />
+  </Fragment>
+</Chapter>

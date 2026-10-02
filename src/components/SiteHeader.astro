@@ -1,0 +1,108 @@
+---
+/** G1/G2 Site header: wordmark left, text menu right, overlay menu below 768 px. */
+import { NAV, SITE, url } from '../lib/site';
+
+interface Props {
+  current?: string;
+}
+const { current } = Astro.props;
+
+const items = [
+  ...NAV.map((n) => ({ ...n, href: url(n.href) })),
+  ...(SITE.email ? [{ label: 'Contact', href: `mailto:${SITE.email}` }] : []),
+];
+---
+
+<header class="site-header" data-site-header>
+  <div class="container bar">
+    <a class="logo" href={url('/')} aria-label={`${SITE.name}, home`}>{SITE.shortName}</a>
+
+    <nav class="menu" aria-label="Main">
+      <ul role="list">
+        {items.map((i) => (
+          <li><a class="t-nav" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <button class="burger" type="button" aria-expanded="false" aria-controls="overlay-menu" data-burger>
+      <span class="sr-only">Menu</span>
+      <span class="bars" aria-hidden="true"></span>
+    </button>
+  </div>
+
+  <div class="overlay" id="overlay-menu" hidden data-overlay>
+    <nav aria-label="Main (overlay)">
+      <ul role="list">
+        {items.map((i) => <li><a class="t-heading-l" href={i.href}>{i.label}</a></li>)}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: sticky; top: 0; z-index: 100;
+    height: var(--header-h);
+    margin-bottom: calc(var(--header-h) * -1); /* floats over the hero */
+  }
+  /* Background lives on a pseudo-element: backdrop-filter on the header itself would
+     become the containing block of the fixed overlay and clip it to the header height. */
+  .site-header::before {
+    content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0;
+    background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(12px); transition: opacity 200ms;
+  }
+  .site-header.is-scrolled::before { opacity: 1; }
+  .bar { height: 100%; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 3; }
+  .logo {
+    font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; text-decoration: none; color: var(--text-strong);
+  }
+  .menu { display: none; }
+  .menu ul { display: flex; gap: var(--space-6); padding: 0; margin: 0; list-style: none; }
+  .menu a {
+    color: var(--text-default); text-decoration: none; padding-block: var(--space-1);
+    border-bottom: 2px solid transparent;
+  }
+  .menu a:hover, .menu a[aria-current='page'] { color: var(--text-strong); border-bottom-color: var(--text-strong); }
+  .burger { background: none; border: 0; padding: var(--space-3) 0 var(--space-3) var(--space-3); cursor: pointer; }
+  .bars, .bars::before { display: block; width: 24px; height: 2px; background: var(--text-default); }
+  .bars { position: relative; margin-block: 6px; }
+  .bars::before { content: ''; position: absolute; top: -6px; left: 0; box-shadow: 0 12px 0 var(--text-default); }
+  .burger[aria-expanded='true'] .bars { background: transparent; }
+  .burger[aria-expanded='true'] .bars::before { top: 0; box-shadow: none; transform: rotate(45deg); }
+  .burger[aria-expanded='true'] .bars::after {
+    content: ''; position: absolute; top: 0; left: 0; width: 24px; height: 2px; background: var(--text-default); transform: rotate(-45deg);
+  }
+  .overlay {
+    position: fixed; inset: 0; z-index: 1; background: var(--overlay-menu);
+    display: flex; align-items: center; justify-content: center; text-align: center;
+  }
+  .overlay[hidden] { display: none; }
+  .overlay ul { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-5); }
+  .overlay a { text-decoration: none; }
+
+  @media (min-width: 768px) {
+    .menu { display: block; }
+    .burger, .overlay { display: none; }
+  }
+</style>
+
+<script>
+  const header = document.querySelector<HTMLElement>('[data-site-header]');
+  const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+  const overlay = document.querySelector<HTMLElement>('[data-overlay]');
+
+  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  const setOpen = (open: boolean) => {
+    if (!burger || !overlay) return;
+    burger.setAttribute('aria-expanded', String(open));
+    overlay.hidden = !open;
+    document.body.style.overflow = open ? 'hidden' : '';
+  };
+  burger?.addEventListener('click', () => setOpen(burger.getAttribute('aria-expanded') !== 'true'));
+  overlay?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); });
+  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+</script>

@@ -1,0 +1,29 @@
+---
+/** M1 Project meta row: label over value. Required on every case study. */
+interface Props {
+  items: { label: string; value: string }[];
+}
+const { items } = Astro.props;
+---
+
+<section class="meta">
+  <div class="container">
+    <dl class="grid-12 measure-text">
+      {items.map((i) => (
+        <div class="cell span-3">
+          <dt class="t-label">{i.label}</dt>
+          <dd class="t-body-l">{i.value}</dd>
+        </div>
+      ))}
+    </dl>
+  </div>
+</section>
+
+<style>
+  .meta { padding-top: var(--space-7); }
+  .grid-12 { row-gap: var(--space-4); }
+  .cell { display: flex; flex-direction: column; gap: var(--space-2); }
+  dt { color: var(--text-default); }
+  dd { color: var(--text-strong); }
+  @media (max-width: 767px) { .grid-12 { row-gap: var(--space-6); } }
+</style>

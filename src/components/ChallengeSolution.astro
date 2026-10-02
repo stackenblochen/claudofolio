@@ -1,0 +1,25 @@
+---
+/**
+ * T6 Challenge / Solution. Slots: "challenge" and "solution" (body text).
+ * Be honest about trade-offs: max one per chapter.
+ */
+---
+
+<div class="cs measure-text stack" style="--stack-gap: var(--space-5)">
+  <div class="block">
+    <p class="label t-body"><span class="bullet neg" aria-hidden="true">●</span> Challenges</p>
+    <div class="prose"><slot name="challenge" /></div>
+  </div>
+  <div class="block">
+    <p class="label t-body"><span class="bullet pos" aria-hidden="true">►</span> Solution</p>
+    <div class="prose"><slot name="solution" /></div>
+  </div>
+</div>
+
+<style>
+  .block { display: flex; flex-direction: column; gap: var(--space-4); }
+  .label { color: var(--text-strong); font-weight: 700; }
+  .bullet { display: inline-block; margin-right: 0.25em; }
+  .neg { color: var(--accent-negative); }
+  .pos { color: var(--accent-positive); }
+</style>

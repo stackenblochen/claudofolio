@@ -1,0 +1,46 @@
+---
+/**
+ * I4 Before → after: "Then" card, red hand-drawn arrow overlapping both, "Now" card.
+ * `after` may carry a photographic background via `afterBackground`.
+ */
+import type { ImageMetadata } from 'astro';
+import Img from './Img.astro';
+import Arrow from './Arrow.astro';
+
+interface Side { src: ImageMetadata | string; alt: string }
+interface Props {
+  before: Side;
+  after: Side;
+  beforeLabel?: string;
+  afterLabel?: string;
+  afterBackground?: ImageMetadata | string;
+}
+const { before, after, beforeLabel = 'Then', afterLabel = 'Now', afterBackground } = Astro.props;
+const bg = afterBackground ? (typeof afterBackground === 'string' ? afterBackground : afterBackground.src) : undefined;
+---
+
+<div class="cmp measure-media reveal">
+  <section class="card then" aria-label={beforeLabel}>
+    <p class="tag t-label">{beforeLabel}</p>
+    <Img src={before.src} alt={before.alt} class="media-m" />
+  </section>
+  <Arrow class="arrow" />
+  <section class="card now" aria-label={afterLabel} style={bg ? `background-image:url(${bg})` : undefined}>
+    <p class="tag t-label">{afterLabel}</p>
+    <Img src={after.src} alt={after.alt} class="media-m" />
+  </section>
+</div>
+
+<style>
+  .cmp { position: relative; display: flex; flex-direction: column; gap: var(--space-5); }
+  .card {
+    border-radius: var(--radius-l); padding: var(--space-4); background: var(--bg-card) center / cover;
+    display: flex; flex-direction: column; gap: var(--space-3);
+  }
+  .tag { color: var(--text-strong); font-weight: 700; }
+  .card :global(img) { width: 100%; }
+  .cmp :global(.arrow) {
+    align-self: center; width: clamp(48px, 10%, 100px); margin-block: -60px; position: relative; z-index: 2;
+  }
+  @media (min-width: 768px) { .card { padding: var(--space-6) var(--space-4) var(--space-4) var(--space-5); } .cmp :global(.arrow) { margin-block: -100px; } }
+</style>

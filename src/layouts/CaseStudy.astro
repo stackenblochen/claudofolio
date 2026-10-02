@@ -1,0 +1,60 @@
+---
+/**
+ * Case-study layout: hero → lead → meta → [MDX chapters] → outcome → other projects.
+ * All fixed blocks come from frontmatter (see content.config.ts); the MDX body only holds chapters.
+ */
+import Base from './Base.astro';
+import CaseHero from '../components/CaseHero.astro';
+import Lead from '../components/Lead.astro';
+import ProjectMeta from '../components/ProjectMeta.astro';
+import Outcome from '../components/Outcome.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
+import { getProjects, toCard, type ProjectEntry } from '../lib/projects';
+
+interface Props {
+  project: ProjectEntry;
+}
+const { project } = Astro.props;
+const d = project.data;
+
+const meta = [
+  { label: 'Role', value: d.role },
+  { label: 'Team', value: d.team },
+  { label: 'Timeline', value: d.timeline },
+  ...(d.platforms?.length ? [{ label: 'Platforms', value: d.platforms.join(', ') }] : []),
+];
+const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard);
+---
+
+<Base title={d.shortTitle} description={d.summary} ogImage={d.cover.src} current="Work">
+  <CaseHero
+    title={d.title}
+    variant={d.heroVariant}
+    image={d.cover}
+    imageAlt={d.coverAlt}
+    background={d.heroBackground}
+    confidential={d.confidential}
+  />
+  <Lead sentences={d.lead} />
+  <ProjectMeta items={meta} />
+  <div class="chapters chapter-flow"><slot /></div>
+  <Outcome items={d.outcome} />
+  {others.length > 0 && (
+    <section class="others section section--black" aria-labelledby="others-title">
+      <div class="container">
+        <div class="measure-text">
+          <span class="dash t-heading-l" aria-hidden="true">—</span>
+          <h2 class="t-heading-l" id="others-title">Other projects</h2>
+        </div>
+        <div class="grid-wrap"><ProjectGrid items={others} gap="tight" /></div>
+      </div>
+    </section>
+  )}
+</Base>
+
+<style>
+  .chapters { padding-top: var(--chapter-gap); }
+  .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
+  .grid-wrap { margin-top: var(--space-6); }
+</style>

@@ -1,0 +1,34 @@
+---
+/** G3 Footer: one line in the default text colour, left-aligned, 8 columns. */
+import { SITE, url } from '../lib/site';
+
+const year = new Date().getFullYear();
+const links = [
+  SITE.email && { label: 'Email', href: `mailto:${SITE.email}` },
+  SITE.linkedin && { label: 'LinkedIn', href: SITE.linkedin },
+  SITE.cvUrl && { label: 'CV', href: SITE.cvUrl },
+].filter(Boolean) as { label: string; href: string }[];
+---
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="measure-text stack" style="margin-inline: 0">
+      {links.length > 0 && (
+        <ul class="links t-label" role="list">
+          {links.map((l) => <li><a href={l.href}>{l.label}</a></li>)}
+        </ul>
+      )}
+      <p class="t-label">
+        © {year} {SITE.name}. All rights reserved. <a href={url('/imprint/')}>Imprint</a>
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer { margin-top: var(--space-8); padding-block: var(--space-5); background: var(--bg-page); }
+  .site-footer a { color: var(--text-default); text-underline-offset: 4px; }
+  .site-footer a:hover { color: var(--text-strong); }
+  .links { display: flex; flex-wrap: wrap; gap: var(--space-5); padding: 0; list-style: none; margin: 0; }
+  .links a { color: var(--text-default); }
+</style>

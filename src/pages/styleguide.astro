@@ -1,0 +1,226 @@
+---
+/** Living styleguide: tokens + every component with placeholder data. Not indexed. */
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import Statement from '../components/Statement.astro';
+import Lead from '../components/Lead.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import Chapter from '../components/Chapter.astro';
+import SubChapter from '../components/SubChapter.astro';
+import ChallengeSolution from '../components/ChallengeSolution.astro';
+import Outcome from '../components/Outcome.astro';
+import CareerEntry from '../components/CareerEntry.astro';
+import ProjectMeta from '../components/ProjectMeta.astro';
+import CaseHero from '../components/CaseHero.astro';
+import Figure from '../components/Figure.astro';
+import FigurePair from '../components/FigurePair.astro';
+import ScreenStack from '../components/ScreenStack.astro';
+import Comparison from '../components/Comparison.astro';
+import InsightRow from '../components/InsightRow.astro';
+import Embed from '../components/Embed.astro';
+import Stamp from '../components/Stamp.astro';
+import Arrow from '../components/Arrow.astro';
+import ProjectGrid from '../components/ProjectGrid.astro';
+import cover from '../assets/placeholders/cover.svg';
+import screen from '../assets/placeholders/screen.svg';
+import square from '../assets/placeholders/square.svg';
+import illustration from '../assets/placeholders/illustration.svg';
+import diagram from '../assets/placeholders/diagram.svg';
+import type { CardData } from '../lib/projects';
+
+const colors = [
+  ['black', '--color-black', 'bg.page', '#000000'],
+  ['grey-950', '--color-grey-950', 'bg.raised', '#191919'],
+  ['grey-800', '--color-grey-800', 'bg.card · border', '#34373d'],
+  ['grey-blue-400', '--color-grey-blue-400', 'text.default', '#9a9aab'],
+  ['white', '--color-white', 'text.strong', '#ffffff'],
+  ['red', '--color-red', 'accent.negative', '#ff4b53'],
+  ['green', '--color-green', 'accent.positive', '#00ff32'],
+  ['salmon', '--color-salmon', 'accent.link', '#fa8072'],
+  ['yellow', '--color-yellow', 'selection', '#ffff00'],
+];
+const roles = [
+  ['t-display', 'Display', 'Home hero only'],
+  ['t-title', 'Title', 'H1 page titles (Editorial New)'],
+  ['t-heading-xl', 'Heading XL', 'Lead statements, section titles'],
+  ['t-heading-l', 'Heading L', 'Chapter titles'],
+  ['t-heading-m', 'Heading M', 'Sub-chapters, card titles'],
+  ['t-label', 'Label', 'Eyebrows, meta labels, dates'],
+  ['t-body-l', 'Body L', 'Meta values, intro paragraphs, captions'],
+  ['t-body', 'Body', 'Paragraphs, lists'],
+  ['t-small', 'Small', 'Nav, footer, card meta'],
+];
+const spaces = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+const cards: CardData[] = [
+  { title: 'Project title', category: 'Product Design', summary: 'One-line summary of the project, 160 characters at most.', href: '#', cover, coverAlt: 'Placeholder cover' },
+  { title: 'Another project', category: 'Design Systems', summary: 'Cards show cover, short title, category and summary.', href: '#', cover, coverAlt: 'Placeholder cover' },
+];
+---
+
+<Base title="Styleguide" noindex description="Design system reference">
+  <PageHeader eyebrow="Design system" title="Styleguide">
+    <p>Tokens and modules of this site. New pages use only what is on this page.</p>
+  </PageHeader>
+
+  <!-- ===== Tokens ===== -->
+  <SectionTitle id="colour">Colour</SectionTitle>
+  <div class="container"><div class="measure-media swatches">
+    {colors.map(([name, v, role, hex]) => (
+      <div class="sw"><span class="chip" style={`background:var(${v})`}></span><span class="t-small t-strong">{name}</span><span class="t-small">{role}</span><code class="hex t-small">{hex}</code></div>
+    ))}
+  </div></div>
+
+  <SectionTitle id="type">Typography</SectionTitle>
+  <div class="container"><div class="measure-media stack" style="--stack-gap: var(--space-6)">
+    {roles.map(([cls, name, use]) => (
+      <div class="row">
+        <p class="t-small">{name} · <code>.{cls}</code> · {use}</p>
+        <p class={cls}>Making complex things simple</p>
+      </div>
+    ))}
+  </div></div>
+
+  <SectionTitle id="spacing">Spacing</SectionTitle>
+  <div class="container"><div class="measure-media stack">
+    {spaces.map((n) => (
+      <div class="sp"><code class="t-small">--space-{n}</code><span class="bar" style={`width:var(--space-${n})`}></span></div>
+    ))}
+  </div></div>
+
+  <SectionTitle id="shape">Shape &amp; elevation</SectionTitle>
+  <div class="container"><div class="measure-media shapes">
+    <div class="shape media-m media-hairline"><span class="t-small">radius-m 12 · hairline</span></div>
+    <div class="shape media-l media-hairline"><span class="t-small">radius-l 16 · hairline</span></div>
+    <div class="shape media-m media-hairline media-shadow"><span class="t-small">screenshot shadow</span></div>
+  </div></div>
+
+  <SectionTitle id="grid-demo">Grid</SectionTitle>
+  <div class="container grid-demo" data-grid-demo>
+    <p class="t-small readout" data-readout>Reading grid values…</p>
+    <div class="cols grid-12" aria-hidden="true">
+      {Array.from({ length: 12 }, (_, i) => <span class="col">{i + 1}</span>)}
+    </div>
+    <div class="bars">
+      <div class="bar-row measure-text"><span class="t-small" data-label="text">Text</span></div>
+      <div class="bar-row measure-media"><span class="t-small" data-label="media">Media</span></div>
+      <div class="bar-row measure-wide"><span class="t-small">Full grid width: 12 columns</span></div>
+    </div>
+    <table class="t-small matrix">
+      <thead><tr><th>Breakpoint</th><th>Viewport</th><th>Grid</th><th>Text</th><th>Media</th></tr></thead>
+      <tbody>
+        <tr><td>xl · desktop wide</td><td>≥ 1230</td><td>1170 (col 70, gutter 30)</td><td>8</td><td>10</td></tr>
+        <tr><td>lg · desktop</td><td>992–1229</td><td>896 (col 60, gutter 16)</td><td>9</td><td>10</td></tr>
+        <tr><td>md · tablet wide</td><td>768–991</td><td>656 (col 40, gutter 16)</td><td>9</td><td>10</td></tr>
+        <tr><td>sm · tablet portrait</td><td>544–767</td><td>full width</td><td>12</td><td>12</td></tr>
+        <tr><td>xs · mobile</td><td>&lt; 544</td><td>full width</td><td>12</td><td>12</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- ===== Text modules ===== -->
+  <SectionTitle id="text">Text modules</SectionTitle>
+  <Statement>Statement (T1). One or two sentences on how I work and what I'm looking for.</Statement>
+  <Lead sentences={['Lead (T2): situation in one sentence.', 'Why it mattered.', 'What I did about it.']} />
+  <ProjectMeta items={[{ label: 'Role', value: 'Lead designer' }, { label: 'Team', value: '1 PM, 6 engineers' }, { label: 'Timeline', value: '6 months' }, { label: 'Platforms', value: 'iOS, Android' }]} />
+  <div class="gap"></div>
+  <Chapter title="Chapter (T4)" id="sg-chapter">
+    <p>Body text sits at the text measure: eight columns on wide desktops, nine on tablets, full width on phones. <a href="#">Links are white with a salmon underline.</a></p>
+    <p>Paragraphs are spaced 1.5em. <strong>Strong text turns white.</strong></p>
+    <Figure slot="media" src={diagram} alt="Placeholder diagram" caption="Figure (I1) with caption" />
+  </Chapter>
+  <div class="gap"></div>
+  <Chapter title="Design solution" id="sg-sub">
+    <p>A chapter with sub-chapters and a challenge/solution pair.</p>
+    <Fragment slot="media">
+      <div class="measure-text">
+        <SubChapter title="Instant meetings" number={1}>
+          <p>Sub-chapter (T5): numbered heading-m under a chapter.</p>
+        </SubChapter>
+      </div>
+      <ChallengeSolution>
+        <p slot="challenge">What constrained the design, stated honestly.</p>
+        <p slot="solution">How the constraint was handled and what was traded off.</p>
+      </ChallengeSolution>
+    </Fragment>
+  </Chapter>
+  <CareerEntry company="Company" role="Senior product designer" dates="Jan 2021 – Present">
+    <p>Career entry (T8): company in heading-l, role in heading-m, dates as label.</p>
+  </CareerEntry>
+  <Outcome items={['Outcome (T7) starts with the result, then the cause.', 'A second point, ideally with a number.', 'A third point.']} />
+
+  <!-- ===== Media modules ===== -->
+  <SectionTitle id="media">Media modules</SectionTitle>
+  <div class="gap"></div>
+  <div class="chapter-flow">
+    <Figure src={diagram} alt="Placeholder wide diagram" caption="Figure kind=diagram (radius 16)" />
+    <Figure src={screen} alt="Placeholder screenshot" kind="screenshot" size="wide" caption="Figure kind=screenshot (radius 12, hairline, shadow)" />
+    <FigurePair a={{ src: square, alt: 'Placeholder A' }} b={{ src: square, alt: 'Placeholder B' }} caption="FigurePair (I2)" />
+    <ScreenStack images={[{ src: screen, alt: 'Placeholder screen 1' }, { src: screen, alt: 'Placeholder screen 2' }]} caption="ScreenStack (I3)" />
+    <Comparison before={{ src: screen, alt: 'Placeholder before' }} after={{ src: screen, alt: 'Placeholder after' }} />
+    <InsightRow image={illustration} title="Insight (I5)">Short title, one or two sentences of explanation.</InsightRow>
+    <InsightRow image={illustration} title="Second insight">Repeat three times.</InsightRow>
+    <Embed src="about:blank" title="Placeholder interactive demo" poster={screen} posterAlt="Placeholder poster" note="Interactive demo (I7). Below 992 px a poster replaces the iframe." />
+    <div class="measure-media annotations">
+      <div><Stamp class="demo-stamp" /><p class="t-small">Stamp (I8)</p></div>
+      <div><Arrow class="demo-arrow" /><p class="t-small">Arrow (I8)</p></div>
+    </div>
+  </div>
+
+  <!-- ===== Collections / heroes ===== -->
+  <SectionTitle id="grid">Project grid</SectionTitle>
+  <div class="container grid-wrap"><ProjectGrid items={cards} /></div>
+
+  <SectionTitle id="hero">Case hero (mockup, confidential)</SectionTitle>
+  <CaseHero title="Case hero with stamp" image={cover} imageAlt="Placeholder cover" confidential />
+</Base>
+
+<style>
+  .grid-demo { padding-top: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
+  .readout { font-variant-numeric: tabular-nums; }
+  .cols { row-gap: 0; }
+  .col { grid-column: span 1 !important; height: 64px; background: rgba(255, 75, 83, 0.18); border-inline: 1px solid rgba(255, 75, 83, 0.5);
+    display: grid; place-items: center; color: var(--accent-negative); font-size: var(--text-small-size); }
+  .bars { display: flex; flex-direction: column; gap: var(--space-2); }
+  .bar-row { background: var(--bg-card); padding: var(--space-2) var(--space-3); color: var(--text-strong); border-radius: 4px; }
+  .matrix { border-collapse: collapse; width: 100%; }
+  .matrix th, .matrix td { text-align: left; padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: var(--border-hairline); }
+  .matrix th { color: var(--text-default); font-weight: 400; }
+  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-4); padding-top: var(--space-5); }
+  .sw { display: flex; flex-direction: column; gap: var(--space-1); }
+  .hex { color: var(--text-default); text-transform: uppercase; }
+  .chip { height: 72px; border-radius: var(--radius-m); border: var(--border-hairline); }
+  .row { display: flex; flex-direction: column; gap: var(--space-2); }
+  .sp { display: flex; align-items: center; gap: var(--space-4); }
+  .sp code { width: 8rem; color: var(--text-default); }
+  .bar { height: 12px; background: var(--color-salmon); display: block; }
+  .shapes { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: var(--space-5); padding-top: var(--space-5); }
+  .shape { height: 120px; display: grid; place-items: center; background: var(--bg-raised); }
+  .gap { height: var(--space-6); }
+  .grid-wrap { margin-top: var(--space-6); }
+  .annotations { display: flex; gap: var(--space-8); align-items: flex-end; }
+  .annotations :global(.demo-stamp) { width: 220px; }
+  .annotations :global(.demo-arrow) { width: 70px; }
+  code { color: var(--text-strong); }
+</style>
+
+<script>
+  const root = document.querySelector<HTMLElement>('[data-grid-demo]');
+  if (root) {
+    const cs = getComputedStyle(document.documentElement);
+    const update = () => {
+      const c = root.getBoundingClientRect();
+      const pad = parseFloat(getComputedStyle(root).paddingLeft);
+      const gutter = parseFloat(cs.getPropertyValue('--gutter'));
+      const w = c.width - pad * 2;
+      const col = (w - 11 * gutter) / 12;
+      const t = cs.getPropertyValue('--measure-text-cols').trim();
+      const m = cs.getPropertyValue('--measure-media-cols').trim();
+      root.querySelector('[data-label="text"]')!.textContent = `Text: ${t} columns`;
+      root.querySelector('[data-label="media"]')!.textContent = `Media: ${m} columns`;
+      root.querySelector('[data-readout]')!.textContent =
+        `viewport ${innerWidth}px · outer ${Math.round(c.width)}px · padding ${pad}px · grid ${Math.round(w)}px · gutter ${gutter}px · column ${col.toFixed(1)}px`;
+    };
+    update();
+    addEventListener('resize', update);
+  }
+</script>

@@ -1,0 +1,31 @@
+---
+import { render } from 'astro:content';
+import CaseStudy from '../../layouts/CaseStudy.astro';
+import { getProjects } from '../../lib/projects';
+import Chapter from '../../components/Chapter.astro';
+import SubChapter from '../../components/SubChapter.astro';
+import ChallengeSolution from '../../components/ChallengeSolution.astro';
+import Figure from '../../components/Figure.astro';
+import FigurePair from '../../components/FigurePair.astro';
+import ScreenStack from '../../components/ScreenStack.astro';
+import Comparison from '../../components/Comparison.astro';
+import InsightRow from '../../components/InsightRow.astro';
+import Video from '../../components/Video.astro';
+import Embed from '../../components/Embed.astro';
+import Arrow from '../../components/Arrow.astro';
+
+export async function getStaticPaths() {
+  const projects = await getProjects();
+  return projects.map((project) => ({ params: { id: project.id }, props: { project } }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+
+// Available in every case-study MDX without imports.
+const components = { Chapter, SubChapter, ChallengeSolution, Figure, FigurePair, ScreenStack, Comparison, InsightRow, Video, Embed, Arrow };
+---
+
+<CaseStudy project={project}>
+  <Content components={components} />
+</CaseStudy>

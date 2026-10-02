@@ -1,0 +1,24 @@
+---
+/** T2 Lead block: eyebrow + 2–3 lead sentences in heading-xl (white), each its own paragraph. */
+interface Props {
+  eyebrow?: string;
+  sentences?: string[];
+}
+const { eyebrow = 'Background', sentences } = Astro.props;
+---
+
+<section class="lead">
+  <div class="container">
+    <div class="measure-text stack reveal" style="--stack-gap: var(--space-5)">
+      <p class="t-label eyebrow">{eyebrow}</p>
+      {sentences?.map((s) => <p class="t-heading-xl">{s}</p>)}
+      <slot />
+    </div>
+  </div>
+</section>
+
+<style>
+  .lead { padding-block: var(--section-y) 0; }
+  .eyebrow { color: var(--text-default); margin-bottom: calc(var(--space-5) * -0.5); }
+  .lead :global(p.t-heading-xl) { font-weight: 700; }
+</style>

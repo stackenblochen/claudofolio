@@ -1,0 +1,25 @@
+---
+/** I3 Screen stack: 1–2 UI screenshots stacked, then one caption. Radius 12, hairline, shadow. */
+import type { ImageMetadata } from 'astro';
+import Img from './Img.astro';
+
+interface Props {
+  images: { src: ImageMetadata | string; alt: string }[];
+  caption?: string;
+}
+const { images, caption } = Astro.props;
+---
+
+<figure class="stack-fig measure-media reveal">
+  <div class="shots">
+    {images.map((i) => <Img src={i.src} alt={i.alt} class="media-m media-hairline media-shadow" />)}
+  </div>
+  {caption && <figcaption class="t-caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .stack-fig { display: flex; flex-direction: column; gap: var(--space-3); }
+  .shots { display: flex; flex-direction: column; gap: var(--space-3); }
+  @media (min-width: 768px) { .shots { padding: var(--space-4); } }
+  .shots :global(img) { width: 100%; }
+</style>

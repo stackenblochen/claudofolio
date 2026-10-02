@@ -1,0 +1,72 @@
+---
+/** Base layout: <html>, fonts, tokens, SEO, header, footer. Every page uses this. */
+import { existsSync } from 'node:fs';
+import '@fontsource-variable/geist';
+import '../styles/tokens.css';
+import '../styles/base.css';
+import SiteHeader from '../components/SiteHeader.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+import BackToTop from '../components/BackToTop.astro';
+import { SITE, url } from '../lib/site';
+
+interface Props {
+  /** Page name. Rendered as "{title} — Wolfgang Lattermann". Omit on the home page. */
+  title?: string;
+  description?: string;
+  /** Absolute or base-prefixed URL of the Open Graph image. */
+  ogImage?: string;
+  noindex?: boolean;
+  /** Label of the active nav item. */
+  current?: string;
+}
+const { title, description = SITE.description, ogImage, noindex = false, current } = Astro.props;
+const fullTitle = title ? `${title} — ${SITE.name}` : SITE.name;
+const canonical = new URL(Astro.url.pathname, Astro.site);
+
+// Editorial New is a licensed font: only declare it once the woff2 exists in public/fonts/.
+const editorial = existsSync('public/fonts/EditorialNew-Ultrabold.woff2');
+const fontFace = editorial
+  ? `@font-face{font-family:'Editorial New';font-weight:800;font-style:normal;font-display:swap;src:url('${url('/fonts/EditorialNew-Ultrabold.woff2')}') format('woff2')}`
+  : '';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content="#000000" />
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
+    <link rel="icon" href={url('/favicon.ico')} sizes="32x32" />
+    {noindex && <meta name="robots" content="noindex" />}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    {fontFace && <style set:html={fontFace} />}
+    <script is:inline>document.documentElement.classList.add('js');</script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">Skip to content</a>
+    <SiteHeader current={current} />
+    <main id="main"><slot /></main>
+    <SiteFooter />
+    <BackToTop />
+    <script>
+      // Scroll reveal: scale + opacity. CSS neutralises it for reduced motion.
+      const io = new IntersectionObserver(
+        (entries) => entries.forEach((e) => {
+          if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+        }),
+        { rootMargin: '0px 0px -8% 0px' },
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

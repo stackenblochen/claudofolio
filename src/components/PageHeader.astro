@@ -1,0 +1,25 @@
+---
+/** H4 Page header: eyebrow, H1 (Editorial, 8 cols), optional intro paragraphs (slot) in heading-l. */
+interface Props {
+  eyebrow?: string;
+  title: string;
+}
+const { eyebrow, title } = Astro.props;
+---
+
+<header class="page-header">
+  <div class="container">
+    <div class="measure-text stack" style="--stack-gap: var(--space-6)">
+      {eyebrow && <p class="t-label eyebrow">{eyebrow}</p>}
+      <h1 class="t-title">{title}</h1>
+      {Astro.slots.has('default') && <div class="intro stack t-heading-l"><slot /></div>}
+    </div>
+  </div>
+</header>
+
+<style>
+  .page-header { padding-top: calc(var(--header-h) + var(--space-7)); padding-bottom: var(--space-7); }
+  .eyebrow { color: var(--text-default); }
+  .intro { --stack-gap: var(--space-4); color: var(--text-strong); }
+  .intro :global(p) { font: inherit; }
+</style>

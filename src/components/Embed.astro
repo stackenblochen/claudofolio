@@ -1,0 +1,42 @@
+---
+/**
+ * I7 Interactive embed: iframe to a self-contained demo in public/demos/<slug>/.
+ * Rule: text is always visible. Below 992 px the iframe is replaced by `poster` + `note`
+ * (pass `poster` for demos that don't work at 375 px; omit it for demos that are responsive).
+ */
+import type { ImageMetadata } from 'astro';
+import Img from './Img.astro';
+
+interface Props {
+  src: string; // already base-prefixed, e.g. url('/demos/tokens/index.html')
+  title: string; // required: accessible name of the iframe
+  height?: number; // px at desktop
+  poster?: ImageMetadata | string;
+  posterAlt?: string;
+  note?: string;
+  caption?: string;
+}
+const { src, title, height = 556, poster, posterAlt = '', note = 'Interactive demo, best viewed on desktop.', caption } = Astro.props;
+---
+
+<figure class:list={['embed measure-wide reveal', { 'has-poster': !!poster }]} style={`--embed-h:${height}px`}>
+  <iframe class="media-l media-hairline" src={src} title={title} loading="lazy"></iframe>
+  {poster && (
+    <div class="poster">
+      <Img src={poster} alt={posterAlt} class="media-l media-hairline" />
+      <p class="t-caption">{note}</p>
+    </div>
+  )}
+  {caption && <figcaption class="t-caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .embed { display: flex; flex-direction: column; gap: var(--space-3); }
+  iframe { width: 100%; height: var(--embed-h); background: var(--bg-raised); }
+  .poster { display: none; flex-direction: column; gap: var(--space-3); }
+  .poster :global(img) { width: 100%; }
+  @media (max-width: 991px) {
+    .has-poster iframe { display: none; }
+    .has-poster .poster { display: flex; }
+  }
+</style>
