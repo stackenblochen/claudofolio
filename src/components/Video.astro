@@ -30,7 +30,7 @@ const posterUrl = poster ? (typeof poster === 'string' ? poster : poster.src) : 
     {webm && <source src={webm} type="video/webm" />}
     <source src={src} type="video/mp4" />
   </video>
-  {caption && <figcaption class="t-caption">{caption}</figcaption>}
+  {caption && <figcaption class="t-body">{caption}</figcaption>}
 </figure>
 
 <style>

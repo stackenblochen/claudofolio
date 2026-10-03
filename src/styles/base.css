@@ -41,8 +41,15 @@ button { font: inherit; color: inherit; }
 @media (min-width: 1230px) { :root { --measure-text-cols: 8; } }
 
 /* ---------- Type roles ----------
- * Semantic level (h1/h2/…) and visual role (.t-*) are decoupled. */
-.t-display, .t-title, .t-heading-xl, .t-heading-l, .t-heading-m {
+ * Six roles. Semantic level (h1/h2/…) and visual role (.t-*) are decoupled.
+ *   .t-display     Home hero only
+ *   .t-title       H1 page titles (Editorial New)
+ *   .t-heading     Lead statements, section titles, chapter titles, statement, company names
+ *   .t-subheading  Sub-chapters, card titles, insight titles, roles
+ *   .t-body        Paragraphs, lists, meta values, captions
+ *   .t-label       Eyebrows, meta labels, dates, nav, footer, card categories
+ * Modifiers: .t-upper (uppercase), .t-serif (Editorial face inside a Display line). */
+.t-display, .t-title, .t-heading, .t-subheading {
   color: var(--text-strong);
   text-wrap: balance;
 }
@@ -55,41 +62,25 @@ button { font: inherit; color: inherit; }
   font-size: var(--text-title-size); line-height: var(--text-title-lh);
   font-weight: var(--text-title-weight); letter-spacing: var(--text-title-ls);
 }
-.t-heading-xl {
-  font-size: var(--text-heading-xl-size); line-height: var(--text-heading-xl-lh);
-  font-weight: var(--text-heading-xl-weight); letter-spacing: var(--text-heading-xl-ls);
+.t-heading {
+  font-size: var(--text-heading-size); line-height: var(--text-heading-lh);
+  font-weight: var(--text-heading-weight); letter-spacing: var(--text-heading-ls);
 }
-.t-heading-l {
-  font-size: var(--text-heading-l-size); line-height: var(--text-heading-l-lh);
-  font-weight: var(--text-heading-l-weight); letter-spacing: var(--text-heading-l-ls);
-}
-.t-heading-m {
-  font-size: var(--text-heading-m-size); line-height: var(--text-heading-m-lh);
-  font-weight: var(--text-heading-m-weight); letter-spacing: var(--text-heading-m-ls);
-}
-.t-label {
-  font-size: var(--text-label-size); line-height: var(--text-label-lh);
-  font-weight: var(--text-label-weight); letter-spacing: var(--text-label-ls);
-}
-.t-body-l {
-  font-size: var(--text-body-l-size); line-height: var(--text-body-l-lh);
-  font-weight: var(--text-body-l-weight);
+.t-subheading {
+  font-size: var(--text-subheading-size); line-height: var(--text-subheading-lh);
+  font-weight: var(--text-subheading-weight); letter-spacing: var(--text-subheading-ls);
 }
 .t-body {
   font-size: var(--text-body-size); line-height: var(--text-body-lh);
   font-weight: var(--text-body-weight);
 }
-.t-small {
-  font-size: var(--text-small-size); line-height: var(--text-small-lh);
-  font-weight: var(--text-small-weight);
+.t-label {
+  font-size: var(--text-label-size); line-height: var(--text-label-lh);
+  font-weight: var(--text-label-weight); letter-spacing: var(--text-label-ls);
 }
-.t-caption {
-  font-size: var(--text-body-l-size); line-height: var(--text-body-l-lh);
-  font-weight: var(--text-body-weight);
-}
+.t-upper { text-transform: uppercase; letter-spacing: 0.06em; }
 .t-serif { font-family: var(--font-serif); font-weight: 800; letter-spacing: var(--text-title-ls); }
 .t-strong { color: var(--text-strong); }
-.t-nav { font-size: var(--text-small-size); text-transform: uppercase; letter-spacing: 0.06em; font-weight: 400; }
 
 /* ---------- Prose (running text inside modules) ---------- */
 .prose { font-size: var(--text-body-size); line-height: var(--text-body-lh); font-weight: var(--text-body-weight); }

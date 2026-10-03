@@ -28,8 +28,8 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
 `/styleguide` page (`src/pages/styleguide.astro`).
 
 - **Tokens:** `src/styles/tokens.css` (colour, type, spacing, radius, motion). Never hard-code values in pages or components.
-- **Base:** `src/styles/base.css` has the type role classes (`.t-display`, `.t-title`, `.t-heading-xl/l/m`, `.t-label`,
-  `.t-body-l`, `.t-body`, `.t-small`, `.t-caption`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
+- **Base:** `src/styles/base.css` has the six type roles (`.t-display`, `.t-title`, `.t-heading`, `.t-subheading`, `.t-body`, `.t-label`;
+  modifiers `.t-upper`, `.t-serif`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
   `.prose`, `.section`, media helpers and the `.reveal` scroll effect.
 - **Components:** `src/components/`, one per module ID in `03-modules.md` (Chapter, Lead, ProjectMeta, Figure, ScreenStack,
   Comparison, Embed, Outcome, ProjectGrid …). Content goes in via props and slots, never style overrides.

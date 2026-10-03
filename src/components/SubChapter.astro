@@ -11,8 +11,8 @@ const hasMedia = Astro.slots.has('media');
 
 <div class="sub">
   <div class="measure-text reveal">
-    <span class="dash t-heading-m" aria-hidden="true">—</span>
-    <h3 class="t-heading-m" id={id}>{number !== undefined && <span class="num">{number}. </span>}{title}</h3>
+    <span class="dash t-subheading" aria-hidden="true">—</span>
+    <h3 class="t-subheading" id={id}>{number !== undefined && <span class="num">{number}. </span>}{title}</h3>
     {Astro.slots.has('default') && <div class="body prose"><slot /></div>}
   </div>
   {hasMedia && <div class="media measure-media"><slot name="media" /></div>}

@@ -83,7 +83,7 @@ export const collections = { projects };
 - Components take **content as props or slots**, never style overrides. No `style=` attributes in MDX.
 - Spacing between modules comes from the parent layout (a `flow` / stack utility with `--chapter-gap`), not from margins on each module.
 - Grid spans follow `03-modules.md` → *Responsive behaviour summary*. Use two layout wrappers: `.measure-text` (8 / 9 / 12 cols) and `.measure-media` (10 / 12 cols).
-- Headings are semantic (`h1` once per page, then `h2` for chapters, `h3` for sub-chapters). The visual size comes from the type role class (`.t-heading-l` etc.), so the level and the look are decoupled.
+- Headings are semantic (`h1` once per page, then `h2` for chapters, `h3` for sub-chapters). The visual size comes from the type role class (`.t-heading` etc.), so the level and the look are decoupled.
 
 ---
 

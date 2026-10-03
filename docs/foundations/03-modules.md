@@ -127,7 +127,7 @@ Semplice defaults: a red #ff4b53 load bar and an arrow button. Optional in the n
   4. optional media modules below (I1–I7)
 - **Grid:** text 8 cols (md 9), media 10 cols (md 12).
 - **Spacing:** section top 80 (xl) / 60 (md) / 40 (sm) / 0–40 (xs). Heading → body: 12–20 px.
-- → Standardise on **one heading level** (H2 semantically, *heading-l* visually).
+- → Standardise on **one heading level** (H2 semantically, *heading* visually).
 
 ### T5 Sub-chapter
 - Same as T4 but with a numbered **H5** title ("1. Instant meetings"), nested under a chapter ("Design solution").
@@ -148,14 +148,14 @@ Semplice defaults: a red #ff4b53 load bar and an arrow button. Optional in the n
 ### T8 Career entry (About)
 - **Anatomy:** dash, then Company (H3, white) and Role (H3, white, line break) ⚠ with no hierarchy, then dates (H6, white, 8 px below), then 1–2 body paragraphs (40 px below; 20 px on sm/xs).
 - 8 cols; stacks on sm/xs. Section padding 20 / 60 (last entry 20 / 120).
-- → Company *heading-l*, role *heading-m* in `text-default`, dates *label* in `text-default`.
+- → Company *heading*, role *subheading* in `text-default`, dates *label* in `text-default`.
 
 ---
 
 ## M — Meta
 
 ### M1 Project meta row
-- **Anatomy:** 3 cells, each an H6 label ("My Role", "Team", "Timeline") over a value (Body-L, white, 20 px).
+- **Anatomy:** 3 cells, each an H6 label ("My Role", "Team", "Timeline") over a value (Body, white, 20 px).
 - **Grid:** 3 + 3 + 2 (xl) / 3 + 3 + 3 (lg, md); 60 px above.
 
 | xs | sm | md | lg | xl |

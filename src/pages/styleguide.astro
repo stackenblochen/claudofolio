@@ -42,13 +42,10 @@ const colors = [
 const roles = [
   ['t-display', 'Display', 'Home hero only'],
   ['t-title', 'Title', 'H1 page titles (Editorial New)'],
-  ['t-heading-xl', 'Heading XL', 'Lead statements, section titles'],
-  ['t-heading-l', 'Heading L', 'Chapter titles'],
-  ['t-heading-m', 'Heading M', 'Sub-chapters, card titles'],
-  ['t-label', 'Label', 'Eyebrows, meta labels, dates'],
-  ['t-body-l', 'Body L', 'Meta values, intro paragraphs, captions'],
-  ['t-body', 'Body', 'Paragraphs, lists'],
-  ['t-small', 'Small', 'Nav, footer, card meta'],
+  ['t-heading', 'Heading', 'Lead statements, section and chapter titles, statement'],
+  ['t-subheading', 'Subheading', 'Sub-chapters, card titles, insight titles'],
+  ['t-body', 'Body', 'Paragraphs, lists, meta values, captions'],
+  ['t-label', 'Label', 'Eyebrows, meta labels, dates, nav, footer, card categories'],
 ];
 const spaces = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const cards: CardData[] = [
@@ -66,7 +63,7 @@ const cards: CardData[] = [
   <SectionTitle id="colour">Colour</SectionTitle>
   <div class="container"><div class="measure-media swatches">
     {colors.map(([name, v, role, hex]) => (
-      <div class="sw"><span class="chip" style={`background:var(${v})`}></span><span class="t-small t-strong">{name}</span><span class="t-small">{role}</span><code class="hex t-small">{hex}</code></div>
+      <div class="sw"><span class="chip" style={`background:var(${v})`}></span><span class="t-label t-strong">{name}</span><span class="t-label">{role}</span><code class="hex t-label">{hex}</code></div>
     ))}
   </div></div>
 
@@ -74,7 +71,7 @@ const cards: CardData[] = [
   <div class="container"><div class="measure-media stack" style="--stack-gap: var(--space-6)">
     {roles.map(([cls, name, use]) => (
       <div class="row">
-        <p class="t-small">{name} · <code>.{cls}</code> · {use}</p>
+        <p class="t-label">{name} · <code>.{cls}</code> · {use}</p>
         <p class={cls}>Making complex things simple</p>
       </div>
     ))}
@@ -83,29 +80,29 @@ const cards: CardData[] = [
   <SectionTitle id="spacing">Spacing</SectionTitle>
   <div class="container"><div class="measure-media stack">
     {spaces.map((n) => (
-      <div class="sp"><code class="t-small">--space-{n}</code><span class="bar" style={`width:var(--space-${n})`}></span></div>
+      <div class="sp"><code class="t-label">--space-{n}</code><span class="bar" style={`width:var(--space-${n})`}></span></div>
     ))}
   </div></div>
 
   <SectionTitle id="shape">Shape &amp; elevation</SectionTitle>
   <div class="container"><div class="measure-media shapes">
-    <div class="shape media-m media-hairline"><span class="t-small">radius-m 12 · hairline</span></div>
-    <div class="shape media-l media-hairline"><span class="t-small">radius-l 16 · hairline</span></div>
-    <div class="shape media-m media-hairline media-shadow"><span class="t-small">screenshot shadow</span></div>
+    <div class="shape media-m media-hairline"><span class="t-label">radius-m 12 · hairline</span></div>
+    <div class="shape media-l media-hairline"><span class="t-label">radius-l 16 · hairline</span></div>
+    <div class="shape media-m media-hairline media-shadow"><span class="t-label">screenshot shadow</span></div>
   </div></div>
 
   <SectionTitle id="grid-demo">Grid</SectionTitle>
   <div class="container grid-demo" data-grid-demo>
-    <p class="t-small readout" data-readout>Reading grid values…</p>
+    <p class="t-label readout" data-readout>Reading grid values…</p>
     <div class="cols grid-12" aria-hidden="true">
       {Array.from({ length: 12 }, (_, i) => <span class="col">{i + 1}</span>)}
     </div>
     <div class="bars">
-      <div class="bar-row measure-text"><span class="t-small" data-label="text">Text</span></div>
-      <div class="bar-row measure-media"><span class="t-small" data-label="media">Media</span></div>
-      <div class="bar-row measure-wide"><span class="t-small">Full grid width: 12 columns</span></div>
+      <div class="bar-row measure-text"><span class="t-label" data-label="text">Text</span></div>
+      <div class="bar-row measure-media"><span class="t-label" data-label="media">Media</span></div>
+      <div class="bar-row measure-wide"><span class="t-label">Full grid width: 12 columns</span></div>
     </div>
-    <table class="t-small matrix">
+    <table class="t-label matrix">
       <thead><tr><th>Breakpoint</th><th>Viewport</th><th>Grid</th><th>Text</th><th>Media</th></tr></thead>
       <tbody>
         <tr><td>xl · desktop wide</td><td>≥ 1230</td><td>1170 (col 70, gutter 30)</td><td>8</td><td>10</td></tr>
@@ -161,8 +158,8 @@ const cards: CardData[] = [
     <InsightRow image={illustration} title="Second insight">Repeat three times.</InsightRow>
     <Embed src="about:blank" title="Placeholder interactive demo" poster={screen} posterAlt="Placeholder poster" note="Interactive demo (I7). Below 992 px a poster replaces the iframe." />
     <div class="measure-media annotations">
-      <div><Stamp class="demo-stamp" /><p class="t-small">Stamp (I8)</p></div>
-      <div><Arrow class="demo-arrow" /><p class="t-small">Arrow (I8)</p></div>
+      <div><Stamp class="demo-stamp" /><p class="t-label">Stamp (I8)</p></div>
+      <div><Arrow class="demo-arrow" /><p class="t-label">Arrow (I8)</p></div>
     </div>
   </div>
 
@@ -179,7 +176,7 @@ const cards: CardData[] = [
   .readout { font-variant-numeric: tabular-nums; }
   .cols { row-gap: 0; }
   .col { grid-column: span 1 !important; height: 64px; background: rgba(255, 75, 83, 0.18); border-inline: 1px solid rgba(255, 75, 83, 0.5);
-    display: grid; place-items: center; color: var(--accent-negative); font-size: var(--text-small-size); }
+    display: grid; place-items: center; color: var(--accent-negative); font-size: var(--text-label-size); }
   .bars { display: flex; flex-direction: column; gap: var(--space-2); }
   .bar-row { background: var(--bg-card); padding: var(--space-2) var(--space-3); color: var(--text-strong); border-radius: 4px; }
   .matrix { border-collapse: collapse; width: 100%; }

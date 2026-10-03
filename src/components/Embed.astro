@@ -24,10 +24,10 @@ const { src, title, height = 556, poster, posterAlt = '', note = 'Interactive de
   {poster && (
     <div class="poster">
       <Img src={poster} alt={posterAlt} class="media-l media-hairline" />
-      <p class="t-caption">{note}</p>
+      <p class="t-body">{note}</p>
     </div>
   )}
-  {caption && <figcaption class="t-caption">{caption}</figcaption>}
+  {caption && <figcaption class="t-body">{caption}</figcaption>}
 </figure>
 
 <style>

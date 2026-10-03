@@ -44,8 +44,8 @@ const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard
     <section class="others section section--black" aria-labelledby="others-title">
       <div class="container">
         <div class="measure-text">
-          <span class="dash t-heading-l" aria-hidden="true">—</span>
-          <h2 class="t-heading-l" id="others-title">Other projects</h2>
+          <span class="dash t-heading" aria-hidden="true">—</span>
+          <h2 class="t-heading" id="others-title">Other projects</h2>
         </div>
         <div class="grid-wrap"><ProjectGrid items={others} gap="tight" /></div>
       </div>

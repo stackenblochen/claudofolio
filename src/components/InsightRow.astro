@@ -14,7 +14,7 @@ const { image, alt = '', title } = Astro.props;
 <div class="insight grid-12 measure-media reveal">
   <div class="span-5 art"><Img src={image} alt={alt} sizes="(min-width: 768px) 480px, 60vw" /></div>
   <div class="span-7 copy">
-    <h3 class="t-heading-m">{title}</h3>
+    <h3 class="t-subheading">{title}</h3>
     <div class="prose"><slot /></div>
   </div>
 </div>

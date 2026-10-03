@@ -14,7 +14,7 @@ const { images, caption } = Astro.props;
   <div class="shots">
     {images.map((i) => <Img src={i.src} alt={i.alt} class="media-m media-hairline media-shadow" />)}
   </div>
-  {caption && <figcaption class="t-caption">{caption}</figcaption>}
+  {caption && <figcaption class="t-body">{caption}</figcaption>}
 </figure>
 
 <style>

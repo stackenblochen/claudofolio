@@ -13,8 +13,8 @@ const { title = 'Outcome', items } = Astro.props;
 <section class="outcome section section--black" aria-labelledby="outcome-title">
   <div class="container">
     <div class="measure-text reveal">
-      <span class="dash t-heading-l" aria-hidden="true">—</span>
-      <h2 class="t-heading-l" id="outcome-title">{title}</h2>
+      <span class="dash t-heading" aria-hidden="true">—</span>
+      <h2 class="t-heading" id="outcome-title">{title}</h2>
       <ol class="list prose">
         {items?.map((i) => <li>{i}</li>)}
         <slot />

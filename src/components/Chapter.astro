@@ -17,8 +17,8 @@ const hasMedia = Astro.slots.has('media');
 <section class="chapter" aria-labelledby={id}>
   <div class="container">
     <div class="measure-text reveal">
-      <span class="dash t-heading-l" aria-hidden="true">—</span>
-      <Tag class="t-heading-l" id={id}>{title}</Tag>
+      <span class="dash t-heading" aria-hidden="true">—</span>
+      <Tag class="t-heading" id={id}>{title}</Tag>
       {Astro.slots.has('default') && <div class="body prose"><slot /></div>}
     </div>
     {hasMedia && <div class="media"><slot name="media" /></div>}

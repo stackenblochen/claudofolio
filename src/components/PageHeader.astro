@@ -12,7 +12,7 @@ const { eyebrow, title } = Astro.props;
     <div class="measure-text stack" style="--stack-gap: var(--space-6)">
       {eyebrow && <p class="t-label eyebrow">{eyebrow}</p>}
       <h1 class="t-title">{title}</h1>
-      {Astro.slots.has('default') && <div class="intro stack t-heading-l"><slot /></div>}
+      {Astro.slots.has('default') && <div class="intro stack t-heading"><slot /></div>}
     </div>
   </div>
 </header>

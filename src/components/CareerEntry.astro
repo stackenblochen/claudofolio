@@ -11,9 +11,9 @@ const { company, role, dates } = Astro.props;
 <article class="career">
   <div class="container">
     <div class="measure-text reveal">
-      <span class="dash t-heading-l" aria-hidden="true">—</span>
-      <h3 class="t-heading-l">{company}</h3>
-      <p class="role t-heading-m">{role}</p>
+      <span class="dash t-heading" aria-hidden="true">—</span>
+      <h3 class="t-heading">{company}</h3>
+      <p class="role t-subheading">{role}</p>
       <p class="dates t-label">{dates}</p>
       <div class="body prose"><slot /></div>
     </div>

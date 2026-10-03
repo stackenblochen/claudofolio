@@ -43,34 +43,22 @@
   --text-title-lh: clamp(2.875rem, 1.341rem + 6.545vw, 6.25rem);
   --text-title-weight: 800;
   --text-title-ls: -0.0025em;
-  --text-heading-xl-size: clamp(1.625rem, 1.227rem + 1.697vw, 2.5rem);
-  --text-heading-xl-lh: clamp(2rem, 1.375rem + 2.667vw, 3.375rem);
-  --text-heading-xl-weight: 700;
-  --text-heading-xl-ls: 0;
-  --text-heading-l-size: clamp(1.375rem, 1.034rem + 1.455vw, 2.125rem);
-  --text-heading-l-lh: clamp(2rem, 1.545rem + 1.939vw, 3rem);
-  --text-heading-l-weight: 700;
-  --text-heading-l-ls: 0;
-  --text-heading-m-size: clamp(1.125rem, 0.9545rem + 0.7273vw, 1.5rem);
-  --text-heading-m-lh: clamp(1.625rem, 1.455rem + 0.7273vw, 2rem);
-  --text-heading-m-weight: 700;
-  --text-heading-m-ls: 0.01em;
+  --text-heading-size: clamp(1.625rem, 1.227rem + 1.697vw, 2.5rem);
+  --text-heading-lh: clamp(2rem, 1.375rem + 2.667vw, 3.375rem);
+  --text-heading-weight: 700;
+  --text-heading-ls: 0;
+  --text-subheading-size: clamp(1.125rem, 0.9545rem + 0.7273vw, 1.5rem);
+  --text-subheading-lh: clamp(1.625rem, 1.455rem + 0.7273vw, 2rem);
+  --text-subheading-weight: 700;
+  --text-subheading-ls: 0.01em;
   --text-label-size: clamp(0.9375rem, 0.8523rem + 0.3636vw, 1.125rem);
   --text-label-lh: clamp(1.5rem, 1.443rem + 0.2424vw, 1.625rem);
   --text-label-weight: 400;
   --text-label-ls: 0.022em;
-  --text-body-l-size: clamp(1.125rem, 1.068rem + 0.2424vw, 1.25rem);
-  --text-body-l-lh: clamp(1.75rem, 1.636rem + 0.4848vw, 2rem);
-  --text-body-l-weight: 300;
-  --text-body-l-ls: 0;
   --text-body-size: clamp(1rem, 0.9148rem + 0.3636vw, 1.188rem);
   --text-body-lh: clamp(1.75rem, 1.736rem + 0.06061vw, 1.781rem);
   --text-body-weight: 300;
   --text-body-ls: 0;
-  --text-small-size: clamp(0.875rem, 0.8466rem + 0.1212vw, 0.9375rem);
-  --text-small-lh: clamp(1.25rem, 1.193rem + 0.2424vw, 1.375rem);
-  --text-small-weight: 400;
-  --text-small-ls: 0;
 
   /* Spacing */
   --space-1: 0.25rem; /* 4px */

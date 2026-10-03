@@ -11,7 +11,7 @@ const { eyebrow = 'Background', sentences } = Astro.props;
   <div class="container">
     <div class="measure-text stack reveal" style="--stack-gap: var(--space-5)">
       <p class="t-label eyebrow">{eyebrow}</p>
-      {sentences?.map((s) => <p class="t-heading-xl">{s}</p>)}
+      {sentences?.map((s) => <p class="t-heading">{s}</p>)}
       <slot />
     </div>
   </div>
@@ -20,5 +20,5 @@ const { eyebrow = 'Background', sentences } = Astro.props;
 <style>
   .lead { padding-block: var(--section-y) 0; }
   .eyebrow { color: var(--text-default); margin-bottom: calc(var(--space-5) * -0.5); }
-  .lead :global(p.t-heading-xl) { font-weight: 700; }
+  .lead :global(p.t-heading) { font-weight: 700; }
 </style>

@@ -20,7 +20,7 @@ const items = [
     <nav class="menu" aria-label="Main">
       <ul role="list">
         {items.map((i) => (
-          <li><a class="t-nav" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
+          <li><a class="t-label t-upper" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
         ))}
       </ul>
     </nav>
@@ -34,7 +34,7 @@ const items = [
   <div class="overlay" id="overlay-menu" hidden data-overlay>
     <nav aria-label="Main (overlay)">
       <ul role="list">
-        {items.map((i) => <li><a class="t-heading-l" href={i.href}>{i.label}</a></li>)}
+        {items.map((i) => <li><a class="t-heading" href={i.href}>{i.label}</a></li>)}
       </ul>
     </nav>
   </div>

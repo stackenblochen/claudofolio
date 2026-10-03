@@ -14,8 +14,8 @@ const { card } = Astro.props;
     <div class="thumb media-l">
       <Img src={card.cover} alt={card.coverAlt} sizes="(min-width: 768px) 600px, 100vw" />
     </div>
-    <h3 class="t-heading-m">{card.title}</h3>
-    <p class="cat t-small">{card.category}</p>
+    <h3 class="t-subheading">{card.title}</h3>
+    <p class="cat t-label">{card.category}</p>
     {card.summary && <p class="sum t-body">{card.summary}</p>}
   </a>
 </article>
