@@ -2,15 +2,15 @@
 export const SITE = {
   name: 'Wolfgang Lattermann',
   shortName: 'wolfgang',
-  /** TODO: set the real contact address before publishing. Empty hides the Contact link. */
-  email: '',
-  linkedin: '',
-  cvUrl: '',
+  /** TODO: placeholders, replace with the real values before publishing. Empty values hide the link. */
+  email: 'hello@example.com',
+  linkedin: 'https://www.linkedin.com/in/your-name',
+  /** Path under /public (e.g. public/cv/wolfgang-lattermann-cv.pdf). */
+  cvUrl: '/cv/wolfgang-lattermann-cv.pdf',
   description: 'Wolfgang Lattermann is a product designer based in Berlin.',
 };
 
 export const NAV = [
-  { label: 'Work', href: '/#work' },
   { label: 'About me', href: '/about/' },
 ];
 

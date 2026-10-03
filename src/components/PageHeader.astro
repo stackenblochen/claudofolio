@@ -12,7 +12,7 @@ const { eyebrow, title } = Astro.props;
     <div class="measure-text stack" style="--stack-gap: var(--space-6)">
       {eyebrow && <p class="t-label eyebrow">{eyebrow}</p>}
       <h1 class="t-title">{title}</h1>
-      {Astro.slots.has('default') && <div class="intro stack t-heading"><slot /></div>}
+      {Astro.slots.has('default') && <div class="intro stack t-subheading"><slot /></div>}
     </div>
   </div>
 </header>
@@ -21,5 +21,6 @@ const { eyebrow, title } = Astro.props;
   .page-header { padding-top: calc(var(--header-h) + var(--space-7)); padding-bottom: var(--space-7); }
   .eyebrow { color: var(--text-default); }
   .intro { --stack-gap: var(--space-4); color: var(--text-strong); }
-  .intro :global(p) { font: inherit; }
+  /* Running text: fill the measure instead of balancing lines (balance is for short headings). */
+  .intro :global(p) { font: inherit; text-wrap: pretty; }
 </style>

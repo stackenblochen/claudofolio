@@ -7,6 +7,8 @@ import '../styles/base.css';
 import SiteHeader from '../components/SiteHeader.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 import BackToTop from '../components/BackToTop.astro';
+import LoadingBar from '../components/LoadingBar.astro';
+import { ClientRouter } from 'astro:transitions';
 import { SITE, url } from '../lib/site';
 
 interface Props {
@@ -19,6 +21,17 @@ interface Props {
   /** Label of the active nav item. */
   current?: string;
 }
+// Page transition: old page fades out, then the new page fades in (keyframes in base.css).
+const pageFade = {
+  forwards: {
+    old: { name: 'pt-fade-out', duration: '0.2s', easing: 'ease-in', fillMode: 'forwards' },
+    new: { name: 'pt-fade-in', duration: '0.3s', delay: '0.2s', easing: 'ease-out', fillMode: 'backwards' },
+  },
+  backwards: {
+    old: { name: 'pt-fade-out', duration: '0.2s', easing: 'ease-in', fillMode: 'forwards' },
+    new: { name: 'pt-fade-in', duration: '0.3s', delay: '0.2s', easing: 'ease-out', fillMode: 'backwards' },
+  },
+};
 const { title, description = SITE.description, ogImage, noindex = false, current } = Astro.props;
 const fullTitle = title ? `${title} — ${SITE.name}` : SITE.name;
 const canonical = new URL(Astro.url.pathname, Astro.site);
@@ -31,7 +44,7 @@ const fontFace = editorial
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" transition:animate={pageFade}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -51,22 +64,29 @@ const fontFace = editorial
     <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
     {fontFace && <style set:html={fontFace} />}
     <script is:inline>document.documentElement.classList.add('js');</script>
+    <ClientRouter />
   </head>
   <body>
+    <LoadingBar />
     <a class="skip-link" href="#main">Skip to content</a>
     <SiteHeader current={current} />
     <main id="main"><slot /></main>
     <SiteFooter />
     <BackToTop />
     <script>
+      // Keep the .js flag on the swapped <html> so .reveal elements do not flash visible.
+      document.addEventListener('astro:after-swap', () => document.documentElement.classList.add('js'));
+
       // Scroll reveal: scale + opacity. CSS neutralises it for reduced motion.
-      const io = new IntersectionObserver(
-        (entries) => entries.forEach((e) => {
-          if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
-        }),
-        { rootMargin: '0px 0px -8% 0px' },
-      );
-      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+      document.addEventListener('astro:page-load', () => {
+        const io = new IntersectionObserver(
+          (entries) => entries.forEach((e) => {
+            if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
+          }),
+          { rootMargin: '0px 0px -8% 0px' },
+        );
+        document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+      });
     </script>
   </body>
 </html>

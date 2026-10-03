@@ -1,0 +1,46 @@
+---
+/**
+ * Contact block: dash, heading, short invitation (slot), then email / LinkedIn / CV rows.
+ * Values come from SITE (src/lib/site.ts); empty values are hidden.
+ */
+import { SITE, url } from '../lib/site';
+
+interface Props {
+  title?: string;
+}
+const { title = 'Contact' } = Astro.props;
+
+const rows = [
+  SITE.email && { label: 'Email', text: SITE.email, href: `mailto:${SITE.email}` },
+  SITE.linkedin && { label: 'LinkedIn', text: SITE.linkedin.replace(/^https?:\/\/(www\.)?/, ''), href: SITE.linkedin },
+  SITE.cvUrl && { label: 'CV', text: 'Download as PDF', href: url(SITE.cvUrl) },
+].filter(Boolean) as { label: string; text: string; href: string }[];
+---
+
+<section class="contact" aria-labelledby="contact-title">
+  <div class="container">
+    <div class="measure-text reveal">
+      <span class="dash t-heading" aria-hidden="true">—</span>
+      <h2 class="t-heading" id="contact-title">{title}</h2>
+      {Astro.slots.has('default') && <div class="body prose"><slot /></div>}
+      <dl class="rows">
+        {rows.map((r) => (
+          <div class="row">
+            <dt class="t-label">{r.label}</dt>
+            <dd class="t-subheading"><a class="link" href={r.href}>{r.text}</a></dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact { padding-block: var(--space-6) var(--space-7); }
+  .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
+  .body { margin-top: var(--space-3); }
+  .rows { margin: var(--space-6) 0 0; display: grid; gap: var(--space-4); }
+  .row { display: grid; gap: var(--space-1); }
+  dd { margin: 0; overflow-wrap: anywhere; }
+  @media (min-width: 768px) { .row { grid-template-columns: 8rem 1fr; align-items: baseline; gap: var(--space-4); } }
+</style>

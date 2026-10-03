@@ -1,6 +1,10 @@
 ---
 /** G1/G2 Site header: wordmark left, text menu right, overlay menu below 768 px. */
 import { NAV, SITE, url } from '../lib/site';
+import logoSvg from '../assets/wolfgang-logo.svg?raw';
+
+// Inline so it can follow currentColor; decorative, the link carries the accessible name.
+const logo = logoSvg.replace(/fill="white"/g, 'fill="currentColor"').replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
 
 interface Props {
   current?: string;
@@ -15,12 +19,12 @@ const items = [
 
 <header class="site-header" data-site-header>
   <div class="container bar">
-    <a class="logo" href={url('/')} aria-label={`${SITE.name}, home`}>{SITE.shortName}</a>
+    <a class="logo" href={url('/')} aria-label={`${SITE.name}, home`} set:html={logo} />
 
     <nav class="menu" aria-label="Main">
       <ul role="list">
         {items.map((i) => (
-          <li><a class="t-label t-upper" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
+          <li><a class="t-label" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
         ))}
       </ul>
     </nav>
@@ -46,17 +50,10 @@ const items = [
     height: var(--header-h);
     margin-bottom: calc(var(--header-h) * -1); /* floats over the hero */
   }
-  /* Background lives on a pseudo-element: backdrop-filter on the header itself would
-     become the containing block of the fixed overlay and clip it to the header height. */
-  .site-header::before {
-    content: ''; position: absolute; inset: 0; z-index: 2; pointer-events: none; opacity: 0;
-    background: rgba(0, 0, 0, 0.8); backdrop-filter: blur(12px); transition: opacity 200ms;
-  }
-  .site-header.is-scrolled::before { opacity: 1; }
   .bar { height: 100%; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 3; }
-  .logo {
-    font-weight: 700; font-size: 1.5rem; letter-spacing: -0.02em; text-decoration: none; color: var(--text-strong);
-  }
+  .logo { display: block; width: 100px; color: var(--text-strong); line-height: 0; }
+  .logo :global(svg) { width: 100%; height: auto; }
+  @media (min-width: 768px) { .logo { width: 140px; } }
   .menu { display: none; }
   .menu ul { display: flex; gap: var(--space-6); padding: 0; margin: 0; list-style: none; }
   .menu a {
@@ -88,21 +85,24 @@ const items = [
 </style>
 
 <script>
-  const header = document.querySelector<HTMLElement>('[data-site-header]');
-  const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
-  const overlay = document.querySelector<HTMLElement>('[data-overlay]');
+  // Runs on first load and after every view-transition navigation (the header is swapped each time).
+  let ac: AbortController | undefined;
+  document.addEventListener('astro:page-load', () => {
+    ac?.abort();
+    ac = new AbortController();
+    const { signal } = ac;
+    const burger = document.querySelector<HTMLButtonElement>('[data-burger]');
+    const overlay = document.querySelector<HTMLElement>('[data-overlay]');
 
-  const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
-  onScroll();
-  window.addEventListener('scroll', onScroll, { passive: true });
-
-  const setOpen = (open: boolean) => {
-    if (!burger || !overlay) return;
-    burger.setAttribute('aria-expanded', String(open));
-    overlay.hidden = !open;
-    document.body.style.overflow = open ? 'hidden' : '';
-  };
-  burger?.addEventListener('click', () => setOpen(burger.getAttribute('aria-expanded') !== 'true'));
-  overlay?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); });
-  window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); });
+    const setOpen = (open: boolean) => {
+      if (!burger || !overlay) return;
+      burger.setAttribute('aria-expanded', String(open));
+      overlay.hidden = !open;
+      document.body.style.overflow = open ? 'hidden' : '';
+    };
+    setOpen(false);
+    burger?.addEventListener('click', () => setOpen(burger.getAttribute('aria-expanded') !== 'true'), { signal });
+    overlay?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); }, { signal });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); }, { signal });
+  });
 </script>

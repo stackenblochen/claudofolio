@@ -170,6 +170,11 @@ a { color: var(--text-strong); }
 .hide-sm { display: none; }
 @media (min-width: 768px) { .hide-sm { display: revert; } .show-sm-only { display: none; } }
 
+/* ---------- Page transition (fade out, then fade in; see Base.astro) ---------- */
+html { background: var(--bg-page); }
+@keyframes pt-fade-out { to { opacity: 0; } }
+@keyframes pt-fade-in { from { opacity: 0; } }
+
 /* ---------- Reveal (scale + opacity on scroll-in; JS adds .js to <html>) ---------- */
 .js .reveal {
   opacity: 0;

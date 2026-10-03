@@ -51,25 +51,27 @@ const { portrait, portraitColor, portraitAlt = '', scrollTarget = '#work' } = As
 </style>
 
 <script>
-  const hero = document.querySelector<HTMLElement>('[data-hero]');
-  const stage = hero?.querySelector<HTMLElement>('[data-stage]');
-  const color = stage?.querySelector<HTMLElement>('.color');
-  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.addEventListener('astro:page-load', () => {
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    const stage = hero?.querySelector<HTMLElement>('[data-stage]');
+    const color = stage?.querySelector<HTMLElement>('.color');
+    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  if (hero && stage && fine && !calm) {
-    hero.addEventListener('pointermove', (e) => {
-      const r = hero.getBoundingClientRect();
-      const x = (e.clientX - r.left) / r.width;
-      const y = (e.clientY - r.top) / r.height;
-      hero.classList.add('is-spotlight');
-      stage.style.transform = `perspective(2000px) scale(1.1) rotateY(${(x - 0.5) * 6}deg) rotateX(${(0.5 - y) * 6}deg)`;
-      color?.style.setProperty('--mx', `${x * 100}%`);
-      color?.style.setProperty('--my', `${y * 100}%`);
-    });
-    hero.addEventListener('pointerleave', () => {
-      hero.classList.remove('is-spotlight');
-      stage.style.transform = '';
-    });
-  }
+    if (hero && stage && fine && !calm) {
+      hero.addEventListener('pointermove', (e) => {
+        const r = hero.getBoundingClientRect();
+        const x = (e.clientX - r.left) / r.width;
+        const y = (e.clientY - r.top) / r.height;
+        hero.classList.add('is-spotlight');
+        stage.style.transform = `perspective(2000px) scale(1.1) rotateY(${(x - 0.5) * 6}deg) rotateX(${(0.5 - y) * 6}deg)`;
+        color?.style.setProperty('--mx', `${x * 100}%`);
+        color?.style.setProperty('--my', `${y * 100}%`);
+      });
+      hero.addEventListener('pointerleave', () => {
+        hero.classList.remove('is-spotlight');
+        stage.style.transform = '';
+      });
+    }
+  });
 </script>

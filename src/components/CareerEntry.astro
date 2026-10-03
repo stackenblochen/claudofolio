@@ -1,19 +1,29 @@
 ---
-/** T8 Career entry: dash, company (heading-l), role (heading-m, default colour), dates (label), body. */
+/**
+ * T8 Career entry: dash, company + role (both subheading, white), dates (label), body.
+ * Optional logo (white SVG) sits left, above the company name; it is decorative (the company name is text).
+ * Logos differ in proportions, so each gets its own height (`logoHeight`, px) to look visually balanced.
+ */
+import type { ImageMetadata } from 'astro';
+import Img from './Img.astro';
+
 interface Props {
   company: string;
-  role: string;
+  role?: string;
   dates: string;
+  logo?: ImageMetadata;
+  logoHeight?: number;
 }
-const { company, role, dates } = Astro.props;
+const { company, role, dates, logo, logoHeight = 28 } = Astro.props;
 ---
 
 <article class="career">
   <div class="container">
     <div class="measure-text reveal">
-      <span class="dash t-heading" aria-hidden="true">—</span>
-      <h3 class="t-heading">{company}</h3>
-      <p class="role t-subheading">{role}</p>
+      <span class="dash t-subheading" aria-hidden="true">—</span>
+      {logo && <div class="logo" style={`--logo-h:${logoHeight}px`}><Img src={logo} alt="" /></div>}
+      <h3 class="t-subheading">{company}</h3>
+      {role && <p class="t-subheading">{role}</p>}
       <p class="dates t-label">{dates}</p>
       <div class="body prose"><slot /></div>
     </div>
@@ -23,8 +33,9 @@ const { company, role, dates } = Astro.props;
 <style>
   .career { padding-block: var(--space-6) var(--space-7); }
   .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
-  .role { color: var(--text-default); margin-top: var(--space-1); }
-  .dates { color: var(--text-default); margin-top: var(--space-2); }
+  .logo { margin-bottom: var(--space-4); }
+  .logo :global(img) { height: var(--logo-h); width: auto; max-width: 100%; }
+  .dates { margin-top: var(--space-2); }
   .body { margin-top: var(--space-5); }
   @media (min-width: 768px) { .body { margin-top: var(--space-6); } }
 </style>

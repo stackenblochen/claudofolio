@@ -1,0 +1,69 @@
+---
+/**
+ * Page-load progress bar (red, top of the viewport). Starts when a navigation begins and
+ * completes when the new page is in place. Persisted across view transitions, with its own
+ * transition name so it is not part of the page fade.
+ */
+---
+
+<div class="loader" aria-hidden="true" data-loader transition:persist transition:name="page-loader" transition:animate="none"></div>
+
+<style>
+  .loader {
+    position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 1000;
+    background: var(--accent-negative);
+    transform: scaleX(0); transform-origin: left center; opacity: 0;
+    pointer-events: none;
+  }
+</style>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-loader]');
+  let progress = 0;
+  let timer: ReturnType<typeof setInterval> | undefined;
+  let hideTimer: ReturnType<typeof setTimeout> | undefined;
+  let doneTimer: ReturnType<typeof setTimeout> | undefined;
+  let startedAt = 0;
+  const MIN_VISIBLE = 500; // ms, so the bar is perceptible even when the page loads instantly
+  const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  const set = (p: number, ms: number) => {
+    if (!bar) return;
+    bar.style.transition = calm ? 'none' : `transform ${ms}ms var(--ease-out), opacity 250ms`;
+    bar.style.transform = `scaleX(${p})`;
+  };
+
+  function start() {
+    if (!bar) return;
+    clearInterval(timer);
+    clearTimeout(hideTimer);
+    clearTimeout(doneTimer);
+    startedAt = performance.now();
+    bar.style.transition = 'none';
+    bar.style.opacity = '1';
+    bar.style.transform = 'scaleX(0)';
+    void bar.offsetWidth; // restart the transition
+    progress = 0.12;
+    set(progress, 300);
+    // creep towards 90% until the page is ready
+    timer = setInterval(() => {
+      progress += (0.9 - progress) * 0.12;
+      set(progress, 300);
+    }, 250);
+  }
+
+  function done() {
+    if (!bar) return;
+    const wait = Math.max(0, MIN_VISIBLE - (performance.now() - startedAt));
+    clearTimeout(doneTimer);
+    doneTimer = setTimeout(() => {
+      clearInterval(timer);
+      set(1, 200);
+      hideTimer = setTimeout(() => { bar.style.opacity = '0'; }, 250);
+    }, wait);
+  }
+
+  start(); // initial page load
+  document.addEventListener('astro:before-preparation', start);
+  document.addEventListener('astro:page-load', done);
+</script>

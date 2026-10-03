@@ -27,7 +27,7 @@ const meta = [
 const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard);
 ---
 
-<Base title={d.shortTitle} description={d.summary} ogImage={d.cover.src} current="Work">
+<Base title={d.shortTitle} description={d.summary} ogImage={d.cover.src}>
   <CaseHero
     title={d.title}
     variant={d.heroVariant}

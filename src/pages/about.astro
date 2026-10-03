@@ -1,0 +1,60 @@
+---
+import Base from '../layouts/Base.astro';
+import PageHeader from '../components/PageHeader.astro';
+import SectionTitle from '../components/SectionTitle.astro';
+import CareerEntry from '../components/CareerEntry.astro';
+import Portrait from '../components/Portrait.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import portrait from '../assets/portrait.webp';
+import wireLogo from '../assets/wire-logo-white.svg';
+import freshEnergyLogo from '../assets/freshenergy-logo.svg';
+import seereneLogo from '../assets/seerene-logo.svg';
+---
+
+<Base
+  title="About me"
+  current="About me"
+  description="Wolfgang Lattermann is a product designer with a background in communications design. He owns the full process, from research to shipped detail."
+>
+  <PageHeader eyebrow="About me" title="Making complex things simple, with an eye on what they could become.">
+    <p>Hi, I'm Wolfgang. With a background in communications design and years of agency work, I bring a strong eye for visual detail to every product I work on.</p>
+    <p>I own the full process, from research to shipped detail, and I'm happiest hands-on in the UI while also setting the direction for where a product goes next.</p>
+  </PageHeader>
+
+  <Portrait src={portrait} alt="Portrait of Wolfgang, looking to the side, in front of a blue background, wearing a mustard-yellow sweater" />
+
+  <SectionTitle id="career">Career</SectionTitle>
+
+  <CareerEntry company="Wire" role="Lead Product Designer" dates="Jan 2021 – Nov 2026" logo={wireLogo} logoHeight={44}>
+    <p>As a longtime Wire user (and fan), I was thrilled to get the chance to work there. I started as the only designer, scaled the product design team twice, and grew into the role of Lead Product Designer.</p>
+    <p>I designed several critical new features, set up and shaped the design process, and managed a legacy design system in a highly regulated environment. I also created a design vision that finally replaces decade-old foundations and prepares the product for the years ahead. I supported the strategic shift from consumer product to enterprise and government.</p>
+  </CareerEntry>
+
+  <CareerEntry company="Fresh Energy" role="Sr. Product Designer" dates="Nov 2019 – Jan 2021" logo={freshEnergyLogo} logoHeight={38}>
+    <p>During my time at Fresh Energy, I helped establish and shape research and design processes, introduced rapid prototyping, launched a new marketing website, and introduced a design system based on Material UI.</p>
+    <p>I also designed and planned the implementation of several new features, such as the profile section, new user onboarding including hardware setup guides, and the compare feature.</p>
+  </CareerEntry>
+
+  <CareerEntry company="Seerene" role="Sr. Product Designer" dates="Feb 2017 – Nov 2019" logo={seereneLogo} logoHeight={32}>
+    <p>I designed all major customer-facing areas of the product end to end, including the dashboard experience and 3D software maps, defined standards for data visualization, and built a custom design system based on Material. I also created the brand guidelines, set up the design process, and helped grow the product design team to three designers.</p>
+  </CareerEntry>
+
+  <CareerEntry company="Freelance" dates="2006 – Feb 2017">
+    <p>While still studying communications design at the university of applied arts in Wiesbaden (I graduated with a diploma in 2006), I was already working for agencies in Berlin and the Rhine-Main area. After fully moving to Berlin in 2009, I continued freelancing for design agencies, including Fünfwerken, Novamondo, qbus and Interactive Tools. I also worked directly with clients, mostly independent music labels and bands.</p>
+  </CareerEntry>
+
+  <!-- Placeholder content: replace with real education details. -->
+  <SectionTitle id="education">Education</SectionTitle>
+
+  <CareerEntry company="Institution name" role="Degree, field of study" dates="Start – End">
+    <p>Placeholder text. A sentence or two about the programme, a focus area or a thesis. Education entries use the same layout as career entries.</p>
+  </CareerEntry>
+
+  <CareerEntry company="Another institution" role="Certificate or course" dates="Year">
+    <p>Placeholder text for an additional entry, such as a course or certification.</p>
+  </CareerEntry>
+
+  <ContactBlock>
+    <p>Placeholder text. I'm open to conversations about product design, design systems and design vision work. Get in touch, or have a look at my CV.</p>
+  </ContactBlock>
+</Base>

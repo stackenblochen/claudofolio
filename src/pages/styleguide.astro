@@ -20,6 +20,9 @@ import InsightRow from '../components/InsightRow.astro';
 import Embed from '../components/Embed.astro';
 import Stamp from '../components/Stamp.astro';
 import Arrow from '../components/Arrow.astro';
+import Portrait from '../components/Portrait.astro';
+import ContactBlock from '../components/ContactBlock.astro';
+import portrait from '../assets/portrait.webp';
 import ProjectGrid from '../components/ProjectGrid.astro';
 import cover from '../assets/placeholders/cover.svg';
 import screen from '../assets/placeholders/screen.svg';
@@ -163,6 +166,11 @@ const cards: CardData[] = [
     </div>
   </div>
 
+  <SectionTitle id="about-modules">Portrait &amp; contact</SectionTitle>
+  <div class="gap"></div>
+  <Portrait src={portrait} alt="Portrait" />
+  <ContactBlock><p>Contact block: short invitation, then email, LinkedIn and CV rows from the site config.</p></ContactBlock>
+
   <!-- ===== Collections / heroes ===== -->
   <SectionTitle id="grid">Project grid</SectionTitle>
   <div class="container grid-wrap"><ProjectGrid items={cards} /></div>
@@ -201,8 +209,12 @@ const cards: CardData[] = [
 </style>
 
 <script>
-  const root = document.querySelector<HTMLElement>('[data-grid-demo]');
-  if (root) {
+  let ac: AbortController | undefined;
+  document.addEventListener('astro:page-load', () => {
+    ac?.abort();
+    const root = document.querySelector<HTMLElement>('[data-grid-demo]');
+    if (!root) return;
+    ac = new AbortController();
     const cs = getComputedStyle(document.documentElement);
     const update = () => {
       const c = root.getBoundingClientRect();
@@ -218,6 +230,6 @@ const cards: CardData[] = [
         `viewport ${innerWidth}px · outer ${Math.round(c.width)}px · padding ${pad}px · grid ${Math.round(w)}px · gutter ${gutter}px · column ${col.toFixed(1)}px`;
     };
     update();
-    addEventListener('resize', update);
-  }
+    window.addEventListener('resize', update, { signal: ac.signal });
+  });
 </script>
