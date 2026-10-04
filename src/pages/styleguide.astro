@@ -10,6 +10,7 @@ import SubChapter from '../components/SubChapter.astro';
 import ChallengeSolution from '../components/ChallengeSolution.astro';
 import Outcome from '../components/Outcome.astro';
 import CareerEntry from '../components/CareerEntry.astro';
+import Timeline from '../components/Timeline.astro';
 import ProjectMeta from '../components/ProjectMeta.astro';
 import CaseHero from '../components/CaseHero.astro';
 import Figure from '../components/Figure.astro';
@@ -143,9 +144,14 @@ const cards: CardData[] = [
       </ChallengeSolution>
     </Fragment>
   </Chapter>
-  <CareerEntry company="Company" role="Senior product designer" dates="Jan 2021 – Present">
-    <p>Career entry (T8): company in heading-l, role in heading-m, dates as label.</p>
-  </CareerEntry>
+  <Timeline>
+    <CareerEntry company="Company" role="Senior product designer" dates="Jan 2021 – Present">
+      <p>Career entry (T8) in a timeline: bullet on a line, company and role as subheading, dates as label.</p>
+    </CareerEntry>
+    <CareerEntry company="Earlier company" role="Product designer" dates="2017 – 2020">
+      <p>A second entry shows how the line connects the bullets.</p>
+    </CareerEntry>
+  </Timeline>
   <Outcome items={['Outcome (T7) starts with the result, then the cause.', 'A second point, ideally with a number.', 'A third point.']} />
 
   <!-- ===== Media modules ===== -->

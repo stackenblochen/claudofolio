@@ -1,8 +1,9 @@
 ---
 /**
- * T8 Career entry: dash, company + role (both subheading, white), dates (label), body.
- * Optional logo (white SVG) sits left, above the company name; it is decorative (the company name is text).
+ * T8 Career entry as a timeline item: bullet on a vertical line, optional logo, company + role
+ * (both subheading, white), dates (label), body. Use inside <Timeline>.
  * Logos differ in proportions, so each gets its own height (`logoHeight`, px) to look visually balanced.
+ * The logo is decorative (the company name is text).
  */
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
@@ -15,27 +16,59 @@ interface Props {
   logoHeight?: number;
 }
 const { company, role, dates, logo, logoHeight = 28 } = Astro.props;
+// Height of the first row; the bullet is centred on it.
+const lead = logo ? `${logoHeight}px` : 'var(--text-subheading-lh)';
 ---
 
-<article class="career">
-  <div class="container">
-    <div class="measure-text reveal">
-      <span class="dash t-subheading" aria-hidden="true">—</span>
-      {logo && <div class="logo" style={`--logo-h:${logoHeight}px`}><Img src={logo} alt="" /></div>}
-      <h3 class="t-subheading">{company}</h3>
-      {role && <p class="t-subheading">{role}</p>}
-      <p class="dates t-label">{dates}</p>
-      <div class="body prose"><slot /></div>
-    </div>
+<article class="career reveal" style={`--lead:${lead}`}>
+  <span class="dot" aria-hidden="true"></span>
+  <div class="content">
+    {logo && <div class="logo" style={`--logo-h:${logoHeight}px`}><Img src={logo} alt="" /></div>}
+    <h3 class="t-subheading">{company}</h3>
+    {role && <p class="t-subheading">{role}</p>}
+    <p class="dates t-label">{dates}</p>
+    <div class="body prose"><slot /></div>
   </div>
 </article>
 
 <style>
-  .career { padding-block: var(--space-6) var(--space-7); }
-  .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
+  .career {
+    --tl-col: 20px;
+    --dot: 10px;
+    position: relative;
+    display: grid;
+    grid-template-columns: var(--tl-col) minmax(0, 1fr);
+    column-gap: var(--space-4);
+    padding-bottom: var(--space-8);
+  }
+  /* vertical line: from the previous bullet's gap to the next one */
+  .career::before {
+    content: '';
+    position: absolute;
+    left: calc(var(--tl-col) / 2 - 0.5px);
+    top: 0; bottom: 0; width: 1px;
+    background: color-mix(in srgb, var(--text-default) 40%, transparent);
+  }
+  .career:first-child::before { top: calc(var(--lead) / 2); }
+  .career:last-child { padding-bottom: 0; }
+  .career:last-child::before { bottom: auto; height: calc(var(--lead) / 2); }
+  .career:first-child:last-child::before { display: none; }
+
+  .dot {
+    position: relative; z-index: 1;
+    justify-self: center;
+    width: var(--dot); height: var(--dot); border-radius: 50%;
+    margin-top: calc((var(--lead) - var(--dot)) / 2);
+    background: var(--color-salmon);
+    box-shadow: 0 0 0 6px var(--bg-page); /* masks the line around the bullet */
+  }
   .logo { margin-bottom: var(--space-4); }
   .logo :global(img) { height: var(--logo-h); width: auto; max-width: 100%; }
   .dates { margin-top: var(--space-2); }
   .body { margin-top: var(--space-5); }
-  @media (min-width: 768px) { .body { margin-top: var(--space-6); } }
+
+  @media (min-width: 768px) {
+    .career { --tl-col: 28px; --dot: 12px; column-gap: var(--space-5); }
+    .body { margin-top: var(--space-6); }
+  }
 </style>
