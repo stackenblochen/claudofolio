@@ -26,7 +26,7 @@ const items = [
       <nav class="menu" aria-label="Main">
         <ul role="list">
           {items.map((i) => (
-            <li><a class="t-label" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
+            <li><a class="t-body" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
           ))}
         </ul>
       </nav>

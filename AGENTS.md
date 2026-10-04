@@ -33,7 +33,7 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
   (`--bg-page`, `--text-default`, `--text-strong`, `--accent-*` …), never raw palette colours or hex values. White-only SVG
   logos get `filter: var(--filter-logo)`. Light values are contrast-checked (see the comment in `tokens.css`).
 - **Base:** `src/styles/base.css` has the six type roles (`.t-display`, `.t-title`, `.t-heading`, `.t-subheading`, `.t-body`, `.t-label`;
-  modifiers `.t-upper`, `.t-serif`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
+  modifiers `.t-upper`, `.t-serif`; body is weight 400, label is always 300; main nav uses `.t-body`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
   `.prose`, `.section`, media helpers and the `.reveal` scroll effect.
 - **Components:** `src/components/`, one per module ID in `03-modules.md` (Chapter, Lead, ProjectMeta, Figure, ScreenStack,
   Comparison, Embed, Outcome, ProjectGrid …). Content goes in via props and slots, never style overrides.

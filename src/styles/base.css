@@ -46,8 +46,8 @@ button { font: inherit; color: inherit; }
  *   .t-title       H1 page titles (Editorial New)
  *   .t-heading     Lead statements, section titles, chapter titles, statement, company names
  *   .t-subheading  Sub-chapters, card titles, insight titles, roles
- *   .t-body        Paragraphs, lists, meta values, captions
- *   .t-label       Eyebrows, meta labels, dates, nav, footer, card categories
+ *   .t-body        Paragraphs, lists, meta values, captions, main navigation
+ *   .t-label       Eyebrows, meta labels, dates, footer, card categories (always weight 300)
  * Modifiers: .t-upper (uppercase), .t-serif (Editorial face inside a Display line). */
 .t-display, .t-title, .t-heading, .t-subheading {
   color: var(--text-strong);

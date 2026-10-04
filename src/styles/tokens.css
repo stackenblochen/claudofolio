@@ -7,11 +7,13 @@
 
   /* Colour — palette (raw values; do not use directly in components, use the semantic tokens below).
    * Dark values are the original palette; light values are adjusted for contrast on white:
-   *   text 6.7:1, red 4.7:1, green 4.5:1, salmon 3.6:1 (graphical use), all on #fff. */
+   *   text 5.1:1, red 4.7:1, green 4.5:1, salmon 3.6:1 (graphical use), all on #fff.
+   * Default text is kept as weak as AA allows: dark 5.4:1 on black / 4.6:1 on bg.raised, light 5.1:1 on white / 4.6:1 on bg.raised.
+   * Do not use text.default on bg.card (below 4.5:1). */
   --color-black: #000000;
   --color-grey-950: #191919;
   --color-grey-800: #34373d;
-  --color-grey-blue-400: #9a9aab;
+  --color-grey-blue-500: #808096; /* was #9a9aab: lowered so default text reads clearly weaker than strong text, still AA */
   --color-white: #ffffff;
   --color-red: #ff4b53;
   --color-green: #00ff32;
@@ -20,7 +22,7 @@
   /* light-mode counterparts */
   --color-grey-50: #f4f4f6;
   --color-grey-200: #e4e5ea;
-  --color-grey-blue-700: #5a5b6c;
+  --color-grey-blue-600: #6c6d7e; /* was #5a5b6c */
   --color-red-600: #e0242d;
   --color-green-700: #008a21;
   --color-salmon-600: #e8553d;
@@ -29,7 +31,7 @@
   --bg-page: light-dark(var(--color-white), var(--color-black));
   --bg-raised: light-dark(var(--color-grey-50), var(--color-grey-950));
   --bg-card: light-dark(var(--color-grey-200), var(--color-grey-800));
-  --text-default: light-dark(var(--color-grey-blue-700), var(--color-grey-blue-400));
+  --text-default: light-dark(var(--color-grey-blue-600), var(--color-grey-blue-500));
   --text-strong: light-dark(var(--color-black), var(--color-white));
   --border-subtle: light-dark(var(--color-grey-200), var(--color-grey-800));
   --accent-negative: light-dark(var(--color-red-600), var(--color-red));
@@ -66,11 +68,11 @@
   --text-subheading-ls: 0.01em;
   --text-label-size: clamp(0.9375rem, 0.8523rem + 0.3636vw, 1.125rem);
   --text-label-lh: clamp(1.5rem, 1.443rem + 0.2424vw, 1.625rem);
-  --text-label-weight: 400;
+  --text-label-weight: 300;
   --text-label-ls: 0.022em;
   --text-body-size: clamp(1rem, 0.9148rem + 0.3636vw, 1.188rem);
   --text-body-lh: clamp(1.75rem, 1.736rem + 0.06061vw, 1.781rem);
-  --text-body-weight: 300;
+  --text-body-weight: 400;
   --text-body-ls: 0;
 
   /* Spacing */
