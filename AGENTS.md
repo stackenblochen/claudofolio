@@ -48,4 +48,4 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
 - **Images:** local files in `src/assets/`, via `Figure`/`Img` (AVIF/WebP + srcset). Always write alt text; `alt=""` for decoration.
 - **Mobile parity:** all text visible at every breakpoint; only media may be swapped (`Embed` poster).
 - Open TODOs: `SITE.email` in `src/lib/site.ts`, Editorial New woff2 (`public/fonts/README.md`), real Stamp/Arrow SVGs,
-  portrait images for `HomeHero`, `/about/` and `/imprint/` pages.
+  `/about/` and `/imprint/` pages.

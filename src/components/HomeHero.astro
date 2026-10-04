@@ -1,30 +1,31 @@
 ---
 /**
- * H1 Home cover: full viewport, display headline, 3D portrait with a cursor spotlight revealing a coloured copy.
- * Spotlight + tilt run only with a fine pointer and without reduced-motion; elsewhere the coloured portrait shows statically.
- * Slot = headline, e.g.  Hi, I'm <span class="t-serif">Wolfgang</span>, a Product Designer based in Berlin.
+ * H1 Home intro: a rounded gradient panel with two text blocks (left bold, right regular with links).
+ * Moving the pointer over the panel bends the left copy like a prism: slices of the text shear sideways and split
+ * into red / green / blue fringes around the cursor, then settle again when the pointer rests.
+ *
+ * The real DOM text always stays in place (accessibility, selection). A WebGL canvas that redraws the panel
+ * (gradient + left text) with the distortion is faded in while the effect is visible. The right block with the
+ * links is not part of the effect and stays above the canvas, so it is never distorted and always clickable. Without WebGL, with
+ * reduced motion, or before scripts run, only the plain panel is shown.
+ *
+ * Slots: "intro" (left) and "aside" (right, usually with links).
  */
-import type { ImageMetadata } from 'astro';
-import Img from './Img.astro';
-
 interface Props {
-  portrait?: ImageMetadata; // dark version
-  portraitColor?: ImageMetadata; // coloured version (revealed by spotlight)
-  portraitAlt?: string;
   scrollTarget?: string;
 }
-const { portrait, portraitColor, portraitAlt = '', scrollTarget = '#work' } = Astro.props;
+const { scrollTarget = '#work' } = Astro.props;
 ---
 
-<section class="home-hero section--raised" data-hero>
-  {portrait && (
-    <div class="stage" data-stage aria-hidden={portraitAlt ? undefined : 'true'}>
-      <Img src={portrait} alt={portraitAlt} class="layer base" loading="eager" fetchpriority="high" sizes="100vw" />
-      {portraitColor && <Img src={portraitColor} alt="" class="layer color" loading="eager" sizes="100vw" />}
+<section class="home-hero" data-hero>
+  <div class="frame">
+    <div class="panel" data-panel>
+      <div class="copy grid-12" data-copy>
+        <h1 class="intro t-heading" data-intro><slot name="intro" /></h1>
+        <div class="aside t-heading" data-aside><slot name="aside" /></div>
+      </div>
+      <canvas class="fx" data-fx aria-hidden="true"></canvas>
     </div>
-  )}
-  <div class="container copy">
-    <h1 class="t-display measure-media"><slot /></h1>
   </div>
   <a class="scroll" href={scrollTarget} aria-label="Scroll to selected work">
     <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 9l7 7 7-7" /></svg>
@@ -32,46 +33,268 @@ const { portrait, portraitColor, portraitAlt = '', scrollTarget = '#work' } = As
 </section>
 
 <style>
-  .home-hero { position: relative; min-height: 100svh; display: flex; align-items: center; overflow: hidden; background: var(--bg-raised); padding-top: var(--header-h); }
-  .stage { position: absolute; inset: 0; will-change: transform; transform-origin: center; }
-  .stage :global(.layer) { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; }
-  .stage :global(.color) {
-    --mx: 50%; --my: 50%;
-    -webkit-mask-image: radial-gradient(circle 350px at var(--mx) var(--my), #000 250px, transparent 350px);
-    mask-image: radial-gradient(circle 350px at var(--mx) var(--my), #000 250px, transparent 350px);
-    opacity: 0; transition: opacity 300ms;
+  .home-hero {
+    min-height: 100svh;
+    display: flex; flex-direction: column; align-items: center;
+    padding-top: calc(var(--header-h) + var(--space-3));
+    background: var(--bg-page); /* pure black behind the panel in dark mode */
   }
-  .home-hero.is-spotlight .stage :global(.color) { opacity: 1; }
-  @media (hover: none), (prefers-reduced-motion: reduce) {
-    .stage :global(.color) { opacity: 1; -webkit-mask-image: none; mask-image: none; }
+  .frame {
+    flex: 1; display: flex; width: min(var(--grid-outer), calc(100% - 2 * var(--page-margin)));
+    min-height: 26rem;
   }
-  .copy { position: relative; z-index: 2; }
-  h1 { text-shadow: 0 2px 30px light-dark(rgba(255, 255, 255, 0.6), rgba(0, 0, 0, 0.6)); }
-  .scroll { position: absolute; bottom: var(--space-5); left: 50%; translate: -50% 0; color: var(--text-default); z-index: 2; }
+  .panel {
+    position: relative; flex: 1; display: flex; align-items: center;
+    border-radius: var(--radius-xl); overflow: hidden;
+    background: linear-gradient(180deg, var(--gradient-hero-top), var(--gradient-hero-bottom));
+  }
+
+  /* copy sits on the 12-column grid inside the panel */
+  .copy {
+    width: 100%; padding: var(--space-8) var(--page-margin); align-items: start; row-gap: var(--space-6);
+    position: relative;
+  }
+  .intro { color: var(--text-strong); font-size: calc(var(--text-heading-size) * 1.45); line-height: 1.22; }
+  /* the right block is not part of the effect: it sits above the canvas */
+  .aside {
+    position: relative; z-index: 2;
+    color: var(--text-strong); font-weight: 400; font-size: calc(var(--text-heading-size) * 0.85); line-height: 1.2;
+  }
+  .aside :global(a) {
+    color: var(--text-strong);
+    text-decoration: underline; text-decoration-color: var(--accent-link);
+    text-decoration-thickness: 2px; text-underline-offset: 6px;
+  }
+  .aside :global(a:hover) { text-decoration-thickness: 4px; }
+  @media (min-width: 768px) {
+    .intro { grid-column: 2 / span 6; }
+    .aside { grid-column: 8 / span 5; }
+  }
+
+  /* effect canvas: covers the panel, invisible until the pointer moves */
+  .fx { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 260ms ease; }
+  .fx.is-on { opacity: 1; }
+
+  .scroll { padding-block: var(--space-4) var(--space-5); color: var(--text-default); }
 </style>
 
 <script>
-  document.addEventListener('astro:page-load', () => {
-    const hero = document.querySelector<HTMLElement>('[data-hero]');
-    const stage = hero?.querySelector<HTMLElement>('[data-stage]');
-    const color = stage?.querySelector<HTMLElement>('.color');
-    const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const calm = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const VERT = `
+    attribute vec2 a_pos; varying vec2 v_uv;
+    void main(){ v_uv = a_pos * 0.5 + 0.5; gl_Position = vec4(a_pos, 0.0, 1.0); }`;
 
-    if (hero && stage && fine && !calm) {
-      hero.addEventListener('pointermove', (e) => {
-        const r = hero.getBoundingClientRect();
-        const x = (e.clientX - r.left) / r.width;
-        const y = (e.clientY - r.top) / r.height;
-        hero.classList.add('is-spotlight');
-        stage.style.transform = `perspective(2000px) scale(1.1) rotateY(${(x - 0.5) * 6}deg) rotateX(${(0.5 - y) * 6}deg)`;
-        color?.style.setProperty('--mx', `${x * 100}%`);
-        color?.style.setProperty('--my', `${y * 100}%`);
-      });
-      hero.addEventListener('pointerleave', () => {
-        hero.classList.remove('is-spotlight');
-        stage.style.transform = '';
-      });
-    }
-  });
+  // Panel gradient + text, with prism distortion around the pointer: sheared slices, a gentle push away from the
+  // cursor, and per-channel offsets (chromatic split). Colours are mixed per channel against the gradient.
+  const FRAG = `
+    precision highp float;
+    varying vec2 v_uv;
+    uniform sampler2D u_tex;
+    uniform vec2 u_res; uniform vec2 u_mouse;
+    uniform float u_radius, u_strength, u_time, u_dpr;
+    uniform vec3 u_top, u_bottom, u_ink;
+    float hash(float n){ return fract(sin(n * 127.1) * 43758.5453); }
+    float vnoise(float x){ float i = floor(x); float f = fract(x); f = f * f * (3.0 - 2.0 * f); return mix(hash(i), hash(i + 1.0), f); }
+    float cov(vec2 p){ return texture2D(u_tex, p / u_res).a; }
+    void main(){
+      vec2 px = vec2(v_uv.x, 1.0 - v_uv.y) * u_res;
+      vec3 bg = mix(u_top, u_bottom, px.y / u_res.y);
+      vec2 toM = px - u_mouse;
+      float d = length(toM);
+      float f = pow(smoothstep(u_radius, 0.0, d), 1.3) * u_strength;
+
+      // smooth, flowing shear (continuous noise over y and time), not stepped blocks
+      float y = px.y / u_dpr;
+      float n  = vnoise(y / 22.0 + u_time * 1.3) - 0.5;
+      float n2 = vnoise(y / 8.0 - u_time * 2.0) - 0.5;
+      float dx = (n * 11.0 + n2 * 4.0) * f * u_dpr; // shear stays calm; the colour split carries the effect
+      float dy = sin(px.x / u_dpr * 0.035 + u_time * 2.2) * 1.5 * f * u_dpr;
+      vec2 push = (toM / max(d, 1.0)) * f * 2.0 * u_dpr;
+      vec2 o = vec2(dx, dy) + push;
+      // colour split: each channel is pushed in its own direction by more than the stroke width, so letters
+      // break into red / green / blue patches (cyan, magenta, yellow where two overlap), white where all three meet
+      float A = (7.0 + 6.0 * vnoise(y / 40.0 + u_time * 0.8)) * f * u_dpr;
+      vec2 oR = o + vec2( 1.00, -0.45) * A;
+      vec2 oG = o + vec2(-0.35,  0.95) * A * 0.8;
+      vec2 oB = o + vec2(-1.00, -0.25) * A;
+
+      vec3 c = vec3(cov(px + oR), cov(px + oG), cov(px + oB));
+      gl_FragColor = vec4(mix(bg, u_ink, c), 1.0);
+    }`;
+
+  let stop: (() => void) | undefined;
+
+  const rgbList = (s: string) => [...s.matchAll(/rgba?\(\s*([\d.]+)[ ,]+([\d.]+)[ ,]+([\d.]+)/g)].map((m) => [+m[1] / 255, +m[2] / 255, +m[3] / 255]);
+
+  function init() {
+    stop?.();
+    const panel = document.querySelector<HTMLElement>('[data-panel]');
+    const canvas = document.querySelector<HTMLCanvasElement>('[data-fx]');
+    const copy = document.querySelector<HTMLElement>('[data-copy]');
+    if (!panel || !canvas || !copy) return;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+    const gl = canvas.getContext('webgl', { antialias: false, alpha: false });
+    if (!gl) return;
+
+    // ----- program
+    const compile = (type: number, src: string) => {
+      const sh = gl.createShader(type)!;
+      gl.shaderSource(sh, src);
+      gl.compileShader(sh);
+      return sh;
+    };
+    const prog = gl.createProgram()!;
+    gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
+    gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
+    gl.linkProgram(prog);
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    gl.useProgram(prog);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
+    const loc = gl.getAttribLocation(prog, 'a_pos');
+    gl.enableVertexAttribArray(loc);
+    gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+
+    const U = (n: string) => gl.getUniformLocation(prog, n);
+    const u = { tex: U('u_tex'), res: U('u_res'), mouse: U('u_mouse'), radius: U('u_radius'), strength: U('u_strength'), time: U('u_time'), dpr: U('u_dpr'), top: U('u_top'), bottom: U('u_bottom'), ink: U('u_ink') };
+
+    const tex = gl.createTexture();
+    gl.bindTexture(gl.TEXTURE_2D, tex);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+
+    // ----- text → texture (alpha only), laid out exactly like the DOM text
+    const textCanvas = document.createElement('canvas');
+    const tctx = textCanvas.getContext('2d')!;
+    let dpr = 1, W = 0, H = 0, radiusPx = 0;
+
+    const drawText = () => {
+      const pr = panel.getBoundingClientRect();
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = Math.round(pr.width * dpr);
+      H = Math.round(pr.height * dpr);
+      canvas.width = textCanvas.width = W;
+      canvas.height = textCanvas.height = H;
+      tctx.clearRect(0, 0, W, H);
+      tctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      tctx.fillStyle = '#fff';
+      tctx.textBaseline = 'alphabetic';
+
+      const intro = copy.querySelector<HTMLElement>('[data-intro]')!;
+      const walker = document.createTreeWalker(intro, NodeFilter.SHOW_TEXT);
+      for (let node = walker.nextNode() as Text | null; node; node = walker.nextNode() as Text | null) {
+        const cs = getComputedStyle(node.parentElement!);
+        tctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+        const ascent = tctx.measureText('Hg').fontBoundingBoxAscent;
+        const range = document.createRange();
+        const re = /\S+/g;
+        for (let m = re.exec(node.data); m; m = re.exec(node.data)) {
+          range.setStart(node, m.index);
+          range.setEnd(node, m.index + m[0].length);
+          const r = range.getClientRects()[0];
+          if (r) tctx.fillText(m[0], r.left - pr.left, r.top - pr.top + ascent);
+        }
+      }
+
+      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
+      gl.viewport(0, 0, W, H);
+
+      // colours as the browser resolved them (theme aware)
+      const grads = rgbList(getComputedStyle(panel).backgroundImage);
+      const ink = rgbList(getComputedStyle(copy.querySelector('[data-intro]')!).color)[0] ?? [1, 1, 1];
+      gl.uniform3fv(u.top, grads[0] ?? [0.27, 0.25, 0.49]);
+      gl.uniform3fv(u.bottom, grads[1] ?? [0.61, 0.48, 0.57]);
+      gl.uniform3fv(u.ink, ink);
+      gl.uniform2f(u.res, W, H);
+      gl.uniform1f(u.dpr, dpr);
+      radiusPx = Math.min(pr.width * 0.3, 420) * dpr;
+      gl.uniform1f(u.radius, radiusPx);
+    };
+
+    // ----- pointer-driven state
+    let mx = 0, my = 0; // smoothed lens position (css px in the panel)
+    let tx = 0, ty = 0; // latest pointer position
+    let lastX = 0, lastY = 0, hasLast = false;
+    let speed = 0; // smoothed pointer speed
+    let strength = 0;
+    let raf = 0;
+    let running = false;
+    let prev = 0;
+    const t0 = performance.now();
+
+    const draw = (now: number) => {
+      const dt = Math.min(0.05, (now - (prev || now - 16)) / 1000);
+      prev = now;
+      speed *= Math.exp(-dt * 4.5); // decay between events
+      const target = Math.min(0.6, speed / 70);
+      // ease in gently, ease out slowly (frame-rate independent)
+      strength += (target - strength) * (1 - Math.exp(-dt * (target > strength ? 5 : 2.2)));
+      const follow = 1 - Math.exp(-dt * 12);
+      mx += (tx - mx) * follow;
+      my += (ty - my) * follow;
+
+      if (strength < 0.004) {
+        running = false;
+        prev = 0;
+        canvas.classList.remove('is-on');
+        return;
+      }
+      canvas.classList.add('is-on');
+      gl.uniform2f(u.mouse, mx * dpr, my * dpr);
+      gl.uniform1f(u.strength, strength);
+      gl.uniform1f(u.time, (now - t0) / 1000);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      raf = requestAnimationFrame(draw);
+    };
+    const kick = () => {
+      if (running) return;
+      running = true;
+      raf = requestAnimationFrame(draw);
+    };
+
+    const onMove = (e: PointerEvent) => {
+      const r = panel.getBoundingClientRect();
+      tx = e.clientX - r.left;
+      ty = e.clientY - r.top;
+      if (!running) { mx = tx; my = ty; }
+      if (hasLast) speed = Math.min(140, speed + Math.hypot(e.clientX - lastX, e.clientY - lastY) * 0.6);
+      lastX = e.clientX; lastY = e.clientY; hasLast = true;
+      kick();
+    };
+    const onLeave = () => { hasLast = false; };
+
+    const rebuild = () => { drawText(); if (running) gl.drawArrays(gl.TRIANGLES, 0, 3); };
+    document.fonts?.ready.then(rebuild);
+    drawText();
+
+    panel.addEventListener('pointermove', onMove);
+    panel.addEventListener('pointerleave', onLeave);
+    window.addEventListener('resize', rebuild);
+    const ro = new ResizeObserver(rebuild);
+    ro.observe(panel);
+    const mo = new MutationObserver(rebuild); // theme switch
+    mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    const mq = matchMedia('(prefers-color-scheme: dark)');
+    mq.addEventListener('change', rebuild);
+
+    stop = () => {
+      cancelAnimationFrame(raf);
+      panel.removeEventListener('pointermove', onMove);
+      panel.removeEventListener('pointerleave', onLeave);
+      window.removeEventListener('resize', rebuild);
+      ro.disconnect();
+      mo.disconnect();
+      mq.removeEventListener('change', rebuild);
+      stop = undefined;
+    };
+  }
+
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-swap', () => stop?.());
 </script>

@@ -38,6 +38,9 @@
   --accent-positive: light-dark(var(--color-green-700), var(--color-green));
   --accent-link: light-dark(var(--color-salmon-600), var(--color-salmon));
   --selection-bg: var(--color-yellow);
+  /* hero panel gradient: strong colour, used once on the home intro */
+  --gradient-hero-top: light-dark(#bdb6f5, #46407e);
+  --gradient-hero-bottom: light-dark(#f6c3d3, #9b7a92);
   --overlay-menu: light-dark(rgba(255, 255, 255, 0.97), rgba(52, 55, 61, 0.97));
   --overlay-thumb: light-dark(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.5));
 
@@ -104,6 +107,7 @@
   /* Shape & elevation */
   --radius-m: 12px;
   --radius-l: 16px;
+  --radius-xl: 24px;
   --border-hairline: 1px solid var(--border-subtle);
   --shadow-screenshot: 0 0 40px 0 light-dark(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.5));
   --filter-appshot: drop-shadow(1px 1px 0 var(--border-subtle)) drop-shadow(-1px -1px 0 var(--border-subtle)) drop-shadow(0 4px 40px light-dark(#0001, #0003)) drop-shadow(0 4px 40px light-dark(#0001, #0003));
