@@ -99,7 +99,7 @@ button { font: inherit; color: inherit; }
 
 /* ---------- Links, focus ---------- */
 a { color: var(--text-strong); }
-:focus-visible { outline: 2px solid var(--color-white); outline-offset: 4px; border-radius: 2px; }
+:focus-visible { outline: 2px solid var(--text-strong); outline-offset: 4px; border-radius: 2px; }
 
 /* ---------- Layout ----------
  * Fixed 12-column grid (see tokens.css): the grid has a fixed width per breakpoint with the
@@ -164,7 +164,7 @@ a { color: var(--text-strong); }
 }
 .skip-link {
   position: absolute; left: var(--space-4); top: -100px; z-index: 1000;
-  background: var(--color-white); color: #000; padding: var(--space-2) var(--space-4);
+  background: var(--text-strong); color: var(--bg-page); padding: var(--space-2) var(--space-4);
 }
 .skip-link:focus { top: var(--space-2); }
 .hide-sm { display: none; }

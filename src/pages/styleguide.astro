@@ -32,16 +32,17 @@ import illustration from '../assets/placeholders/illustration.svg';
 import diagram from '../assets/placeholders/diagram.svg';
 import type { CardData } from '../lib/projects';
 
+// [role, dark palette var, dark hex, light palette var, light hex]
 const colors = [
-  ['black', '--color-black', 'bg.page', '#000000'],
-  ['grey-950', '--color-grey-950', 'bg.raised', '#191919'],
-  ['grey-800', '--color-grey-800', 'bg.card · border', '#34373d'],
-  ['grey-blue-400', '--color-grey-blue-400', 'text.default', '#9a9aab'],
-  ['white', '--color-white', 'text.strong', '#ffffff'],
-  ['red', '--color-red', 'accent.negative', '#ff4b53'],
-  ['green', '--color-green', 'accent.positive', '#00ff32'],
-  ['salmon', '--color-salmon', 'accent.link', '#fa8072'],
-  ['yellow', '--color-yellow', 'selection', '#ffff00'],
+  ['bg.page', '--color-black', '#000000', '--color-white', '#ffffff'],
+  ['bg.raised', '--color-grey-950', '#191919', '--color-grey-50', '#f4f4f6'],
+  ['bg.card · border.subtle', '--color-grey-800', '#34373d', '--color-grey-200', '#e4e5ea'],
+  ['text.default', '--color-grey-blue-400', '#9a9aab', '--color-grey-blue-700', '#5a5b6c'],
+  ['text.strong', '--color-white', '#ffffff', '--color-black', '#000000'],
+  ['accent.negative', '--color-red', '#ff4b53', '--color-red-600', '#e0242d'],
+  ['accent.positive', '--color-green', '#00ff32', '--color-green-700', '#008a21'],
+  ['accent.link · timeline dot', '--color-salmon', '#fa8072', '--color-salmon-600', '#e8553d'],
+  ['selection', '--color-yellow', '#ffff00', '--color-yellow', '#ffff00'],
 ];
 const roles = [
   ['t-display', 'Display', 'Home hero only'],
@@ -65,10 +66,18 @@ const cards: CardData[] = [
 
   <!-- ===== Tokens ===== -->
   <SectionTitle id="colour">Colour</SectionTitle>
-  <div class="container"><div class="measure-media swatches">
-    {colors.map(([name, v, role, hex]) => (
-      <div class="sw"><span class="chip" style={`background:var(${v})`}></span><span class="t-label t-strong">{name}</span><span class="t-label">{role}</span><code class="hex t-label">{hex}</code></div>
-    ))}
+  <div class="container"><div class="measure-media">
+    <p class="t-label intro-note">Semantic roles with their dark and light values. Components use only the roles (<code>var(--bg-page)</code> …), never the raw palette. Switch the theme in the nav to see the live result.</p>
+    <div class="colors">
+      <div class="crow chead t-label"><span>Role</span><span>Dark</span><span>Light</span></div>
+      {colors.map(([role, dv, dh, lv, lh]) => (
+        <div class="crow">
+          <span class="t-label t-strong">{role}</span>
+          <span class="cell"><span class="chip" style={`background:var(${dv})`}></span><code class="hex t-label">{dh}</code></span>
+          <span class="cell"><span class="chip" style={`background:var(${lv})`}></span><code class="hex t-label">{lh}</code></span>
+        </div>
+      ))}
+    </div>
   </div></div>
 
   <SectionTitle id="type">Typography</SectionTitle>
@@ -125,8 +134,8 @@ const cards: CardData[] = [
   <ProjectMeta items={[{ label: 'Role', value: 'Lead designer' }, { label: 'Team', value: '1 PM, 6 engineers' }, { label: 'Timeline', value: '6 months' }, { label: 'Platforms', value: 'iOS, Android' }]} />
   <div class="gap"></div>
   <Chapter title="Chapter (T4)" id="sg-chapter">
-    <p>Body text sits at the text measure: eight columns on wide desktops, nine on tablets, full width on phones. <a href="#">Links are white with a salmon underline.</a></p>
-    <p>Paragraphs are spaced 1.5em. <strong>Strong text turns white.</strong></p>
+    <p>Body text sits at the text measure: eight columns on wide desktops, nine on tablets, full width on phones. <a href="#">Links are in the strong text colour with a salmon underline.</a></p>
+    <p>Paragraphs are spaced 1.5em. <strong>Strong text uses the strong colour.</strong></p>
     <Figure slot="media" src={diagram} alt="Placeholder diagram" caption="Figure (I1) with caption" />
   </Chapter>
   <div class="gap"></div>
@@ -189,17 +198,21 @@ const cards: CardData[] = [
   .grid-demo { padding-top: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
   .readout { font-variant-numeric: tabular-nums; }
   .cols { row-gap: 0; }
-  .col { grid-column: span 1 !important; height: 64px; background: rgba(255, 75, 83, 0.18); border-inline: 1px solid rgba(255, 75, 83, 0.5);
+  .col { grid-column: span 1 !important; height: 64px; background: color-mix(in srgb, var(--accent-negative) 18%, transparent); border-inline: 1px solid color-mix(in srgb, var(--accent-negative) 50%, transparent);
     display: grid; place-items: center; color: var(--accent-negative); font-size: var(--text-label-size); }
   .bars { display: flex; flex-direction: column; gap: var(--space-2); }
   .bar-row { background: var(--bg-card); padding: var(--space-2) var(--space-3); color: var(--text-strong); border-radius: 4px; }
   .matrix { border-collapse: collapse; width: 100%; }
   .matrix th, .matrix td { text-align: left; padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: var(--border-hairline); }
   .matrix th { color: var(--text-default); font-weight: 400; }
-  .swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: var(--space-4); padding-top: var(--space-5); }
-  .sw { display: flex; flex-direction: column; gap: var(--space-1); }
-  .hex { color: var(--text-default); text-transform: uppercase; }
-  .chip { height: 72px; border-radius: var(--radius-m); border: var(--border-hairline); }
+  .intro-note { padding-top: var(--space-5); }
+  .colors { display: grid; gap: var(--space-3); padding-top: var(--space-5); }
+  .crow { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: var(--space-4); align-items: center; }
+  .chead { color: var(--text-default); }
+  .cell { display: flex; align-items: center; gap: var(--space-3); }
+  .hex { text-transform: uppercase; }
+  .chip { width: 44px; height: 44px; flex: none; border-radius: var(--radius-m); border: 1px solid var(--border-subtle); }
+  @media (max-width: 767px) { .crow { grid-template-columns: 1fr 1fr; } .crow > :first-child { grid-column: 1 / -1; } .chead { display: none; } }
   .row { display: flex; flex-direction: column; gap: var(--space-2); }
   .sp { display: flex; align-items: center; gap: var(--space-4); }
   .sp code { width: 8rem; color: var(--text-default); }

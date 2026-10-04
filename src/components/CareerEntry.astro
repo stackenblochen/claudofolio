@@ -63,7 +63,7 @@ const lead = logo ? `${logoHeight}px` : 'var(--text-subheading-lh)';
     box-shadow: 0 0 0 6px var(--bg-page); /* masks the line around the bullet */
   }
   .logo { margin-bottom: var(--space-4); }
-  .logo :global(img) { height: var(--logo-h); width: auto; max-width: 100%; }
+  .logo :global(img) { height: var(--logo-h); width: auto; max-width: 100%; filter: var(--filter-logo); }
   .dates { margin-top: var(--space-2); }
   .body { margin-top: var(--space-5); }
 

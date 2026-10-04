@@ -49,8 +49,9 @@ const fontFace = editorial
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
-    <meta name="color-scheme" content="dark" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#000000" media="(prefers-color-scheme: dark)" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -63,7 +64,21 @@ const fontFace = editorial
     {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
     <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
     {fontFace && <style set:html={fontFace} />}
-    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script is:inline>
+      // Runs before first paint: .js flag + stored theme ("light" | "dark"; absent = auto/system).
+      (function () {
+        var root = document.documentElement;
+        root.classList.add('js');
+        function theme() {
+          var t = 'auto';
+          try { var v = localStorage.getItem('theme'); if (v === 'light' || v === 'dark') { t = v; root.dataset.theme = v; } } catch (e) {}
+          root.dataset.themePref = t; // drives the icon of the theme toggle
+        }
+        theme();
+        // View transitions replace the <html> attributes: re-apply after every swap.
+        document.addEventListener('astro:after-swap', theme);
+      })();
+    </script>
     <ClientRouter />
   </head>
   <body>

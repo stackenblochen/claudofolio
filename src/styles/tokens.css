@@ -5,7 +5,9 @@
   /* Breakpoints (reference only — use in @media as px) */
   /* --bp-sm: 544px; --bp-md: 768px; --bp-lg: 992px; --bp-xl: 1170px; */
 
-  /* Colour — palette */
+  /* Colour — palette (raw values; do not use directly in components, use the semantic tokens below).
+   * Dark values are the original palette; light values are adjusted for contrast on white:
+   *   text 6.7:1, red 4.7:1, green 4.5:1, salmon 3.6:1 (graphical use), all on #fff. */
   --color-black: #000000;
   --color-grey-950: #191919;
   --color-grey-800: #34373d;
@@ -15,20 +17,31 @@
   --color-green: #00ff32;
   --color-salmon: #fa8072;
   --color-yellow: #ffff00;
+  /* light-mode counterparts */
+  --color-grey-50: #f4f4f6;
+  --color-grey-200: #e4e5ea;
+  --color-grey-blue-700: #5a5b6c;
+  --color-red-600: #e0242d;
+  --color-green-700: #008a21;
+  --color-salmon-600: #e8553d;
 
-  /* Colour — semantic */
-  --bg-page: var(--color-black);
-  --bg-raised: var(--color-grey-950);
-  --bg-card: var(--color-grey-800);
-  --text-default: var(--color-grey-blue-400);
-  --text-strong: var(--color-white);
-  --border-subtle: var(--color-grey-800);
-  --accent-negative: var(--color-red);
-  --accent-positive: var(--color-green);
-  --accent-link: var(--color-salmon);
+  /* Colour — semantic: light-dark(light, dark). The theme is set by color-scheme (see below). */
+  --bg-page: light-dark(var(--color-white), var(--color-black));
+  --bg-raised: light-dark(var(--color-grey-50), var(--color-grey-950));
+  --bg-card: light-dark(var(--color-grey-200), var(--color-grey-800));
+  --text-default: light-dark(var(--color-grey-blue-700), var(--color-grey-blue-400));
+  --text-strong: light-dark(var(--color-black), var(--color-white));
+  --border-subtle: light-dark(var(--color-grey-200), var(--color-grey-800));
+  --accent-negative: light-dark(var(--color-red-600), var(--color-red));
+  --accent-positive: light-dark(var(--color-green-700), var(--color-green));
+  --accent-link: light-dark(var(--color-salmon-600), var(--color-salmon));
   --selection-bg: var(--color-yellow);
-  --overlay-menu: rgba(52, 55, 61, 0.97);
-  --overlay-thumb: rgba(0, 0, 0, 0.5);
+  --overlay-menu: light-dark(rgba(255, 255, 255, 0.97), rgba(52, 55, 61, 0.97));
+  --overlay-thumb: light-dark(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.5));
+
+  /* Theme: "auto" follows the system; the switch in the nav sets data-theme="light|dark" on <html>. */
+  color-scheme: light dark;
+  --filter-logo: none; /* white logo SVGs are inverted in light mode */
 
   /* Font families */
   --font-serif: 'Editorial New', 'Times New Roman', serif;
@@ -90,8 +103,8 @@
   --radius-m: 12px;
   --radius-l: 16px;
   --border-hairline: 1px solid var(--border-subtle);
-  --shadow-screenshot: 0 0 40px 0 rgba(0, 0, 0, 0.5);
-  --filter-appshot: drop-shadow(1px 1px 0 #34373d) drop-shadow(-1px -1px 0 #34373d) drop-shadow(0 4px 40px #0003) drop-shadow(0 4px 40px #0003);
+  --shadow-screenshot: 0 0 40px 0 light-dark(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.5));
+  --filter-appshot: drop-shadow(1px 1px 0 var(--border-subtle)) drop-shadow(-1px -1px 0 var(--border-subtle)) drop-shadow(0 4px 40px light-dark(#0001, #0003)) drop-shadow(0 4px 40px light-dark(#0001, #0003));
 
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
@@ -103,3 +116,10 @@
 @media (min-width: 1230px) { :root { --grid-outer: 1230px; --gutter: 30px; } }
 
 @media (prefers-reduced-motion: reduce) { :root { --duration-reveal: 0ms; } }
+
+/* Theme overrides (set by the switch; absent = auto) */
+:root[data-theme='light'] { color-scheme: light; --filter-logo: invert(1); }
+:root[data-theme='dark'] { color-scheme: dark; --filter-logo: none; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) { --filter-logo: invert(1); }
+}
