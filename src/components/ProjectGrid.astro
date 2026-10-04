@@ -1,6 +1,6 @@
 ---
 /**
- * L1/L2 Project grid. Home: gap "wide" (60 px). Other projects: gap "tight" (30 px) under a dash + heading.
+ * L1/L2 Project teaser list (one teaser per row, media measure). Home: gap "wide" (60 px). Other projects: gap "tight" (30 px) under a dash + heading.
  * Feed it from getProjects() → toCard(); for "other projects" pass { exclude: current.id, limit: 2 }.
  */
 import type { CardData } from '../lib/projects';
@@ -15,15 +15,14 @@ const { items, gap = 'wide' } = Astro.props;
 
 {items.length > 0
   ? (
-    <ul class:list={['grid', gap]} role="list">
+    <ul class:list={['grid', 'measure-media', gap]} role="list">
       {items.map((c) => <li class="reveal"><ProjectCard card={c} /></li>)}
     </ul>
   )
   : <p class="t-body">New case studies are on their way.</p>}
 
 <style>
-  .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: 1fr; align-items: start; }
-  .wide { gap: var(--space-7) var(--space-7); }
+  .grid { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-direction: column; }
+  .wide { gap: var(--space-7); }
   .tight { gap: var(--space-5); }
-  @media (min-width: 768px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 </style>
