@@ -20,7 +20,7 @@ const { title, variant = 'mockup', image, imageAlt = '', background, confidentia
 const bg = background ? (typeof background === 'string' ? background : background.src) : undefined;
 ---
 
-<section class:list={['hero', variant]}>
+<section class:list={['hero', variant, { 'has-stamp': confidential }]}>
   {variant === 'backdrop' && bg && <div class="bg" style={`background-image:url(${bg})`} aria-hidden="true"></div>}
   <div class="container">
     <h1 class:list={['t-title', variant === 'backdrop' ? 'measure-media' : 'measure-wide']}>{title}</h1>
@@ -29,13 +29,10 @@ const bg = background ? (typeof background === 'string' ? background : backgroun
       <div class="mock-wrap">
         <div class="mock">
           <Img src={image} alt={imageAlt} class="media-m app-shot" loading="eager" fetchpriority="high" sizes="(min-width: 1230px) 900px, 100vw" />
-          {confidential && <Stamp class="stamp" />}
         </div>
       </div>
     )}
-    {variant === 'backdrop' && confidential && (
-      <div class="stamp-row measure-media"><Stamp class="stamp" /></div>
-    )}
+    {confidential && <div class="stamp-row measure-text"><Stamp class="stamp" /></div>}
   </div>
 </section>
 
@@ -45,15 +42,18 @@ const bg = background ? (typeof background === 'string' ? background : backgroun
   .bg { position: absolute; inset: 0; z-index: -1; background-size: cover; background-position: center; opacity: 0.5; }
   .hero.backdrop { min-height: 70vh; display: flex; align-items: flex-end; }
   .hero.backdrop .container { padding-top: var(--space-9); }
-  h1 { padding-bottom: var(--space-4); }
-  .mock-wrap { margin-top: var(--space-7); padding-bottom: var(--space-5); }
+  h1 { padding-bottom: var(--space-4); text-align: center; }
+  .mock-wrap { margin-top: var(--space-7); }
   .mock { position: relative; margin-inline: auto; width: calc(100% * 12 / 12); }
   @media (min-width: 768px) { .mock { width: calc(100% * 11 / 12 - var(--gutter) / 12); } }
   @media (min-width: 992px) { .mock { width: calc(100% * 10 / 12 - var(--gutter) * 2 / 12); } }
   @media (min-width: 1230px) { .mock { width: calc(100% * 9 / 12 - var(--gutter) * 3 / 12); } }
   .mock :global(img) { width: 100%; }
-  .stamp { width: clamp(130px, 28%, 260px); position: absolute; right: 0; bottom: 0; z-index: 5; transform: translate(6%, 45%); }
-  .stamp-row { position: relative; height: 0; }
-  .stamp-row .stamp { transform: translateY(-20%); width: clamp(150px, 28%, 300px); }
-  @media (max-width: 767px) { .stamp { width: 40%; transform: translate(0, 40%); } }
+  /* The stamp sits right under the visual, inside the text measure, and reaches down into the lead's top padding
+   * so the "Background" eyebrow lines up with its lower edge. */
+  .hero.has-stamp, .hero.backdrop.has-stamp { padding-bottom: 0; }
+  .stamp-row { position: relative; z-index: 5; margin-top: var(--space-2); margin-bottom: calc(var(--section-y) * -1); }
+  .stamp-row :global(.stamp) { width: min(60%, 260px); margin-left: auto; }
+  @media (min-width: 768px) { .stamp-row :global(.stamp) { width: 33%; margin-right: 8%; } }
+  .hero:not(.has-stamp) .mock-wrap { padding-bottom: var(--space-5); }
 </style>

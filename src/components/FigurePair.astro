@@ -17,7 +17,7 @@ const { a, b, caption } = Astro.props;
     <div class="span-6"><Img src={a.src} alt={a.alt} class="media-l" sizes="(min-width: 768px) 600px, 100vw" /></div>
     <div class="span-6"><Img src={b.src} alt={b.alt} class="media-l" sizes="(min-width: 768px) 600px, 100vw" /></div>
   </div>
-  {caption && <figcaption class="t-body">{caption}</figcaption>}
+  {caption && <figcaption class="caption">{caption}</figcaption>}
 </figure>
 
 <style>

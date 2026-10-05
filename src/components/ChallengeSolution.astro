@@ -1,11 +1,11 @@
 ---
 /**
- * T6 Challenge / Solution. Slots: "challenge" and "solution" (body text).
+ * T6 Challenge / Solution. Takes the width of its parent: place it inside a text measure (Chapter body, SubChapter body). Slots: "challenge" and "solution" (body text).
  * Be honest about trade-offs: max one per chapter.
  */
 ---
 
-<div class="cs measure-text stack" style="--stack-gap: var(--space-5)">
+<div class="cs stack" style="--stack-gap: var(--space-5)">
   <div class="block">
     <p class="label t-body"><span class="bullet neg" aria-hidden="true">●</span> Challenges</p>
     <div class="prose"><slot name="challenge" /></div>

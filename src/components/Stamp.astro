@@ -1,24 +1,20 @@
 ---
 /**
- * I8 "Confidential" stamp. Decorative: aria-hidden, no alt text.
- * Placeholder artwork. Replace with your confidential-black-outline.svg by passing `src`.
+ * I8 "Confidential" stamp (src/assets/confidential.svg). White disc with black artwork on dark;
+ * --filter-logo inverts it in light mode so the disc stays visible on a white page.
+ * The graphic carries the notice itself, so it gets an accessible name.
  */
+import stamp from '../assets/confidential.svg';
+
 interface Props {
-  src?: string;
   class?: string;
 }
-const { src, class: cls } = Astro.props;
+const { class: cls } = Astro.props;
 ---
 
-{src
-  ? <img src={src} alt="" aria-hidden="true" class={cls} />
-  : (
-    <svg class={cls} viewBox="0 0 360 120" aria-hidden="true" focusable="false" role="presentation">
-      <g fill="none" stroke="var(--text-strong)" stroke-width="5" transform="rotate(-6 180 60)">
-        <rect x="8" y="14" width="344" height="92" rx="12" />
-        <rect x="18" y="24" width="324" height="72" rx="6" stroke-width="2" />
-      </g>
-      <text x="180" y="78" text-anchor="middle" transform="rotate(-6 180 60)" fill="var(--text-strong)"
-            font-family="var(--font-sans)" font-weight="800" font-size="33" letter-spacing="2.5">CONFIDENTIAL</text>
-    </svg>
-  )}
+<img src={stamp.src} width={stamp.width} height={stamp.height} class:list={['stamp-img', cls]}
+  alt="Please keep all information shown here confidential. Do not share with others." />
+
+<style>
+  .stamp-img { display: block; height: auto; filter: var(--filter-logo); }
+</style>

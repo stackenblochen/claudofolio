@@ -1,5 +1,5 @@
 ---
-/** I5 Insight row: illustration + title + text. 4 + 5 columns from 768 px, stacked below. Repeat 3×. */
+/** I5 Insight row: illustration (cols 1–4) + title and text (cols 5–9) on the 10-column media grid, so the text ends on the text measure. Stacked below 768 px. Repeat 3×. */
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
 
@@ -11,18 +11,22 @@ interface Props {
 const { image, alt = '', title } = Astro.props;
 ---
 
-<div class="insight grid-12 measure-media reveal">
-  <div class="span-5 art"><Img src={image} alt={alt} sizes="(min-width: 768px) 480px, 60vw" /></div>
-  <div class="span-7 copy">
+<div class="insight measure-media reveal">
+  <div class="art"><Img src={image} alt={alt} sizes="(min-width: 768px) 480px, 60vw" /></div>
+  <div class="copy">
     <h3 class="t-subheading">{title}</h3>
     <div class="prose"><slot /></div>
   </div>
 </div>
 
 <style>
-  .insight { align-items: center; row-gap: var(--space-4); }
+  .insight { display: grid; grid-template-columns: 1fr; align-items: center; row-gap: var(--space-4); }
   .art { max-width: 60%; }
   .art :global(img) { width: 100%; }
-  .copy { display: flex; flex-direction: column; gap: var(--space-3); max-width: 38rem; }
-  @media (min-width: 768px) { .art { max-width: none; } }
+  .copy { display: flex; flex-direction: column; gap: var(--space-3); }
+  @media (min-width: 768px) {
+    .insight { grid-template-columns: repeat(10, minmax(0, 1fr)); column-gap: var(--gutter); }
+    .art { grid-column: 1 / 5; max-width: none; }
+    .copy { grid-column: 5 / 10; }
+  }
 </style>

@@ -46,7 +46,7 @@ button { font: inherit; color: inherit; }
  *   .t-title       H1 page titles (Editorial New)
  *   .t-heading     Lead statements, section titles, chapter titles, statement, company names
  *   .t-subheading  Sub-chapters, card titles, insight titles, roles
- *   .t-body        Paragraphs, lists, meta values, captions, main navigation
+ *   .t-body        Paragraphs, lists, meta values, main navigation
  *   .t-label       Eyebrows, meta labels, dates, footer, card categories (always weight 300)
  * Modifiers: .t-upper (uppercase), .t-serif (Editorial face inside a Display line). */
 .t-display, .t-title, .t-heading, .t-subheading {
@@ -83,6 +83,8 @@ button { font: inherit; color: inherit; }
 .t-strong { color: var(--text-strong); }
 
 /* ---------- Prose (running text inside modules) ---------- */
+/* Image caption: smaller than body, italic, centred below the media. */
+.caption { font-size: var(--text-label-size); line-height: var(--text-label-lh); font-style: italic; text-align: center; color: var(--text-default); }
 .prose { font-size: var(--text-body-size); line-height: var(--text-body-lh); font-weight: var(--text-body-weight); }
 .prose > * + * { margin-top: 1.5em; }
 .prose strong, .prose b { color: var(--text-strong); font-weight: 700; }

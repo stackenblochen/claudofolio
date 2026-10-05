@@ -10,16 +10,16 @@ import Img from './Img.astro';
 interface Props {
   src: string; // already base-prefixed, e.g. url('/demos/tokens/index.html')
   title: string; // required: accessible name of the iframe
-  height?: number; // px at desktop
+  height?: number; // px at desktop; omit for a height that follows the width (53.4 % of the width + 170 px)
   poster?: ImageMetadata | string;
   posterAlt?: string;
   note?: string;
   caption?: string;
 }
-const { src, title, height = 556, poster, posterAlt = '', note = 'Interactive demo, best viewed on desktop.', caption } = Astro.props;
+const { src, title, height, poster, posterAlt = '', note = 'Interactive demo, best viewed on desktop.', caption } = Astro.props;
 ---
 
-<figure class:list={['embed measure-wide reveal', { 'has-poster': !!poster }]} style={`--embed-h:${height}px`}>
+<figure class:list={['embed measure-wide reveal', { 'has-poster': !!poster }]} style={height ? `--embed-h:${height}px` : undefined}>
   <iframe class="media-l media-hairline" src={src} title={title} loading="lazy"></iframe>
   {poster && (
     <div class="poster">
@@ -27,12 +27,13 @@ const { src, title, height = 556, poster, posterAlt = '', note = 'Interactive de
       <p class="t-body">{note}</p>
     </div>
   )}
-  {caption && <figcaption class="t-body">{caption}</figcaption>}
+  {caption && <figcaption class="caption">{caption}</figcaption>}
 </figure>
 
 <style>
   .embed { display: flex; flex-direction: column; gap: var(--space-3); }
-  iframe { width: 100%; height: var(--embed-h); background: var(--bg-raised); }
+  .embed { container-type: inline-size; }
+  iframe { width: 100%; height: var(--embed-h, calc(53.4cqw + 170px)); background: var(--bg-raised); }
   .poster { display: none; flex-direction: column; gap: var(--space-3); }
   .poster :global(img) { width: 100%; }
   @media (max-width: 991px) {
