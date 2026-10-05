@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UI accent demo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&family=Geist+Mono:wght@300;600&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   UI accent demo
+   Layout follows the Figma frames "acc demo dark blue" / "acc demo light blue":
+     - left:  app UI image (one PNG per accent + theme), inset 8px
+     - right: 200px control column - Accent color, Theme, Tokens
+   The demo chrome (frame, control column, labels) is fixed to the dark look and
+   does not change with the theme toggle. Only the app image and the token chips
+   respond to theme + accent.
+
+   The demo fills 100% of the height it is given (browser window, or the host
+   iframe's height). The app image is scaled to fit that space without cropping.
+   Below 960px container width only the Blue / Dark image is shown, full width,
+   with no frame and no controls (and only that one image is downloaded).
+
+   App images are loaded externally from the same folder as this HTML file
+   (see APP_SHOTS). All 8 are fetched in parallel on page load behind one
+   spinner; after that, switching accent or theme is instant.
+
+   Mirrors the Figma variable setup:
+     Collection "Accent Color" -> modes: Blue, Green, Purple, Amber  (data-accent)
+     Collection "Theme"        -> modes: Light Mode, Dark Mode       (data-theme)
+   ===================================================================== */
+
+*,*::before,*::after{box-sizing:border-box}
+html,body{height:100%;margin:0;background:transparent}
+body{font-family:Inter,system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:0;padding:0}
+p,h3{margin:0}
+
+/* ---- Collection: Theme (only the accent-related semantic tokens are needed for the chips) ---- */
+.wds-demo[data-theme="light"]{
+  --background-accent-color-primary:var(--light-accent-color-500);
+  --background-accent-color-primary-focus:var(--light-accent-color-700);
+  --background-accent-color-secondary:var(--light-accent-color-050);
+  --background-accent-color-secondary-focus:var(--light-accent-color-100);
+  --content-accent-color-primary:var(--light-accent-color-500);
+  --content-accent-color-on-primary:#FFFFFF;
+  --content-accent-color-on-secondary:var(--light-accent-color-500);
+  --content-bubbles-own-on-primary:var(--light-accent-color-100);
+  --border-accent-color-primary:var(--light-accent-color-500);
+  --border-accent-color-secondary:var(--light-accent-color-100);
+}
+.wds-demo[data-theme="dark"]{
+  --background-accent-color-primary:var(--dark-accent-color-500);
+  --background-accent-color-primary-focus:var(--dark-accent-color-300);
+  --background-accent-color-secondary:var(--dark-accent-color-800);
+  --background-accent-color-secondary-focus:var(--dark-accent-color-700);
+  --content-accent-color-primary:var(--dark-accent-color-500);
+  --content-accent-color-on-primary:#000000;
+  --content-accent-color-on-secondary:var(--dark-accent-color-300);
+  --content-bubbles-own-on-primary:var(--dark-accent-color-400);
+  --border-accent-color-primary:var(--dark-accent-color-500);
+  --border-accent-color-secondary:var(--dark-accent-color-800);
+}
+/* Collection: Accent Color -> injected by the script */
+
+/* ---- Chrome: fixed dark look, independent of the theme toggle ---- */
+.wds-demo{
+  --chrome-bg:#17181A;
+  --chrome-sheet-primary:#17181A;
+  --chrome-sheet-secondary:#26272C;
+  --chrome-hover:#26272C;
+  --chrome-text-primary:#FFFFFF;
+  --chrome-text-secondary:#9FA1A7;
+  --chrome-border:#34373D;
+  --chrome-border-selected:#54585F;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+
+/* ---- Shell ---- */
+.wds-outer{width:100%;height:100%;container:demo / inline-size}
+.wds-demo{
+  width:100%;height:100%;
+  display:flex;align-items:stretch;
+  background:var(--chrome-bg);
+  border:1px solid var(--chrome-border);
+  border-radius:16px;
+  overflow:hidden;
+  color:var(--chrome-text-primary);
+}
+.wds-demo :focus-visible{outline:2px solid var(--chrome-text-primary);outline-offset:2px}
+
+/* ---- App image area (Figma: "Components", 8px inset) ---- */
+.app{flex:1 1 auto;min-width:0;min-height:0;padding:8px;display:flex}
+.app-imgwrap{position:relative;flex:1 1 auto;min-width:0;min-height:0}
+.app-imgwrap img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;display:block}
+.app-spinner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;pointer-events:none}
+.app-spinner i{width:32px;height:32px;border-radius:50%;border:3px solid var(--chrome-border);border-top-color:var(--chrome-text-secondary);display:block;animation:app-spin .8s linear infinite}
+.app-spinner[hidden]{display:none}
+@keyframes app-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.app-spinner i{animation-duration:2.4s}}
+.app-error{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;text-align:center;padding:16px;font-size:13px;line-height:19px;color:var(--chrome-text-secondary)}
+.app-error[hidden]{display:none}
+
+/* ---- Control column (Figma: "Semantic roles", 200px, padding 24/16) ---- */
+.ctrl{flex:none;width:200px;min-height:0;display:flex;flex-direction:column;padding:24px 16px 0}
+.ctrl-h{flex:none;font-family:var(--mono);font-weight:600;font-size:12px;line-height:16px;color:var(--chrome-text-primary);white-space:nowrap}
+.gap8{flex:none;height:8px}
+.gap16{flex:none;height:16px}
+
+/* segmented tracks */
+.trk{flex:none;display:flex;align-items:stretch;gap:2px;height:32px;width:100%;background:var(--chrome-sheet-primary);border:1px solid var(--chrome-border);border-radius:13px}
+.trk [role=radio]{display:flex;align-items:center;justify-content:center;border:1px solid transparent;border-radius:12px}
+.trk [role=radio][aria-checked="true"]{background:var(--chrome-sheet-secondary);border-color:var(--chrome-border-selected)}
+.trk [role=radio]:not([aria-checked="true"]):hover{background:var(--chrome-hover)}
+
+.acc-swatch{width:40px;padding:0 10px}
+.acc-swatch .dot{width:20px;height:20px;border-radius:50%;background:var(--sw);flex:none;display:block}
+
+.theme-sg{flex:1 0 0;min-width:1px;padding:0 12px;font-size:13px;color:var(--chrome-text-secondary);white-space:nowrap}
+.theme-sg[aria-checked="true"]{color:var(--chrome-text-primary);font-weight:600}
+
+/* tokens */
+.tok-scroll{flex:1 1 auto;min-height:0;overflow-y:auto;margin-right:-12px;padding-right:12px;padding-bottom:16px;scrollbar-width:thin;scrollbar-color:var(--chrome-border) transparent}
+.tok-group + .tok-group{margin-top:9px}
+.tok-group-h{font-family:var(--mono);font-weight:300;font-size:9px;line-height:12px;color:var(--chrome-text-primary)}
+.tok{display:flex;align-items:center;gap:6px;min-height:36px;padding:6px 0;margin-top:1px}
+.chip{flex:none;width:10px;height:10px;border-radius:3px;display:block}
+.chip.bd{border:1px solid var(--chrome-border)}
+.tok-n{flex:1 0 0;min-width:1px;font-family:var(--mono);font-weight:300;font-size:9px;line-height:12px;color:var(--chrome-text-secondary);overflow-wrap:normal;word-break:normal}
+
+/* ---- Mobile (< 960px): image only, Blue / Dark, full width, no controls ---- */
+@container demo (max-width:959.98px){
+  .wds-demo{height:auto;display:block;background:transparent;border:0;border-radius:0}
+  .app{padding:0;display:block}
+  .app-imgwrap{aspect-ratio:984/553.5}
+  .ctrl{display:none}
+}
+</style>
+</head>
+<body>
+
+<div class="wds-outer"><div class="wds-demo" id="demo" data-theme="dark" data-accent="blue">
+
+  <section class="app" aria-label="App preview">
+    <div class="app-imgwrap">
+      <img id="app-shot" alt="Wire app UI, shown in the selected theme and accent color">
+      <div class="app-spinner" id="app-spinner" aria-hidden="true"><i></i></div>
+      <div class="app-error" id="app-error" hidden></div>
+    </div>
+  </section>
+
+  <aside class="ctrl">
+    <h3 class="ctrl-h" id="h-accent">Accent color</h3>
+    <div class="gap8"></div>
+    <div class="trk" role="radiogroup" aria-labelledby="h-accent" id="accents"></div>
+
+    <div class="gap16"></div>
+    <h3 class="ctrl-h" id="h-theme">Theme</h3>
+    <div class="gap8"></div>
+    <div class="trk" role="radiogroup" aria-labelledby="h-theme" id="themes">
+      <button type="button" class="theme-sg" role="radio" data-theme="dark" aria-checked="true">Dark</button>
+      <button type="button" class="theme-sg" role="radio" data-theme="light" aria-checked="false">Light</button>
+    </div>
+
+    <div class="gap16"></div>
+    <h3 class="ctrl-h">Tokens</h3>
+    <div class="gap8"></div>
+    <div class="tok-scroll"><div id="tokens"></div></div>
+  </aside>
+
+</div></div>
+
+<noscript><p style="font:14px/1.5 system-ui;padding:16px">This demo needs JavaScript to switch themes and accent colors.</p></noscript>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ------------------------------------------------------------------
+     Values of the Figma collection "Accent Color" (ramps 050..900).
+     Order here = order of the swatches in the control column.
+     ------------------------------------------------------------------ */
+  var STEPS = ['050','100','200','300','400','500','600','700','800','900'];
+  var ACCENTS = [
+    { id:'blue',   name:'Blue',
+      light:['#E7F0FA','#CDE1F4','#9BC2E9','#6AA4DE','#3885D3','#0667C8','#0552A0','#043E78','#022950','#021F3C'],
+      dark: ['#EEF7FF','#DDEDFF','#BBDBFF','#98CAFF','#76B8FF','#54A6FF','#4385CC','#326499','#224266','#19324D'] },
+    { id:'green',  name:'Green',
+      light:['#E8F1EA','#D2E4D6','#A5C9AD','#77AE85','#4A935C','#1D7833','#176029','#11481F','#0C3014','#09240F'],
+      dark: ['#EBFCEF','#D6F8DE','#ACF1BD','#83E99D','#59E27C','#30DB5B','#26AF49','#1D8337','#135824','#0E421B'] },
+    { id:'purple', name:'Purple',
+      light:['#F4EDF7','#E7DAEE','#D0B4DD','#B88FCD','#A169BC','#8944AB','#6E3689','#522967','#371B44','#291433'],
+      dark: ['#FCF4FF','#F8E9FF','#F0D2FF','#E9BCFF','#E1A5FF','#DA8FFF','#AE72CC','#835699','#573966','#412B4D'] },
+    { id:'amber',  name:'Amber',
+      light:['#F6EEE8','#ECDED0','#DABDA1','#C79B73','#B57A44','#A25915','#824711','#61350D','#412408','#201204'],
+      dark: ['#FFFBEA','#FFF6D4','#FFEEA8','#FFE57D','#FFDD51','#FFD426','#CCAA1E','#997F17','#66550F','#4D400B'] }
+  ];
+
+  /* Accent-dependent semantic tokens from the "Theme" collection.
+     [label, css variable, bordered chip] */
+  var TOKEN_GROUPS = [
+    { name: 'background', rows: [
+      ['background.accentcolor.primary',          '--background-accent-color-primary',          false],
+      ['background.accentcolor.primary.focus',    '--background-accent-color-primary-focus',    false],
+      ['background.accentcolor.secondary',        '--background-accent-color-secondary',        false],
+      ['background.accentcolor.secondary.focus',  '--background-accent-color-secondary-focus',  false]
+    ]},
+    { name: 'content', rows: [
+      ['content.accentcolor.primary',             '--content-accent-color-primary',             false],
+      ['content.accentcolor.onprimary',           '--content-accent-color-on-primary',          true],
+      ['content.accentcolor.onsecondary',         '--content-accent-color-on-secondary',        false],
+      ['content.bubbles.own.onprimary',           '--content-bubbles-own-on-primary',           false]
+    ]},
+    { name: 'border', rows: [
+      ['border.accentcolor.primary',              '--border-accent-color-primary',              false],
+      ['border.accentcolor.secondary',            '--border-accent-color-secondary',            false]
+    ]}
+  ];
+
+  /* App images: one PNG per accent + theme, in the same folder as this file */
+  var APP_SHOTS = {};
+  ACCENTS.forEach(function (a) {
+    ['light','dark'].forEach(function (t) {
+      APP_SHOTS[a.id + '_' + t] = 'ui-' + a.id + '-' + t + '.png';
+    });
+  });
+
+  var root = document.getElementById('demo');
+  var state = { theme: 'dark', accent: 'blue' };
+
+  function $(sel, ctx) { return (ctx || document).querySelector(sel); }
+  function $$(sel, ctx) { return Array.prototype.slice.call((ctx || document).querySelectorAll(sel)); }
+  function el(tag, cls) { var n = document.createElement(tag); if (cls) n.className = cls; return n; }
+  function accentById(id) { return ACCENTS.filter(function (a) { return a.id === id; })[0] || ACCENTS[0]; }
+
+  /* ---------- Collection "Accent Color": one CSS block per mode ---------- */
+  var styleEl = document.createElement('style');
+  styleEl.textContent = ACCENTS.map(function (a) {
+    return '.wds-demo[data-accent="' + a.id + '"]{' + STEPS.map(function (s, i) {
+      return '--light-accent-color-' + s + ':' + a.light[i] + ';--dark-accent-color-' + s + ':' + a.dark[i] + ';';
+    }).join('') + '}';
+  }).join('\n');
+  document.head.appendChild(styleEl);
+
+  /* ---------- Accent swatches (dark-mode 500 value, as in the Figma frame) ---------- */
+  var accGroup = $('#accents');
+  ACCENTS.forEach(function (a) {
+    var b = el('button', 'acc-swatch');
+    b.type = 'button';
+    b.setAttribute('role', 'radio');
+    b.setAttribute('aria-label', a.name);
+    b.dataset.accent = a.id;
+    b.style.setProperty('--sw', a.dark[5]);
+    b.innerHTML = '<i class="dot"></i>';
+    accGroup.appendChild(b);
+  });
+
+  /* ---------- Tokens ---------- */
+  var tokHost = $('#tokens');
+  TOKEN_GROUPS.forEach(function (group) {
+    var wrap = el('div', 'tok-group');
+    var h = el('p', 'tok-group-h');
+    h.textContent = group.name;
+    wrap.appendChild(h);
+    group.rows.forEach(function (t) {
+      var row = el('div', 'tok');
+      /* break only after dots, never inside a word */
+      row.innerHTML = '<i class="chip' + (t[2] ? ' bd' : '') + '"></i><code class="tok-n">' + t[0].split('.').join('.<wbr>') + '</code>';
+      $('.chip', row).style.background = 'var(' + t[1] + ')';
+      wrap.appendChild(row);
+    });
+    tokHost.appendChild(wrap);
+  });
+
+  /* ---------- App images ----------
+     Desktop (>= 960px): all 8 are fetched up front behind one spinner, so switching is instant.
+     Mobile  (<  960px): only blue_dark is shown and fetched; the rest load if the demo widens. */
+  var MOBILE_MAX = 960, MOBILE_KEY = 'blue_dark';
+  var outer = $('.wds-outer');
+  var appImg = $('#app-shot'), appSpinner = $('#app-spinner'), appError = $('#app-error');
+  var currentKey = null, status = {}, requested = {}, isMobile = false;
+
+  function wantedKey() { return isMobile ? MOBILE_KEY : state.accent + '_' + state.theme; }
+
+  function showError(key) {
+    appSpinner.hidden = true;
+    appImg.removeAttribute('src');
+    appError.hidden = false;
+    appError.textContent = "Couldn't load " + APP_SHOTS[key] + " - make sure it's in the same folder as this file.";
+  }
+  function showImage(key) { appSpinner.hidden = true; appError.hidden = true; appImg.src = APP_SHOTS[key]; }
+
+  // Fetch the given images in parallel; once all of them have settled, show the current one.
+  function preload(keys) {
+    keys = keys.filter(function (k) { return !requested[k]; });
+    if (!keys.length) return;
+    var left = keys.length;
+    keys.forEach(function (key) {
+      requested[key] = true;
+      var im = new Image();
+      function done(s) { status[key] = s; if (--left <= 0) { currentKey = null; updateAppImage(); } }
+      im.onload = function () { done('loaded'); };
+      im.onerror = function () { done('error'); };
+      im.src = APP_SHOTS[key];
+    });
+  }
+
+  function updateAppImage() {
+    var key = wantedKey();
+    if (key === currentKey) return;
+    currentKey = key;
+    if (status[key] === 'error') { showError(key); return; }
+    if (status[key] === 'loaded') { showImage(key); return; }
+    appSpinner.hidden = false; appError.hidden = true;   // not loaded yet
+    appImg.removeAttribute('src');
+  }
+  appImg.addEventListener('load', function () { appSpinner.hidden = true; });
+  appImg.addEventListener('error', function () { if (appImg.getAttribute('src')) showError(currentKey); });
+
+  var widthChecked = false;
+  function checkWidth() {
+    var m = outer.getBoundingClientRect().width < MOBILE_MAX;
+    if (widthChecked && m === isMobile) return;
+    widthChecked = true;
+    isMobile = m;
+    preload(isMobile ? [MOBILE_KEY] : Object.keys(APP_SHOTS));
+    updateAppImage();
+  }
+
+  /* ---------- Render ---------- */
+  var themeBtns = $$('#themes [role=radio]'), accBtns = $$('#accents [role=radio]');
+
+  function render() {
+    root.setAttribute('data-theme', state.theme);
+    root.setAttribute('data-accent', state.accent);
+    themeBtns.forEach(function (b) { var on = b.dataset.theme === state.theme; b.setAttribute('aria-checked', on); b.tabIndex = on ? 0 : -1; });
+    accBtns.forEach(function (b) { var on = b.dataset.accent === state.accent; b.setAttribute('aria-checked', on); b.tabIndex = on ? 0 : -1; });
+    updateAppImage();
+  }
+  function set(next) {
+    if (next.theme === 'light' || next.theme === 'dark') state.theme = next.theme;
+    if (next.accent) state.accent = accentById(next.accent).id;
+    render();
+  }
+
+  themeBtns.forEach(function (b) { b.addEventListener('click', function () { set({ theme: b.dataset.theme }); }); });
+  accBtns.forEach(function (b) { b.addEventListener('click', function () { set({ accent: b.dataset.accent }); }); });
+
+  function roving(group) {
+    group.addEventListener('keydown', function (e) {
+      var keys = ['ArrowRight','ArrowDown','ArrowLeft','ArrowUp','Home','End'];
+      if (keys.indexOf(e.key) < 0) return;
+      var items = $$('[role=radio]', group), n = items.length;
+      var i = items.indexOf(document.activeElement);
+      if (i < 0) i = items.findIndex(function (x) { return x.getAttribute('aria-checked') === 'true'; });
+      if (e.key === 'Home') i = 0; else if (e.key === 'End') i = n - 1;
+      else i = (i + (e.key === 'ArrowRight' || e.key === 'ArrowDown' ? 1 : -1) + n) % n;
+      items[i].focus(); items[i].click(); e.preventDefault();
+    });
+  }
+  roving($('#themes')); roving($('#accents'));
+
+  /* ---------- Embedding: report height to a parent page (optional) ---------- */
+  function postHeight() {
+    try { parent !== window && parent.postMessage({ type: 'wds-demo-height', height: Math.ceil(root.getBoundingClientRect().height) }, '*'); } catch (e) {}
+  }
+  if (window.ResizeObserver) new ResizeObserver(postHeight).observe(root);
+
+  /* ---------- Start state: ?theme=light|dark&accent=blue|green|purple|amber ---------- */
+  var q = new URLSearchParams(location.search);
+  set({ theme: q.get('theme'), accent: q.get('accent') });
+  checkWidth();
+  if (window.ResizeObserver) new ResizeObserver(checkWidth).observe(outer);
+  else window.addEventListener('resize', checkWidth);
+
+  window.wdsDemo = { set: set, get: function () { return { theme: state.theme, accent: state.accent }; } };
+})();
+</script>
+</body>
+</html>

@@ -21,7 +21,7 @@ const bg = background ? (typeof background === 'string' ? background : backgroun
 ---
 
 <section class:list={['hero', variant, { 'has-stamp': confidential }]}>
-  {variant === 'backdrop' && bg && <div class="bg" style={`background-image:url(${bg})`} aria-hidden="true"></div>}
+  {variant === 'backdrop' && bg && <div class="bg" style={`background-image:url("${bg}")`} aria-hidden="true"></div>}
   <div class="container">
     <h1 class:list={['t-title', variant === 'backdrop' ? 'measure-media' : 'measure-wide']}>{title}</h1>
 
@@ -38,10 +38,17 @@ const bg = background ? (typeof background === 'string' ? background : backgroun
 
 <style>
   .hero { position: relative; padding-top: var(--hero-top); padding-bottom: var(--space-6); isolation: isolate; }
-  .hero.backdrop { background: var(--bg-raised); padding-bottom: var(--space-7); }
+  /* The backdrop hero is a dark image band in both themes: it resolves the semantic tokens as dark, so the title stays light in light mode. */
+  .hero.backdrop { color-scheme: dark; background: var(--bg-raised); padding-top: 80px; padding-bottom: var(--space-7); }
+  @media (min-width: 544px) { .hero.backdrop { padding-top: 100px; } }
+  @media (min-width: 992px) { .hero.backdrop { padding-top: 140px; } }
+  /* Height as on the original page: the stamp follows the title directly and hangs 30–40 px below the band. */
+  .hero.backdrop .container { display: flow-root; }
+  .hero.backdrop h1 { padding-bottom: 0; }
+  .hero.backdrop .stamp-row { margin-top: 30px; margin-bottom: -30px; }
+  @media (min-width: 544px) { .hero.backdrop .stamp-row { margin-top: 40px; margin-bottom: -40px; } }
+  @media (min-width: 992px) { .hero.backdrop .stamp-row { margin-top: 0; } }
   .bg { position: absolute; inset: 0; z-index: -1; background-size: cover; background-position: center; opacity: 0.5; }
-  .hero.backdrop { min-height: 70vh; display: flex; align-items: flex-end; }
-  .hero.backdrop .container { padding-top: var(--space-9); }
   h1 { padding-bottom: var(--space-4); text-align: center; }
   .mock-wrap { margin-top: var(--space-7); }
   .mock { position: relative; margin-inline: auto; width: calc(100% * 12 / 12); }

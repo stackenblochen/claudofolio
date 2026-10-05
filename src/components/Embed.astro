@@ -6,6 +6,7 @@
  */
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
+import Arrow from './Arrow.astro';
 
 interface Props {
   src: string; // already base-prefixed, e.g. url('/demos/tokens/index.html')
@@ -15,12 +16,18 @@ interface Props {
   posterAlt?: string;
   note?: string;
   caption?: string;
+  /** Red hand-drawn arrow overlapping the top-right corner of the iframe, pointing at the demo's controls (desktop only). */
+  arrow?: ImageMetadata | string;
 }
-const { src, title, height, poster, posterAlt = '', note = 'Interactive demo, best viewed on desktop.', caption } = Astro.props;
+const { src, title, height, poster, posterAlt = '', note = 'Interactive demo, best viewed on desktop.', caption, arrow } = Astro.props;
+const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undefined;
 ---
 
 <figure class:list={['embed measure-media reveal', { 'has-poster': !!poster }]} style={height ? `--embed-h:${height}px` : undefined}>
-  <iframe class="media-l media-hairline" src={src} title={title} loading="lazy"></iframe>
+  <div class="frame">
+    <iframe class="media-l media-hairline" src={src} title={title} loading="lazy"></iframe>
+    {arrowSrc && <Arrow src={arrowSrc} class="annot" />}
+  </div>
   {poster && (
     <div class="poster">
       <Img src={poster} alt={posterAlt} class="media-l media-hairline" />
@@ -33,9 +40,14 @@ const { src, title, height, poster, posterAlt = '', note = 'Interactive demo, be
 <style>
   .embed { display: flex; flex-direction: column; gap: var(--space-3); }
   .embed { container-type: inline-size; }
+  .frame { position: relative; }
+  .frame :global(.annot) { display: none; }
   iframe { width: 100%; height: var(--embed-h, calc(53.4cqw + 170px)); background: var(--bg-raised); }
   .poster { display: none; flex-direction: column; gap: var(--space-3); }
   .poster :global(img) { width: 100%; }
+  @media (min-width: 992px) {
+    .frame :global(.annot) { display: block; position: absolute; z-index: 2; pointer-events: none; right: 5%; top: -110px; width: 80px; }
+  }
   @media (max-width: 991px) {
     .has-poster iframe { display: none; }
     .has-poster .poster { display: flex; }

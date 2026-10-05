@@ -55,6 +55,7 @@ const items = [
     height: var(--header-h);
     margin-bottom: calc(var(--header-h) * -1); /* floats over the hero */
   }
+  .site-header[data-on-dark] { color-scheme: dark; } /* set by CaseHero while a dark backdrop hero is under the header */
   .bar { height: 100%; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 3; }
   .logo { display: block; width: 100px; color: var(--text-strong); line-height: 0; }
   .logo :global(svg) { width: 100%; height: auto; }
@@ -109,5 +110,19 @@ const items = [
     burger?.addEventListener('click', () => setOpen(burger.getAttribute('aria-expanded') !== 'true'), { signal });
     overlay?.addEventListener('click', (e) => { if ((e.target as HTMLElement).closest('a')) setOpen(false); }, { signal });
     window.addEventListener('keydown', (e) => { if (e.key === 'Escape') setOpen(false); }, { signal });
+
+    // While a dark backdrop hero (CaseHero) is under the header, the header resolves its colours as dark, so the logo and menu
+    // stay light in light mode too. The hero is looked up on every call: protected pages only insert it after decryption,
+    // and scripts inside the encrypted content do not run, so this has to live here.
+    const header = document.querySelector<HTMLElement>('[data-site-header]');
+    const syncOnDark = () => {
+      const hero = document.querySelector<HTMLElement>('.hero.backdrop');
+      header?.toggleAttribute('data-on-dark', !!hero && hero.getBoundingClientRect().bottom > (header?.offsetHeight ?? 0) / 2);
+    };
+    window.addEventListener('scroll', syncOnDark, { passive: true, signal });
+    window.addEventListener('resize', syncOnDark, { signal });
+    const main = document.getElementById('main');
+    if (main) new MutationObserver(syncOnDark).observe(main, { childList: true, subtree: true });
+    syncOnDark();
   });
 </script>

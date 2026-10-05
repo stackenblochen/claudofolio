@@ -1,0 +1,141 @@
+---
+title: Managing a legacy multiplatform design system
+shortTitle: Multiplatform design system
+summary: "Modernizing a fragmented design system across iOS, Android and Web: shared tokens, WCAG 2.1 AA accessibility and documentation built for people and AI."
+category: Design Systems
+tags: [Design tokens, Accessibility, AI]
+cover: ../../assets/projects/design-system/cover.png
+coverAlt: Design system foundations shown across mobile and desktop screens
+heroVariant: backdrop
+heroBackground: ../../assets/projects/design-system/cover.png
+confidential: true
+protected: true
+company: Wire
+role: Product Designer
+team: TODO
+timeline: TODO
+year: 2026
+platforms: [iOS, Android, Web]
+lead:
+  - Wire launched in 2016 on a strong design foundation by former Skype designers.
+  - Several years without design support and some strategic pivots later, that foundation had fragmented across iOS, Android and Web.
+  - "I led its modernization: a shared token layer on top of native platform systems, WCAG 2.1 AA accessibility, and documentation built for both people and AI."
+outcome:
+  - Meeting accessibility requirements (WCAG, BITV) qualifies Wire for public-sector and enterprise tenders.
+  - A shared set of implemented color tokens across all three clients results in a properly implemented light and dark mode.
+  - Adoption was slow, so I built the foundations alongside feature work, and the color tokens in production today are the result.
+order: 2
+draft: false
+---
+
+import { url as siteUrl } from '../../lib/site';
+import then from '../../assets/projects/design-system/then.png';
+import arrowDown from '../../assets/arrow-red-down.svg';
+import arrowRight from '../../assets/arrow-red-right.svg';
+import nowBackground from '../../assets/projects/design-system/now-background.jpg';
+import now from '../../assets/projects/design-system/now.png';
+import tokensPoster from '../../assets/projects/design-system/tokens-poster.png';
+import dsStructure from '../../assets/projects/design-system/ds-structure.png';
+import navIos from '../../assets/projects/design-system/nav-ios.png';
+import navAndroid from '../../assets/projects/design-system/nav-android.png';
+import colorContrast from '../../assets/projects/design-system/color-contrast.png';
+import a11yDark from '../../assets/projects/design-system/a11y-dark.png';
+import designmd from '../../assets/projects/design-system/designmd.png';
+import bubbleSpec from '../../assets/projects/design-system/bubble-spec.png';
+import claudeDesign from '../../assets/projects/design-system/claude-design.png';
+
+<Chapter title="Then and now" id="then-now">
+  In 2020, the app looked nice on screenshots, but was not built for enterprise. A strategic pivot to enterprise collaboration redefined its design from 2024 on.
+
+  <Fragment slot="media">
+    <Comparison
+      labels={false}
+      arrow={arrowDown}
+      afterBackground={nowBackground}
+      before={{ src: then, alt: 'The app in 2020: a light, consumer-style messenger interface' }}
+      after={{ src: now, alt: 'The app today: an enterprise collaboration interface with navigation, conversation list and group details' }}
+    />
+  </Fragment>
+</Chapter>
+
+<Chapter title="Shared effort" id="shared-effort">
+  I see a design system as shared infrastructure, not only a Figma library. So I drove the token rollout on both sides: one naming structure in Figma and in the codebase, with semantic tokens replacing raw values. Step by step, designers and engineers started working with the same base values and components.
+
+  <Fragment slot="media">
+    <Embed
+      src={siteUrl('/demos/tokens/index.html?theme=light&accent=blue')}
+      title="Interactive demo: switching accent color and theme through the token layer"
+      height={556}
+      arrow={arrowRight}
+      poster={tokensPoster}
+      posterAlt="The app UI in the blue accent and dark theme, as shown in the token demo"
+      note="Interactive token demo, best viewed on desktop."
+    />
+  </Fragment>
+</Chapter>
+
+<Chapter title="Multiplatform" id="multiplatform">
+  Each client builds on its native system (SwiftUI on iOS, Material 2/3 on Android, a React-based UI kit on desktop), which brings platform conventions and the accessibility baseline.
+
+  The additional set of custom tokens and components add the brand and product tonality on top.
+
+  On Android and iOS, Wire follows each platform's native patterns, like Apple's Liquid Glass or Material's floating action button, so the app feels native on every device.
+
+  Shared iconography, colors and other foundations add the product's personality and make the app recognizable.
+
+  <Fragment slot="media">
+    <Figure src={dsStructure} alt="Diagram: iOS, Android and Desktop feed a UI library, design tokens and a code library, which together form the Wire design system next to the native design system" />
+    <FigurePair
+      a={{ src: navIos, alt: 'Main navigation on iOS' }}
+      b={{ src: navAndroid, alt: 'Main navigation on Android' }}
+    />
+  </Fragment>
+</Chapter>
+
+<Chapter title="Accessibility" id="accessibility">
+  Early on, the design team ran an audit together with the accessibility experts at adesso. It revealed significant gaps and moved accessibility high up the roadmap. I pushed to invest the time in fixing the problems at the system level rather than feature by feature.
+
+  We reworked the color palette to meet WCAG 2.1 AA contrast in both light and dark mode and defined all necessary states for interactive components.
+
+  I specified how designers annotate their flows so that engineers can more easily add screen reader labels and keyboard order.
+
+  <Fragment slot="media">
+    <FigurePair
+      a={{ src: colorContrast, alt: 'Old and new palette colors with their WCAG AA result: three of the old colors fail, all new colors pass' }}
+      b={{ src: a11yDark, alt: 'An Add people dialog annotated for accessibility, with a Close dialog label on the close button and the avatars marked as decorative' }}
+    />
+  </Fragment>
+</Chapter>
+
+<Chapter title="AI-ready" id="ai-ready">
+  <Fragment slot="media">
+    <SubChapter number={1} title="Documentation" id="documentation">
+      I documented the system in a DESIGN.md file that covers tokens, typography, contrast rules and accessibility details, amongst other fundamentals. This can be used by anyone to build prototypes, as well as engineers to implement a final design solution based on the same foundations.
+
+      <Fragment slot="media">
+        <FigurePair
+          a={{ src: designmd, alt: 'The DESIGN.md file, opening with the product context and rules for token IDs' }}
+          b={{ src: bubbleSpec, alt: 'Component documentation for the chat bubble, shown next to the component in Figma' }}
+        />
+      </Fragment>
+    </SubChapter>
+
+    <SubChapter number={2} title="Prototyping" id="prototyping">
+      A Claude design system has the main views defined, so that PMs and designers can use it to prototype and test quickly.
+
+      <Fragment slot="media">
+        <Figure src={claudeDesign} alt="The design system set up in Claude, showing the conversation details view with the group details panel" />
+        <Video src={siteUrl('/videos/design-system/prototype-login.mp4')} title="Prototype of the login flow" loop />
+        <Video src={siteUrl('/videos/design-system/prototype-connect.mp4')} title="Prototype of the connect flow" loop />
+      </Fragment>
+    </SubChapter>
+  </Fragment>
+</Chapter>
+
+<Chapter title="Reality check" id="reality-check">
+  Adoption was slow. Engineers were busy with legacy code, and the roadmap favored new features.
+
+  I worked around it: I ran sessions with some motivated engineers and built the token system alongside my feature work. Once I had access to AI tools, I could analyze the codebase myself, and results came much faster. The color tokens in production today are the result.
+
+  Looking back, I wouldn't wait for permission to improve the system. I'd build the foundations alongside feature work from the start, and push to get it on the roadmap early.
+</Chapter>
