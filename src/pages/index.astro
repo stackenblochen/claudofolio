@@ -4,25 +4,19 @@ import HomeHero from '../components/HomeHero.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
 import { getProjects, toCard } from '../lib/projects';
-import { SITE, url } from '../lib/site';
 
 const projects = (await getProjects()).map(toCard);
-const contactHref = SITE.email ? `mailto:${SITE.email}` : url('/about/');
 ---
 
 <Base description="Wolfgang Lattermann is a product designer based in Berlin. Selected work in product design and design systems.">
   <HomeHero>
-    <Fragment slot="intro">Hi, I'm Wolfgang, a product designer based in Berlin.</Fragment>
-    <Fragment slot="aside">
-      Have a look at some of <a href="#work">my work</a>, learn more about <a href={url('/about/')}>my background</a>,
-      or <a href={contactHref}>get in touch</a>.
-    </Fragment>
+    <Fragment slot="intro">Hi, I’m Wolfgang,<br class="br-md" /> a product designer<br class="br-md" /> based in Berlin.</Fragment>
   </HomeHero>
 
   <!-- Statement (T1) goes here once the copy is final: <Statement>…</Statement> -->
 
   <section class="work section section--black" aria-labelledby="work">
-    <SectionTitle id="work">Selected work</SectionTitle>
+    <SectionTitle id="work" dash>Selected work</SectionTitle>
     <div class="container grid-wrap"><ProjectGrid items={projects} /></div>
   </section>
 </Base>

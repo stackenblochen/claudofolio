@@ -3,17 +3,21 @@
 interface Props {
   level?: 2 | 3;
   id?: string;
+  /** Em-dash above the heading, as on chapters and the outcome. */
+  dash?: boolean;
 }
-const { level = 2, id } = Astro.props;
+const { level = 2, id, dash = false } = Astro.props;
 const Tag = `h${level}` as 'h2' | 'h3';
 ---
 
 <div class="container section-title">
   <div class="measure-text">
+    {dash && <span class="dash t-heading" aria-hidden="true">—</span>}
     <Tag class="t-heading" id={id}><slot /></Tag>
   </div>
 </div>
 
 <style>
   .section-title { padding-top: var(--space-8); }
+  .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
 </style>

@@ -1,81 +1,101 @@
 ---
 /**
- * H1 Home intro: a rounded gradient panel with two text blocks (left bold, right regular with links).
- * Moving the pointer over the panel bends the left copy like a prism: slices of the text shear sideways and split
- * into red / green / blue fringes around the cursor, then settle again when the pointer rests.
+ * H1 Home intro: the headline and a victory emoji on the page background. The rounded gradient backdrop only appears while
+ * the pointer is inside the stage (fade + subtle scale), and the emoji then sits on the cursor. Its position follows
+ * immediately; its tilt is a spring driven by the horizontal pointer speed, so it lags behind like something dragged along
+ * (moving right tilts it left, then it swings back and settles). Idle, it rests on the right, tilted, with a very slight sway.
+ * When the pointer leaves, the backdrop fades out and the emoji glides home.
  *
- * The real DOM text always stays in place (accessibility, selection). A WebGL canvas that redraws the panel
- * (gradient + left text) with the distortion is faded in while the effect is visible. The right block with the
- * links is not part of the effect and stays above the canvas, so it is never distorted and always clickable. Without WebGL, with
- * reduced motion, or before scripts run, only the plain panel is shown.
+ * While the pointer moves inside the active stage, the headline bends like a prism: slices of the text shear sideways and split
+ * into red / green / blue fringes around the cursor, then settle when the pointer rests. The real DOM text always stays in
+ * place (accessibility, selection); a WebGL canvas that redraws the stage (gradient + headline) with the distortion is faded in
+ * while the effect is visible. It is only armed once the backdrop and the headline hop have settled, so the redraw matches the
+ * DOM exactly. Without WebGL, reduced motion or a fine pointer, there is no distortion.
  *
- * Slots: "intro" (left) and "aside" (right, usually with links).
+ * The headline is plain DOM text. The emoji is decorative (aria-hidden). Without a fine pointer (touch) or with reduced motion
+ * the gradient backdrop is simply always shown and the emoji stays put (tilted).
+ *
+ * Slot: "intro" (the headline).
  */
 interface Props {
-  scrollTarget?: string;
+  emoji?: string;
 }
-const { scrollTarget = '#work' } = Astro.props;
+const { emoji = '✌️' } = Astro.props;
 ---
 
 <section class="home-hero" data-hero>
   <div class="frame">
-    <div class="panel" data-panel>
-      <div class="copy grid-12" data-copy>
-        <h1 class="intro t-heading" data-intro><slot name="intro" /></h1>
-        <div class="aside t-heading" data-aside><slot name="aside" /></div>
+    <div class="stage" data-stage>
+      <div class="backdrop" aria-hidden="true"></div>
+      <div class="copy grid-12">
+        <h1 class="intro t-display" data-intro><slot name="intro" /></h1>
       </div>
       <canvas class="fx" data-fx aria-hidden="true"></canvas>
+      <span class="emoji" data-emoji aria-hidden="true">{emoji}</span>
     </div>
   </div>
-  <a class="scroll" href={scrollTarget} aria-label="Scroll to selected work">
-    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 9l7 7 7-7" /></svg>
-  </a>
 </section>
 
 <style>
   .home-hero {
-    min-height: 100svh;
     display: flex; flex-direction: column; align-items: center;
     padding-top: calc(var(--header-h) + var(--space-3));
-    background: var(--bg-page); /* pure black behind the panel in dark mode */
+    background: var(--bg-page); /* pure black behind the stage in dark mode */
   }
   .frame {
-    flex: 1; display: flex; width: min(var(--grid-outer), calc(100% - 2 * var(--page-margin)));
-    min-height: 26rem;
+    display: flex; width: min(var(--grid-outer), calc(100% - 2 * var(--page-margin)));
+    height: clamp(26rem, 40vw + 15rem, 650px); /* about 650 px on desktop, so the stage no longer fills the whole screen */
   }
-  .panel {
-    position: relative; flex: 1; display: flex; align-items: center;
-    border-radius: var(--radius-xl); overflow: hidden;
+  .stage { position: relative; flex: 1; display: flex; align-items: center; }
+
+  /* gradient panel behind everything: always visible by default. With a fine hovering pointer and no reduced-motion
+   * preference it is hidden while idle (pure CSS, so there is no flash on load) and fades in while the pointer is inside. */
+  .backdrop {
+    position: absolute; inset: 0; border-radius: var(--radius-xl);
     background: linear-gradient(180deg, var(--gradient-hero-top), var(--gradient-hero-bottom));
   }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .backdrop {
+      opacity: 0; transform: scale(0.96);
+      transition: opacity 380ms ease, transform 480ms cubic-bezier(0.22, 0.7, 0.2, 1);
+    }
+    .stage.is-following .backdrop { opacity: 1; transform: none; }
 
-  /* copy sits on the 12-column grid inside the panel */
-  .copy {
-    width: 100%; padding: var(--space-8) var(--page-margin); align-items: start; row-gap: var(--space-6);
-    position: relative;
-  }
-  .intro { color: var(--text-strong); font-size: calc(var(--text-heading-size) * 1.45); line-height: 1.22; }
-  /* the right block is not part of the effect: it sits above the canvas */
-  .aside {
-    position: relative; z-index: 2;
-    color: var(--text-strong); font-weight: 400; font-size: calc(var(--text-heading-size) * 0.85); line-height: 1.2;
-  }
-  .aside :global(a) {
-    color: var(--text-strong);
-    text-decoration: underline; text-decoration-color: var(--accent-link);
-    text-decoration-thickness: 2px; text-underline-offset: 6px;
-  }
-  .aside :global(a:hover) { text-decoration-thickness: 4px; }
-  @media (min-width: 768px) {
-    .intro { grid-column: 2 / span 6; }
-    .aside { grid-column: 8 / span 5; }
+    /* the headline hops up and grows a bit when the backdrop activates (springy overshoot), and settles back after */
+    .intro { transform-origin: 0 55%; transition: transform 620ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .stage.is-following .intro { transform: translateY(-0.12em) scale(1.07); }
   }
 
-  /* effect canvas: covers the panel, invisible until the pointer moves */
-  .fx { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 260ms ease; }
+  /* headline on the 12-column grid inside the stage */
+  .copy { width: 100%; padding: var(--space-8) var(--page-margin); align-items: center; position: relative; }
+  .intro { grid-column: 1 / -1; font-size: 2.25rem; line-height: 1.19; /* fixed steps, no fluid scaling */ }
+  @media (min-width: 768px) { .intro { grid-column: 2 / span 9; font-size: 4rem; } }
+  @media (min-width: 992px) { .intro { font-size: 5rem; } }
+  /* line breaks as designed on larger screens; the text reflows freely below 768 px */
+  .intro :global(.br-md) { display: none; }
+  @media (min-width: 768px) { .intro :global(.br-md) { display: inline; } }
+
+  /* effect canvas: same box as the backdrop (and the same scale in/out), invisible until the pointer moves */
+  .fx {
+    position: absolute; inset: 0; width: 100%; height: 100%; border-radius: var(--radius-xl);
+    opacity: 0; pointer-events: none; transform: scale(0.96);
+    transition: opacity 260ms ease, transform 480ms cubic-bezier(0.22, 0.7, 0.2, 1);
+  }
+  .stage.is-following .fx { transform: none; }
   .fx.is-on { opacity: 1; }
 
-  .scroll { padding-block: var(--space-4) var(--space-5); color: var(--text-default); }
+  /* emoji: resting place on the right; JS moves it with a transform relative to this spot */
+  .emoji {
+    position: absolute; z-index: 2; right: 7%; top: 50%;
+    margin-top: -0.5em; font-size: clamp(4.75rem, 2.7rem + 8.1vw, 11.5rem); line-height: 1; /* resting size; while it follows the cursor, JS scales it down (FOLLOW_SCALE) */
+    pointer-events: none; user-select: none; will-change: transform;
+    transform: rotate(14deg); /* idle tilt; JS takes over the transform */
+  }
+  @media (max-width: 767px) { .emoji { right: 8%; top: auto; bottom: 8%; margin-top: 0; } }
+
+  /* the emoji takes the place of the pointer (set by JS only when it follows) */
+  .stage.is-following { cursor: none; }
+
 </style>
 
 <script>
@@ -83,7 +103,7 @@ const { scrollTarget = '#work' } = Astro.props;
     attribute vec2 a_pos; varying vec2 v_uv;
     void main(){ v_uv = a_pos * 0.5 + 0.5; gl_Position = vec4(a_pos, 0.0, 1.0); }`;
 
-  // Panel gradient + text, with prism distortion around the pointer: sheared slices, a gentle push away from the
+  // Stage gradient + text, with prism distortion around the pointer: sheared slices, a gentle push away from the
   // cursor, and per-channel offsets (chromatic split). Colours are mixed per channel against the gradient.
   const FRAG = `
     precision highp float;
@@ -121,22 +141,16 @@ const { scrollTarget = '#work' } = Astro.props;
       gl_FragColor = vec4(mix(bg, u_ink, c), 1.0);
     }`;
 
-  let stop: (() => void) | undefined;
+  const ARM_DELAY = 700; // ms: backdrop fade (480) and headline hop (620) have settled
 
   const rgbList = (s: string) => [...s.matchAll(/rgba?\(\s*([\d.]+)[ ,]+([\d.]+)[ ,]+([\d.]+)/g)].map((m) => [+m[1] / 255, +m[2] / 255, +m[3] / 255]);
 
-  function init() {
-    stop?.();
-    const panel = document.querySelector<HTMLElement>('[data-panel]');
-    const canvas = document.querySelector<HTMLCanvasElement>('[data-fx]');
-    const copy = document.querySelector<HTMLElement>('[data-copy]');
-    if (!panel || !canvas || !copy) return;
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  type Fx = { pointer: (e: PointerEvent, x: number, y: number) => void; leave: () => void; enter: () => void; dispose: () => void };
 
+  function setupFx(stage: HTMLElement, canvas: HTMLCanvasElement, intro: HTMLElement, backdrop: HTMLElement): Fx | null {
     const gl = canvas.getContext('webgl', { antialias: false, alpha: false });
-    if (!gl) return;
+    if (!gl) return null;
 
-    // ----- program
     const compile = (type: number, src: string) => {
       const sh = gl.createShader(type)!;
       gl.shaderSource(sh, src);
@@ -147,7 +161,7 @@ const { scrollTarget = '#work' } = Astro.props;
     gl.attachShader(prog, compile(gl.VERTEX_SHADER, VERT));
     gl.attachShader(prog, compile(gl.FRAGMENT_SHADER, FRAG));
     gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return null;
     gl.useProgram(prog);
 
     const buf = gl.createBuffer();
@@ -167,13 +181,13 @@ const { scrollTarget = '#work' } = Astro.props;
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
     gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 
-    // ----- text → texture (alpha only), laid out exactly like the DOM text
+    // ----- headline → texture (alpha only), laid out exactly like the DOM text in its current (active) pose
     const textCanvas = document.createElement('canvas');
     const tctx = textCanvas.getContext('2d')!;
-    let dpr = 1, W = 0, H = 0, radiusPx = 0;
+    let dpr = 1, W = 0, H = 0;
 
     const drawText = () => {
-      const pr = panel.getBoundingClientRect();
+      const pr = stage.getBoundingClientRect();
       dpr = Math.min(2, window.devicePixelRatio || 1);
       W = Math.round(pr.width * dpr);
       H = Math.round(pr.height * dpr);
@@ -184,11 +198,13 @@ const { scrollTarget = '#work' } = Astro.props;
       tctx.fillStyle = '#fff';
       tctx.textBaseline = 'alphabetic';
 
-      const intro = copy.querySelector<HTMLElement>('[data-intro]')!;
+      // the headline is scaled while active (CSS transform): rects are already scaled, the font size must follow
+      const t = getComputedStyle(intro).transform;
+      const sc = t && t !== 'none' ? new DOMMatrix(t).a : 1;
       const walker = document.createTreeWalker(intro, NodeFilter.SHOW_TEXT);
       for (let node = walker.nextNode() as Text | null; node; node = walker.nextNode() as Text | null) {
         const cs = getComputedStyle(node.parentElement!);
-        tctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+        tctx.font = `${cs.fontStyle} ${cs.fontWeight} ${parseFloat(cs.fontSize) * sc}px ${cs.fontFamily}`;
         const ascent = tctx.measureText('Hg').fontBoundingBoxAscent;
         const range = document.createRange();
         const re = /\S+/g;
@@ -206,45 +222,41 @@ const { scrollTarget = '#work' } = Astro.props;
       gl.viewport(0, 0, W, H);
 
       // colours as the browser resolved them (theme aware)
-      const grads = rgbList(getComputedStyle(panel).backgroundImage);
-      const ink = rgbList(getComputedStyle(copy.querySelector('[data-intro]')!).color)[0] ?? [1, 1, 1];
+      const grads = rgbList(getComputedStyle(backdrop).backgroundImage);
+      const ink = rgbList(getComputedStyle(intro).color)[0] ?? [1, 1, 1];
       gl.uniform3fv(u.top, grads[0] ?? [0.27, 0.25, 0.49]);
       gl.uniform3fv(u.bottom, grads[1] ?? [0.61, 0.48, 0.57]);
       gl.uniform3fv(u.ink, ink);
       gl.uniform2f(u.res, W, H);
       gl.uniform1f(u.dpr, dpr);
-      radiusPx = Math.min(pr.width * 0.3, 420) * dpr;
-      gl.uniform1f(u.radius, radiusPx);
+      gl.uniform1f(u.radius, Math.min(pr.width * 0.3, 420) * dpr);
     };
 
     // ----- pointer-driven state
-    let mx = 0, my = 0; // smoothed lens position (css px in the panel)
-    let tx = 0, ty = 0; // latest pointer position
+    let mx = 0, my = 0;          // smoothed lens position (css px in the stage)
+    let tx = 0, ty = 0;          // latest pointer position
     let lastX = 0, lastY = 0, hasLast = false;
-    let speed = 0; // smoothed pointer speed
+    let speed = 0;               // smoothed pointer speed
     let strength = 0;
-    let raf = 0;
-    let running = false;
-    let prev = 0;
+    let armed = false;
+    let armTimer = 0;
+    let raf = 0, running = false, prev = 0;
     const t0 = performance.now();
+
+    const hide = () => { strength = 0; speed = 0; canvas.classList.remove('is-on'); };
 
     const draw = (now: number) => {
       const dt = Math.min(0.05, (now - (prev || now - 16)) / 1000);
       prev = now;
       speed *= Math.exp(-dt * 4.5); // decay between events
-      const target = Math.min(0.6, speed / 70);
+      const target = armed ? Math.min(0.6, speed / 70) : 0;
       // ease in gently, ease out slowly (frame-rate independent)
       strength += (target - strength) * (1 - Math.exp(-dt * (target > strength ? 5 : 2.2)));
       const follow = 1 - Math.exp(-dt * 12);
       mx += (tx - mx) * follow;
       my += (ty - my) * follow;
 
-      if (strength < 0.004) {
-        running = false;
-        prev = 0;
-        canvas.classList.remove('is-on');
-        return;
-      }
+      if (strength < 0.004) { running = false; prev = 0; canvas.classList.remove('is-on'); return; }
       canvas.classList.add('is-on');
       gl.uniform2f(u.mouse, mx * dpr, my * dpr);
       gl.uniform1f(u.strength, strength);
@@ -252,42 +264,166 @@ const { scrollTarget = '#work' } = Astro.props;
       gl.drawArrays(gl.TRIANGLES, 0, 3);
       raf = requestAnimationFrame(draw);
     };
-    const kick = () => {
-      if (running) return;
-      running = true;
-      raf = requestAnimationFrame(draw);
-    };
+    const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(draw); } };
 
-    const onMove = (e: PointerEvent) => {
-      const r = panel.getBoundingClientRect();
-      tx = e.clientX - r.left;
-      ty = e.clientY - r.top;
-      if (!running) { mx = tx; my = ty; }
-      if (hasLast) speed = Math.min(140, speed + Math.hypot(e.clientX - lastX, e.clientY - lastY) * 0.6);
-      lastX = e.clientX; lastY = e.clientY; hasLast = true;
-      kick();
-    };
-    const onLeave = () => { hasLast = false; };
-
-    const rebuild = () => { drawText(); if (running) gl.drawArrays(gl.TRIANGLES, 0, 3); };
-    document.fonts?.ready.then(rebuild);
-    drawText();
-
-    panel.addEventListener('pointermove', onMove);
-    panel.addEventListener('pointerleave', onLeave);
-    window.addEventListener('resize', rebuild);
+    const rebuild = () => { if (!armed) return; drawText(); if (running) gl.drawArrays(gl.TRIANGLES, 0, 3); };
     const ro = new ResizeObserver(rebuild);
-    ro.observe(panel);
+    ro.observe(stage);
     const mo = new MutationObserver(rebuild); // theme switch
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
+    return {
+      enter() {
+        window.clearTimeout(armTimer);
+        armTimer = window.setTimeout(() => { armed = true; drawText(); }, ARM_DELAY);
+      },
+      pointer(e, x, y) {
+        tx = x; ty = y;
+        if (!running) { mx = tx; my = ty; }
+        if (hasLast) speed = Math.min(140, speed + Math.hypot(e.clientX - lastX, e.clientY - lastY) * 0.6);
+        lastX = e.clientX; lastY = e.clientY; hasLast = true;
+        if (armed) kick();
+      },
+      leave() {
+        window.clearTimeout(armTimer);
+        armed = false; hasLast = false;
+        hide();
+      },
+      dispose() {
+        window.clearTimeout(armTimer);
+        cancelAnimationFrame(raf);
+        ro.disconnect(); mo.disconnect();
+        hide();
+      },
+    };
+  }
+
+  let stop: (() => void) | undefined;
+
+  function init() {
+    stop?.();
+    const stage = document.querySelector<HTMLElement>('[data-stage]');
+    const emoji = document.querySelector<HTMLElement>('[data-emoji]');
+    const canvas = document.querySelector<HTMLCanvasElement>('[data-fx]');
+    const intro = document.querySelector<HTMLElement>('[data-intro]');
+    const backdrop = stage?.querySelector<HTMLElement>('.backdrop');
+    if (!stage || !emoji) return;
+    // Only with a fine, hovering pointer and without reduced motion; otherwise the static layout stays.
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    // Position: offset (css px) from the resting place. Tilt: damped spring chasing a target set by pointer speed.
+    let x = 0, y = 0;            // current offset
+    let tx = 0, ty = 0;          // target offset (pointer in stage, relative to rest centre)
+    let angle = 0, spin = 0;     // spring tilt: degrees, degrees per second
+    let scale = 1;               // 1 = resting size, FOLLOW_SCALE while it sits on the cursor
+    let idle = 1;                // 1 = resting pose (tilted + swaying), 0 = following the cursor
+    let vx = 0;                  // smoothed horizontal pointer speed, px per second
+    let inside = false;
+    let lastX = 0, lastT = 0;
+    let restX = 0, restY = 0;    // rest centre in stage coordinates
+    let raf = 0, running = false, visible = true, prev = 0;
+
+    // Soft, under-damped spring (about half critical damping): the tilt eases back slowly and swings through once or twice.
+    const STIFFNESS = 40, DAMPING = 6.5;
+    const MAX_TILT = 38;                 // degrees
+    const FOLLOW_SCALE = 1 / 1.35;       // the resting emoji is 1.35x the size it has on the cursor
+    const IDLE_ANGLE = 14;               // resting tilt, degrees clockwise
+    const SWAY = 2.5, SWAY_PERIOD = 3.8; // idle wink: +-2.5 degrees every 3.8 s
+
+    // A new gradient on every activation: salmon at the bottom, the top drifts away from it (dusty rose / mauve / violet).
+    // Muted and light enough for the headline, in the same soft register as the default tokens. It is set while the backdrop
+    // is still invisible, so the change is never seen.
+    const rand = (a: number, b: number) => a + Math.random() * (b - a);
+    const hsl = (h: number, sat: number, l: number) => `hsl(${((Math.round(h) % 360) + 360) % 360} ${Math.round(sat)}% ${Math.round(l)}%)`;
+    const SALMON_HUE = 6;
+    const newGradient = () => {
+      const light = document.documentElement.dataset.theme === 'light';
+      // dark: the top only drifts towards rose / mauve / violet (warm hues at this lightness turn muddy brown); light may go peach too
+      const shift = light && Math.random() < 0.35 ? rand(14, 35) : -rand(14, 75);
+      const bottomHue = SALMON_HUE + rand(-10, 14);
+      const top = light ? hsl(SALMON_HUE + shift, rand(50, 70), rand(78, 85)) : hsl(SALMON_HUE + shift, rand(22, 36), rand(34, 43));
+      const bottom = light ? hsl(bottomHue, rand(65, 85), rand(86, 92)) : hsl(bottomHue, rand(30, 45), rand(55, 61));
+      stage.style.setProperty('--gradient-hero-top', top);
+      stage.style.setProperty('--gradient-hero-bottom', bottom);
+    };
+
+    const measureRest = () => {
+      const s = stage.getBoundingClientRect();
+      const was = emoji.style.transform;
+      emoji.style.transform = 'none';
+      const r = emoji.getBoundingClientRect();
+      emoji.style.transform = was;
+      restX = r.left - s.left + r.width / 2;
+      restY = r.top - s.top + r.height / 2;
+    };
+
+    const render = (deg: number) => { emoji.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${deg.toFixed(2)}deg) scale(${scale.toFixed(3)})`; };
+
+    const tick = (now: number) => {
+      if (!visible) { running = false; prev = 0; return; }
+      const dt = Math.min(0.04, (now - (prev || now - 16)) / 1000);
+      prev = now;
+
+      vx *= Math.exp(-dt * 4); // speed decays between pointer events (slowly, so the tilt lingers)
+      const target = inside ? Math.max(-MAX_TILT, Math.min(MAX_TILT, -vx / 28)) : 0;
+      spin += (-STIFFNESS * (angle - target) - DAMPING * spin) * dt;
+      angle += spin * dt;
+
+      if (inside) { x = tx; y = ty; } // follows immediately
+      else { const k = 1 - Math.exp(-dt * 7); x += (tx - x) * k; y += (ty - y) * k; } // glides home
+
+      scale += ((inside ? FOLLOW_SCALE : 1) - scale) * (1 - Math.exp(-dt * 9));
+      idle += ((inside ? 0 : 1) - idle) * (1 - Math.exp(-dt * 5));
+
+      const sway = Math.sin((now / 1000) * ((Math.PI * 2) / SWAY_PERIOD)) * SWAY;
+      render(angle + idle * (IDLE_ANGLE + sway));
+      raf = requestAnimationFrame(tick);
+    };
+    const kick = () => { if (!running && visible) { running = true; raf = requestAnimationFrame(tick); } };
+
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType === 'touch') return;
+      const s = stage.getBoundingClientRect();
+      if (!inside) { inside = true; lastT = 0; newGradient(); stage.classList.add('is-following'); fx?.enter(); }
+      fx?.pointer(e, e.clientX - s.left, e.clientY - s.top);
+      tx = e.clientX - s.left - restX;
+      ty = e.clientY - s.top - restY;
+      const t = e.timeStamp;
+      if (lastT) {
+        const dt = Math.max(1, t - lastT) / 1000;
+        vx += ((e.clientX - lastX) / dt - vx) * 0.5;
+      }
+      lastX = e.clientX; lastT = t;
+      kick();
+    };
+    const onLeave = () => { inside = false; lastT = 0; tx = 0; ty = 0; stage.classList.remove('is-following'); fx?.leave(); kick(); };
+
+    const fx = canvas && intro && backdrop ? setupFx(stage, canvas, intro, backdrop) : null;
+
+    measureRest();
+    document.fonts?.ready.then(measureRest);
+    const ro = new ResizeObserver(() => { measureRest(); if (!inside) { x = y = 0; } });
+    ro.observe(stage);
+    // the idle sway only runs while the stage is on screen
+    const io = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) kick(); });
+    io.observe(stage);
+
+    stage.addEventListener('pointermove', onMove);
+    stage.addEventListener('pointerleave', onLeave);
+    kick();
+
     stop = () => {
       cancelAnimationFrame(raf);
-      panel.removeEventListener('pointermove', onMove);
-      panel.removeEventListener('pointerleave', onLeave);
-      window.removeEventListener('resize', rebuild);
+      stage.removeEventListener('pointermove', onMove);
+      stage.removeEventListener('pointerleave', onLeave);
+      stage.classList.remove('is-following');
+      stage.style.removeProperty('--gradient-hero-top');
+      stage.style.removeProperty('--gradient-hero-bottom');
+      emoji.style.transform = '';
       ro.disconnect();
-      mo.disconnect();
+      io.disconnect();
+      fx?.dispose();
       stop = undefined;
     };
   }
