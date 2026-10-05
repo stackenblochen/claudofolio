@@ -19,7 +19,7 @@ interface Props {
 const { src, title, height, poster, posterAlt = '', note = 'Interactive demo, best viewed on desktop.', caption } = Astro.props;
 ---
 
-<figure class:list={['embed measure-wide reveal', { 'has-poster': !!poster }]} style={height ? `--embed-h:${height}px` : undefined}>
+<figure class:list={['embed measure-media reveal', { 'has-poster': !!poster }]} style={height ? `--embed-h:${height}px` : undefined}>
   <iframe class="media-l media-hairline" src={src} title={title} loading="lazy"></iframe>
   {poster && (
     <div class="poster">

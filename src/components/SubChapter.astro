@@ -15,7 +15,7 @@ const hasMedia = Astro.slots.has('media');
     <h3 class="t-subheading" id={id}>{number !== undefined && <span class="num">{number}. </span>}{title}</h3>
     {Astro.slots.has('default') && <div class="body prose"><slot /></div>}
   </div>
-  {hasMedia && <div class="media measure-media"><slot name="media" /></div>}
+  {hasMedia && <div class="media"><slot name="media" /></div>}
 </div>
 
 <style>

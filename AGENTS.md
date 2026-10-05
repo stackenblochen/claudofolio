@@ -28,10 +28,11 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
 `/styleguide` page (`src/pages/styleguide.astro`).
 
 - **Tokens:** `src/styles/tokens.css` (colour, type, spacing, radius, motion). Never hard-code values in pages or components.
-- **Themes:** light, dark and auto (system). Semantic colour tokens in `tokens.css` use `light-dark(light, dark)`; the nav
-  switch sets `data-theme` on `<html>` (stored in localStorage, absent = auto). Components use only semantic tokens
+- **Themes:** dark (default) and light. Semantic colour tokens in `tokens.css` use `light-dark(light, dark)`; the nav
+  switch is a single icon button that toggles `data-theme="light"` on `<html>` (stored in localStorage, absent = dark; no
+  system/auto mode). Components use only semantic tokens
   (`--bg-page`, `--text-default`, `--text-strong`, `--accent-*` …), never raw palette colours or hex values. White-only SVG
-  logos get `filter: var(--filter-logo)`. Light values are contrast-checked (see the comment in `tokens.css`).
+  logos get `filter: var(--filter-logo)`; the confidential stamp is never filtered. Light values are contrast-checked (see the comment in `tokens.css`).
 - **Base:** `src/styles/base.css` has the six type roles (`.t-display`, `.t-title`, `.t-heading`, `.t-subheading`, `.t-body`, `.t-label`;
   modifiers `.t-upper`, `.t-serif`; body is weight 400, label is always 300; main nav uses `.t-body`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
   `.prose`, `.section`, media helpers and the `.reveal` scroll effect.

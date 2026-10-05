@@ -44,8 +44,8 @@
   --overlay-menu: light-dark(rgba(255, 255, 255, 0.97), rgba(52, 55, 61, 0.97));
   --overlay-thumb: light-dark(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.5));
 
-  /* Theme: "auto" follows the system; the switch in the nav sets data-theme="light|dark" on <html>. */
-  color-scheme: light dark;
+  /* Theme: dark by default; the switch in the nav toggles data-theme="light" on <html> (stored in localStorage). */
+  color-scheme: dark;
   --filter-logo: none; /* white logo SVGs are inverted in light mode */
 
   /* Font families */
@@ -123,9 +123,5 @@
 
 @media (prefers-reduced-motion: reduce) { :root { --duration-reveal: 0ms; } }
 
-/* Theme overrides (set by the switch; absent = auto) */
+/* Light theme (set by the switch) */
 :root[data-theme='light'] { color-scheme: light; --filter-logo: invert(1); }
-:root[data-theme='dark'] { color-scheme: dark; --filter-logo: none; }
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) { --filter-logo: invert(1); }
-}

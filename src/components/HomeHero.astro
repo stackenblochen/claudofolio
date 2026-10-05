@@ -280,8 +280,6 @@ const { scrollTarget = '#work' } = Astro.props;
     ro.observe(panel);
     const mo = new MutationObserver(rebuild); // theme switch
     mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    const mq = matchMedia('(prefers-color-scheme: dark)');
-    mq.addEventListener('change', rebuild);
 
     stop = () => {
       cancelAnimationFrame(raf);
@@ -290,7 +288,6 @@ const { scrollTarget = '#work' } = Astro.props;
       window.removeEventListener('resize', rebuild);
       ro.disconnect();
       mo.disconnect();
-      mq.removeEventListener('change', rebuild);
       stop = undefined;
     };
   }

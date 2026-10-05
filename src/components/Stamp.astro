@@ -1,8 +1,7 @@
 ---
 /**
- * I8 "Confidential" stamp (src/assets/confidential.svg). White disc with black artwork on dark;
- * --filter-logo inverts it in light mode so the disc stays visible on a white page.
- * The graphic carries the notice itself, so it gets an accessible name.
+ * I8 "Confidential" stamp (src/assets/confidential.svg). Always used as delivered (white disc, black artwork),
+ * in light and dark mode. The graphic carries the notice itself, so it gets an accessible name.
  */
 import stamp from '../assets/confidential.svg';
 
@@ -16,5 +15,5 @@ const { class: cls } = Astro.props;
   alt="Please keep all information shown here confidential. Do not share with others." />
 
 <style>
-  .stamp-img { display: block; height: auto; filter: var(--filter-logo); }
+  .stamp-img { display: block; height: auto; }
 </style>
