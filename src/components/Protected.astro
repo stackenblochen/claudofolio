@@ -20,11 +20,6 @@ const payload = enabled ? encryptHtml(await Astro.slots.render('default'), getCa
   ? (
     <div class="gate section" data-lock={JSON.stringify(payload)}>
       <div class="container"><form class="measure-text gate-form" novalidate>
-        <svg class="lock" width="35" height="52" viewBox="0 0 35 52" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="1" y="23" width="33" height="28" rx="2.5" />
-          <path d="M7 23v-8.5a10.5 10.5 0 0 1 21 0V23" />
-          <circle cx="17.5" cy="35" r="3.2" /><path d="M17.5 38v5" />
-        </svg>
         <h1 class="t-heading">{title}</h1>
         <p class="t-body">This case study is protected.<br /><span>To view it, please enter the password.</span></p>
         <div class="row">
@@ -45,7 +40,7 @@ const payload = enabled ? encryptHtml(await Astro.slots.render('default'), getCa
   .row { display: flex; gap: var(--space-2); width: min(100%, 28rem); }
   input { flex: 1; min-width: 0; padding: var(--space-3) var(--space-4); color: var(--text-strong); background: var(--bg-raised);
     border: 1px solid var(--border-subtle); border-radius: var(--radius-m); font: inherit; }
-  input:focus-visible { outline: 2px solid var(--text-strong); outline-offset: 2px; }
+  input:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
   button { cursor: pointer; padding: var(--space-3) var(--space-5); color: var(--bg-page); background: var(--text-strong); border: 0; border-radius: var(--radius-m); font: inherit; }
   button:disabled { opacity: 0.6; cursor: progress; }
   .error { color: var(--accent-negative); }

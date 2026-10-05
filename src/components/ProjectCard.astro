@@ -1,18 +1,25 @@
 ---
 /**
  * L1 Project teaser: full media-width panel (same measure as figures), text left, cover right.
- * Below 768 px the text sits on top of the cover. Dark overlay on hover.
+ * Below 768 px the text sits on top of the cover.
+ *
+ * With a fine hovering pointer (and no reduced-motion preference) the panel is a stage like the home hero: a gradient
+ * (a fresh random one per visit) is revealed along the pointer path and fades away when the pointer leaves, and a pointing
+ * finger follows the pointer (centred on it), dragged along with a slight tilt. The cover rests 15% smaller and pops up while active. The whole panel is the link. On touch and with reduced motion
+ * the teaser stays plain.
  */
 import type { CardData } from '../lib/projects';
 import Img from './Img.astro';
 
 interface Props {
   card: CardData;
+  emoji?: string;
 }
-const { card } = Astro.props;
+const { card, emoji = '👆' } = Astro.props;
 ---
 
-<article class="teaser">
+<article class="teaser" data-teaser>
+  <canvas class="wash" data-teaser-reveal aria-hidden="true"></canvas>
   <a href={card.href} class="link-block">
     <div class="copy">
       <h3 class="t-subheading">{card.title}</h3>
@@ -23,21 +30,136 @@ const { card } = Astro.props;
       <Img src={card.cover} alt={card.coverAlt} sizes="(min-width: 768px) 600px, 100vw" />
     </div>
   </a>
+  <span class="pen" data-teaser-pen aria-hidden="true">{emoji}</span>
 </article>
 
 <style>
-  .teaser { background: var(--bg-raised); border-radius: var(--radius-l); overflow: hidden; }
-  .link-block { display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-5) var(--space-4) 0; text-decoration: none; color: inherit; }
+  .teaser { position: relative; background: var(--bg-raised); border-radius: var(--radius-l); overflow: hidden; }
+  .link-block { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-5) var(--space-4) 0; text-decoration: none; color: inherit; }
   .copy { display: flex; flex-direction: column; gap: var(--space-2); }
   .cat { color: var(--text-default); }
   .sum { margin-top: var(--space-1); }
   .thumb { position: relative; }
   .thumb :global(img) { display: block; width: 100%; height: auto; }
-  .thumb::after { content: ''; position: absolute; inset: 0; background: var(--overlay-thumb); opacity: 0; transition: opacity 200ms; }
-  .link-block:hover .thumb::after, .link-block:focus-visible .thumb::after { opacity: 1; }
   @media (min-width: 768px) {
     .link-block { flex-direction: row; align-items: center; gap: var(--space-6); padding: var(--space-6); }
     .copy { flex: 0 0 34%; }
     .thumb { flex: 1 1 0; min-width: 0; }
   }
+
+  /* gradient reveal + pointing finger: only with a fine hovering pointer and without reduced motion */
+  .wash, .pen { display: none; }
+  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    .wash { display: block; position: absolute; inset: 0; width: 100%; height: 100%; border-radius: var(--radius-l); pointer-events: none; }
+    .pen {
+      display: block; position: absolute; z-index: 3; left: 0; top: 0; font-size: 3.5rem; line-height: 1;
+      pointer-events: none; user-select: none; will-change: transform;
+      opacity: 0; scale: 0.5; transition: opacity 200ms ease, scale 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    /* the finger takes the place of the pointer */
+    .teaser.is-active, .teaser.is-active .link-block { cursor: none; }
+    .teaser.is-active .pen { opacity: 1; scale: 1; }
+    /* the cover rests a bit smaller and pops up with a springy overshoot while the teaser is active (like the headline on the stage) */
+    .thumb { transform: scale(0.90); transform-origin: 50% 50%; transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .teaser.is-active .thumb { transform: translateY(-6px) scale(1.03); }
+    /* text stays readable on the revealed gradient */
+    .cat, .sum { transition: color 240ms ease; }
+    .teaser.is-active .cat, .teaser.is-active .sum { color: var(--text-strong); }
+  }
 </style>
+
+<script>
+  import { randomGradient, setupReveal } from '../lib/pen';
+
+  let stops: (() => void)[] = [];
+
+  function init() {
+    stops.forEach((fn) => fn());
+    stops = [];
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+
+    document.querySelectorAll<HTMLElement>('[data-teaser]').forEach((teaser) => {
+      const canvas = teaser.querySelector<HTMLCanvasElement>('[data-teaser-reveal]');
+      const pen = teaser.querySelector<HTMLElement>('[data-teaser-pen]');
+      if (!canvas || !pen) return;
+
+      let colors = randomGradient(false);
+      const reveal = setupReveal({
+        stage: teaser,
+        canvas,
+        getColors: () => colors,
+        getCorner: () => parseFloat(getComputedStyle(teaser).borderTopLeftRadius) || 16,
+        getRadius: (_w, h) => Math.min(Math.max(h * 0.36, 80), 140),
+      });
+      if (!reveal) return;
+
+      // the pointer sits in the middle of the emoji (and is the centre of the revealed circle); position follows immediately, the tilt
+      // is a soft spring driven by horizontal speed
+      const STIFFNESS = 40, DAMPING = 6.5, MAX_TILT = 30, LEAN = 14; // LEAN: resting tilt towards the last direction of travel
+      const PEN_X = 0, PEN_Y = 0; // offset from the pointer as a fraction of the emoji size (x right, y down); 0 = centred, e.g. 0.55 / -0.55 = up and right
+      let inside = false;
+      let x = 0, y = 0;          // pointer in the teaser
+      let angle = 0, spin = 0, vx = 0, lean = 0;
+      let lastX = 0, lastY = 0, lastT = 0;
+      let raf = 0, running = false, prev = 0;
+
+      const place = () => {
+        const w = pen.offsetWidth, h = pen.offsetHeight;
+        pen.style.transform = `translate3d(${(x - w / 2 + w * PEN_X).toFixed(1)}px, ${(y - h / 2 + h * PEN_Y).toFixed(1)}px, 0) rotate(${angle.toFixed(2)}deg)`;
+      };
+      const tick = (now: number) => {
+        const dt = Math.min(0.04, (now - (prev || now - 16)) / 1000);
+        prev = now;
+        vx *= Math.exp(-dt * 4);
+        const target = inside ? lean + Math.max(-MAX_TILT, Math.min(MAX_TILT, -vx / 30)) : 0;
+        spin += (-STIFFNESS * (angle - target) - DAMPING * spin) * dt;
+        angle += spin * dt;
+        place();
+        if (!inside && Math.abs(angle) < 0.05 && Math.abs(spin) < 0.1) { running = false; prev = 0; return; }
+        raf = requestAnimationFrame(tick);
+      };
+      const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(tick); } };
+
+      const rect = () => teaser.getBoundingClientRect();
+      const onMove = (e: PointerEvent) => {
+        if (e.pointerType === 'touch') return;
+        const r = rect();
+        x = e.clientX - r.left; y = e.clientY - r.top;
+        if (!inside) {
+          inside = true; lastT = 0; lean = 0;
+          colors = randomGradient(document.documentElement.dataset.theme === 'light');
+          teaser.classList.add('is-active');
+          reveal.enter(x, y);
+        }
+        reveal.move(x, y);
+        const t = e.timeStamp;
+        if (lastT) {
+          vx += ((e.clientX - lastX) / (Math.max(1, t - lastT) / 1000) - vx) * 0.5;
+          // keeps leaning the way it last travelled, also when the pointer rests
+          const dx = e.clientX - lastX, dy = e.clientY - lastY, d = Math.hypot(dx, dy);
+          if (d > 2) lean += ((dx / d) * LEAN - lean) * 0.3;
+        }
+        lastX = e.clientX; lastY = e.clientY; lastT = t;
+        kick();
+      };
+      const onLeave = () => { inside = false; lastT = 0; teaser.classList.remove('is-active'); reveal.leave(); kick(); };
+
+      const ro = new ResizeObserver(() => reveal.resize());
+      ro.observe(teaser);
+      teaser.addEventListener('pointermove', onMove);
+      teaser.addEventListener('pointerleave', onLeave);
+      stops.push(() => {
+        cancelAnimationFrame(raf);
+        teaser.removeEventListener('pointermove', onMove);
+        teaser.removeEventListener('pointerleave', onLeave);
+        teaser.classList.remove('is-active');
+        ro.disconnect();
+        reveal.dispose();
+      });
+    });
+  }
+
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-swap', () => { stops.forEach((fn) => fn()); stops = []; });
+</script>
