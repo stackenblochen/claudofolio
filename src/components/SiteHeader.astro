@@ -2,6 +2,7 @@
 /** G1/G2 Site header: wordmark left, text menu right, overlay menu below 768 px. */
 import { NAV, SITE, url } from '../lib/site';
 import logoSvg from '../assets/wolfgang-logo.svg?raw';
+import ThemeSwitch from './ThemeSwitch.astro';
 
 // Inline so it can follow currentColor; decorative, the link carries the accessible name.
 const logo = logoSvg.replace(/fill="white"/g, 'fill="currentColor"').replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
@@ -21,13 +22,16 @@ const items = [
   <div class="container bar">
     <a class="logo" href={url('/')} aria-label={`${SITE.name}, home`} set:html={logo} />
 
-    <nav class="menu" aria-label="Main">
-      <ul role="list">
-        {items.map((i) => (
-          <li><a class="t-label" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
-        ))}
-      </ul>
-    </nav>
+    <div class="right">
+      <nav class="menu" aria-label="Main">
+        <ul role="list">
+          {items.map((i) => (
+            <li><a class="t-body" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
+          ))}
+        </ul>
+      </nav>
+      <ThemeSwitch />
+    </div>
 
     <button class="burger" type="button" aria-expanded="false" aria-controls="overlay-menu" data-burger>
       <span class="sr-only">Menu</span>
@@ -41,6 +45,7 @@ const items = [
         {items.map((i) => <li><a class="t-heading" href={i.href}>{i.label}</a></li>)}
       </ul>
     </nav>
+    <ThemeSwitch variant="inline" />
   </div>
 </header>
 
@@ -54,7 +59,7 @@ const items = [
   .logo { display: block; width: 100px; color: var(--text-strong); line-height: 0; }
   .logo :global(svg) { width: 100%; height: auto; }
   @media (min-width: 768px) { .logo { width: 140px; } }
-  .menu { display: none; }
+  .right { display: none; align-items: center; gap: var(--space-6); }
   .menu ul { display: flex; gap: var(--space-6); padding: 0; margin: 0; list-style: none; }
   .menu a {
     color: var(--text-default); text-decoration: none; padding-block: var(--space-1);
@@ -72,14 +77,14 @@ const items = [
   }
   .overlay {
     position: fixed; inset: 0; z-index: 1; background: var(--overlay-menu);
-    display: flex; align-items: center; justify-content: center; text-align: center;
+    display: flex; flex-direction: column; gap: var(--space-7); align-items: center; justify-content: center; text-align: center;
   }
   .overlay[hidden] { display: none; }
   .overlay ul { list-style: none; padding: 0; margin: 0; display: grid; gap: var(--space-5); }
   .overlay a { text-decoration: none; }
 
   @media (min-width: 768px) {
-    .menu { display: block; }
+    .right { display: flex; }
     .burger, .overlay { display: none; }
   }
 </style>

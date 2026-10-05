@@ -1,0 +1,168 @@
+---
+/**
+ * Light / dark / auto (system) switch. Stores "light" or "dark" in localStorage ("auto" = no entry)
+ * and sets data-theme on <html>; tokens.css does the rest. <html data-theme-pref> always holds the
+ * current choice (light | dark | auto) and drives which icon the toggle shows.
+ *
+ * variant "menu"   (header): one icon button showing the current mode, options in a dropdown (click, or hover with a mouse)
+ * variant "inline" (mobile overlay): the three options side by side
+ */
+interface Props {
+  variant?: 'menu' | 'inline';
+}
+const { variant = 'menu' } = Astro.props;
+
+const options = [
+  { value: 'light', label: 'Light' },
+  { value: 'auto', label: 'Auto (system)' },
+  { value: 'dark', label: 'Dark' },
+] as const;
+---
+
+<div class:list={['theme', variant]} data-theme-root data-variant={variant}>
+  {variant === 'menu' && (
+    <button class="toggle" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Colour theme" data-theme-toggle>
+      <span class="icon i-light"><Fragment set:html={'<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>'} /></span>
+      <span class="icon i-auto"><Fragment set:html={'<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none"/></svg>'} /></span>
+      <span class="icon i-dark"><Fragment set:html={'<svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z"/></svg>'} /></span>
+    </button>
+  )}
+
+  <div class="options" role="group" aria-label="Colour theme" hidden={variant === 'menu'} data-theme-options>
+    {options.map((o) => (
+      <button type="button" data-theme-set={o.value} aria-pressed="false">
+        {o.value === 'light' && <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>}
+        {o.value === 'auto' && <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none" /></svg>}
+        {o.value === 'dark' && <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" /></svg>}
+        <span class:list={[variant === 'inline' ? 'sr-only' : 't-label']}>{o.label}</span>
+      </button>
+    ))}
+  </div>
+</div>
+
+<style>
+  .theme { position: relative; display: inline-flex; }
+
+  /* toggle (menu variant) */
+  .toggle {
+    display: grid; place-items: center; width: 32px; height: 32px; padding: 0;
+    border: 0; border-radius: 50%; background: transparent; color: var(--text-default); cursor: pointer;
+  }
+  .toggle:hover, .toggle[aria-expanded='true'] { color: var(--text-strong); }
+  .icon { grid-area: 1 / 1; display: none; }
+  .icon :global(svg) { display: block; }
+  .i-auto { display: block; } /* until a preference is known */
+  :global(:root[data-theme-pref='light']) .i-light,
+  :global(:root[data-theme-pref='dark']) .i-dark { display: block; }
+  :global(:root[data-theme-pref='light']) .i-auto,
+  :global(:root[data-theme-pref='dark']) .i-auto { display: none; }
+
+  /* dropdown (menu variant) */
+  .menu .options {
+    position: absolute; top: calc(100% + 4px); right: 0; z-index: 200; min-width: 9.5rem;
+    display: flex; flex-direction: column; padding: var(--space-1);
+    background: var(--bg-page); border: var(--border-hairline); border-radius: var(--radius-m);
+    box-shadow: 0 8px 30px light-dark(rgba(0, 0, 0, 0.12), rgba(0, 0, 0, 0.6));
+  }
+  .menu .options[hidden] { display: none; }
+  .menu .options button {
+    display: flex; align-items: center; gap: var(--space-3); width: 100%; padding: var(--space-2) var(--space-3);
+    border: 0; border-radius: 8px; background: transparent; color: var(--text-default); cursor: pointer; text-align: left;
+  }
+  /* smaller than the label role on purpose: the dropdown is secondary UI */
+  .menu .options button :global(.t-label) { font-size: 0.8125rem; line-height: 1.4; }
+  .menu .options button :global(svg) { width: 14px; height: 14px; }
+  .menu .options button:hover { color: var(--text-strong); background: var(--bg-raised); }
+  .menu .options button[aria-pressed='true'] { color: var(--text-strong); }
+  .menu .options button[aria-pressed='true']::after { content: ''; margin-left: auto; width: 6px; height: 6px; border-radius: 50%; background: var(--accent-link); }
+
+  /* inline variant (mobile overlay) */
+  .inline .options { display: inline-flex; padding: 2px; border: var(--border-hairline); border-radius: 999px; }
+  .inline .options button {
+    display: grid; place-items: center; width: 36px; height: 36px; padding: 0;
+    border: 0; border-radius: 50%; background: transparent; color: var(--text-default); cursor: pointer;
+  }
+  .inline .options button[aria-pressed='true'] { background: var(--bg-card); color: var(--text-strong); }
+</style>
+
+<script>
+  const KEY = 'theme';
+  const root = document.documentElement;
+
+  const stored = (): 'light' | 'dark' | 'auto' => {
+    try {
+      const t = localStorage.getItem(KEY);
+      return t === 'light' || t === 'dark' ? t : 'auto';
+    } catch { return 'auto'; }
+  };
+  const sync = () => {
+    const cur = stored();
+    root.dataset.themePref = cur;
+    document.querySelectorAll<HTMLButtonElement>('[data-theme-set]').forEach((b) =>
+      b.setAttribute('aria-pressed', String(b.dataset.themeSet === cur)));
+  };
+
+  const hoverable = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  // dropdown open/close (menu variant)
+  const menus = () => document.querySelectorAll<HTMLElement>('[data-theme-root][data-variant="menu"]');
+  const setOpen = (el: HTMLElement, open: boolean) => {
+    el.querySelector<HTMLButtonElement>('[data-theme-toggle]')?.setAttribute('aria-expanded', String(open));
+    const opts = el.querySelector<HTMLElement>('[data-theme-options]');
+    if (opts) opts.hidden = !open;
+  };
+  const closeAll = (except?: HTMLElement) => menus().forEach((m) => { if (m !== except) setOpen(m, false); });
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const toggle = target.closest<HTMLElement>('[data-theme-toggle]');
+    if (toggle) {
+      const wrap = toggle.closest<HTMLElement>('[data-theme-root]')!;
+      // with a mouse the menu is already open from hovering: a click keeps it open instead of toggling it shut
+      const open = hoverable ? true : toggle.getAttribute('aria-expanded') !== 'true';
+      closeAll(wrap);
+      setOpen(wrap, open);
+      return;
+    }
+    const btn = target.closest<HTMLButtonElement>('[data-theme-set]');
+    if (btn) {
+      const t = btn.dataset.themeSet as 'light' | 'dark' | 'auto';
+      try { if (t === 'auto') localStorage.removeItem(KEY); else localStorage.setItem(KEY, t); } catch {}
+      if (t === 'auto') delete root.dataset.theme; else root.dataset.theme = t;
+      sync();
+      closeAll();
+      return;
+    }
+    if (!target.closest('[data-theme-root]')) closeAll(); // click outside
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key !== 'Escape') return;
+    const open = [...menus()].find((m) => m.querySelector('[data-theme-toggle]')?.getAttribute('aria-expanded') === 'true');
+    if (open) { setOpen(open, false); open.querySelector<HTMLElement>('[data-theme-toggle]')?.focus(); }
+  });
+  document.addEventListener('focusout', (e) => {
+    const wrap = (e.target as HTMLElement).closest<HTMLElement>('[data-theme-root][data-variant="menu"]');
+    if (wrap && !wrap.contains((e as FocusEvent).relatedTarget as Node | null)) setOpen(wrap, false);
+  });
+
+  // hover to open, for mouse users only
+  if (hoverable) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    document.addEventListener('pointerover', (e) => {
+      const wrap = (e.target as HTMLElement).closest<HTMLElement>('[data-theme-root][data-variant="menu"]');
+      if (!wrap) return;
+      clearTimeout(timer);
+      closeAll(wrap);
+      setOpen(wrap, true);
+    });
+    document.addEventListener('pointerout', (e) => {
+      const wrap = (e.target as HTMLElement).closest<HTMLElement>('[data-theme-root][data-variant="menu"]');
+      if (!wrap || wrap.contains((e as PointerEvent).relatedTarget as Node | null)) return;
+      timer = setTimeout(() => setOpen(wrap, false), 200);
+    });
+  }
+
+  document.addEventListener('astro:page-load', sync);
+  sync();
+</script>

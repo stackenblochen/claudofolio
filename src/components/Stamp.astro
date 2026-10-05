@@ -14,11 +14,11 @@ const { src, class: cls } = Astro.props;
   ? <img src={src} alt="" aria-hidden="true" class={cls} />
   : (
     <svg class={cls} viewBox="0 0 360 120" aria-hidden="true" focusable="false" role="presentation">
-      <g fill="none" stroke="var(--color-white)" stroke-width="5" transform="rotate(-6 180 60)">
+      <g fill="none" stroke="var(--text-strong)" stroke-width="5" transform="rotate(-6 180 60)">
         <rect x="8" y="14" width="344" height="92" rx="12" />
         <rect x="18" y="24" width="324" height="72" rx="6" stroke-width="2" />
       </g>
-      <text x="180" y="78" text-anchor="middle" transform="rotate(-6 180 60)" fill="var(--color-white)"
+      <text x="180" y="78" text-anchor="middle" transform="rotate(-6 180 60)" fill="var(--text-strong)"
             font-family="var(--font-sans)" font-weight="800" font-size="33" letter-spacing="2.5">CONFIDENTIAL</text>
     </svg>
   )}

@@ -28,8 +28,12 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
 `/styleguide` page (`src/pages/styleguide.astro`).
 
 - **Tokens:** `src/styles/tokens.css` (colour, type, spacing, radius, motion). Never hard-code values in pages or components.
+- **Themes:** light, dark and auto (system). Semantic colour tokens in `tokens.css` use `light-dark(light, dark)`; the nav
+  switch sets `data-theme` on `<html>` (stored in localStorage, absent = auto). Components use only semantic tokens
+  (`--bg-page`, `--text-default`, `--text-strong`, `--accent-*` …), never raw palette colours or hex values. White-only SVG
+  logos get `filter: var(--filter-logo)`. Light values are contrast-checked (see the comment in `tokens.css`).
 - **Base:** `src/styles/base.css` has the six type roles (`.t-display`, `.t-title`, `.t-heading`, `.t-subheading`, `.t-body`, `.t-label`;
-  modifiers `.t-upper`, `.t-serif`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
+  modifiers `.t-upper`, `.t-serif`; body is weight 400, label is always 300; main nav uses `.t-body`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
   `.prose`, `.section`, media helpers and the `.reveal` scroll effect.
 - **Components:** `src/components/`, one per module ID in `03-modules.md` (Chapter, Lead, ProjectMeta, Figure, ScreenStack,
   Comparison, Embed, Outcome, ProjectGrid …). Content goes in via props and slots, never style overrides.
@@ -44,4 +48,4 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
 - **Images:** local files in `src/assets/`, via `Figure`/`Img` (AVIF/WebP + srcset). Always write alt text; `alt=""` for decoration.
 - **Mobile parity:** all text visible at every breakpoint; only media may be swapped (`Embed` poster).
 - Open TODOs: `SITE.email` in `src/lib/site.ts`, Editorial New woff2 (`public/fonts/README.md`), real Stamp/Arrow SVGs,
-  portrait images for `HomeHero`, `/about/` and `/imprint/` pages.
+  `/about/` and `/imprint/` pages.
