@@ -1,0 +1,124 @@
+---
+title: A new meeting experience for a secure messenger
+shortTitle: New meeting experience
+summary: "Redesigning calls as Meetings in Wire: instant and scheduled meetings, guest access and a call grid that works within end-to-end encryption."
+category: Product Design
+tags: [Meetings, Enterprise, Prototyping]
+cover: ../../assets/projects/meetings/meeting-cover-mobile-desktop-1.png
+coverAlt: The new Meetings feature of Wire on a desktop and a mobile screen
+heroVariant: mockup
+confidential: true
+company: Wire
+role: Product Designer
+team: 1 PM, 4–6 developers
+timeline: 3 months
+year: 2026
+lead:
+  - The current calling experience in Wire does not meet user expectations in the enterprise and government context.
+  - The new Meetings feature offers a more streamlined, flexible solution.
+outcome:
+  - The team and I surfaced valuable insights and identified key areas for improvement.
+  - A beta phase gathered further feedback from a broader range of users and customers, which now shapes the next milestones and the feature roadmap.
+  - The first milestone is set to launch publicly in November 2026.
+order: 1
+draft: false
+---
+
+import { url as siteUrl } from '../../lib/site';
+import research1 from '../../assets/projects/meetings/research_01.png';
+import research2 from '../../assets/projects/meetings/research_02.png';
+import research3 from '../../assets/projects/meetings/research_03.png';
+import framing from '../../assets/projects/meetings/meetings-framing-overview-1.png';
+import before from '../../assets/projects/meetings/before-001-1.png';
+import adhoc from '../../assets/projects/meetings/meetings-new-adhoc-2.png';
+import guest1 from '../../assets/projects/meetings/meetings-join-as-guest-02-1.png';
+import guest2 from '../../assets/projects/meetings/meetings-join-as-guest-03.png';
+import schedule1 from '../../assets/projects/meetings/schedule-02-1440-1.png';
+import schedule2 from '../../assets/projects/meetings/schedule-01-1440.png';
+
+<Chapter title="Key user insights" id="insights">
+  Extracted from stakeholder and peer interviews (Sales, Customer Success, Product and others), segment research and qualitative user interviews.
+
+  <Fragment slot="media">
+    <InsightRow image={research1} alt="Illustration of familiar meeting patterns" title="Familiar patterns">
+      Users expect an experience similar to Zoom, Meet or Slack, since these tools already define the baseline.
+    </InsightRow>
+    <InsightRow image={research2} alt="Illustration of temporary and persistent groups" title="Temporary vs. persistent">
+      Instant meetings are more temporary and often formed outside of existing teams, while team collaboration favors persistent groups and channels.
+    </InsightRow>
+    <InsightRow image={research3} alt="Illustration of a calendar" title="Calendar needs">
+      Enterprises don't want a second calendar, though heavily restricted sectors can benefit from scheduling within Wire.
+    </InsightRow>
+  </Fragment>
+</Chapter>
+
+<Chapter title="From calls to meetings" id="framing">
+  Calls already exist in Wire, but always instantly and within the context of an existing group. I searched for better terminology to explain the planned changes. By framing the feature as Meetings, we made clear that a call is just the medium, while a meeting reflects the user's actual goal: aligning with people, whether instantly or scheduled, within a group or without one. Getting this terminology right from the start helped set expectations with both users and stakeholders, and helped communicate the added user value.
+
+  <Fragment slot="media">
+    <Figure src={framing} alt="Overview of how calls become meetings: instant or scheduled, with or without a group" />
+  </Fragment>
+</Chapter>
+
+<Chapter title="Design solution" id="solution">
+  <Fragment slot="media">
+    <SubChapter number={1} title="Instant meetings" id="instant">
+      Users want to start a call without creating a channel or group first, an experience that is established by the main competitors (Zoom, Meet and Slack). As people can also join a meeting without a Wire account at all (if the host allows it), instant meetings are an important growth driver.
+
+      <ChallengeSolution>
+        <p slot="challenge">Wire's existing "invite guests" flow had already shown critical UX issues in previous user testing. For example, a new link must be generated whenever the password changes, and the password can't be viewed again once set.</p>
+        <p slot="solution">I wasn't able to get buy-in to rework the invitation flow within the timeline of this project, so I had to design around the existing constraints to not block the team. However, I moved the invitation-link improvements to next quarter's roadmap.</p>
+      </ChallengeSolution>
+
+      <Fragment slot="media">
+        <ScreenStack
+          images={[
+            { src: before, alt: 'The Wire desktop app before the change, with an empty Meetings view offering Meet Now and Schedule Meeting' },
+            { src: adhoc, alt: 'Dialog for setting up an ad-hoc meeting' },
+          ]}
+          caption="Setting up an ad-hoc meeting"
+        />
+        <ScreenStack
+          images={[
+            { src: guest1, alt: 'Join as guest page with camera preview, name field and Join as Guest button' },
+            { src: guest2, alt: 'Guest view of the running meeting after joining, with a grid of video tiles' },
+          ]}
+          caption="Join as guest"
+        />
+      </Fragment>
+    </SubChapter>
+
+    <SubChapter number={2} title="Scheduled meetings" id="scheduled">
+      Scheduled meetings typically happen within existing groups, as part of ongoing team collaboration, which is why scheduling ahead of time is essential. Users need to stay informed about upcoming meetings without adding to information overload, and be able to manage them as effortlessly as possible.
+
+      <ChallengeSolution>
+        <p slot="challenge">Finding the best timeslot for each participant without excessive back-and-forth is critical for scheduling a meeting, and synced calendars are key to finding that slot. However, building a full calendar replacement was considered too costly, especially as users' willingness to switch to yet another calendar was uncertain.</p>
+        <p slot="solution">Our approach for the first implementation was to focus on a basic list view of upcoming meetings. This lets users handle the core functionality (scheduling, joining, accepting or declining, and getting an overview) directly within the app. A Wire meeting plugin for Outlook and Gmail is planned as the next milestone.</p>
+      </ChallengeSolution>
+
+      <Fragment slot="media">
+        <ScreenStack
+          images={[{ src: schedule1, alt: 'My Meetings list of upcoming meetings' }]}
+          caption="My Meetings"
+        />
+        <ScreenStack
+          images={[{ src: schedule2, alt: 'Form for scheduling a meeting' }]}
+          caption="Scheduling a meeting"
+        />
+      </Fragment>
+    </SubChapter>
+
+    <SubChapter number={3} title="Calling experience" id="calling">
+      Once a meeting has started, the calling experience defines how users interact with each other. Since this is the most prominent and visible part of the feature, I made sure to include additional improvements here as well.
+
+      <ChallengeSolution>
+        <p slot="challenge">Unlike the main competitors, Wire encrypts every video stream end-to-end. This means that each device must decrypt the incoming streams itself, limiting how many videos can be shown at once (max. 9 tiles). The current implementation adds pagination for calls with more than 9 participants, but this makes big calls confusing as it can hide active speakers on another page.</p>
+        <p slot="solution">In a workshop with engineers, we developed a new approach: participants are ordered by speaking activity. Active speakers fill the nine visible tiles, while passive listeners move into an overflow slot and reappear as soon as they speak again. This removes pagination entirely and keeps every call on a single, clean screen. To demonstrate how it works, I vibe-coded the prototype below.</p>
+      </ChallengeSolution>
+
+      <Fragment slot="media">
+        <Embed src={siteUrl('/demos/meetings/index.html')} title="Prototype of the speaker-ordered call grid" height={640} note="Interactive call grid prototype, best viewed on desktop." />
+      </Fragment>
+    </SubChapter>
+  </Fragment>
+</Chapter>
