@@ -4,6 +4,7 @@
  * All fixed blocks come from frontmatter (see content.config.ts); the MDX body only holds chapters.
  */
 import Base from './Base.astro';
+import Protected from '../components/Protected.astro';
 import CaseHero from '../components/CaseHero.astro';
 import Lead from '../components/Lead.astro';
 import ProjectMeta from '../components/ProjectMeta.astro';
@@ -28,18 +29,20 @@ const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard
 ---
 
 <Base title={d.shortTitle} description={d.summary} ogImage={d.cover.src}>
-  <CaseHero
-    title={d.title}
-    variant={d.heroVariant}
-    image={d.cover}
-    imageAlt={d.coverAlt}
-    background={d.heroBackground}
-    confidential={d.confidential}
-  />
-  <Lead sentences={d.lead} />
-  <ProjectMeta items={meta} />
-  <div class="chapters chapter-flow"><slot /></div>
-  <Outcome items={d.outcome} />
+  <Protected enabled={d.protected} title={d.title}>
+    <CaseHero
+      title={d.title}
+      variant={d.heroVariant}
+      image={d.cover}
+      imageAlt={d.coverAlt}
+      background={d.heroBackground}
+      confidential={d.confidential}
+    />
+    <Lead sentences={d.lead} />
+    <ProjectMeta items={meta} />
+    <div class="chapters chapter-flow"><slot /></div>
+    <Outcome items={d.outcome} />
+  </Protected>
   {others.length > 0 && (
     <section class="others section section--black" aria-labelledby="others-title">
       <div class="container">

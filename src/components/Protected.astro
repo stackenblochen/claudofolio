@@ -1,0 +1,106 @@
+---
+/**
+ * Password gate for a case study. With `enabled` the slot is rendered to HTML at build time and encrypted
+ * (AES-GCM, key from PBKDF2); the page only ships the ciphertext plus this form. The browser decrypts after
+ * the right password is entered and remembers it for the tab (sessionStorage).
+ * The password comes from CASE_STUDY_PASSWORD at build time (see src/lib/lock.ts).
+ * Note: image and demo files are still reachable by URL; only the page content is encrypted.
+ */
+import { encryptHtml, getCasePassword } from '../lib/lock';
+
+interface Props {
+  enabled?: boolean;
+  title: string;
+}
+const { enabled = false, title } = Astro.props;
+const payload = enabled ? encryptHtml(await Astro.slots.render('default'), getCasePassword()) : null;
+---
+
+{enabled && payload
+  ? (
+    <div class="gate section" data-lock={JSON.stringify(payload)}>
+      <div class="container"><form class="measure-text gate-form" novalidate>
+        <svg class="lock" width="35" height="52" viewBox="0 0 35 52" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.5">
+          <rect x="1" y="23" width="33" height="28" rx="2.5" />
+          <path d="M7 23v-8.5a10.5 10.5 0 0 1 21 0V23" />
+          <circle cx="17.5" cy="35" r="3.2" /><path d="M17.5 38v5" />
+        </svg>
+        <h1 class="t-heading">{title}</h1>
+        <p class="t-body">This case study is protected.<br /><span>To view it, please enter the password.</span></p>
+        <div class="row">
+          <label class="sr-only" for="case-password">Password</label>
+          <input id="case-password" name="password" type="password" class="t-body" placeholder="Enter password" autocomplete="current-password" required />
+          <button type="submit" class="t-label">Submit</button>
+        </div>
+        <p class="error t-label" role="alert" hidden>Wrong password, please try again.</p>
+      </form></div>
+    </div>
+  )
+  : <slot />}
+
+<style>
+  .gate { min-height: 70vh; display: grid; align-items: center; }
+  .gate-form { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-4); }
+  .lock { color: var(--text-strong); }
+  .row { display: flex; gap: var(--space-2); width: min(100%, 28rem); }
+  input { flex: 1; min-width: 0; padding: var(--space-3) var(--space-4); color: var(--text-strong); background: var(--bg-raised);
+    border: 1px solid var(--border-subtle); border-radius: var(--radius-m); font: inherit; }
+  input:focus-visible { outline: 2px solid var(--text-strong); outline-offset: 2px; }
+  button { cursor: pointer; padding: var(--space-3) var(--space-5); color: var(--bg-page); background: var(--text-strong); border: 0; border-radius: var(--radius-m); font: inherit; }
+  button:disabled { opacity: 0.6; cursor: progress; }
+  .error { color: var(--accent-negative); }
+</style>
+
+<script>
+  const b64 = (s: string) => Uint8Array.from(atob(s), (c) => c.charCodeAt(0));
+  const KEY = 'case-password';
+
+  async function decrypt(lock: { salt: string; iv: string; data: string; iterations: number }, password: string) {
+    const base = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
+    const key = await crypto.subtle.deriveKey(
+      { name: 'PBKDF2', salt: b64(lock.salt), iterations: lock.iterations, hash: 'SHA-256' },
+      base, { name: 'AES-GCM', length: 256 }, false, ['decrypt'],
+    );
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv: b64(lock.iv) }, key, b64(lock.data));
+    return new TextDecoder().decode(plain);
+  }
+
+  function unlock(gate: HTMLElement, html: string) {
+    const tpl = document.createElement('template');
+    tpl.innerHTML = html;
+    tpl.content.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
+    gate.replaceWith(tpl.content);
+    window.scrollTo(0, 0);
+  }
+
+  document.addEventListener('astro:page-load', async () => {
+    const gate = document.querySelector<HTMLElement>('.gate[data-lock]');
+    if (!gate) return;
+    const lock = JSON.parse(gate.dataset.lock!);
+    const form = gate.querySelector('form')!;
+    const input = form.querySelector('input')!;
+    const error = form.querySelector<HTMLElement>('.error')!;
+    const button = form.querySelector('button')!;
+
+    let saved: string | null = null;
+    try { saved = sessionStorage.getItem(KEY); } catch {}
+    if (saved) {
+      try { return unlock(gate, await decrypt(lock, saved)); } catch { try { sessionStorage.removeItem(KEY); } catch {} }
+    }
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      error.hidden = true;
+      button.disabled = true;
+      try {
+        const html = await decrypt(lock, input.value);
+        try { sessionStorage.setItem(KEY, input.value); } catch {}
+        unlock(gate, html);
+      } catch {
+        error.hidden = false;
+        input.select();
+        button.disabled = false;
+      }
+    });
+  });
+</script>
