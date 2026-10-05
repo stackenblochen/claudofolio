@@ -40,6 +40,8 @@ export type Reveal = {
   mask: HTMLCanvasElement;
   enter: (x: number, y: number) => void;
   move: (x: number, y: number) => void;
+  /** Opens a circle from (x, y) that keeps growing until the whole stage is revealed (used to finish an automatic sweep). */
+  bloom: (x: number, y: number) => void;
   leave: () => void;
   resize: () => void;
   dispose: () => void;
@@ -74,6 +76,7 @@ export function setupReveal({ stage, canvas, getColors, getCorner, getRadius }: 
   let vel = 0, lastMoveT = 0;     // smoothed pointer speed, px per second
   let top = '', bottom = '';
   let inside = false, px = 0, py = 0, lx = 0, ly = 0, growth = 1, fade = 0;
+  let bloom: { x: number; y: number; r: number; max: number } | null = null;
   let raf = 0, running = false, prev = 0;
 
   const resize = () => {
@@ -152,6 +155,12 @@ export function setupReveal({ stage, canvas, getColors, getCorner, getRadius }: 
       vel *= Math.exp(-dt * 5);                         // speed fades when the pointer rests, so the circle shrinks back
       fade = 1;
       stampTo(px, py, radius * growth * (1 + SPEED_GROWTH * Math.min(1, vel / SPEED_FULL)));
+      if (bloom) {
+        // exponential approach plus a constant push, so the last stretch does not crawl
+        bloom.r += (bloom.max - bloom.r) * (1 - Math.exp(-dt * 8)) + dt * 700;
+        stamp(bloom.x, bloom.y, bloom.r);
+        if (bloom.r >= bloom.max - 2) bloom = null;
+      }
     } else {
       fade -= dt * FADE_OUT;
       if (fade <= 0) {
@@ -175,7 +184,7 @@ export function setupReveal({ stage, canvas, getColors, getCorner, getRadius }: 
     enter(x, y) {
       readColors();
       mctx.clearRect(0, 0, mask.width, mask.height);
-      inside = true; growth = 0.2; fade = 1; vel = 0; lastMoveT = 0;
+      inside = true; growth = 0.2; fade = 1; vel = 0; lastMoveT = 0; bloom = null;
       px = lx = x; py = ly = y;
       kick();
     },
@@ -186,7 +195,13 @@ export function setupReveal({ stage, canvas, getColors, getCorner, getRadius }: 
       px = x; py = y;
       if (inside) kick();
     },
-    leave() { inside = false; kick(); },
+    bloom(x, y) {
+      // the soft circle is solid up to 55% of its radius, so it has to reach 1/0.55 of the farthest corner distance
+      const far = Math.max(Math.hypot(x, y), Math.hypot(W - x, y), Math.hypot(x, H - y), Math.hypot(W - x, H - y));
+      bloom = { x, y, r: radius * 0.6, max: far * 1.9 };
+      if (inside) kick();
+    },
+    leave() { inside = false; bloom = null; kick(); },
     dispose() { cancelAnimationFrame(raf); running = false; inside = false; mctx.clearRect(0, 0, mask.width, mask.height); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); },
   };
 }
