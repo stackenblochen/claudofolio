@@ -1,10 +1,12 @@
 ---
 /**
- * H1 Home intro: the headline and a victory emoji on the page background. The rounded gradient backdrop only appears while
- * the pointer is inside the stage (fade + subtle scale), and the emoji then sits on the cursor. Its position follows
+ * H1 Home intro: the headline and a victory emoji on the page background. The rounded gradient stage is not shown up front: it is
+ * revealed under the pointer, a soft circle that follows the cursor and stays uncovered along its path (a 2D canvas painted
+ * through an accumulated mask). When the pointer leaves, the revealed area fades away. The emoji then acts as the pen: it sits up and to
+ * the right of the cursor, the cursor being the tip that reveals the gradient. Its position follows
  * immediately; its tilt is a spring driven by the horizontal pointer speed, so it lags behind like something dragged along
  * (moving right tilts it left, then it swings back and settles). Idle, it rests on the right, tilted, with a very slight sway.
- * When the pointer leaves, the backdrop fades out and the emoji glides home.
+ * When the pointer leaves, the revealed area fades out and the emoji glides home.
  *
  * While the pointer moves inside the active stage, the headline bends like a prism: slices of the text shear sideways and split
  * into red / green / blue fringes around the cursor, then settle when the pointer rests. The real DOM text always stays in
@@ -27,6 +29,7 @@ const { emoji = '✌️' } = Astro.props;
   <div class="frame">
     <div class="stage" data-stage>
       <div class="backdrop" aria-hidden="true"></div>
+      <canvas class="reveal" data-reveal aria-hidden="true"></canvas>
       <div class="copy grid-12">
         <h1 class="intro t-display" data-intro><slot name="intro" /></h1>
       </div>
@@ -49,17 +52,16 @@ const { emoji = '✌️' } = Astro.props;
   .stage { position: relative; flex: 1; display: flex; align-items: center; }
 
   /* gradient panel behind everything: always visible by default. With a fine hovering pointer and no reduced-motion
-   * preference it is hidden while idle (pure CSS, so there is no flash on load) and fades in while the pointer is inside. */
+   * preference it is replaced by the `.reveal` canvas, which only shows the gradient where the pointer has been (pure CSS
+   * switch, so there is no flash on load). The element stays in the DOM as the source of the resolved gradient colours. */
   .backdrop {
     position: absolute; inset: 0; border-radius: var(--radius-xl);
     background: linear-gradient(180deg, var(--gradient-hero-top), var(--gradient-hero-bottom));
   }
+  .reveal { display: none; position: absolute; inset: 0; width: 100%; height: 100%; border-radius: var(--radius-xl); pointer-events: none; }
   @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    .backdrop {
-      opacity: 0; transform: scale(0.96);
-      transition: opacity 380ms ease, transform 480ms cubic-bezier(0.22, 0.7, 0.2, 1);
-    }
-    .stage.is-following .backdrop { opacity: 1; transform: none; }
+    .backdrop { display: none; }
+    .reveal { display: block; }
 
     /* the headline hops up and grows a bit when the backdrop activates (springy overshoot), and settles back after */
     .intro { transform-origin: 0 55%; transition: transform 620ms cubic-bezier(0.34, 1.56, 0.64, 1); }
@@ -75,13 +77,12 @@ const { emoji = '✌️' } = Astro.props;
   .intro :global(.br-md) { display: none; }
   @media (min-width: 768px) { .intro :global(.br-md) { display: inline; } }
 
-  /* effect canvas: same box as the backdrop (and the same scale in/out), invisible until the pointer moves */
+  /* effect canvas: same box as the stage, invisible until the pointer moves; it only paints inside the revealed area */
   .fx {
     position: absolute; inset: 0; width: 100%; height: 100%; border-radius: var(--radius-xl);
-    opacity: 0; pointer-events: none; transform: scale(0.96);
-    transition: opacity 260ms ease, transform 480ms cubic-bezier(0.22, 0.7, 0.2, 1);
+    opacity: 0; pointer-events: none;
+    transition: opacity 260ms ease;
   }
-  .stage.is-following .fx { transform: none; }
   .fx.is-on { opacity: 1; }
 
   /* emoji: resting place on the right; JS moves it with a transform relative to this spot */
@@ -109,6 +110,7 @@ const { emoji = '✌️' } = Astro.props;
     precision highp float;
     varying vec2 v_uv;
     uniform sampler2D u_tex;
+    uniform sampler2D u_mask;   // revealed area (alpha), same layout as the stage
     uniform vec2 u_res; uniform vec2 u_mouse;
     uniform float u_radius, u_strength, u_time, u_dpr;
     uniform vec3 u_top, u_bottom, u_ink;
@@ -138,7 +140,8 @@ const { emoji = '✌️' } = Astro.props;
       vec2 oB = o + vec2(-1.00, -0.25) * A;
 
       vec3 c = vec3(cov(px + oR), cov(px + oG), cov(px + oB));
-      gl_FragColor = vec4(mix(bg, u_ink, c), 1.0);
+      float m = texture2D(u_mask, px / u_res).a;
+      gl_FragColor = vec4(mix(bg, u_ink, c) * m, m);   // premultiplied: only the revealed area is painted
     }`;
 
   const ARM_DELAY = 700; // ms: backdrop fade (480) and headline hop (620) have settled
@@ -147,8 +150,8 @@ const { emoji = '✌️' } = Astro.props;
 
   type Fx = { pointer: (e: PointerEvent, x: number, y: number) => void; leave: () => void; enter: () => void; dispose: () => void };
 
-  function setupFx(stage: HTMLElement, canvas: HTMLCanvasElement, intro: HTMLElement, backdrop: HTMLElement): Fx | null {
-    const gl = canvas.getContext('webgl', { antialias: false, alpha: false });
+  function setupFx(stage: HTMLElement, canvas: HTMLCanvasElement, intro: HTMLElement, backdrop: HTMLElement, maskCanvas: HTMLCanvasElement): Fx | null {
+    const gl = canvas.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true });
     if (!gl) return null;
 
     const compile = (type: number, src: string) => {
@@ -174,12 +177,21 @@ const { emoji = '✌️' } = Astro.props;
     const U = (n: string) => gl.getUniformLocation(prog, n);
     const u = { tex: U('u_tex'), res: U('u_res'), mouse: U('u_mouse'), radius: U('u_radius'), strength: U('u_strength'), time: U('u_time'), dpr: U('u_dpr'), top: U('u_top'), bottom: U('u_bottom'), ink: U('u_ink') };
 
-    const tex = gl.createTexture();
-    gl.bindTexture(gl.TEXTURE_2D, tex);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
-    gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+    const makeTexture = (unit: number) => {
+      const t = gl.createTexture();
+      gl.activeTexture(gl.TEXTURE0 + unit);
+      gl.bindTexture(gl.TEXTURE_2D, t);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+      gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+      return t;
+    };
+    const maskTex = makeTexture(1);
+    gl.activeTexture(gl.TEXTURE0);
+    const textTex = makeTexture(0);
+    gl.uniform1i(u.tex, 0);
+    gl.uniform1i(U('u_mask'), 1);
 
     // ----- headline → texture (alpha only), laid out exactly like the DOM text in its current (active) pose
     const textCanvas = document.createElement('canvas');
@@ -216,7 +228,8 @@ const { emoji = '✌️' } = Astro.props;
         }
       }
 
-      gl.bindTexture(gl.TEXTURE_2D, tex);
+      gl.activeTexture(gl.TEXTURE0);
+      gl.bindTexture(gl.TEXTURE_2D, textTex);
       gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
       gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
       gl.viewport(0, 0, W, H);
@@ -258,6 +271,10 @@ const { emoji = '✌️' } = Astro.props;
 
       if (strength < 0.004) { running = false; prev = 0; canvas.classList.remove('is-on'); return; }
       canvas.classList.add('is-on');
+      gl.activeTexture(gl.TEXTURE1);
+      gl.bindTexture(gl.TEXTURE_2D, maskTex);
+      gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, false);
+      gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, maskCanvas);
       gl.uniform2f(u.mouse, mx * dpr, my * dpr);
       gl.uniform1f(u.strength, strength);
       gl.uniform1f(u.time, (now - t0) / 1000);
@@ -298,6 +315,135 @@ const { emoji = '✌️' } = Astro.props;
     };
   }
 
+  // Gradient stage revealed at the pointer (the tip of the emoji "pen"): a soft circle stays uncovered along its path (a low-res
+  // alpha mask that accumulates), the gradient is painted through it on a 2D canvas. On leave the whole area fades out.
+  // The mask canvas is shared with the WebGL effect so the distorted headline is only painted inside the revealed area.
+  type Reveal = { mask: HTMLCanvasElement; enter: (x: number, y: number) => void; move: (x: number, y: number) => void; leave: () => void; resize: () => void; dispose: () => void };
+
+  function setupReveal(stage: HTMLElement, canvas: HTMLCanvasElement, backdrop: HTMLElement): Reveal | null {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    const mask = document.createElement('canvas');
+    const mctx = mask.getContext('2d')!;
+    const MS = 0.5;                 // mask resolution relative to css pixels
+    const FADE_OUT = 2.2;           // per second: the revealed area is gone after ~0.45 s
+    const SPEED_FULL = 1500;        // px per second at which the circle has reached its largest size
+    const SPEED_GROWTH = 1;         // largest size = (1 + SPEED_GROWTH) x the resting radius
+    let W = 0, H = 0, dpr = 1, radius = 120, corner = 24;
+    let vel = 0, lastMoveT = 0;     // smoothed pointer speed, px per second
+    let top = '', bottom = '';
+    let inside = false, px = 0, py = 0, lx = 0, ly = 0, growth = 1, fade = 0;
+    let raf = 0, running = false, prev = 0;
+
+    const resize = () => {
+      const r = stage.getBoundingClientRect();
+      dpr = Math.min(2, window.devicePixelRatio || 1);
+      W = r.width; H = r.height;
+      canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
+      mask.width = Math.round(W * MS); mask.height = Math.round(H * MS);
+      radius = Math.min(Math.max(W * 0.1, 90), 150); // resting size; faster movement opens it up (see tick)
+      corner = parseFloat(getComputedStyle(backdrop).borderTopLeftRadius) || 24;
+    };
+
+    const readColors = () => {
+      const c = getComputedStyle(backdrop).backgroundImage.match(/rgba?\([^)]*\)/g) ?? [];
+      top = c[0] ?? 'rgb(70 64 126)';
+      bottom = c[1] ?? 'rgb(155 122 146)';
+    };
+
+    const stamp = (x: number, y: number, r: number) => {
+      const cx = x * MS, cy = y * MS, cr = r * MS;
+      const g = mctx.createRadialGradient(cx, cy, 0, cx, cy, cr);
+      g.addColorStop(0, 'rgba(0,0,0,1)');
+      g.addColorStop(0.55, 'rgba(0,0,0,1)');
+      g.addColorStop(1, 'rgba(0,0,0,0)');
+      mctx.fillStyle = g;
+      mctx.beginPath();
+      mctx.arc(cx, cy, cr, 0, Math.PI * 2);
+      mctx.fill();
+    };
+    const stampTo = (x: number, y: number, r: number) => {
+      const d = Math.hypot(x - lx, y - ly);
+      const n = Math.max(1, Math.ceil(d / (r * 0.22)));
+      for (let i = 1; i <= n; i++) stamp(lx + ((x - lx) * i) / n, ly + ((y - ly) * i) / n, r);
+      lx = x; ly = y;
+    };
+
+    const roundedRect = (w: number, h: number, r: number) => {
+      ctx.beginPath();
+      ctx.moveTo(r, 0);
+      ctx.arcTo(w, 0, w, h, r); ctx.arcTo(w, h, 0, h, r); ctx.arcTo(0, h, 0, 0, r); ctx.arcTo(0, 0, w, 0, r);
+      ctx.closePath();
+    };
+
+    const compose = () => {
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
+      ctx.setTransform(1, 0, 0, 1, 0, 0);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      ctx.save();
+      ctx.scale(dpr, dpr);
+      roundedRect(W, H, corner);
+      const g = ctx.createLinearGradient(0, 0, 0, H);
+      g.addColorStop(0, top); g.addColorStop(1, bottom);
+      ctx.fillStyle = g;
+      ctx.fill();
+      ctx.restore();
+      ctx.globalCompositeOperation = 'destination-in';
+      ctx.globalAlpha = fade;
+      ctx.imageSmoothingEnabled = true;
+      ctx.drawImage(mask, 0, 0, canvas.width, canvas.height);
+      ctx.globalCompositeOperation = 'source-over';
+      ctx.globalAlpha = 1;
+    };
+
+    const tick = (now: number) => {
+      const dt = Math.min(0.05, (now - (prev || now - 16)) / 1000);
+      prev = now;
+      if (inside) {
+        growth += (1 - growth) * (1 - Math.exp(-dt * 6)); // the first circle opens up instead of popping in
+        vel *= Math.exp(-dt * 5);                         // speed fades when the pointer rests, so the circle shrinks back
+        fade = 1;
+        stampTo(px, py, radius * growth * (1 + SPEED_GROWTH * Math.min(1, vel / SPEED_FULL)));
+      } else {
+        fade -= dt * FADE_OUT;
+        if (fade <= 0) {
+          fade = 0;
+          mctx.clearRect(0, 0, mask.width, mask.height);
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+          ctx.clearRect(0, 0, canvas.width, canvas.height);
+          running = false; prev = 0;
+          return;
+        }
+      }
+      compose();
+      raf = requestAnimationFrame(tick);
+    };
+    const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(tick); } };
+
+    resize();
+    return {
+      mask,
+      resize,
+      enter(x, y) {
+        readColors();
+        mctx.clearRect(0, 0, mask.width, mask.height);
+        inside = true; growth = 0.2; fade = 1; vel = 0; lastMoveT = 0;
+        px = lx = x; py = ly = y;
+        kick();
+      },
+      move(x, y) {
+        const now = performance.now();
+        if (lastMoveT) vel += (Math.hypot(x - px, y - py) / (Math.max(1, now - lastMoveT) / 1000) - vel) * 0.35;
+        lastMoveT = now;
+        px = x; py = y;
+        if (inside) kick();
+      },
+      leave() { inside = false; kick(); },
+      dispose() { cancelAnimationFrame(raf); running = false; inside = false; mctx.clearRect(0, 0, mask.width, mask.height); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.clearRect(0, 0, canvas.width, canvas.height); },
+    };
+  }
+
   let stop: (() => void) | undefined;
 
   function init() {
@@ -328,22 +474,45 @@ const { emoji = '✌️' } = Astro.props;
     const STIFFNESS = 40, DAMPING = 6.5;
     const MAX_TILT = 38;                 // degrees
     const FOLLOW_SCALE = 1 / 1.35;       // the resting emoji is 1.35x the size it has on the cursor
+    // The emoji is a pen: the pointer (and the revealed circle) is its tip, so it sits up and to the right of it, overlapping
+    // the circle a little. Offset as a fraction of the emoji's size while it follows (x right, y up).
+    const PEN_X = 0.55, PEN_Y = 0.55;
+    let penX = 0, penY = 0;              // the same offset in px
     const IDLE_ANGLE = 14;               // resting tilt, degrees clockwise
     const SWAY = 2.5, SWAY_PERIOD = 3.8; // idle wink: +-2.5 degrees every 3.8 s
 
-    // A new gradient on every activation: salmon at the bottom, the top drifts away from it (dusty rose / mauve / violet).
-    // Muted and light enough for the headline, in the same soft register as the default tokens. It is set while the backdrop
-    // is still invisible, so the change is never seen.
+    // A new two-colour gradient on every activation. Both stops come from a small set of muted hues (salmon, rose, mauve, violet,
+    // indigo, blue, steel, teal); the pair is always clearly apart in hue, so each gradient reads as a colour combination rather
+    // than a shade. Saturation stays low and the lightness is checked against the white headline. It is set while the backdrop is
+    // still invisible, so the change is never seen.
     const rand = (a: number, b: number) => a + Math.random() * (b - a);
+    const HUES = [8, 340, 322, 270, 244, 222, 200, 176]; // salmon, rose, mauve, violet, indigo, blue, steel, teal
+    const hueGap = (a: number, b: number) => { const d = Math.abs(a - b) % 360; return Math.min(d, 360 - d); };
+    const hslToRgb = (h: number, sat: number, l: number) => {
+      const s = sat / 100, lt = l / 100, k = (n: number) => (n + h / 30) % 12, a = s * Math.min(lt, 1 - lt);
+      return [0, 8, 4].map((n) => 255 * (lt - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1))));
+    };
+    const luminance = (rgb: number[]) => { const [r, g, b] = rgb.map((v) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
     const hsl = (h: number, sat: number, l: number) => `hsl(${((Math.round(h) % 360) + 360) % 360} ${Math.round(sat)}% ${Math.round(l)}%)`;
-    const SALMON_HUE = 6;
+
     const newGradient = () => {
       const light = document.documentElement.dataset.theme === 'light';
-      // dark: the top only drifts towards rose / mauve / violet (warm hues at this lightness turn muddy brown); light may go peach too
-      const shift = light && Math.random() < 0.35 ? rand(14, 35) : -rand(14, 75);
-      const bottomHue = SALMON_HUE + rand(-10, 14);
-      const top = light ? hsl(SALMON_HUE + shift, rand(50, 70), rand(78, 85)) : hsl(SALMON_HUE + shift, rand(22, 36), rand(34, 43));
-      const bottom = light ? hsl(bottomHue, rand(65, 85), rand(86, 92)) : hsl(bottomHue, rand(30, 45), rand(55, 61));
+      let top = '', bottom = '';
+      for (let attempt = 0; attempt < 12; attempt++) {
+        const ht = HUES[Math.floor(Math.random() * HUES.length)];
+        const pool = HUES.filter((h) => hueGap(h, ht) >= 55);
+        const hb = pool[Math.floor(Math.random() * pool.length)];
+        const t = [ht + rand(-8, 8), light ? rand(45, 65) : rand(24, 40), light ? rand(78, 86) : rand(34, 56)];
+        const b = [hb + rand(-8, 8), light ? rand(45, 65) : rand(24, 40), light ? rand(84, 92) : rand(48, 64)];
+        top = hsl(t[0], t[1], t[2]);
+        bottom = hsl(b[0], b[1], b[2]);
+        if (light) break;
+        // white headline: top, middle and bottom must stay readable, and the two stops must differ in lightness too
+        const ct = hslToRgb(t[0], t[1], t[2]), cb = hslToRgb(b[0], b[1], b[2]);
+        const mid = ct.map((v, i) => (v + cb[i]) / 2);
+        const worst = Math.min(...[ct, mid, cb].map((c) => 1.05 / (luminance(c) + 0.05)));
+        if (worst >= 2.9 && Math.abs(t[2] - b[2]) >= 6) break;
+      }
       stage.style.setProperty('--gradient-hero-top', top);
       stage.style.setProperty('--gradient-hero-bottom', bottom);
     };
@@ -356,6 +525,8 @@ const { emoji = '✌️' } = Astro.props;
       emoji.style.transform = was;
       restX = r.left - s.left + r.width / 2;
       restY = r.top - s.top + r.height / 2;
+      penX = r.width * FOLLOW_SCALE * PEN_X;
+      penY = -r.height * FOLLOW_SCALE * PEN_Y;
     };
 
     const render = (deg: number) => { emoji.style.transform = `translate3d(${x.toFixed(1)}px, ${y.toFixed(1)}px, 0) rotate(${deg.toFixed(2)}deg) scale(${scale.toFixed(3)})`; };
@@ -385,10 +556,15 @@ const { emoji = '✌️' } = Astro.props;
     const onMove = (e: PointerEvent) => {
       if (e.pointerType === 'touch') return;
       const s = stage.getBoundingClientRect();
-      if (!inside) { inside = true; lastT = 0; newGradient(); stage.classList.add('is-following'); fx?.enter(); }
+      if (!inside) {
+        inside = true; lastT = 0; newGradient(); stage.classList.add('is-following');
+        reveal?.enter(e.clientX - s.left, e.clientY - s.top);
+        fx?.enter();
+      }
+      reveal?.move(e.clientX - s.left, e.clientY - s.top);
       fx?.pointer(e, e.clientX - s.left, e.clientY - s.top);
-      tx = e.clientX - s.left - restX;
-      ty = e.clientY - s.top - restY;
+      tx = e.clientX - s.left - restX + penX;
+      ty = e.clientY - s.top - restY + penY;
       const t = e.timeStamp;
       if (lastT) {
         const dt = Math.max(1, t - lastT) / 1000;
@@ -397,13 +573,15 @@ const { emoji = '✌️' } = Astro.props;
       lastX = e.clientX; lastT = t;
       kick();
     };
-    const onLeave = () => { inside = false; lastT = 0; tx = 0; ty = 0; stage.classList.remove('is-following'); fx?.leave(); kick(); };
+    const onLeave = () => { inside = false; lastT = 0; tx = 0; ty = 0; stage.classList.remove('is-following'); reveal?.leave(); fx?.leave(); kick(); };
 
-    const fx = canvas && intro && backdrop ? setupFx(stage, canvas, intro, backdrop) : null;
+    const revealCanvas = document.querySelector<HTMLCanvasElement>('[data-reveal]');
+    const reveal = revealCanvas && backdrop ? setupReveal(stage, revealCanvas, backdrop) : null;
+    const fx = canvas && intro && backdrop && reveal ? setupFx(stage, canvas, intro, backdrop, reveal.mask) : null;
 
     measureRest();
     document.fonts?.ready.then(measureRest);
-    const ro = new ResizeObserver(() => { measureRest(); if (!inside) { x = y = 0; } });
+    const ro = new ResizeObserver(() => { measureRest(); reveal?.resize(); if (!inside) { x = y = 0; } });
     ro.observe(stage);
     // the idle sway only runs while the stage is on screen
     const io = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; if (visible) kick(); });
@@ -424,6 +602,7 @@ const { emoji = '✌️' } = Astro.props;
       ro.disconnect();
       io.disconnect();
       fx?.dispose();
+      reveal?.dispose();
       stop = undefined;
     };
   }
