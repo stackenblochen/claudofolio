@@ -43,14 +43,14 @@ import { INTENSITIES, INTENSITY_NOTES, TONALITIES, TONALITY_IDS, GRADIENTS, MOOD
 
 // [role, dark palette var, dark hex, light palette var, light hex]
 const colors = [
-  ['bg.page', '--color-black', '#000000', '--color-white', '#ffffff'],
-  ['bg.raised', '--color-grey-950', '#191919', '--color-grey-50', '#f4f4f6'],
+  ['bg.page', '--color-ink-950', '#0d0d12', '--color-paper-50', '#fafafc'],
+  ['bg.pure · sections with the case study teasers', '--color-black', '#000000', '--color-white', '#ffffff'],
+  ['bg.raised', '--color-grey-950', '#18181e', '--color-grey-50', '#f3f3f6'],
   ['bg.card · border.subtle', '--color-grey-800', '#34373d', '--color-grey-200', '#e4e5ea'],
   ['text.default', '--color-grey-blue-500', '#808096', '--color-grey-blue-600', '#6c6d7e'],
-  ['text.strong', '--color-white', '#ffffff', '--color-black', '#000000'],
-  ['accent.negative', '--color-red', '#ff4b53', '--color-red-600', '#e0242d'],
+  ['text.strong', '--color-paper-50', '#fafafc', '--color-ink-950', '#0d0d12'],
   ['accent.positive', '--color-green', '#00ff32', '--color-green-700', '#008a21'],
-  ['accent.primary · links, focus ring, nav underline, timeline dot', '--color-salmon', '#fa8072', '--color-salmon-600', '#e8553d'],
+  ['accent.primary · links, focus ring, nav underline, timeline dot, errors, negative marks', '--color-salmon', '#fa8072', '--color-salmon-600', '#e8553d'],
   ['selection', '--color-salmon', '#fa8072', '--color-salmon', '#fa8072'],
 ];
 // Background gradients: the hue pairs of the former reveal effect (lib/pen.ts), shown as fixed swatches in both themes.
@@ -69,8 +69,8 @@ const roles = [
   ['t-title', 'Title', 'H1 page titles (Editorial New)'],
   ['t-heading', 'Heading', 'Lead statements, section and chapter titles, statement'],
   ['t-subheading', 'Subheading', 'Sub-chapters, card titles, insight titles'],
-  ['t-body', 'Body', 'Paragraphs, lists, meta values, main navigation'],
-  ['t-label', 'Label', 'Eyebrows, meta labels, dates, footer, card categories (weight 300)'],
+  ['t-body', 'Body', 'Paragraphs, lists, meta values, main navigation, card categories'],
+  ['t-label', 'Label', 'Eyebrows, meta labels, dates, footer, card summaries (weight 300)'],
 ];
 const spaces = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const cards: CardData[] = [
@@ -295,8 +295,8 @@ const cards: CardData[] = [
   .grid-demo { padding-top: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
   .readout { font-variant-numeric: tabular-nums; }
   .cols { row-gap: 0; }
-  .col { grid-column: span 1 !important; height: 64px; background: color-mix(in srgb, var(--accent-negative) 18%, transparent); border-inline: 1px solid color-mix(in srgb, var(--accent-negative) 50%, transparent);
-    display: grid; place-items: center; color: var(--accent-negative); font-size: var(--text-label-size); }
+  .col { grid-column: span 1 !important; height: 64px; background: color-mix(in srgb, var(--accent-primary) 18%, transparent); border-inline: 1px solid color-mix(in srgb, var(--accent-primary) 50%, transparent);
+    display: grid; place-items: center; color: var(--accent-primary); font-size: var(--text-label-size); }
   .bars { display: flex; flex-direction: column; gap: var(--space-2); }
   .bar-row { background: var(--bg-card); padding: var(--space-2) var(--space-3); color: var(--text-strong); border-radius: 4px; }
   .matrix { border-collapse: collapse; width: 100%; }

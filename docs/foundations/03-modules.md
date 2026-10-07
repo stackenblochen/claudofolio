@@ -136,7 +136,7 @@ Semplice defaults: a red #ff4b53 load bar and an arrow button. Optional in the n
 
 ### T6 Challenge / Solution
 - **Anatomy:** two labelled blocks, each a label paragraph followed by a body paragraph.
-  - `● Challenges`: bullet in `accent-negative` (#ff4b53), label in white.
+  - `● Challenges`: bullet in `accent-primary` (salmon), label in white.
   - `► Solution`: bullet in `accent-positive` (#00ff32), label in white.
 - 8 cols (md 9); stacks on sm/xs. 20 px between label and body.
 - An unused `.challenges` class (1 px left border #8e8e8e) exists in the CSS, a possible alternative visual.
@@ -212,7 +212,7 @@ Shared image rules: radius **16 px** (diagrams, squares, video, embeds) or **12 
 
 ### I8 Annotation overlays
 - **Stamp:** `confidential-black-outline.svg`, about 3 cols wide, overlapping the hero image's bottom-right (neg. margin −40 to −100 px, z-index 250). On sm/xs it's full-width but padded so it renders at about 40–60 % size.
-- **Arrow:** red hand-drawn SVG (153 × 267), about 1–2 cols, overlapping neighbouring blocks via negative margins.
+- **Arrow:** salmon hand-drawn SVG (153 × 267), about 1–2 cols, overlapping neighbouring blocks via negative margins.
 - Both are decorative and need `alt=""` and `aria-hidden`.
 
 ---

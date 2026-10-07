@@ -12,6 +12,7 @@ export interface CardData {
   href: string;
   cover: ImageMetadata;
   coverAlt: string;
+  thumb?: ProjectEntry['data']['thumb'];
 }
 
 /** All published projects by `order`, optionally without the current one. */
@@ -31,5 +32,6 @@ export function toCard(p: ProjectEntry): CardData {
     href: url(`/projects/${p.id}/`),
     cover: p.data.cover,
     coverAlt: p.data.coverAlt,
+    thumb: p.data.thumb,
   };
 }

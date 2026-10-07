@@ -18,15 +18,19 @@ interface Props {
   caption?: string;
   /** Red hand-drawn arrow overlapping the top-right corner of the iframe, pointing at the demo's controls (desktop only). */
   arrow?: ImageMetadata | string;
+  /** Gradient name from src/lib/gradients.ts ("dusk", "calm-blue" …): the demo sits on that gradient with padding around it. */
+  stage?: string;
 }
-const { src, title, height, poster, posterAlt = '', note = 'Interactive demo, best viewed on desktop.', caption, arrow } = Astro.props;
+const { src, title, height, poster, posterAlt = '', note = 'Interactive demo, best viewed on desktop.', caption, arrow, stage } = Astro.props;
 const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undefined;
 ---
 
 <figure class:list={['embed measure-media reveal', { 'has-poster': !!poster }]} style={height ? `--embed-h:${height}px` : undefined}>
-  <div class="frame">
-    <iframe class="media-l media-hairline" src={src} title={title} loading="lazy"></iframe>
-    {arrowSrc && <Arrow src={arrowSrc} class="annot" />}
+  <div class:list={['stage', stage && `gradient gradient--${stage}`]}>
+    <div class="frame">
+      <iframe class:list={[stage ? 'media-m' : 'media-l media-hairline']} src={src} title={title} loading="lazy"></iframe>
+      {arrowSrc && <Arrow src={arrowSrc} class="annot" />}
+    </div>
   </div>
   {poster && (
     <div class="poster">
@@ -40,11 +44,20 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
 <style>
   .embed { display: flex; flex-direction: column; gap: var(--space-3); }
   .embed { container-type: inline-size; }
+  /* On a stage the iframe is as high as the demo window it holds (aspect 1100 : 760, plus the demo's own 28 px inset), so only the
+     stage padding and that inset remain around the window. */
+  .stage.gradient { --stage-pad: var(--space-2); padding: var(--stage-pad); border-radius: var(--radius-m); }
+  .stage.gradient iframe { height: var(--embed-h, calc((100cqw - 2 * var(--stage-pad) - 56px) * 0.6909 + 56px)); }
+  /* The demo page is transparent and has no colour scheme of its own (light). If the iframe element were dark (the site default) some browsers (Safari)
+     paint an opaque white backdrop behind it, hiding the gradient. Same scheme on both sides keeps it transparent. */
+  /* no shadow on the iframe itself: it is transparent, so its shadow would only darken a halo around the iframe box. The demo window has its own shadow. */
+  .stage.gradient iframe { color-scheme: light; background: transparent; }
   .frame { position: relative; }
   .frame :global(.annot) { display: none; }
-  iframe { width: 100%; height: var(--embed-h, calc(53.4cqw + 170px)); background: var(--bg-raised); }
+  iframe { display: block; width: 100%; height: var(--embed-h, calc(53.4cqw + 170px)); background: var(--bg-raised); }
   .poster { display: none; flex-direction: column; gap: var(--space-3); }
   .poster :global(img) { width: 100%; }
+  @media (min-width: 768px) { .stage.gradient { --stage-pad: var(--space-4); border-radius: var(--radius-l); } }
   @media (min-width: 992px) {
     .frame :global(.annot) { display: block; position: absolute; z-index: 2; pointer-events: none; right: 5%; top: -110px; width: 80px; }
   }

@@ -1,6 +1,6 @@
 ---
 /**
- * Page-load progress bar (red, top of the viewport). Starts when a navigation begins and
+ * Page-load progress bar (salmon, top of the viewport). Starts when a navigation begins and
  * completes when the new page is in place. Persisted across view transitions, with its own
  * transition name so it is not part of the page fade.
  */
@@ -11,7 +11,7 @@
 <style>
   .loader {
     position: fixed; top: 0; left: 0; right: 0; height: 3px; z-index: 1000;
-    background: var(--accent-negative);
+    background: var(--accent-primary);
     transform: scaleX(0); transform-origin: left center; opacity: 0;
     pointer-events: none;
   }

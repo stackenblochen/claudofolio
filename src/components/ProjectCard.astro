@@ -1,16 +1,17 @@
 ---
 /**
- * L1 Project teaser: full media-width panel (same measure as figures), text left, cover right.
- * Below 768 px the text sits on top of the cover.
+ * L1 Project teaser: full media-width panel (same measure as figures). From 1230 px two equal columns, fixed 380 px high: text left
+ * (top aligned) with summary, cover right (centred). 992–1229 px: 5/7 columns, 340 px high, summary cut to three lines with an ellipsis. 768–991 px: no summary, 5/7 columns, height follows the cover.
+ * Below 768 px the title and category sit on top of the cover, 20 px padding all round, no summary.
  *
- * With a fine hovering pointer (and no reduced-motion preference) the cover rests 15% smaller and pops up while the teaser is
- * active, and the colour-split prism effect (see lib/prism.ts) plays on the text around the pointer (not on the cover): slices
- * shear sideways and split into red / green / blue fringes, then settle when the pointer rests. The real DOM stays in place; a
- * transparent canvas on top only paints where there is distortion. The whole panel is the link. On touch and with reduced
- * motion the teaser stays plain.
+ * From 992 px, with a fine hovering pointer (and no reduced-motion preference), the whole card grows by 1% while the pointer is on it, and a one-off colour-split ripple (see lib/prism.ts, lib/teaser-fx.ts) runs over the whole card, text and cover, from the
+ * point where the pointer entered: slices shear sideways and split into red / green / blue fringes along a travelling wave front,
+ * then everything is shown untouched again. The real DOM stays in place; a transparent canvas on top only paints where there is
+ * distortion. The whole panel is the link. On touch, below 992 px and with reduced motion the teaser stays plain.
  */
 import type { CardData } from '../lib/projects';
 import Img from './Img.astro';
+import Mock from './Mock.astro';
 
 interface Props {
   card: CardData;
@@ -22,11 +23,16 @@ const { card } = Astro.props;
   <a href={card.href} class="link-block">
     <div class="copy" data-teaser-copy>
       <h3 class="t-subheading">{card.title}</h3>
-      <p class="cat t-label">{card.category}</p>
-      {card.summary && <p class="sum t-body">{card.summary}</p>}
+      <p class="cat t-body">{card.category}</p>
+      {card.summary && <p class="sum t-label">{card.summary}</p>}
     </div>
-    <div class="thumb media-l" data-teaser-thumb>
-      <Img src={card.cover} alt={card.coverAlt} sizes="(min-width: 768px) 600px, 100vw" />
+    <div class="stage">
+    <div class:list={['thumb', 'media-l', !card.thumb && 'thumb--img']} data-teaser-thumb>
+      {card.thumb
+        ? <Mock size="cover" stage={card.thumb.stage} theme={card.thumb.theme} layout={card.thumb.layout} phone={card.thumb.phone}
+            devices={card.thumb.devices.map((d) => ({ ...d, bar: d.bar ? undefined : false }))} />
+        : <Img src={card.cover} alt={card.coverAlt} sizes="(min-width: 768px) 600px, 100vw" />}
+    </div>
     </div>
   </a>
   <canvas class="fx" data-teaser-fx aria-hidden="true"></canvas>
@@ -34,77 +40,53 @@ const { card } = Astro.props;
 
 <style>
   .teaser { position: relative; background: var(--bg-raised); border-radius: var(--radius-l); overflow: hidden; }
-  .link-block { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--space-5); padding: var(--space-5) var(--space-4) 0; text-decoration: none; color: inherit; }
-  .copy { display: flex; flex-direction: column; gap: var(--space-2); }
-  .cat { color: var(--text-default); }
-  .sum { margin-top: var(--space-1); }
-  .thumb { position: relative; }
-  .thumb :global(img) { display: block; width: 100%; height: auto; }
+  /* hairline border, only shown on hover (and keyboard focus). Drawn as an overlay, so it adds no size and shifts nothing (the text keeps
+     lining up with the section headline). */
+  .teaser::after { content: ''; position: absolute; inset: 0; z-index: 3; border: var(--border-hairline); border-color: transparent; border-radius: inherit; pointer-events: none; transition: border-color 250ms ease; }
+  .teaser:global(.is-active)::after, .teaser:has(:focus-visible)::after { border-color: var(--border-subtle); }
+  .link-block { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-4); text-decoration: none; color: inherit; }
+  .copy { display: flex; flex-direction: column; gap: var(--space-2); } /* tight on mobile and tablet */
+  .cat, .sum { color: var(--text-default); }
+  .sum { display: none; } /* the summary only shows from 992 px, below that the teaser stays compact */
+  .stage { display: grid; place-items: center; }
+  .thumb { position: relative; width: 100%; }
+  .thumb--img :global(img) { display: block; width: 100%; height: auto; }
+
+  /* 768–991: text left, cover right and wider (7 of 12 parts). Height follows the cover, whose padding is the same on all sides. */
   @media (min-width: 768px) {
-    .link-block { flex-direction: row; align-items: center; gap: var(--space-6); padding: var(--space-6); }
-    .copy { flex: 0 0 34%; }
-    .thumb { flex: 1 1 0; min-width: 0; }
+    .link-block { display: grid; grid-template-columns: 5fr 7fr; align-items: start; gap: 0; padding: 0; }
+    /* the teaser is half a column wider on each side than the headline above it, so the text starts half a column in and lines up with it */
+    .copy { padding: var(--space-6); padding-left: calc(var(--col-step) / 2); }
+    .stage { align-self: stretch; padding: var(--space-5); }
   }
 
-  /* hover effects: only with a fine hovering pointer and without reduced motion */
+  @media (min-width: 992px) { .copy { gap: var(--space-4); } }
+
+  /* 992–1229: with the summary; cover column one column wider than half (7 of 12), fixed 340 px, summary clamped to three lines */
+  @media (min-width: 992px) {
+    .link-block { grid-template-rows: 340px; }
+    .copy { padding: var(--space-6) var(--space-5); padding-left: calc(var(--col-step) / 2); }
+    .sum { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; } /* three lines, then an ellipsis */
+  }
+  /* from 1230 px: two equal columns, fixed 380 px high */
+  @media (min-width: 1230px) {
+    .link-block { grid-template-columns: 1fr 1fr; grid-template-rows: 380px; }
+    .copy { padding: var(--space-7); padding-left: calc(var(--col-step) / 2); }
+    .sum { display: block; overflow: visible; }
+  }
+
+  /* hover effects: only from 992 px, with a fine hovering pointer and without reduced motion */
   .fx { display: none; }
-  @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    /* transparent canvas over the card, only visible while there is distortion */
-    .fx { display: block; position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; border-radius: var(--radius-l); pointer-events: none; opacity: 0; transition: opacity 200ms ease; }
+  @media (min-width: 992px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+    /* transparent canvas over the card, only visible while the ripple runs */
+    .fx { display: block; position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; border-radius: var(--radius-l); pointer-events: none; opacity: 0; transition: opacity 60ms ease; }
     .fx:global(.is-on) { opacity: 1; }
-    /* the cover rests a bit smaller and pops up with a springy overshoot while the teaser is active (like the headline on the stage) */
-    .thumb { transform: scale(0.85); transform-origin: 50% 50%; transition: transform 620ms cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .teaser.is-active .thumb { transform: translateY(-6px) scale(1.03); }
+    /* the whole card grows very slightly while the pointer is on it */
+    .teaser { transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1); }
+    .teaser:global(.is-active) { transform: scale(1.08); }
   }
 </style>
 
 <script>
-  import { paintText, setupPrism, type Prism } from '../lib/prism';
-
-  let stops: (() => void)[] = [];
-
-  function init() {
-    stops.forEach((fn) => fn());
-    stops = [];
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
-
-    document.querySelectorAll<HTMLElement>('[data-teaser]').forEach((teaser) => {
-      const canvas = teaser.querySelector<HTMLCanvasElement>('[data-teaser-fx]');
-      const copy = teaser.querySelector<HTMLElement>('[data-teaser-copy]');
-      if (!canvas || !copy) return;
-
-      // Only the text goes into the effect texture; the cover is left alone and keeps showing through the transparent canvas.
-      const prism: Prism | null = setupPrism({
-        stage: teaser,
-        canvas,
-        bg: teaser,
-        paint: (ctx, rect) => paintText(ctx, rect, copy),
-        radius: (w) => Math.min(Math.max(w * 0.22, 180), 280),
-      });
-      if (!prism) return;
-
-      const onEnter = (e: PointerEvent) => { if (e.pointerType !== 'touch') teaser.classList.add('is-active'); };
-      const onMove = (e: PointerEvent) => {
-        if (e.pointerType === 'touch') return;
-        const r = teaser.getBoundingClientRect();
-        prism.pointer(e.clientX, e.clientY, e.clientX - r.left, e.clientY - r.top);
-      };
-      const onLeave = () => { teaser.classList.remove('is-active'); prism.leave(); };
-
-      teaser.addEventListener('pointerenter', onEnter);
-      teaser.addEventListener('pointermove', onMove);
-      teaser.addEventListener('pointerleave', onLeave);
-      stops.push(() => {
-        teaser.removeEventListener('pointerenter', onEnter);
-        teaser.removeEventListener('pointermove', onMove);
-        teaser.removeEventListener('pointerleave', onLeave);
-        teaser.classList.remove('is-active');
-        prism.dispose();
-      });
-    });
-  }
-
-  document.addEventListener('astro:page-load', init);
-  document.addEventListener('astro:before-swap', () => { stops.forEach((fn) => fn()); stops = []; });
+  import '../lib/teaser-fx';
 </script>

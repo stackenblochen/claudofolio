@@ -1,6 +1,6 @@
 ---
 /**
- * Case-study layout: hero → lead → meta → [MDX chapters] → outcome → other projects.
+ * Case-study layout: hero → lead → meta → [MDX chapters] → outcome → other projects (all inside the password gate when protected).
  * All fixed blocks come from frontmatter (see content.config.ts); the MDX body only holds chapters.
  */
 import Base from './Base.astro';
@@ -42,19 +42,24 @@ const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard
     <ProjectMeta items={meta} />
     <div class="chapters chapter-flow"><slot /></div>
     <Outcome items={d.outcome} />
-  </Protected>
-  {others.length > 0 && (
-    <section class="others section section--black" aria-labelledby="others-title">
-      <div class="container">
-        <div class="measure-text">
-          <span class="dash t-heading" aria-hidden="true">—</span>
-          <h2 class="t-heading" id="others-title">Other projects</h2>
+    {others.length > 0 && (
+      <section class="others section section--pure" aria-labelledby="others-title">
+        <div class="container">
+          <div class="measure-text">
+            <span class="dash t-heading" aria-hidden="true">—</span>
+            <h2 class="t-heading" id="others-title">Other projects</h2>
+          </div>
+          <div class="grid-wrap"><ProjectGrid items={others} gap="tight" /></div>
         </div>
-        <div class="grid-wrap"><ProjectGrid items={others} gap="tight" /></div>
-      </div>
-    </section>
-  )}
+      </section>
+    )}
+  </Protected>
 </Base>
+
+<script>
+  // the "other projects" teasers sit inside the encrypted gate content, so the page has to load their hover effect itself
+  import '../lib/teaser-fx';
+</script>
 
 <style>
   .chapters { padding-top: var(--chapter-gap); padding-bottom: var(--section-y); }

@@ -13,6 +13,7 @@ body {
   color: var(--text-default);
   font-family: var(--font-sans);
   font-weight: var(--text-body-weight);
+  letter-spacing: var(--text-body-ls);
   font-size: var(--text-body-size);
   line-height: var(--text-body-lh);
   -webkit-font-smoothing: antialiased;
@@ -72,7 +73,7 @@ button { font: inherit; color: inherit; }
 }
 .t-body {
   font-size: var(--text-body-size); line-height: var(--text-body-lh);
-  font-weight: var(--text-body-weight);
+  font-weight: var(--text-body-weight); letter-spacing: var(--text-body-ls);
 }
 .t-label {
   font-size: var(--text-label-size); line-height: var(--text-label-lh);
@@ -85,9 +86,9 @@ button { font: inherit; color: inherit; }
 /* ---------- Prose (running text inside modules) ---------- */
 /* Image caption: smaller than body, italic, centred below the media. */
 .caption { font-size: var(--text-label-size); line-height: var(--text-label-lh); font-style: italic; text-align: center; color: var(--text-default); }
-.prose { font-size: var(--text-body-size); line-height: var(--text-body-lh); font-weight: var(--text-body-weight); }
+.prose { font-size: var(--text-body-size); line-height: var(--text-body-lh); font-weight: var(--text-body-weight); letter-spacing: var(--text-body-ls); }
 .prose > * + * { margin-top: 1.5em; }
-.prose strong, .prose b { color: var(--text-strong); font-weight: 700; }
+.prose strong, .prose b { color: var(--text-strong); font-weight: var(--weight-emphasis); letter-spacing: var(--ls-emphasis); }
 .prose ul, .prose ol { padding-left: 1.4em; }
 .prose li { margin: var(--space-2) 0; }
 .prose a, a.link {
@@ -147,6 +148,7 @@ a { color: var(--text-strong); }
 .section { padding-block: var(--section-y); }
 .section--raised { background: var(--bg-raised); }
 .section--black { background: var(--bg-page); }
+.section--pure { background: var(--bg-pure); } /* sections that hold the case study teasers */
 .stack { display: flex; flex-direction: column; gap: var(--stack-gap, var(--space-4)); }
 .chapter-flow { display: flex; flex-direction: column; gap: var(--chapter-gap); }
 

@@ -32,9 +32,9 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
   switch is a single icon button that toggles `data-theme="light"` on `<html>` (stored in localStorage, absent = dark; no
   system/auto mode). Components use only semantic tokens
   (`--bg-page`, `--text-default`, `--text-strong`, `--accent-*` …), never raw palette colours or hex values. White-only SVG
-  logos get `filter: var(--filter-logo)`; the confidential stamp is never filtered. Light values are contrast-checked (see the comment in `tokens.css`).
+  logos get `filter: var(--filter-logo)`; the confidential stamp is never filtered. There is no pure black or white, except `--bg-pure` (`.section--pure`) for the sections that hold the case study teasers: page and strong text use the tinted `ink-950` (#0d0d12) and `paper-50` (#fafafc). Light values are contrast-checked (see the comment in `tokens.css`).
 - **Base:** `src/styles/base.css` has the six type roles (`.t-display`, `.t-title`, `.t-heading`, `.t-subheading`, `.t-body`, `.t-label`;
-  modifiers `.t-upper`, `.t-serif`; body is weight 400, label is always 300; main nav uses `.t-body`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
+  modifiers `.t-upper`, `.t-serif`; weights depend on the theme: dark = headlines 600, body 300; light = headlines 700, body 400; label is always 300; bold inside text uses `--weight-emphasis`; main nav uses `.t-body`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
   `.prose`, `.section`, media helpers and the `.reveal` scroll effect.
 - **Components:** `src/components/`, one per module ID in `03-modules.md` (Chapter, Lead, ProjectMeta, Figure, ScreenStack,
   Comparison, Embed, Outcome, ProjectGrid …). Content goes in via props and slots, never style overrides.
@@ -59,6 +59,6 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
 - **Heading levels vs looks:** one `h1` per page, `h2` chapters, `h3` sub-chapters; the look comes from the `.t-*` class.
 - **Links:** wrap internal paths with `url()` from `src/lib/site.ts` (the site is served under `/claudofolio`).
 - **Images:** local files in `src/assets/`, via `Figure`/`Img` (AVIF/WebP + srcset). Always write alt text; `alt=""` for decoration.
-- **Mobile parity:** all text visible at every breakpoint; only media may be swapped (`Embed` poster).
+- **Mobile parity:** all text visible at every breakpoint; only media may be swapped (`Embed` poster). One exception: the teaser summary is hidden below 992 px to keep the teasers compact.
 - Open TODOs: `SITE.email` in `src/lib/site.ts`, Editorial New woff2 (`public/fonts/README.md`), real Stamp/Arrow SVGs,
   `/about/` and `/imprint/` pages.

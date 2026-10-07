@@ -6,36 +6,37 @@
   /* --bp-sm: 544px; --bp-md: 768px; --bp-lg: 992px; --bp-xl: 1170px; */
 
   /* Colour — palette (raw values; do not use directly in components, use the semantic tokens below).
-   * Dark values are the original palette; light values are adjusted for contrast on white:
-   *   text 5.1:1, red 4.7:1, green 4.5:1, salmon 3.6:1 (graphical use), all on #fff.
-   * Default text is kept as weak as AA allows: dark 5.4:1 on black / 4.6:1 on bg.raised, light 5.1:1 on white / 4.6:1 on bg.raised.
+   * There is no pure black or white except for the teaser sections (bg.pure): the page and the strong text use a near-black (ink) and a near-white (paper) with a faint
+   * blue-violet cast that matches the grey-blue text and the borders. Light values are adjusted for contrast on the light page (#fafafc):
+   *   text 4.9:1, green 4.5:1, salmon 3.5:1 (graphical use).
+   * Default text is kept as weak as AA allows: dark 5.0:1 on bg.page / 4.6:1 on bg.raised, light 4.9:1 on bg.page / 4.6:1 on bg.raised.
    * Do not use text.default on bg.card (below 4.5:1). */
-  --color-black: #000000;
-  --color-grey-950: #191919;
+  --color-black: #000000; /* only for the teaser sections (bg.pure) */
+  --color-white: #ffffff;
+  --color-ink-950: #0d0d12; /* dark page, and strong text in light mode: near-black with a faint blue-violet cast */
+  --color-grey-950: #18181e; /* dark raised surface, same cast */
   --color-grey-800: #34373d;
   --color-grey-blue-500: #808096; /* was #9a9aab: lowered so default text reads clearly weaker than strong text, still AA */
-  --color-white: #ffffff;
-  --color-red: #ff4b53;
   --color-green: #00ff32;
   --color-salmon: #fa8072;
   /* light-mode counterparts */
-  --color-grey-50: #f4f4f6;
+  --color-paper-50: #fafafc; /* light page, and strong text in dark mode: near-white with the same faint cast */
+  --color-grey-50: #f3f3f6; /* light raised surface */
   --color-grey-200: #e4e5ea;
   --color-grey-blue-600: #6c6d7e; /* was #5a5b6c */
-  --color-red-600: #e0242d;
   --color-green-700: #008a21;
   --color-salmon-600: #e8553d;
 
   /* Colour — semantic: light-dark(light, dark). The theme is set by color-scheme (see below). */
-  --bg-page: light-dark(var(--color-white), var(--color-black));
+  --bg-page: light-dark(var(--color-paper-50), var(--color-ink-950));
+  --bg-pure: light-dark(var(--color-white), var(--color-black)); /* pure white / black: the sections that hold the case study teasers */
   --bg-raised: light-dark(var(--color-grey-50), var(--color-grey-950));
   --bg-card: light-dark(var(--color-grey-200), var(--color-grey-800));
   --text-default: light-dark(var(--color-grey-blue-600), var(--color-grey-blue-500));
-  --text-strong: light-dark(var(--color-black), var(--color-white));
+  --text-strong: light-dark(var(--color-ink-950), var(--color-paper-50));
   --border-subtle: light-dark(var(--color-grey-200), var(--color-grey-800));
-  --accent-negative: light-dark(var(--color-red-600), var(--color-red));
   --accent-positive: light-dark(var(--color-green-700), var(--color-green));
-  --accent-primary: light-dark(var(--color-salmon-600), var(--color-salmon)); /* the brand accent: link underlines, focus rings, nav underline, timeline dot */
+  --accent-primary: light-dark(var(--color-salmon-600), var(--color-salmon)); /* the brand accent: link underlines, focus rings, nav underline, timeline dot, errors, negative marks */
   --accent-link: var(--accent-primary);
   --selection-bg: var(--color-salmon); /* black text on it reads in both themes */
   /* hero panel gradient: strong colour, used once on the home intro */
@@ -55,7 +56,8 @@
   /* Type scale (fluid) */
   --text-display-size: clamp(3.125rem, 1.136rem + 8.485vw, 7.5rem);
   --text-display-lh: clamp(3.5rem, 2.023rem + 6.303vw, 6.75rem);
-  --text-display-weight: 700;
+  /* weights depend on the theme: dark 600 headlines + 300 body, light 700 headlines + 400 body (override at the end of this file) */
+  --text-display-weight: 600;
   --text-display-ls: 0;
   --text-title-size: clamp(2.25rem, 1rem + 5.333vw, 5rem);
   --text-title-lh: clamp(2.875rem, 1.341rem + 6.545vw, 6.25rem);
@@ -63,19 +65,21 @@
   --text-title-ls: -0.0025em;
   --text-heading-size: clamp(1.625rem, 1.227rem + 1.697vw, 2.5rem);
   --text-heading-lh: clamp(2rem, 1.375rem + 2.667vw, 3.375rem);
-  --text-heading-weight: 700;
+  --text-heading-weight: 600;
   --text-heading-ls: 0;
   --text-subheading-size: clamp(1.125rem, 0.9545rem + 0.7273vw, 1.5rem);
   --text-subheading-lh: clamp(1.625rem, 1.455rem + 0.7273vw, 2rem);
-  --text-subheading-weight: 700;
-  --text-subheading-ls: 0.01em;
+  --text-subheading-weight: 600;
+  --weight-emphasis: 600; /* bold inside body text, labels in tags */
+  --ls-emphasis: 0;
+  --text-subheading-ls: 0;
   --text-label-size: clamp(0.9375rem, 0.8523rem + 0.3636vw, 1.125rem);
   --text-label-lh: clamp(1.5rem, 1.443rem + 0.2424vw, 1.625rem);
   --text-label-weight: 300;
-  --text-label-ls: 0.022em;
+  --text-label-ls: 0;
   --text-body-size: clamp(1rem, 0.9148rem + 0.3636vw, 1.188rem);
   --text-body-lh: clamp(1.75rem, 1.736rem + 0.06061vw, 1.781rem);
-  --text-body-weight: 400;
+  --text-body-weight: 300; /* dark: light body text; light theme: 400 (see the end of this file) */
   --text-body-ls: 0;
 
   /* Spacing */
@@ -103,6 +107,7 @@
   --grid-outer: 100%; /* outer width incl. padding: 716px >=768, 956px >=992, 1230px >=1230 */
   --gutter: 16px; /* 30px at >=1230px */
   --page-margin: 20px; /* outer padding around the grid; 30px from 768px up */
+  --col-step: calc((var(--grid-outer) - 2 * var(--page-margin) + var(--gutter)) / 12); /* one column plus one gutter (from 768 px) */
 
   /* Shape & elevation */
   --radius-m: 12px;
@@ -123,5 +128,13 @@
 
 @media (prefers-reduced-motion: reduce) { :root { --duration-reveal: 0ms; } }
 
-/* Light theme (set by the switch) */
-:root[data-theme='light'] { color-scheme: light; --filter-logo: invert(1); }
+/* Light theme (set by the switch): darker text on a light page needs more weight in the headlines and a regular body */
+:root[data-theme='light'] {
+  color-scheme: light; --filter-logo: invert(1);
+  --text-display-weight: 700; --text-heading-weight: 700; --text-subheading-weight: 700;
+  --text-body-weight: 400; --weight-emphasis: 700;
+  /* Geist is wider at heavier weights (measured: 600→700 +0.011em per character, 300→400 +0.007em), so light mode is tightened by that amount
+   * to keep the text flowing the same as in dark mode. Label (300 in both) and title (800) are unchanged. */
+  --text-display-ls: -0.011em; --text-heading-ls: -0.011em; --text-subheading-ls: -0.011em;
+  --text-body-ls: -0.007em; --ls-emphasis: -0.011em;
+}

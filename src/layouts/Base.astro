@@ -51,7 +51,7 @@ const fontFace = editorial
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="generator" content={Astro.generator} />
     <meta name="color-scheme" content="dark light" />
-    <meta name="theme-color" content="#000000" />
+    <meta name="theme-color" content="#0d0d12" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonical} />
@@ -75,7 +75,7 @@ const fontFace = editorial
           try { if (localStorage.getItem('theme') === 'light') t = 'light'; } catch (e) {}
           root.dataset.theme = t;
           var m = document.querySelector('meta[name="theme-color"]');
-          if (m) m.setAttribute('content', t === 'light' ? '#ffffff' : '#000000');
+          if (m) m.setAttribute('content', t === 'light' ? '#fafafc' : '#0d0d12');
         }
         theme();
         // View transitions replace the <html> attributes: re-apply after every swap.

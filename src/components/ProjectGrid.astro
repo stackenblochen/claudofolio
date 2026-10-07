@@ -1,6 +1,6 @@
 ---
 /**
- * L1/L2 Project teaser list (one teaser per row, media measure). Home: gap "wide" (60 px). Other projects: gap "tight" (30 px) under a dash + heading.
+ * L1/L2 Project teaser list (one teaser per row: 12 columns on mobile, 10 up to 1229 px, 9 from 1230 px). Home: gap "wide" (60 px from 992 px, 30 px tablet, 20 px mobile). Other projects: gap "tight" (30 px from 992 px, 20 px tablet, 12 px mobile) under a dash + heading.
  * Feed it from getProjects() → toCard(); for "other projects" pass { exclude: current.id, limit: 2 }.
  */
 import type { CardData } from '../lib/projects';
@@ -15,7 +15,7 @@ const { items, gap = 'wide' } = Astro.props;
 
 {items.length > 0
   ? (
-    <ul class:list={['grid', 'measure-media', gap]} role="list">
+    <ul class:list={['grid', gap]} role="list">
       {items.map((c) => <li class="reveal"><ProjectCard card={c} /></li>)}
     </ul>
   )
@@ -23,6 +23,13 @@ const { items, gap = 'wide' } = Astro.props;
 
 <style>
   .grid { list-style: none; margin: 0 auto; padding: 0; display: flex; flex-direction: column; }
-  .wide { gap: var(--space-7); }
-  .tight { gap: var(--space-5); }
+  /* teaser width in grid columns: 12 below 768 px, 10 from 768 to 1229 px (tablet and small desktop), 9 from 1230 px (lines the teaser text up with the section headline) */
+  .grid { --n: 12; width: calc(100% * var(--n) / 12 - var(--gutter) * (12 - var(--n)) / 12); }
+  @media (min-width: 768px) { .grid { --n: 10; } }
+  @media (min-width: 1230px) { .grid { --n: 9; } }
+  /* gaps shrink on mobile and tablet */
+  .wide { gap: var(--space-4); }
+  .tight { gap: var(--space-3); }
+  @media (min-width: 768px) { .wide { gap: var(--space-5); } .tight { gap: var(--space-4); } }
+  @media (min-width: 992px) { .wide { gap: var(--space-7); } .tight { gap: var(--space-5); } }
 </style>

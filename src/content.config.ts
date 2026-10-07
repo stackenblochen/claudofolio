@@ -19,6 +19,26 @@ const projects = defineCollection({
       tags: z.array(z.string()).max(4).default([]),
       cover: image(), // 16:10 card + hero mockup
       coverAlt: z.string(),
+      // optional: show the teaser thumb as a Mock (device frames on a stage) instead of the plain cover, see components/Mock.astro
+      thumb: z
+        .object({
+          stage: z.string(), // gradient name from src/lib/gradients.ts
+          theme: z.enum(['light', 'dark']).default('light'), // chrome theme, matches the screenshots
+          layout: z.enum(['set', 'row']).optional(),
+          phone: z.enum(['left', 'right']).optional(),
+          devices: z
+            .array(
+              z.object({
+                device: z.enum(['desktop', 'browser', 'ios', 'android']),
+                src: image(),
+                alt: z.string(),
+                bar: z.boolean().default(true), // false when the screenshot already has its own title bar
+                cutout: z.enum(['none']).optional(), // ios: screenshot already contains the island
+              }),
+            )
+            .min(1),
+        })
+        .optional(),
       heroVariant: z.enum(['mockup', 'backdrop']).default('mockup'),
       heroBackground: image().optional(), // for 'backdrop'
       confidential: z.boolean().default(false), // shows the stamp

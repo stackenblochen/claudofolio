@@ -42,7 +42,7 @@ const bg = afterBackground ? (typeof afterBackground === 'string' ? afterBackgro
     border-radius: var(--radius-l); padding: var(--space-4); background: var(--bg-card) center / cover;
     display: flex; flex-direction: column; gap: var(--space-3);
   }
-  .tag { color: var(--text-strong); font-weight: 700; }
+  .tag { color: var(--text-strong); font-weight: var(--weight-emphasis); letter-spacing: var(--ls-emphasis); }
   .card :global(img) { width: 100%; }
   .cmp :global(.arrow) {
     align-self: flex-end; margin-right: 12%; width: clamp(48px, 10%, 100px); margin-block: -60px; position: relative; z-index: 2;

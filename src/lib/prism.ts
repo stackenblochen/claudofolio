@@ -21,6 +21,7 @@ const FRAG = `
   uniform sampler2D u_tex;
   uniform vec2 u_res; uniform vec2 u_mouse;
   uniform float u_radius, u_strength, u_time, u_dpr;
+  uniform float u_rmode, u_rp, u_rmax; // ripple mode: 1.0, progress 0..1 of the wave front, distance the front travels (device px)
   uniform vec3 u_bg;
   float hash(float n){ return fract(sin(n * 127.1) * 43758.5453); }
   float vnoise(float x){ float i = floor(x); float f = fract(x); f = f * f * (3.0 - 2.0 * f); return mix(hash(i), hash(i + 1.0), f); }
@@ -30,6 +31,13 @@ const FRAG = `
     vec2 toM = px - u_mouse;
     float d = length(toM);
     float f = pow(smoothstep(u_radius, 0.0, d), 1.3) * u_strength;
+    if (u_rmode > 0.5) {
+      // one-off ripple: a wave front travels from the touch point across the whole stage. Ahead of the front the distortion
+      // rises steeply, behind it a longer wake fades out; the whole effect dies down towards the end.
+      float x = (d - u_rp * u_rmax) / (u_radius * 0.5);
+      float ring = x > 0.0 ? exp(-x * x * 2.0) : exp(-x * x * 0.16);
+      f = ring * (1.0 - smoothstep(0.7, 1.0, u_rp)) * u_strength;
+    }
 
     // smooth, flowing shear (continuous noise over y and time), not stepped blocks
     float y = px.y / u_dpr;
@@ -62,6 +70,8 @@ const rgb = (s: string) => {
 };
 
 export interface Prism {
+  /** Ripple mode only: plays the one-off ripple from this point (css px in the stage). Ignored while one is running. */
+  ripple: (x: number, y: number) => void;
   pointer: (clientX: number, clientY: number, x: number, y: number) => void;
   leave: () => void;
   dispose: () => void;
@@ -90,10 +100,15 @@ export interface PrismOptions {
    * Moving the pointer pushes it up to the maximum (0.6) and it eases back down to this level. Default 0.22.
    */
   hoverStrength?: number;
+  /** 'pointer' (default): distortion follows the pointer. 'ripple': no pointer tracking, `ripple(x, y)` plays one wave across the whole stage and the content is left untouched afterwards. */
+  mode?: 'pointer' | 'ripple';
+  /** Ripple mode: how long the wave takes to cross the stage, in ms. */
+  rippleMs?: number;
 }
 
 /** Paints the words of an element at their DOM positions, in their own colour and font. */
-export function paintText(ctx: CanvasRenderingContext2D, stage: DOMRect, el: HTMLElement) {
+export function paintText(ctx: CanvasRenderingContext2D, stage: DOMRect, el: HTMLElement, k = 1) {
+  // k converts on-screen px to the stage's layout px (stage.offsetWidth / stage.width) when the stage itself is scaled by a transform; fonts stay at their layout size
   ctx.textBaseline = 'alphabetic';
   const walker = document.createTreeWalker(el, NodeFilter.SHOW_TEXT);
   for (let node = walker.nextNode() as Text | null; node; node = walker.nextNode() as Text | null) {
@@ -101,13 +116,19 @@ export function paintText(ctx: CanvasRenderingContext2D, stage: DOMRect, el: HTM
     ctx.fillStyle = cs.color;
     ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
     const ascent = ctx.measureText('Hg').fontBoundingBoxAscent;
+    // text cut off by a clipping ancestor (line clamp, overflow hidden) still has rects: leave those words out, like the page does
+    let clip: DOMRect | null = null;
+    for (let p: HTMLElement | null = node.parentElement; p && p !== el.parentElement; p = p.parentElement) {
+      if (getComputedStyle(p).overflowY !== 'visible') { clip = p.getBoundingClientRect(); break; }
+    }
     const range = document.createRange();
     const re = /\S+/g;
     for (let m = re.exec(node.data); m; m = re.exec(node.data)) {
       range.setStart(node, m.index);
       range.setEnd(node, m.index + m[0].length);
       const r = range.getClientRects()[0];
-      if (r) ctx.fillText(m[0], r.left - stage.left, r.top - stage.top + ascent);
+      if (r && clip && (r.bottom > clip.bottom + 1 || r.top < clip.top - 1 || r.right > clip.right + 1)) continue;
+      if (r) ctx.fillText(m[0], (r.left - stage.left) * k, (r.top - stage.top) * k + ascent);
     }
   }
 }
@@ -144,13 +165,13 @@ export function paintGlyph(ctx: CanvasRenderingContext2D, stage: DOMRect, el: HT
 }
 
 /** Paints a loaded image at its (possibly transformed) DOM position. */
-export function paintImage(ctx: CanvasRenderingContext2D, stage: DOMRect, img: HTMLImageElement) {
+export function paintImage(ctx: CanvasRenderingContext2D, stage: DOMRect, img: HTMLImageElement, k = 1) {
   if (!img.complete || !img.naturalWidth) return;
   const r = img.getBoundingClientRect();
-  ctx.drawImage(img, r.left - stage.left, r.top - stage.top, r.width, r.height);
+  ctx.drawImage(img, (r.left - stage.left) * k, (r.top - stage.top) * k, r.width * k, r.height * k);
 }
 
-export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaintEachFrame = false, idleRepaintMs = 0, hoverStrength = 0.22 }: PrismOptions): Prism | null {
+export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaintEachFrame = false, idleRepaintMs = 0, hoverStrength = 0.22, mode = 'pointer', rippleMs = 1100 }: PrismOptions): Prism | null {
   const gl = canvas.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true });
   if (!gl) return null;
 
@@ -175,7 +196,8 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   const U = (n: string) => gl.getUniformLocation(prog, n);
-  const u = { res: U('u_res'), mouse: U('u_mouse'), radius: U('u_radius'), strength: U('u_strength'), time: U('u_time'), dpr: U('u_dpr'), bg: U('u_bg') };
+  const u = { res: U('u_res'), mouse: U('u_mouse'), radius: U('u_radius'), strength: U('u_strength'), time: U('u_time'), dpr: U('u_dpr'), bg: U('u_bg'), rmode: U('u_rmode'), rp: U('u_rp'), rmax: U('u_rmax') };
+  gl.uniform1f(u.rmode, mode === 'ripple' ? 1 : 0);
 
   const tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -200,8 +222,10 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
     gl.texImage2D(gl.TEXTURE_2D, 0, gl.RGBA, gl.RGBA, gl.UNSIGNED_BYTE, textCanvas);
   };
 
+  let radiusCss = 0;
   const drawText = () => {
-    const pr = stage.getBoundingClientRect();
+    // layout size, not the on-screen rect: the stage may be scaled by a transform (reveal, hover zoom) while the canvas inside it scales along
+    const pr = { width: stage.offsetWidth, height: stage.offsetHeight };
     dpr = Math.min(2, window.devicePixelRatio || 1);
     W = Math.round(pr.width * dpr);
     H = Math.round(pr.height * dpr);
@@ -214,7 +238,8 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
     gl.uniform3fv(u.bg, rgb(getComputedStyle(bg).backgroundColor) ?? [0, 0, 0]);
     gl.uniform2f(u.res, W, H);
     gl.uniform1f(u.dpr, dpr);
-    gl.uniform1f(u.radius, (radiusFn ? radiusFn(pr.width, pr.height) : Math.min(pr.width * 0.3, 420)) * dpr);
+    radiusCss = radiusFn ? radiusFn(pr.width, pr.height) : Math.min(pr.width * 0.3, 420);
+    gl.uniform1f(u.radius, radiusCss * dpr);
   };
 
   // ----- pointer-driven state
@@ -253,6 +278,26 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     raf = requestAnimationFrame(draw);
   };
+  // ----- one-off ripple (mode 'ripple')
+  let rippling = false, rStart = 0, rx = 0, ry = 0, rRaf = 0;
+  const rippleFrame = (now: number) => {
+    const t = Math.min(1, (now - rStart) / rippleMs);
+    const p = 1 - Math.pow(1 - t, 2); // the front starts fast and slows down
+    paintTexture(); // the content moves while the card pops up
+    const far = Math.max(Math.hypot(rx, ry), Math.hypot(W / dpr - rx, ry), Math.hypot(rx, H / dpr - ry), Math.hypot(W / dpr - rx, H / dpr - ry));
+    canvas.classList.add('is-on');
+    gl.clearColor(0, 0, 0, 0);
+    gl.clear(gl.COLOR_BUFFER_BIT);
+    gl.uniform2f(u.mouse, rx * dpr, ry * dpr);
+    gl.uniform1f(u.rp, p);
+    gl.uniform1f(u.rmax, (far + radiusCss * 1.5) * dpr);
+    gl.uniform1f(u.strength, 0.7);
+    gl.uniform1f(u.time, (now - rStart) / 1000);
+    gl.drawArrays(gl.TRIANGLES, 0, 3);
+    if (t < 1) rRaf = requestAnimationFrame(rippleFrame);
+    else { rippling = false; canvas.classList.remove('is-on'); gl.clear(gl.COLOR_BUFFER_BIT); }
+  };
+
   const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(draw); } };
 
   const rebuild = () => { drawText(); if (running) gl.drawArrays(gl.TRIANGLES, 0, 3); };
@@ -264,7 +309,14 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   return {
+    ripple(x, y) {
+      if (mode !== 'ripple' || rippling) return;
+      rippling = true; rx = x; ry = y; rStart = performance.now();
+      cancelAnimationFrame(rRaf);
+      rRaf = requestAnimationFrame(rippleFrame);
+    },
     pointer(clientX, clientY, x, y) {
+      if (mode === 'ripple') return;
       leaving = false;
       inside = true;
       tx = x; ty = y;
@@ -273,9 +325,11 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
       lastX = clientX; lastY = clientY; hasLast = true;
       kick();
     },
-    leave() { hasLast = false; inside = false; leaving = true; speed = 0; kick(); },
+    leave() { if (mode === 'ripple') return; hasLast = false; inside = false; leaving = true; speed = 0; kick(); },
     dispose() {
       cancelAnimationFrame(raf);
+      cancelAnimationFrame(rRaf);
+      rippling = false;
       running = false;
       inside = false;
       ro.disconnect(); mo.disconnect();
