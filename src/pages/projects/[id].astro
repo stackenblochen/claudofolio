@@ -14,6 +14,11 @@ import Video from '../../components/Video.astro';
 import Embed from '../../components/Embed.astro';
 import Arrow from '../../components/Arrow.astro';
 import Mock from '../../components/Mock.astro';
+import Schema from '../../components/Schema.astro';
+import SchemaGroup from '../../components/schema/SchemaGroup.astro';
+import SchemaPill from '../../components/schema/SchemaPill.astro';
+import SchemaArrow from '../../components/schema/SchemaArrow.astro';
+import SchemaList from '../../components/schema/SchemaList.astro';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -24,7 +29,7 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 
 // Available in every case-study MDX without imports.
-const components = { Chapter, SubChapter, ChallengeSolution, Figure, FigurePair, ScreenStack, Comparison, InsightRow, Video, Embed, Arrow, Mock };
+const components = { Chapter, SubChapter, ChallengeSolution, Figure, FigurePair, ScreenStack, Comparison, InsightRow, Video, Embed, Arrow, Mock, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList };
 ---
 
 <CaseStudy project={project}>

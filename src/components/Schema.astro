@@ -1,0 +1,62 @@
+---
+/**
+ * I10 Schema: a diagram (structure, process, hierarchy, flow) drawn as live SVG on a theme-aware stage.
+ * Same frame as Mock: sizes, 16 px stage radius, aspect ratios and grid placement. Text, lines and shapes are real SVG using the
+ * styleguide tokens, so they follow dark and light mode and stay sharp. Rules and parts: docs/foundations/06-schemas.md.
+ *
+ *   <Schema size="media" width={1400} height={810} alt="…">
+ *     <SchemaGroup x={185} y={113} w={496} h={400} />
+ *     <SchemaPill x={229} y={157} w={409} h={74} label="Code library" />
+ *     <SchemaArrow points={[[433, 270], [433, 240]]} />
+ *     <SchemaList x={813} y={152} title="…" items={['…']} />
+ *   </Schema>
+ *
+ * Coordinates are in the viewBox (width × height, like a Figma frame). The drawing is scaled to fit the stage and centred.
+ */
+interface Props {
+  size?: 'full' | 'media' | 'cover' | 'half' | 'third';
+  /** viewBox size: the size of the drawing in the Figma frame. */
+  width: number;
+  height: number;
+  /** Accessible description of the whole diagram (the drawing is exposed as one image). */
+  alt: string;
+  caption?: string;
+}
+const { size = 'media', width, height, alt, caption } = Astro.props;
+const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-media', half: undefined, third: undefined }[size];
+---
+
+<figure class:list={['schema-fig', measure, 'reveal']} data-size={size}>
+  <div class="schema" data-size={size}>
+    <svg viewBox={`0 0 ${width} ${height}`} role="img" aria-label={alt} preserveAspectRatio="xMidYMid meet">
+      <slot />
+    </svg>
+  </div>
+  {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .schema-fig { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; margin-block: 0; }
+  .schema-fig:not(.measure-media):not(.measure-wide) { margin-inline: 0; }
+  .schema {
+    /* diagram colours, all derived from the theme tokens */
+    --schema-surface: color-mix(in srgb, var(--bg-card) 45%, var(--bg-raised));
+    --schema-line: var(--border-subtle);
+    --schema-text: var(--text-strong);
+    --schema-text-dim: var(--text-default);
+    --schema-accent: var(--accent-primary);
+    background: var(--bg-raised);
+    border-radius: var(--radius-l);
+    overflow: hidden;
+    aspect-ratio: 3 / 2;
+  }
+  .schema[data-size='cover'] { aspect-ratio: 16 / 10; }
+  .schema[data-size='half'] { aspect-ratio: 1 / 1; }
+  .schema[data-size='third'] { aspect-ratio: 3 / 4; }
+  svg { display: block; width: 100%; height: 100%; }
+  /* half and third sit in a .grid-12 row */
+  @media (min-width: 768px) {
+    .schema-fig[data-size='half'] { grid-column: span 6; }
+    .schema-fig[data-size='third'] { grid-column: span 4; }
+  }
+</style>

@@ -1,0 +1,6 @@
+---
+/** Schema part: a rounded container that groups other parts. */
+interface Props { x: number; y: number; w: number; h: number; r?: number }
+const { x, y, w, h, r = 44 } = Astro.props;
+---
+<rect {x} {y} width={w} height={h} rx={r} style="fill: var(--schema-surface)" />

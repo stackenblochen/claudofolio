@@ -248,6 +248,9 @@
 .mock__device[data-device="android"] .mock__screen { left: 3.74%; top: 1.87%; width: 91.76%; height: 91.73%; border-radius: calc(var(--w) * 0.0616) calc(var(--w) * 0.0616) calc(var(--w) * 0.02) calc(var(--w) * 0.02); }   /* the opening has tighter bottom corners */
 .mock__device[data-device="ios"] .mock__img,
 .mock__device[data-device="android"] .mock__img { object-position: var(--mock-focus, top center); }
+/* Android: the screenshot is fitted to the frame's real opening (1088 × 2236 of 1202 × 2455 px, measured from the template), not to the larger
+ * screen box, so no content is cropped on the sides; the black box around it stays hidden under the bezel. */
+.mock__device[data-device="android"] .mock__img { position: absolute; margin: 0; left: 0.73%; top: 0.36%; width: 98.64%; height: 99.28%; }
 .mock[data-align="cut-top"] .mock__device[data-device="ios"] .mock__img,
 .mock[data-align="cut-top"] .mock__device[data-device="android"] .mock__img { object-position: var(--mock-focus, bottom center); }
 

@@ -1,0 +1,10 @@
+---
+/** Schema part: a pill with a centred label. `outline` = line only (sits inside a group), `filled` = solid surface. */
+interface Props { x: number; y: number; w: number; h: number; label: string; variant?: 'outline' | 'filled'; size?: number }
+const { x, y, w, h, label, variant = 'filled', size = 26.244 } = Astro.props;
+const stroke = 3; // inside the box, like a CSS border
+---
+{variant === 'outline'
+  ? <rect x={x + stroke / 2} y={y + stroke / 2} width={w - stroke} height={h - stroke} rx={(h - stroke) / 2} style={`fill: none; stroke: var(--schema-line); stroke-width: ${stroke}`} />
+  : <rect {x} {y} width={w} height={h} rx={h / 2} style="fill: var(--schema-surface)" />}
+<text x={x + w / 2} y={y + h / 2} text-anchor="middle" dominant-baseline="central" style={`font: 500 ${size}px var(--font-mono); fill: var(--schema-text)`}>{label}</text>

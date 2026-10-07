@@ -1,0 +1,9 @@
+---
+/** Schema part: a mono title with a list of → items below it. `x`, `y` = top-left of the title line (as in Figma). */
+interface Props { x: number; y: number; title: string; items?: string[] }
+const { x, y, title, items = [] } = Astro.props;
+---
+<text {x} y={y + 22.8} style="font: 500 24px var(--font-mono); fill: var(--schema-text)">{title}</text>
+{items.map((item, i) => (
+  <text {x} y={y + 80 + i * 34} style="font: 400 23px var(--font-sans); fill: var(--schema-text-dim)">→ {item}</text>
+))}

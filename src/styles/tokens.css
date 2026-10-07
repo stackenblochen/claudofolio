@@ -51,6 +51,7 @@
 
   /* Font families */
   --font-serif: 'Editorial New', 'Times New Roman', serif;
+  --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
   --font-sans: 'Geist Variable', 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /* Type scale (fluid) */

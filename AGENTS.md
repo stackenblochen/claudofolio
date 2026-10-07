@@ -38,6 +38,7 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
   `.prose`, `.section`, media helpers and the `.reveal` scroll effect.
 - **Components:** `src/components/`, one per module ID in `03-modules.md` (Chapter, Lead, ProjectMeta, Figure, ScreenStack,
   Comparison, Embed, Outcome, ProjectGrid …). Content goes in via props and slots, never style overrides.
+- **Schemas:** diagrams (structures, processes, hierarchies, flows) are live SVG via `Schema` (I10) and the parts in `src/components/schema/`, in the same frame as mocks and theme aware. Rules and parts: `docs/foundations/06-schemas.md`.
 - **Layouts:** `Base.astro` (head, fonts, header, footer) for every page. `CaseStudy.astro` renders hero, lead, meta, outcome
   and other projects from frontmatter; the MDX body holds chapters only.
 - **Case studies:** copy `src/content/projects/_template.mdx` to `<slug>.mdx`. The schema is in `src/content.config.ts`.

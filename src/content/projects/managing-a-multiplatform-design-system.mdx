@@ -33,7 +33,6 @@ import arrowRight from '../../assets/arrow-red-right.svg';
 import nowBackground from '../../assets/projects/design-system/now-background.jpg';
 import now from '../../assets/projects/design-system/now.png';
 import tokensPoster from '../../assets/projects/design-system/tokens-poster.png';
-import dsStructure from '../../assets/projects/design-system/ds-structure.png';
 import navIos from '../../assets/projects/design-system/nav-ios-screen.png';
 import navAndroid from '../../assets/projects/design-system/nav-android-screen.png';
 import colorContrast from '../../assets/projects/design-system/color-contrast.png';
@@ -86,7 +85,22 @@ import claudeDesign from '../../assets/projects/design-system/claude-design.png'
   Shared iconography, colors and other foundations add the product's personality and make the app recognizable.
 
   <Fragment slot="media">
-    <Figure src={dsStructure} alt="Diagram: iOS, Android and Desktop feed a UI library, design tokens and a code library, which together form the Wire design system next to the native design system" />
+    <Schema size="media" width={1400} height={810} alt="Diagram: iOS, Android and Desktop feed a UI library, design tokens and a code library, which together form the Wire design system next to the native design system">
+      <SchemaGroup x={185} y={113} w={496} h={400} />
+      <SchemaPill variant="outline" x={228.74} y={156.74} w={408.52} h={73.7} label="Code library" />
+      <SchemaPill variant="outline" x={228.74} y={278.9} w={408.52} h={73.7} label="Design tokens" />
+      <SchemaPill variant="outline" x={228.74} y={401.1} w={408.52} h={73.7} label="UI library" />
+      <SchemaArrow points={[[433, 270], [433, 239]]} />
+      <SchemaArrow points={[[433, 392], [433, 361]]} />
+      <SchemaPill x={127.5} y={622.5} w={185.9} h={67.7} label="iOS" />
+      <SchemaPill x={339.6} y={622.5} w={185.9} h={67.7} label="Android" />
+      <SchemaPill x={551.8} y={622.5} w={185.9} h={67.7} label="Desktop" />
+      <SchemaArrow points={[[239, 615], [239, 568], [408, 568], [408, 522]]} />
+      <SchemaArrow points={[[433, 615], [433, 521]]} />
+      <SchemaArrow points={[[627, 615], [627, 568], [458, 568], [458, 522]]} />
+      <SchemaList x={813} y={152} title="Wire Design System" items={['Wire Colors', 'Wire Fonts', 'Wire Icons', 'Wire specific components']} />
+      <SchemaList x={813} y={567} title="Native Design System" items={['Native components', 'Native user flows', 'Accessibility']} />
+    </Schema>
     <div class="grid-12 measure-media">
       <Mock size="half" align="fit" stage="var(--bg-raised)" devices={[{ device: 'ios', src: navIos, alt: 'Main navigation on iOS' }]} />
       <Mock size="half" align="fit" stage="var(--bg-raised)" devices={[{ device: 'android', src: navAndroid, alt: 'Main navigation on Android' }]} />

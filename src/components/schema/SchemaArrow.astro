@@ -1,0 +1,29 @@
+---
+/**
+ * Schema part: a line through `points` with rounded corners (radius `r`) and an open arrowhead at the last point.
+ * Straight: two points. Elbow: three or four points, e.g. [[239, 615], [239, 568], [408, 568], [408, 522]].
+ */
+interface Props { points: [number, number][]; r?: number; head?: number }
+const { points, r = 24, head = 12 } = Astro.props;
+
+const dist = (a: number[], b: number[]) => Math.hypot(b[0] - a[0], b[1] - a[1]);
+const toward = (from: number[], to: number[], d: number) => {
+  const l = dist(from, to) || 1;
+  return [from[0] + ((to[0] - from[0]) / l) * d, from[1] + ((to[1] - from[1]) / l) * d];
+};
+let d = `M${points[0][0]} ${points[0][1]}`;
+for (let i = 1; i < points.length - 1; i++) {
+  const rad = Math.min(r, dist(points[i - 1], points[i]) / 2, dist(points[i], points[i + 1]) / 2);
+  const a = toward(points[i], points[i - 1], rad);
+  const b = toward(points[i], points[i + 1], rad);
+  d += ` L${a[0]} ${a[1]} Q${points[i][0]} ${points[i][1]} ${b[0]} ${b[1]}`;
+}
+const end = points[points.length - 1];
+d += ` L${end[0]} ${end[1]}`;
+
+// arrowhead: two strokes back from the tip, ±40° around the last segment
+const prev = points[points.length - 2];
+const ang = Math.atan2(prev[1] - end[1], prev[0] - end[0]);
+const wing = (s: number) => `M${end[0]} ${end[1]} L${end[0] + Math.cos(ang + s * 0.7) * head} ${end[1] + Math.sin(ang + s * 0.7) * head}`;
+---
+<path d={`${d} ${wing(1)} ${wing(-1)}`} style="fill: none; stroke: var(--schema-accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round" />
