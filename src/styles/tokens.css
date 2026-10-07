@@ -6,35 +6,40 @@
   /* --bp-sm: 544px; --bp-md: 768px; --bp-lg: 992px; --bp-xl: 1170px; */
 
   /* Colour — palette (raw values; do not use directly in components, use the semantic tokens below).
-   * There is no pure black or white except for the teaser sections (bg.pure): the page and the strong text use a near-black (ink) and a near-white (paper) with a faint
-   * blue-violet cast that matches the grey-blue text and the borders. Light values are adjusted for contrast on the light page (#fafafc):
-   *   text 4.9:1, green 4.5:1, salmon 3.5:1 (graphical use).
-   * Default text: dark 7.0:1 on bg.page / 6.4:1 on bg.raised (#9a9aab), light 4.9:1 on bg.page / 4.6:1 on bg.raised (as weak as AA allows).
-   * Do not use text.default on bg.card (below 4.5:1). */
+   * Gray ramp: one cool (blue-violet) gray scale, 950 darkest to 50 lightest, used by both themes. There is no pure black or white except
+   * for the teaser sections (bg.pure). Contrast of the two default-text steps:
+   *   400 (#9a9aab, dark text): 7.0:1 on 950, 6.4:1 on 900, 5.4:1 on 800, 4.4:1 on 700 (do not use on bg.card)
+   *   500 (#6a6b7c, light text): 5.0:1 on 50, 4.5:1 on 100, 4.0:1 on 200 (do not use on bg.card)
+   * Green 4.5:1 and salmon 3.5:1 (graphical use) on the light page (#fafafc). */
+  --gray-950: #0d0d12; /* dark page; strong text in light mode */
+  --gray-900: #18181e; /* dark raised */
+  --gray-800: #26272c; /* dark surface (a panel on a raised stage) */
+  --gray-700: #34373d; /* dark card, dark borders */
+  --gray-600: #4d505a;
+  --gray-500: #6a6b7c; /* light default text */
+  --gray-400: #9a9aab; /* dark default text */
+  --gray-300: #c6c7d2; /* light lines on a surface */
+  --gray-200: #e0e1e8; /* light surface, card, borders */
+  --gray-100: #eeeef3; /* light raised */
+  --gray-50: #fafafc; /* light page; strong text in dark mode */
   --color-black: #000000; /* only for the teaser sections (bg.pure) */
   --color-white: #ffffff;
-  --color-ink-950: #0d0d12; /* dark page, and strong text in light mode: near-black with a faint blue-violet cast */
-  --color-grey-950: #18181e; /* dark raised surface, same cast */
-  --color-grey-800: #34373d;
-  --color-grey-blue-500: #9a9aab; /* dark default text (the original palette value) */
   --color-green: #00ff32;
   --color-salmon: #fa8072;
   /* light-mode counterparts */
-  --color-paper-50: #fafafc; /* light page, and strong text in dark mode: near-white with the same faint cast */
-  --color-grey-50: #f3f3f6; /* light raised surface */
-  --color-grey-200: #e4e5ea;
-  --color-grey-blue-600: #6c6d7e; /* was #5a5b6c */
   --color-green-700: #008a21;
   --color-salmon-600: #e8553d;
 
   /* Colour — semantic: light-dark(light, dark). The theme is set by color-scheme (see below). */
-  --bg-page: light-dark(var(--color-paper-50), var(--color-ink-950));
+  --bg-page: light-dark(var(--gray-50), var(--gray-950));
   --bg-pure: light-dark(var(--color-white), var(--color-black)); /* pure white / black: the sections that hold the case study teasers */
-  --bg-raised: light-dark(var(--color-grey-50), var(--color-grey-950));
-  --bg-card: light-dark(var(--color-grey-200), var(--color-grey-800));
-  --text-default: light-dark(var(--color-grey-blue-600), var(--color-grey-blue-500));
-  --text-strong: light-dark(var(--color-ink-950), var(--color-paper-50));
-  --border-subtle: light-dark(var(--color-grey-200), var(--color-grey-800));
+  --bg-raised: light-dark(var(--gray-100), var(--gray-900));
+  --bg-surface: light-dark(var(--gray-200), var(--gray-800)); /* a panel on a raised stage (schema groups) */
+  --bg-card: light-dark(var(--gray-200), var(--gray-700));
+  --text-default: light-dark(var(--gray-500), var(--gray-400));
+  --text-strong: light-dark(var(--gray-950), var(--gray-50));
+  --border-subtle: light-dark(var(--gray-200), var(--gray-700));
+  --border-strong: light-dark(var(--gray-300), var(--gray-700)); /* lines on a surface (schema pills) */
   --accent-positive: light-dark(var(--color-green-700), var(--color-green));
   --accent-primary: light-dark(var(--color-salmon-600), var(--color-salmon)); /* the brand accent: link underlines, focus rings, nav underline, timeline dot, errors, negative marks */
   --accent-link: var(--accent-primary);

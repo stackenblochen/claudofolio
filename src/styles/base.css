@@ -46,7 +46,7 @@ button { font: inherit; color: inherit; }
  *   .t-display     Home hero only
  *   .t-title       H1 page titles (Editorial New)
  *   .t-heading     Lead statements, section titles, chapter titles, statement, company names
- *   .t-subheading  Sub-chapters, card titles, insight titles, roles
+ *   .t-subheading  Sub-chapters, card titles, roles
  *   .t-body        Paragraphs, lists, meta values, main navigation
  *   .t-label       Eyebrows, meta labels, dates, footer, card categories (always weight 300)
  * Modifiers: .t-upper (uppercase), .t-serif (Editorial face inside a Display line). */
@@ -91,6 +91,8 @@ button { font: inherit; color: inherit; }
 /* ---------- Prose (running text inside modules) ---------- */
 /* Image caption layout (type is .t-caption): centred below the media, with 30 px of extra space below it. */
 .caption { margin-bottom: var(--space-5); text-align: center; }
+/* captions sit on the text measure (8 columns on wide desktops, 9 on tablets) even when the media above is wider */
+@media (min-width: 768px) { .caption { max-width: calc(var(--measure-text-cols) * var(--col-step) - var(--gutter)); margin-inline: auto; } }
 .prose { font-size: var(--text-body-size); line-height: var(--text-body-lh); font-weight: var(--text-body-weight); letter-spacing: var(--text-body-ls); }
 .prose > * + * { margin-top: 1.5em; }
 .prose strong, .prose b { color: var(--text-strong); font-weight: var(--weight-emphasis); letter-spacing: var(--ls-emphasis); }

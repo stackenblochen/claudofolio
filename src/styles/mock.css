@@ -74,7 +74,7 @@
 }
 /* the stage is announced with data-stage (set by Mock.astro and render.mjs whenever a stage is given) */
 .mock[data-theme="dark"]:not([data-stage]),
-:root:not([data-theme="light"]) .mock[data-theme="auto"]:not([data-stage]) { --mock-outline: var(--color-grey-800, #34373d); }
+:root:not([data-theme="light"]) .mock[data-theme="auto"]:not([data-stage]) { --mock-outline: var(--gray-700, #34373d); }
 .mock__img--dark { display: none; }
 .mock[data-theme="dark"] .mock__img--light,
 :root:not([data-theme="light"]) .mock[data-theme="auto"] .mock__img--light { display: none; }

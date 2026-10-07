@@ -34,7 +34,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | I2 | Image pair | `FigurePair` | Case A |
 | I3 | Screenshot stack + caption | `ScreenStack` | Case B |
 | I4 | Before → after comparison with arrow | `Comparison` | Case A |
-| I5 | Insight row (illustration + text) | `InsightRow` | Case B |
+| I5 | Image + text row (illustration + text) | `ImageText` | Case B |
 | I6 | Video | `Video` | Case A |
 | I7 | Interactive embed + fallback | `Embed` | Case A, B |
 | I8 | Annotation overlays (stamp, arrow) | `Stamp`, `Arrow` | Case A, B |
@@ -193,12 +193,12 @@ Shared image rules: radius **16 px** (diagrams, squares, video, embeds) or **12 
 - **Column mode:** stays "multi" on sm/xs so the arrow keeps its position; arrow margins shrink to −40 / −28 (xs).
 - → In Astro, build as one component with `before`, `after` and an optional `arrow`.
 
-### I5 Insight row
-- **Anatomy:** illustration (948 × 678, 4 cols), then a title (H6 style, white ⚠ inconsistent element) and a body paragraph (4 cols; lg/md 5). Repeated 3 times.
+### I5 Image + text row
+- **Anatomy:** inside the text measure: illustration (948 × 678, 3 cols, radius 16) and, to its right, a title in body text with the strong colour (not bold) and a body paragraph, top aligned with the image. Stacked below 768 px (image about 60 % wide). Use it for insights, principles or any short finding with an illustration; repeat as needed.
 
 | xs | sm | md | lg | xl |
 |---|---|---|---|---|
-| stack; image padded right ~120 px (≈ 60 % width) | stack; image ~60 % | 4 + 5 | 4 + 5 | 4 + 4 |
+| stack; image ~60 % | stack; image ~60 % | 3 + 6 | 3 + 6 | 3 + 5 |
 
 ### I6 Video
 - `<video>` 10 cols, radius 16, `border-hairline`. Source: `.mov` 1920 × 1236 ⚠. Use MP4/H.264 (plus WebM), with a poster image, muted, playsinline, and no autoplay unless it's a short loop.

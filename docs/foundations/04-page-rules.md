@@ -34,7 +34,7 @@ src/
     Chapter.astro  SubChapter.astro  ChallengeSolution.astro  Outcome.astro
     ProjectMeta.astro  CareerEntry.astro
     Figure.astro  FigurePair.astro  ScreenStack.astro  Comparison.astro
-    InsightRow.astro  Video.astro  Embed.astro  Stamp.astro  Arrow.astro
+    ImageText.astro  Video.astro  Embed.astro  Stamp.astro  Arrow.astro
     ProjectGrid.astro  ProjectCard.astro
   layouts/
     Base.astro           # <html>, fonts, tokens.css, header, footer
@@ -98,7 +98,7 @@ Required (★) and optional (○) blocks, in this order:
 | ★1 | Hero | `CaseHero` | H1 ≤ 8 words, sentence case. Mockup or backdrop. Stamp if `confidential` |
 | ★2 | Lead | `Lead` | Eyebrow "Background". 2–3 sentences: situation → why it mattered → what you did |
 | ★3 | Meta | `ProjectMeta` | Role · Team · Timeline (+ Platforms/Company optional) |
-| ○4 | Insights | `Chapter` + 3× `InsightRow` | Source of insights in one sentence, then 3 insights (title ≤ 4 words + 1–2 sentences) |
+| ○4 | Insights | `Chapter` + 3× `ImageText` | Source of insights in one sentence, then 3 insights (title ≤ 4 words + 1–2 sentences) |
 | ○5 | Framing | `Chapter` + `Figure wide` | The reframe / key decision that unlocked the solution |
 | ★6 | Solution chapters | 2–5× `Chapter` (or `SubChapter`s) | Each: heading ≤ 4 words, 1–3 paragraphs, ≥ 1 visual |
 | ○7 | Constraints | `ChallengeSolution` inside chapters | Max 1 per chapter. Be honest about trade-offs |
@@ -112,7 +112,7 @@ Length guide: **900–1,500 words**, **6–12 visuals**, readable in 5–7 minut
 Chapter heading vocabulary (keep it short and concrete): *Then and now · Shared effort · Multiplatform · Accessibility · AI-ready · Key user insights · From X to Y · Design solution · Outcome · Learnings*.
 
 ### 3.2 Case study, variant: Design vision (next planned)
-Same frame, with these chapters suggested: **Where we were** (Comparison: today) → **Principles** (3 × InsightRow or a numbered list) → **The vision** (Figure wide + ScreenStack of key screens) → **How it travels** (how it was shared: workshops, prototype, embed) → **What it changed** (Outcome) → Learnings. Mark speculative screens clearly as "Vision, not shipped" in captions.
+Same frame, with these chapters suggested: **Where we were** (Comparison: today) → **Principles** (3 × ImageText or a numbered list) → **The vision** (Figure wide + ScreenStack of key screens) → **How it travels** (how it was shared: workshops, prototype, embed) → **What it changed** (Outcome) → Learnings. Mark speculative screens clearly as "Vision, not shipped" in captions.
 
 ### 3.3 Home
 
@@ -131,7 +131,7 @@ Same frame, with these chapters suggested: **Where we were** (Comparison: today)
 |---|---|---|
 | ★1 | Page header | `PageHeader`: eyebrow "About me", positioning H1 (Editorial), 2 intro paragraphs |
 | ○2 | Portrait | `Figure` (4–5 cols next to the intro on md+) |
-| ○3 | What I do | 3× `InsightRow` without images, or a short list: end-to-end, systems, vision |
+| ○3 | What I do | 3× `ImageText` without images, or a short list: end-to-end, systems, vision |
 | ★4 | Career | `SectionTitle` + `CareerEntry` per role (newest first) |
 | ○5 | Education | `CareerEntry` |
 | ★6 | Contact | email, LinkedIn, CV download |

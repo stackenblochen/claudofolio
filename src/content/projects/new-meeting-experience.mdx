@@ -36,20 +36,21 @@ import guest1 from '../../assets/projects/meetings/meetings-join-as-guest-02-1.p
 import guest2 from '../../assets/projects/meetings/meetings-join-as-guest-03.png';
 import schedule1 from '../../assets/projects/meetings/schedule-02-1440-1.png';
 import schedule2 from '../../assets/projects/meetings/schedule-01-1440.png';
+import gridPoster from '../../assets/projects/meetings/meetings-grid-poster.png';
 
 <Chapter title="Key user insights" id="insights">
   Extracted from stakeholder and peer interviews (Sales, Customer Success, Product and others), segment research and qualitative user interviews.
 
   <Fragment slot="media">
-    <InsightRow image={research1} alt="Illustration of familiar meeting patterns" title="Familiar patterns">
+    <ImageText image={research1} alt="Illustration of familiar meeting patterns" title="Familiar patterns">
       Users expect an experience similar to Zoom, Meet or Slack, since these tools already define the baseline.
-    </InsightRow>
-    <InsightRow image={research2} alt="Illustration of temporary and persistent groups" title="Temporary vs. persistent">
+    </ImageText>
+    <ImageText image={research2} alt="Illustration of temporary and persistent groups" title="Temporary vs. persistent">
       Instant meetings are more temporary and often formed outside of existing teams, while team collaboration favors persistent groups and channels.
-    </InsightRow>
-    <InsightRow image={research3} alt="Illustration of a calendar" title="Calendar needs">
+    </ImageText>
+    <ImageText image={research3} alt="Illustration of a calendar" title="Calendar needs">
       Enterprises don't want a second calendar, though heavily restricted sectors can benefit from scheduling within Wire.
-    </InsightRow>
+    </ImageText>
   </Fragment>
 </Chapter>
 
@@ -118,7 +119,7 @@ import schedule2 from '../../assets/projects/meetings/schedule-01-1440.png';
       </ChallengeSolution>
 
       <Fragment slot="media">
-        <Embed stage="calm-blue" src={siteUrl('/demos/meetings/index.html')} title="Prototype of the speaker-ordered call grid" note="Interactive call grid prototype, best viewed on desktop." />
+        <Embed stage="calm-blue" src={siteUrl('/demos/meetings/index.html')} title="Prototype of the speaker-ordered call grid" poster={gridPoster} posterAlt="The call grid prototype: nine tiles of participants, with six more in a compact overflow area" note="Interactive call grid prototype, best viewed on desktop." />
       </Fragment>
     </SubChapter>
   </Fragment>

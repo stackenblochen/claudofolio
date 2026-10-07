@@ -33,7 +33,7 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
 
 <figure class:list={['embed measure-media reveal', { 'has-poster': !!poster, 'full-laptop': fullOnLaptop }]}
   style={[height && `--embed-h:${height}px`, arrowRight && `--arrow-right:${arrowRight}`, arrowTop && `--arrow-top:${arrowTop}`, arrowWidth && `--arrow-w:${arrowWidth}`].filter(Boolean).join(';') || undefined}>
-  <div class:list={['stage', stage && `gradient gradient--${stage}`]}>
+  <div class:list={['stage', 'live', stage && `gradient gradient--${stage}`]}>
     <div class="frame">
       <iframe class:list={[stage ? 'media-m' : 'media-l media-hairline']} src={src} title={title} loading="lazy"></iframe>
       {arrowSrc && <Arrow src={arrowSrc} class="annot" />}
@@ -41,7 +41,9 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
   </div>
   {poster && (
     <div class="poster">
-      <Img src={poster} alt={posterAlt} class="media-l media-hairline" />
+      <div class:list={['stage', stage && `gradient gradient--${stage}`]}>
+        <Img src={poster} alt={posterAlt} class={stage ? undefined : 'media-l media-hairline'} />
+      </div>
       <p class="t-caption caption">{note}</p>
     </div>
   )}
@@ -64,6 +66,7 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
   iframe { display: block; width: 100%; height: var(--embed-h, calc(53.4cqw + 170px)); background: var(--bg-raised); }
   .poster { display: none; flex-direction: column; gap: var(--space-3); }
   .poster :global(img) { width: 100%; }
+  .poster .stage.gradient :global(img) { filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.4)); } /* the window in the poster has no shadow of its own */
   @media (min-width: 768px) { .stage.gradient { --stage-pad: var(--space-4); border-radius: var(--radius-l); } }
   @media (min-width: 992px) {
     .frame :global(.annot) { display: block; position: absolute; z-index: 2; pointer-events: none; right: var(--arrow-right, 5%); top: var(--arrow-top, -110px); width: var(--arrow-w, 80px); }
@@ -72,7 +75,7 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
     .full-laptop { --n: 12; }
   }
   @media (max-width: 991px) {
-    .has-poster iframe { display: none; }
+    .has-poster .live { display: none; }
     .has-poster .poster { display: flex; }
   }
 </style>

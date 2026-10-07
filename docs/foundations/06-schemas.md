@@ -27,8 +27,8 @@ Coordinates come straight from the Figma frame (top-left of each box). To draw a
 | Use | Token |
 |---|---|
 | Stage | `--bg-raised` |
-| Group and filled pill | `--schema-surface` = `--bg-card` 45% over `--bg-raised` |
-| Outline | `--border-subtle` |
+| Group and filled pill | `--schema-surface` = `--bg-surface` (`--gray-800` / `--gray-200`) |
+| Outline | `--border-strong` (`--gray-700` / `--gray-300`) |
 | Text | `--text-strong`; list items `--text-default` |
 | Arrows | `--accent-primary` |
 

@@ -17,11 +17,18 @@ import Figure from '../components/Figure.astro';
 import FigurePair from '../components/FigurePair.astro';
 import ScreenStack from '../components/ScreenStack.astro';
 import Comparison from '../components/Comparison.astro';
-import InsightRow from '../components/InsightRow.astro';
+import ImageText from '../components/ImageText.astro';
 import Embed from '../components/Embed.astro';
 import Stamp from '../components/Stamp.astro';
 import Arrow from '../components/Arrow.astro';
 import Mock from '../components/Mock.astro';
+import Schema from '../components/Schema.astro';
+import SchemaGroup from '../components/schema/SchemaGroup.astro';
+import SchemaPill from '../components/schema/SchemaPill.astro';
+import SchemaArrow from '../components/schema/SchemaArrow.astro';
+import SchemaList from '../components/schema/SchemaList.astro';
+import arrowDown from '../assets/arrow-red-down.svg';
+import arrowRight from '../assets/arrow-red-right.svg';
 import Portrait from '../components/Portrait.astro';
 import ContactBlock from '../components/ContactBlock.astro';
 import portrait from '../assets/portrait.webp';
@@ -43,15 +50,31 @@ import { INTENSITIES, INTENSITY_NOTES, TONALITIES, TONALITY_IDS, GRADIENTS, MOOD
 
 // [role, dark palette var, dark hex, light palette var, light hex]
 const colors = [
-  ['bg.page', '--color-ink-950', '#0d0d12', '--color-paper-50', '#fafafc'],
+  ['bg.page', '--gray-950', '#0d0d12', '--gray-50', '#fafafc'],
   ['bg.pure · sections with the case study teasers', '--color-black', '#000000', '--color-white', '#ffffff'],
-  ['bg.raised', '--color-grey-950', '#18181e', '--color-grey-50', '#f3f3f6'],
-  ['bg.card · border.subtle', '--color-grey-800', '#34373d', '--color-grey-200', '#e4e5ea'],
-  ['text.default', '--color-grey-blue-500', '#9a9aab', '--color-grey-blue-600', '#6c6d7e'],
-  ['text.strong', '--color-paper-50', '#fafafc', '--color-ink-950', '#0d0d12'],
+  ['bg.raised', '--gray-900', '#18181e', '--gray-100', '#eeeef3'],
+  ['bg.surface · panels on a raised stage', '--gray-800', '#26272c', '--gray-200', '#e0e1e8'],
+  ['bg.card · border.subtle', '--gray-700', '#34373d', '--gray-200', '#e0e1e8'],
+  ['border.strong · lines on a surface', '--gray-700', '#34373d', '--gray-300', '#c6c7d2'],
+  ['text.default', '--gray-400', '#9a9aab', '--gray-500', '#6a6b7c'],
+  ['text.strong', '--gray-50', '#fafafc', '--gray-950', '#0d0d12'],
   ['accent.positive', '--color-green', '#00ff32', '--color-green-700', '#008a21'],
   ['accent.primary · links, focus ring, nav underline, timeline dot, errors, negative marks', '--color-salmon', '#fa8072', '--color-salmon-600', '#e8553d'],
   ['selection', '--color-salmon', '#fa8072', '--color-salmon', '#fa8072'],
+];
+// The gray ramp: [step, hex, use]
+const ramp = [
+  ['950', '#0d0d12', 'Dark page · strong text in light mode'],
+  ['900', '#18181e', 'Dark raised'],
+  ['800', '#26272c', 'Dark surface (panel on a raised stage)'],
+  ['700', '#34373d', 'Dark card and borders'],
+  ['600', '#4d505a', 'Spare'],
+  ['500', '#6a6b7c', 'Light default text'],
+  ['400', '#9a9aab', 'Dark default text'],
+  ['300', '#c6c7d2', 'Light lines on a surface'],
+  ['200', '#e0e1e8', 'Light surface, card, borders'],
+  ['100', '#eeeef3', 'Light raised'],
+  ['50', '#fafafc', 'Light page · strong text in dark mode'],
 ];
 // Background gradients: the hue pairs of the former reveal effect (lib/pen.ts), shown as fixed swatches in both themes.
 const hue = Object.fromEntries(GRADIENT_HUES);
@@ -68,7 +91,7 @@ const roles = [
   ['t-display', 'Display', 'Home hero only'],
   ['t-title', 'Title', 'H1 page titles (Editorial New)'],
   ['t-heading', 'Heading', 'Lead statements, section and chapter titles, statement'],
-  ['t-subheading', 'Subheading', 'Sub-chapters, card titles, insight titles'],
+  ['t-subheading', 'Subheading', 'Sub-chapters, card titles'],
   ['t-body', 'Body', 'Paragraphs, lists, meta values, main navigation, card categories'],
   ['t-label', 'Label', 'Eyebrows, meta labels, dates, footer, card summaries (weight 300)'],
   ['t-caption', 'Caption', 'Captions and notes below media (label size, italic, weight 300)'],
@@ -87,9 +110,25 @@ const cards: CardData[] = [
 
   <!-- ===== Tokens ===== -->
   <SectionTitle id="colour">Colour</SectionTitle>
-  <div class="container"><div class="measure-media">
-    <p class="t-label intro-note">Semantic roles with their dark and light values. Components use only the roles (<code>var(--bg-page)</code> …), never the raw palette. Switch the theme in the nav to see the live result.</p>
-    <div class="colors">
+  <div class="container">
+    <div class="measure-text">
+      <h3 class="t-subheading ghead">Gray ramp</h3>
+      <p class="t-label intro-note">One cool gray scale for both themes: backgrounds, surfaces, borders and default text all come from it. 950 is the darkest step, 50 the lightest.</p>
+    </div>
+    <div class="measure-media ramp">
+      {ramp.map(([step, hex, use]) => (
+        <figure class="rstep">
+          <span class="rchip" style={`background:var(--gray-${step})`}></span>
+          <figcaption class="t-label"><span class="gname">{step}</span><code>{hex}</code><span>{use}</span></figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="measure-text">
+      <h3 class="t-subheading ghead">Semantic roles</h3>
+      <p class="t-label intro-note">Semantic roles with their dark and light values. Components use only the roles (<code>var(--bg-page)</code> …), never the raw palette. Switch the theme in the nav to see the live result.</p>
+    </div>
+    <div class="measure-media">
+      <div class="colors">
       <div class="crow chead t-label"><span>Role</span><span>Dark</span><span>Light</span></div>
       {colors.map(([role, dv, dh, lv, lh]) => (
         <div class="crow">
@@ -99,14 +138,17 @@ const cards: CardData[] = [
         </div>
       ))}
     </div>
-  </div></div>
+    </div>
+  </div>
 
   <SectionTitle id="gradients">Background gradients</SectionTitle>
-  <div class="container"><div class="measure-media">
-    <p class="t-label intro-note">A gradient is named <code>&lt;intensity&gt;-&lt;tonality&gt;</code>, for example <code>soft-yellow</code> or <code>active-blue</code>. <strong>Intensity</strong> says how loud it is (soft, calm, active), <strong>tonality</strong> says which colour family dominates (yellow, salmon, violet, blue, green). So "an active gradient with blue tonality" is <code>active-blue</code>, and "a soft gradient with a yellowish tonality" is <code>soft-yellow</code>. Moods are short names for a few curated picks. Everything follows the theme: switch it in the nav to see dark and light. The definition lives in <code>src/lib/gradients.ts</code>; use <code>class="gradient gradient--active-blue"</code> (or the mood) in markup, or the tokens <code>--gradient-active-blue-top</code> / <code>-bottom</code> in CSS.</p>
+  <div class="container">
+    <div class="measure-text">
+      <p class="t-label intro-note">A gradient is named <code>&lt;intensity&gt;-&lt;tonality&gt;</code>, for example <code>soft-yellow</code> or <code>active-blue</code>. <strong>Intensity</strong> says how loud it is (soft, calm, active), <strong>tonality</strong> says which colour family dominates (yellow, salmon, violet, blue, green). So "an active gradient with blue tonality" is <code>active-blue</code>, and "a soft gradient with a yellowish tonality" is <code>soft-yellow</code>. Moods are short names for a few curated picks. Everything follows the theme: switch it in the nav to see dark and light. The definition lives in <code>src/lib/gradients.ts</code>; use <code>class="gradient gradient--active-blue"</code> (or the mood) in markup, or the tokens <code>--gradient-active-blue-top</code> / <code>-bottom</code> in CSS.</p>
+    </div>
 
-    <h3 class="t-subheading ghead">Moods</h3>
-    <div class="gradients gmoods">
+    <div class="measure-text"><h3 class="t-subheading ghead">Moods</h3></div>
+    <div class="gradients gmoods measure-media">
       {MOODS.map((m) => (
         <figure class="gswatch">
           <div class={`gfield gradient gradient--${m.name}`}><span class="t-subheading">{m.name}</span></div>
@@ -117,8 +159,8 @@ const cards: CardData[] = [
 
     {INTENSITIES.map((intensity) => (
       <>
-        <h3 class="t-subheading ghead">{intensity[0].toUpperCase() + intensity.slice(1)} <span class="t-label gnote">{INTENSITY_NOTES[intensity]}</span></h3>
-        <div class="gradients gmatrix">
+        <div class="measure-text"><h3 class="t-subheading ghead">{intensity[0].toUpperCase() + intensity.slice(1)} <span class="t-label gnote">{INTENSITY_NOTES[intensity]}</span></h3></div>
+        <div class="gradients gmatrix measure-media">
           {TONALITY_IDS.map((tonality) => {
             const g = gradientById(`${intensity}-${tonality}`);
             return (
@@ -136,8 +178,8 @@ const cards: CardData[] = [
       </>
     ))}
 
-    <h3 class="t-subheading ghead">Home stage default</h3>
-    <div class="gradients">
+    <div class="measure-text"><h3 class="t-subheading ghead">Home stage default</h3></div>
+    <div class="gradients measure-media">
       <figure class="gswatch">
         <div class="gfield gdefault"><span class="t-subheading">Hi, I’m Wolfgang</span></div>
         <figcaption class="t-label"><span class="gname">Default (token)</span><code>--gradient-hero-top</code><code>--gradient-hero-bottom</code></figcaption>
@@ -145,9 +187,9 @@ const cards: CardData[] = [
     </div>
 
     <details class="gpool">
-      <summary class="t-label">Random pool pairs (the home effect picks one of these at random, calm look)</summary>
-      <p class="t-label intro-note">Two clearly different muted hues from a pool of eight (salmon, rose, mauve, violet, indigo, blue, steel, teal), kept in <code>src/lib/pen.ts</code>. The codes under each swatch are the dark values.</p>
-      <div class="gradients">
+      <summary class="t-label measure-text">Random pool pairs (the home effect picks one of these at random, calm look)</summary>
+      <p class="t-label intro-note measure-text">Two clearly different muted hues from a pool of eight (salmon, rose, mauve, violet, indigo, blue, steel, teal), kept in <code>src/lib/pen.ts</code>. The codes under each swatch are the dark values.</p>
+      <div class="gradients measure-media">
         {gradients.map((g) => (
           <figure class="gswatch">
             <div class="gfield" style={`--g-top: light-dark(${g.lTop}, ${g.dTop}); --g-bottom: light-dark(${g.lBottom}, ${g.dBottom})`}><span class="t-subheading">Hi, I’m Wolfgang</span></div>
@@ -156,10 +198,10 @@ const cards: CardData[] = [
         ))}
       </div>
     </details>
-  </div></div>
+  </div>
 
   <SectionTitle id="type">Typography</SectionTitle>
-  <div class="container"><div class="measure-media stack" style="--stack-gap: var(--space-6)">
+  <div class="container"><div class="measure-text stack" style="--stack-gap: var(--space-6)">
     {roles.map(([cls, name, use]) => (
       <div class="row">
         <p class="t-label">{name} · <code>.{cls}</code> · {use}</p>
@@ -184,7 +226,7 @@ const cards: CardData[] = [
 
   <SectionTitle id="grid-demo">Grid</SectionTitle>
   <div class="container grid-demo" data-grid-demo>
-    <p class="t-label readout" data-readout>Reading grid values…</p>
+    <p class="t-label readout measure-text" data-readout>Reading grid values…</p>
     <div class="cols grid-12" aria-hidden="true">
       {Array.from({ length: 12 }, (_, i) => <span class="col">{i + 1}</span>)}
     </div>
@@ -193,7 +235,7 @@ const cards: CardData[] = [
       <div class="bar-row measure-media"><span class="t-label" data-label="media">Media</span></div>
       <div class="bar-row measure-wide"><span class="t-label">Full grid width: 12 columns</span></div>
     </div>
-    <table class="t-label matrix">
+    <table class="t-label matrix measure-media">
       <thead><tr><th>Breakpoint</th><th>Viewport</th><th>Grid</th><th>Text</th><th>Media</th></tr></thead>
       <tbody>
         <tr><td>xl · desktop wide</td><td>≥ 1230</td><td>1170 (col 70, gutter 30)</td><td>8</td><td>10</td></tr>
@@ -220,11 +262,9 @@ const cards: CardData[] = [
   <Chapter title="Design solution" id="sg-sub">
     <p>A chapter with sub-chapters and a challenge/solution pair.</p>
     <Fragment slot="media">
-      <div class="measure-text">
-        <SubChapter title="Instant meetings" number={1}>
-          <p>Sub-chapter (T5): numbered heading-m under a chapter.</p>
-        </SubChapter>
-      </div>
+      <SubChapter title="Instant meetings" number={1}>
+        <p>Sub-chapter (T5): numbered heading-m under a chapter.</p>
+      </SubChapter>
       <div class="measure-text"><ChallengeSolution>
         <p slot="challenge">What constrained the design, stated honestly.</p>
         <p slot="solution">How the constraint was handled and what was traded off.</p>
@@ -244,39 +284,71 @@ const cards: CardData[] = [
   <!-- ===== Media modules ===== -->
   <SectionTitle id="media">Media modules</SectionTitle>
   <div class="gap"></div>
-  <div class="chapter-flow">
+  <div class="container chapter-flow">
     <Figure src={diagram} alt="Placeholder wide diagram" caption="Figure kind=diagram (radius 16)" />
     <Figure src={screen} alt="Placeholder screenshot" kind="screenshot" size="wide" caption="Figure kind=screenshot (radius 12, hairline, shadow)" />
     <FigurePair a={{ src: square, alt: 'Placeholder A' }} b={{ src: square, alt: 'Placeholder B' }} caption="FigurePair (I2)" />
     <ScreenStack images={[{ src: screen, alt: 'Placeholder screen 1' }, { src: screen, alt: 'Placeholder screen 2' }]} caption="ScreenStack (I3)" />
     <Comparison before={{ src: screen, alt: 'Placeholder before' }} after={{ src: screen, alt: 'Placeholder after' }} />
-    <InsightRow image={illustration} title="Insight (I5)">Short title, one or two sentences of explanation.</InsightRow>
-    <InsightRow image={illustration} title="Second insight">Repeat three times.</InsightRow>
+    <ImageText image={illustration} title="Image + text (I5)">Short title, one or two sentences of explanation.</ImageText>
+    <ImageText image={illustration} title="Second row">Repeat as often as needed.</ImageText>
     <Embed src="about:blank" title="Placeholder interactive demo" poster={screen} posterAlt="Placeholder poster" note="Interactive demo (I7). Below 992 px a poster replaces the iframe." />
     <div class="measure-media annotations">
       <div><Stamp class="demo-stamp" /><p class="t-label">Stamp (I8)</p></div>
-      <div><Arrow class="demo-arrow" /><p class="t-label">Arrow (I8)</p></div>
+      <div><Arrow class="demo-arrow" src={arrowDown.src} /><p class="t-label">Arrow, down (I8)</p></div>
+      <div><Arrow class="demo-arrow demo-arrow-right" src={arrowRight.src} /><p class="t-label">Arrow, right (I8)</p></div>
     </div>
   </div>
 
   <SectionTitle id="mocks">Mocks</SectionTitle>
   <div class="gap"></div>
   <div class="container chapter-flow">
-    <Mock size="full" stage="dusk" devices={[{ device: 'desktop', src: mockDesktop, alt: 'Meetings list in the desktop app' }]} caption="Mock (I9): desktop, solid bar, stage dusk" />
-    <div class="grid-12">
+    <Mock size="media" stage="dusk" devices={[{ device: 'desktop', src: mockDesktop, alt: 'Meetings list in the desktop app' }]} caption="Mock (I9): desktop, solid bar, stage dusk" />
+    <div class="grid-12 measure-media">
       <Mock size="half" align="cut-right" stage="calm-blue" devices={[{ device: 'desktop', fill: 'transparent', src: mockChat, alt: 'Conversation in the desktop app' }]} caption="Desktop, transparent bar, cut right" />
       <Mock size="half" align="cut-right" theme="dark" stage="calm-blue" devices={[{ device: 'desktop', fill: 'transparent', controls: 'mono', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="Desktop, transparent bar, mono controls, dark" />
     </div>
-    <Mock size="cover" stage="meadow" devices={[{ device: 'browser', bar: 'https://app.wire.com', tab: 'Wire', src: mockWeb, alt: 'Schedule a meeting in the web app' }]} caption="Browser, Chrome" />
-    <Mock size="cover" theme="dark" stage="night" devices={[{ device: 'browser', browser: 'safari', bar: 'https://app.wire.com', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="Browser, Safari, dark" />
-    <div class="grid-12">
+    <Mock size="media" stage="meadow" devices={[{ device: 'browser', bar: 'https://app.wire.com', tab: 'Wire', src: mockWeb, alt: 'Schedule a meeting in the web app' }]} caption="Browser, Chrome" />
+    <Mock size="media" theme="dark" stage="night" devices={[{ device: 'browser', browser: 'safari', bar: 'https://app.wire.com', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="Browser, Safari, dark" />
+    <div class="grid-12 measure-media">
       <Mock size="third" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="iOS" />
       <Mock size="third" stage="soft-salmon" devices={[{ device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }]} caption="Android" />
-      <Mock size="third" align="cut-bottom" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="iOS, cut at the bottom" />
+      <Mock size="third" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Same size in every stage" />
     </div>
-    <Mock size="full" layout="set" stage="sundown" devices={[{ device: 'browser', bar: 'https://app.wire.com', src: mockWeb, alt: 'Schedule a meeting in the web app' }, { device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Set: browser and phone" />
-    <Mock size="full" layout="row" align="cut-bottom" stage="calm-violet" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }, { device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }, { device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Row of three phones, cut at the bottom" />
+    <div class="grid-12 measure-media">
+      <Mock size="third" align="fit" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Fit: as big as possible" />
+      <Mock size="third" align="fit" stage="soft-salmon" devices={[{ device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }]} caption="Fit" />
+      <Mock size="third" align="fit" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Fit" />
+    </div>
+    <div class="grid-12 measure-media">
+      <Mock size="third" align="cut-bottom" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Cut at the bottom" />
+      <Mock size="third" align="cut-bottom" stage="soft-salmon" devices={[{ device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }]} caption="Cut at the bottom" />
+      <Mock size="third" align="cut-bottom" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Cut at the bottom" />
+    </div>
+    <Mock size="media" layout="set" stage="sundown" devices={[{ device: 'browser', bar: 'https://app.wire.com', src: mockWeb, alt: 'Schedule a meeting in the web app' }, { device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Set: browser and phone" />
+    <Mock size="media" layout="row" stage="calm-violet" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }, { device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }, { device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Row of three phones" />
     <Mock size="media" theme="dark" devices={[{ device: 'desktop', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="No stage: a dark window gets the 1px outline" />
+  </div>
+
+  <SectionTitle id="schemas">Schemas</SectionTitle>
+  <div class="gap"></div>
+  <div class="container chapter-flow">
+    <Schema size="media" width={1400} height={810} alt="Diagram: iOS, Android and Desktop feed a UI library, design tokens and a code library, which together form the Wire design system next to the native design system" caption="Schema (I10): live SVG on the theme-aware stage">
+      <SchemaGroup x={185} y={113} w={496} h={400} />
+      <SchemaPill variant="outline" x={228.74} y={156.74} w={408.52} h={73.7} label="Code library" />
+      <SchemaPill variant="outline" x={228.74} y={278.9} w={408.52} h={73.7} label="Design tokens" />
+      <SchemaPill variant="outline" x={228.74} y={401.1} w={408.52} h={73.7} label="UI library" />
+      <SchemaArrow points={[[433, 270], [433, 239]]} />
+      <SchemaArrow points={[[433, 392], [433, 361]]} />
+      <SchemaPill x={127.5} y={622.5} w={185.9} h={67.7} label="iOS" />
+      <SchemaPill x={339.6} y={622.5} w={185.9} h={67.7} label="Android" />
+      <SchemaPill x={551.8} y={622.5} w={185.9} h={67.7} label="Desktop" />
+      <SchemaArrow points={[[239, 615], [239, 568], [408, 568], [408, 522]]} />
+      <SchemaArrow points={[[433, 615], [433, 521]]} />
+      <SchemaArrow points={[[627, 615], [627, 568], [458, 568], [458, 522]]} />
+      <SchemaList x={813} y={152} title="Wire Design System" items={['Wire Colors', 'Wire Fonts', 'Wire Icons', 'Wire specific components']} />
+      <SchemaList x={813} y={567} title="Native Design System" items={['Native components', 'Native user flows', 'Accessibility']} />
+    </Schema>
   </div>
 
   <SectionTitle id="about-modules">Portrait &amp; contact</SectionTitle>
@@ -300,7 +372,7 @@ const cards: CardData[] = [
     display: grid; place-items: center; color: var(--accent-primary); font-size: var(--text-label-size); }
   .bars { display: flex; flex-direction: column; gap: var(--space-2); }
   .bar-row { background: var(--bg-card); padding: var(--space-2) var(--space-3); color: var(--text-strong); border-radius: 4px; }
-  .matrix { border-collapse: collapse; width: 100%; }
+  .matrix { border-collapse: collapse; }
   .matrix th, .matrix td { text-align: left; padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: var(--border-hairline); }
   .matrix th { color: var(--text-default); font-weight: 400; }
   .intro-note { padding-top: var(--space-5); }
@@ -311,6 +383,13 @@ const cards: CardData[] = [
   .hex { text-transform: uppercase; }
   .chip { width: 44px; height: 44px; flex: none; border-radius: var(--radius-m); border: 1px solid var(--border-subtle); }
   @media (max-width: 767px) { .crow { grid-template-columns: 1fr 1fr; } .crow > :first-child { grid-column: 1 / -1; } .chead { display: none; } }
+  .ramp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); padding-block: var(--space-5); }
+  @media (min-width: 768px) { .ramp { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
+  .rstep { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .rchip { height: 72px; border-radius: var(--radius-m); border: 1px solid var(--border-subtle); display: block; }
+  .rstep figcaption { color: var(--text-default); display: flex; flex-direction: column; gap: 2px; }
+  .rstep .gname { color: var(--text-strong); }
+  .rstep code { text-transform: uppercase; }
   .gradients { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-5); padding-top: var(--space-5); }
   .gswatch { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
   .gfield { aspect-ratio: 16 / 10; border-radius: var(--radius-l); display: grid; place-items: center; padding: var(--space-4); text-align: center;
@@ -339,6 +418,7 @@ const cards: CardData[] = [
   .annotations { display: flex; gap: var(--space-8); align-items: flex-end; }
   .annotations :global(.demo-stamp) { width: 220px; }
   .annotations :global(.demo-arrow) { width: 70px; }
+  .annotations :global(.demo-arrow-right) { width: 110px; }
   code { color: var(--text-strong); }
 </style>
 
