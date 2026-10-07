@@ -15,6 +15,21 @@ const hslToRgb = (h: number, sat: number, l: number) => {
 const luminance = (rgb: number[]) => { const [r, g, b] = rgb.map((v) => { const c = v / 255; return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4; }); return 0.2126 * r + 0.7152 * g + 0.0722 * b; };
 const hsl = (h: number, sat: number, l: number) => `hsl(${((Math.round(h) % 360) + 360) % 360} ${Math.round(sat)}% ${Math.round(l)}%)`;
 
+/** The hue pool the random gradients draw from (name, hue in degrees). */
+export const GRADIENT_HUES = [
+  ['Salmon', 8], ['Rose', 340], ['Mauve', 322], ['Violet', 270], ['Indigo', 244], ['Blue', 222], ['Steel', 200], ['Teal', 176],
+] as const;
+
+/**
+ * A fixed gradient for a hue pair, using the middle of the ranges randomGradient() draws from (same muted look, no randomness).
+ * For reference swatches, e.g. in the styleguide. Dark: saturation 32 %, lightness 45 % to 56 %; light: pastel, 82 % to 89 %.
+ */
+export function gradientFromHues(topHue: number, bottomHue: number, light: boolean): [string, string] {
+  return light
+    ? [hsl(topHue, 55, 82), hsl(bottomHue, 75, 89)]
+    : [hsl(topHue, 32, 45), hsl(bottomHue, 37, 56)];
+}
+
 /** Two clearly different hues, muted. Dark: readable under a white headline; light: pastel. */
 export function randomGradient(light: boolean): [string, string] {
   let top = '', bottom = '';

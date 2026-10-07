@@ -42,6 +42,18 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
   and other projects from frontmatter; the MDX body holds chapters only.
 - **Case studies:** copy `src/content/projects/_template.mdx` to `<slug>.mdx`. The schema is in `src/content.config.ts`.
   Chapter, Figure & co. are available in MDX without imports (see `src/pages/projects/[id].astro`).
+- **Gradients:** named `<intensity>-<tonality>`: intensity `soft` | `calm` | `active`, tonality `yellow` | `salmon` | `violet` | `blue` | `green`
+  (15 gradients), plus moods `morning` (soft-yellow), `day` (soft-blue), `meadow` (calm-green), `dusk` (calm-violet), `sundown` (active-salmon),
+  `night` (active-blue). "Add an active gradient with blue tonality" = `class="gradient gradient--active-blue"`; tokens are
+  `--gradient-active-blue-top` / `-bottom`. All are theme aware; text on top uses `--text-strong`. Source of truth and recipes:
+  `src/lib/gradients.ts` (CSS is injected by `Base.astro`); live reference: `/styleguide#gradients`. The home stage keeps its own
+  `--gradient-hero-*` tokens; `src/lib/pen.ts` holds the random hue pool of the home effect.
+- **Mocks:** screenshots in a device frame go through `Mock` (I9): desktop bar (solid or transparent, colour or mono controls), Chrome, Safari,
+  iOS and Android, optionally on a gradient stage (`stage="dusk"`). Options and rules: `docs/foundations/05-mocks.md`; live reference: `/styleguide#mocks`.
+  The class names `.mock` and `.mock__*` belong to `src/styles/mock.css` (global); do not reuse them in other components.
+- **Mocks:** screenshots in a device frame go through `Mock` (I9): desktop bar (solid or transparent, colour or mono controls), Chrome, Safari,
+  iOS and Android, optionally on a gradient stage (`stage="dusk"`). Options and rules: `docs/foundations/05-mocks.md`; live reference: `/styleguide#mocks`.
+  The class names `.mock` and `.mock__*` belong to `src/styles/mock.css` (global); do not reuse them in other components.
 - **Grid:** fixed 12 columns (grid 1170 / 896 / 656 px with 30 px outer padding; xl ≥ 1230 has 70 px columns and 30 px gutters; full width below 768 with 20 px padding). Text 8/9/9/12/12 columns, media 10/10/10/12/12
   (xl/lg/md/sm/xs), always inside the grid padding. Live demo: `/styleguide#grid-demo`.
 - **Heading levels vs looks:** one `h1` per page, `h2` chapters, `h3` sub-chapters; the look comes from the `.t-*` class.

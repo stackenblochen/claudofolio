@@ -38,6 +38,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | I6 | Video | `Video` | Case A |
 | I7 | Interactive embed + fallback | `Embed` | Case A, B |
 | I8 | Annotation overlays (stamp, arrow) | `Stamp`, `Arrow` | Case A, B |
+| I9 | Device mock (desktop, browser, phone on a stage) | `Mock` | see `05-mocks.md` |
 | **L — Lists / collections** | | | |
 | L1 | Project grid | `ProjectGrid` | Home |
 | L2 | Other projects | `ProjectGrid exclude={current}` | Case A, B |

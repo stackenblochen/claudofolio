@@ -21,6 +21,7 @@ import InsightRow from '../components/InsightRow.astro';
 import Embed from '../components/Embed.astro';
 import Stamp from '../components/Stamp.astro';
 import Arrow from '../components/Arrow.astro';
+import Mock from '../components/Mock.astro';
 import Portrait from '../components/Portrait.astro';
 import ContactBlock from '../components/ContactBlock.astro';
 import portrait from '../assets/portrait.webp';
@@ -30,7 +31,15 @@ import screen from '../assets/placeholders/screen.svg';
 import square from '../assets/placeholders/square.svg';
 import illustration from '../assets/placeholders/illustration.svg';
 import diagram from '../assets/placeholders/diagram.svg';
+import mockDesktop from '../assets/placeholders/mocks/desktop-light.png';
+import mockDesktopDark from '../assets/placeholders/mocks/desktop-dark.png';
+import mockChat from '../assets/placeholders/mocks/desktop-chat.png';
+import mockWeb from '../assets/placeholders/mocks/web-light.png';
+import mockIos from '../assets/placeholders/mocks/ios.png';
+import mockAndroid from '../assets/placeholders/mocks/android.png';
 import type { CardData } from '../lib/projects';
+import { GRADIENT_HUES, gradientFromHues } from '../lib/pen';
+import { INTENSITIES, INTENSITY_NOTES, TONALITIES, TONALITY_IDS, GRADIENTS, MOODS, gradientById } from '../lib/gradients';
 
 // [role, dark palette var, dark hex, light palette var, light hex]
 const colors = [
@@ -44,6 +53,17 @@ const colors = [
   ['accent.primary · links, focus ring, nav underline, timeline dot', '--color-salmon', '#fa8072', '--color-salmon-600', '#e8553d'],
   ['selection', '--color-salmon', '#fa8072', '--color-salmon', '#fa8072'],
 ];
+// Background gradients: the hue pairs of the former reveal effect (lib/pen.ts), shown as fixed swatches in both themes.
+const hue = Object.fromEntries(GRADIENT_HUES);
+const gradientPairs: [string, string][] = [
+  ['Indigo', 'Salmon'], ['Violet', 'Salmon'], ['Blue', 'Rose'], ['Mauve', 'Teal'], ['Teal', 'Mauve'], ['Steel', 'Violet'],
+  ['Indigo', 'Mauve'], ['Rose', 'Blue'], ['Violet', 'Teal'], ['Blue', 'Salmon'], ['Steel', 'Rose'], ['Teal', 'Salmon'],
+];
+const gradients = gradientPairs.map(([a, b]) => {
+  const [dTop, dBottom] = gradientFromHues(hue[a], hue[b], false);
+  const [lTop, lBottom] = gradientFromHues(hue[a], hue[b], true);
+  return { name: `${a} → ${b}`, dTop, dBottom, lTop, lBottom };
+});
 const roles = [
   ['t-display', 'Display', 'Home hero only'],
   ['t-title', 'Title', 'H1 page titles (Editorial New)'],
@@ -78,6 +98,63 @@ const cards: CardData[] = [
         </div>
       ))}
     </div>
+  </div></div>
+
+  <SectionTitle id="gradients">Background gradients</SectionTitle>
+  <div class="container"><div class="measure-media">
+    <p class="t-label intro-note">A gradient is named <code>&lt;intensity&gt;-&lt;tonality&gt;</code>, for example <code>soft-yellow</code> or <code>active-blue</code>. <strong>Intensity</strong> says how loud it is (soft, calm, active), <strong>tonality</strong> says which colour family dominates (yellow, salmon, violet, blue, green). So "an active gradient with blue tonality" is <code>active-blue</code>, and "a soft gradient with a yellowish tonality" is <code>soft-yellow</code>. Moods are short names for a few curated picks. Everything follows the theme: switch it in the nav to see dark and light. The definition lives in <code>src/lib/gradients.ts</code>; use <code>class="gradient gradient--active-blue"</code> (or the mood) in markup, or the tokens <code>--gradient-active-blue-top</code> / <code>-bottom</code> in CSS.</p>
+
+    <h3 class="t-subheading ghead">Moods</h3>
+    <div class="gradients gmoods">
+      {MOODS.map((m) => (
+        <figure class="gswatch">
+          <div class={`gfield gradient gradient--${m.name}`}><span class="t-subheading">{m.name}</span></div>
+          <figcaption class="t-label"><span class="gname">{m.name}</span><code>{m.id}</code><span>{m.note}</span></figcaption>
+        </figure>
+      ))}
+    </div>
+
+    {INTENSITIES.map((intensity) => (
+      <>
+        <h3 class="t-subheading ghead">{intensity[0].toUpperCase() + intensity.slice(1)} <span class="t-label gnote">{INTENSITY_NOTES[intensity]}</span></h3>
+        <div class="gradients gmatrix">
+          {TONALITY_IDS.map((tonality) => {
+            const g = gradientById(`${intensity}-${tonality}`);
+            return (
+              <figure class="gswatch">
+                <div class={`gfield gradient gradient--${g.id}`}><span class="t-subheading">{TONALITIES[tonality].label}</span></div>
+                <figcaption class="t-label">
+                  <span class="gname">{g.id}</span>
+                  <code>dark {g.dark[0]} → {g.dark[1]}</code>
+                  <code>light {g.light[0]} → {g.light[1]}</code>
+                </figcaption>
+              </figure>
+            );
+          })}
+        </div>
+      </>
+    ))}
+
+    <h3 class="t-subheading ghead">Home stage default</h3>
+    <div class="gradients">
+      <figure class="gswatch">
+        <div class="gfield gdefault"><span class="t-subheading">Hi, I’m Wolfgang</span></div>
+        <figcaption class="t-label"><span class="gname">Default (token)</span><code>--gradient-hero-top</code><code>--gradient-hero-bottom</code></figcaption>
+      </figure>
+    </div>
+
+    <details class="gpool">
+      <summary class="t-label">Random pool pairs (the home effect picks one of these at random, calm look)</summary>
+      <p class="t-label intro-note">Two clearly different muted hues from a pool of eight (salmon, rose, mauve, violet, indigo, blue, steel, teal), kept in <code>src/lib/pen.ts</code>. The codes under each swatch are the dark values.</p>
+      <div class="gradients">
+        {gradients.map((g) => (
+          <figure class="gswatch">
+            <div class="gfield" style={`--g-top: light-dark(${g.lTop}, ${g.dTop}); --g-bottom: light-dark(${g.lBottom}, ${g.dBottom})`}><span class="t-subheading">Hi, I’m Wolfgang</span></div>
+            <figcaption class="t-label"><span class="gname">{g.name}</span><code>{g.dTop}</code><code>{g.dBottom}</code></figcaption>
+          </figure>
+        ))}
+      </div>
+    </details>
   </div></div>
 
   <SectionTitle id="type">Typography</SectionTitle>
@@ -181,6 +258,26 @@ const cards: CardData[] = [
     </div>
   </div>
 
+  <SectionTitle id="mocks">Mocks</SectionTitle>
+  <div class="gap"></div>
+  <div class="container chapter-flow">
+    <Mock size="full" stage="dusk" devices={[{ device: 'desktop', src: mockDesktop, alt: 'Meetings list in the desktop app' }]} caption="Mock (I9): desktop, solid bar, stage dusk" />
+    <div class="grid-12">
+      <Mock size="half" align="cut-right" stage="calm-blue" devices={[{ device: 'desktop', fill: 'transparent', src: mockChat, alt: 'Conversation in the desktop app' }]} caption="Desktop, transparent bar, cut right" />
+      <Mock size="half" align="cut-right" theme="dark" stage="calm-blue" devices={[{ device: 'desktop', fill: 'transparent', controls: 'mono', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="Desktop, transparent bar, mono controls, dark" />
+    </div>
+    <Mock size="cover" stage="meadow" devices={[{ device: 'browser', bar: 'https://app.wire.com', tab: 'Wire', src: mockWeb, alt: 'Schedule a meeting in the web app' }]} caption="Browser, Chrome" />
+    <Mock size="cover" theme="dark" stage="night" devices={[{ device: 'browser', browser: 'safari', bar: 'https://app.wire.com', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="Browser, Safari, dark" />
+    <div class="grid-12">
+      <Mock size="third" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="iOS" />
+      <Mock size="third" stage="soft-salmon" devices={[{ device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }]} caption="Android" />
+      <Mock size="third" align="cut-bottom" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="iOS, cut at the bottom" />
+    </div>
+    <Mock size="full" layout="set" stage="sundown" devices={[{ device: 'browser', bar: 'https://app.wire.com', src: mockWeb, alt: 'Schedule a meeting in the web app' }, { device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Set: browser and phone" />
+    <Mock size="full" layout="row" align="cut-bottom" stage="calm-violet" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }, { device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }, { device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Row of three phones, cut at the bottom" />
+    <Mock size="media" theme="dark" devices={[{ device: 'desktop', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="No stage: a dark window gets the 1px outline" />
+  </div>
+
   <SectionTitle id="about-modules">Portrait &amp; contact</SectionTitle>
   <div class="gap"></div>
   <Portrait src={portrait} alt="Portrait" />
@@ -213,6 +310,23 @@ const cards: CardData[] = [
   .hex { text-transform: uppercase; }
   .chip { width: 44px; height: 44px; flex: none; border-radius: var(--radius-m); border: 1px solid var(--border-subtle); }
   @media (max-width: 767px) { .crow { grid-template-columns: 1fr 1fr; } .crow > :first-child { grid-column: 1 / -1; } .chead { display: none; } }
+  .gradients { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-5); padding-top: var(--space-5); }
+  .gswatch { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+  .gfield { aspect-ratio: 16 / 10; border-radius: var(--radius-l); display: grid; place-items: center; padding: var(--space-4); text-align: center;
+    background: linear-gradient(180deg, var(--g-top), var(--g-bottom)); }
+  .gdefault { background: linear-gradient(180deg, var(--gradient-hero-top), var(--gradient-hero-bottom)); }
+  .ghead { margin-top: var(--space-7); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2) var(--space-4); }
+  .gnote { color: var(--text-default); }
+  .gmatrix { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
+  @media (min-width: 768px) { .gmatrix { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+  .gmatrix .gswatch code { font-size: 0.72rem; overflow-wrap: anywhere; }
+  .gmoods { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+  .gpool { margin-top: var(--space-7); }
+  .gpool summary { cursor: pointer; color: var(--text-strong); }
+  .gfield span { color: var(--text-strong); }
+  .gswatch figcaption { color: var(--text-default); display: flex; flex-direction: column; gap: 2px; }
+  .gswatch .gname { color: var(--text-strong); }
+  .gswatch code { color: var(--text-default); }
   .row { display: flex; flex-direction: column; gap: var(--space-2); }
   .sp { display: flex; align-items: center; gap: var(--space-4); }
   .sp code { width: 8rem; color: var(--text-default); }

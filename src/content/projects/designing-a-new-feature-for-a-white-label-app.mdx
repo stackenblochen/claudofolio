@@ -1,0 +1,125 @@
+---
+title: Designing a new feature for a white label app
+shortTitle: White label energy feature
+summary: "How a design sprint, a data-driven prototype and five user interviews shaped a consumption comparison feature for a white label energy app."
+category: Product Design
+tags: [Design sprint, Data visualisation, Prototyping, Research]
+cover: ../../assets/projects/white-label-feature/fe_ds_conceptual-mock.png
+coverAlt: Conceptual mock of the energy consumption comparison feature
+heroVariant: mockup
+confidential: true
+protected: true
+company: Fresh Energy
+role: Product Designer
+team: Freelance designer, product team
+timeline: 2-day sprint, 1 week to validation
+year: 2020
+platforms: [iOS, Android]
+lead:
+  - Fresh Energy helps users analyse their energy consumption and save money. It is a white label app for energy providers such as EWE, Mark-E and eprimo.
+  - Users needed to understand large amounts of consumption data and compare themselves to others.
+  - I ran a design sprint, built a data-driven prototype and validated it in user interviews.
+outcome:
+  - 4 of 5 interviewed users cared more about their own history than about their group's distribution, which refocused the feature.
+  - The final design is based on those findings, so the team can pick it up once the roadmap allows.
+  - The implementation is on hold while the team prioritises other functionality.
+order: 3
+draft: false
+---
+
+import survey1 from '../../assets/projects/white-label-feature/fe_compare_survey01.png';
+import survey2 from '../../assets/projects/white-label-feature/fe_compare_survey02.png';
+import survey3 from '../../assets/projects/white-label-feature/fe_compare_survey03.png';
+import agenda from '../../assets/projects/white-label-feature/fe_comparisons_sprint_agenda-1.png';
+import sprintBoard from '../../assets/projects/white-label-feature/fe_compare_ds_02_3-scaled.jpg';
+import favIdea from '../../assets/projects/white-label-feature/fe_ds_fav_idea-1.png';
+import flow from '../../assets/projects/white-label-feature/fe_comp_flow-1.png';
+import infoStructure from '../../assets/projects/white-label-feature/fe_ds_compare_info_structure-2.png';
+import conceptualMock from '../../assets/projects/white-label-feature/fe_ds_conceptual-mock.png';
+import histogram from '../../assets/projects/white-label-feature/fe_ds_histogram_iterations-1.png';
+import monthly from '../../assets/projects/white-label-feature/fe_ds_monthly.png';
+import sliders from '../../assets/projects/white-label-feature/fe_ds_slidercharts.png';
+import finalFlow from '../../assets/projects/white-label-feature/fe_comp_final_flow.png';
+
+<Chapter title="Starting situation" id="situation">
+  Based on an extensive research phase among our users, we identified three pains and gains.
+
+  <Fragment slot="media">
+    <InsightRow image={survey1} alt="Survey result: 78.5 % of 219 respondents have compared the energy use of two different days" title="Compare history">
+      Users want to compare their historical data to identify behavioural patterns, so that they can save energy and money.
+    </InsightRow>
+    <InsightRow image={survey2} alt="Survey result about comparing oneself to others" title="Compare to others">
+      Users want to compare themselves to meaningful others, so that they better understand the normal and how they perform.
+    </InsightRow>
+    <InsightRow image={survey3} alt="Survey result about trust in the data provided" title="Transparency">
+      Transparency and traceability of the data provided are very important to users.
+    </InsightRow>
+  </Fragment>
+</Chapter>
+
+<Chapter title="The task" id="task">
+  My task was to build an interface that lets users understand large amounts of consumption data, gain insights from it and enjoy a frictionless experience.
+
+  To get there, I gathered the ideas and insights circulating in the team, helped the team sync and ideate on them, and came up with a prototype to test our assumptions.
+</Chapter>
+
+<Chapter title="Design sprint" id="sprint">
+  The design team, a freelance designer and I, facilitated a remote design sprint over two days. At the end, we voted for our favourite idea, "My Energy Space in the World".
+
+  Due to time constraints, the prototype and the validation phase were separate from the sprint.
+
+  <Fragment slot="media">
+    <Figure src={agenda} alt="Agenda of the two-day remote design sprint" />
+    <Figure src={sprintBoard} alt="Remote whiteboard with the ideas from the sprint" />
+    <Figure src={favIdea} alt="The favourite idea, My Energy Space in the World" />
+  </Fragment>
+</Chapter>
+
+<Chapter title="Designing the prototype" id="prototype">
+  After writing down a basic user flow and laying out the information structure, I translated the favourite idea into a conceptual mock. From there, I refined it screen by screen until the prototype was ready for testing.
+
+  A key aspect was to show a user's consumption in relation to their group of meaningful others, and the distribution of consumption within that group. It was a very data-driven concept.
+
+  <Fragment slot="media">
+    <Figure src={flow} alt="Basic user flow of the comparison feature" />
+    <Figure src={infoStructure} alt="Information structure of the comparison feature" />
+    <Figure src={conceptualMock} alt="Conceptual mock of the comparison feature" />
+  </Fragment>
+</Chapter>
+
+<Chapter title="Visualising the data" id="charts">
+  I iterated on different chart types: histograms for the distribution, line and bucket charts for monthly consumption, and slider charts for the relation of a user to their group. I used real data from the data analysis team to stay as close as possible to our users' real-life scenarios.
+
+  <Fragment slot="media">
+    <Figure src={histogram} alt="Iterations of the histogram chart showing consumption distribution" />
+    <Figure src={monthly} alt="Chart of monthly consumption" />
+    <Figure src={sliders} alt="Slider charts showing a user's position within their group" />
+  </Fragment>
+</Chapter>
+
+<Chapter title="The prototype" id="demo">
+  <Fragment slot="media">
+    <Embed
+      src="https://hallo-wl.de/comparisons-prototype/"
+      title="Interactive prototype of the consumption comparison feature"
+      height={900}
+      poster={conceptualMock}
+      posterAlt="Conceptual mock of the comparison feature"
+      note="Interactive prototype, best viewed on desktop."
+    />
+  </Fragment>
+</Chapter>
+
+<Chapter title="Validation" id="validation">
+  One week after the sprint, we conducted qualitative interviews with five users and documented the findings as the base for the final iteration.
+
+  The most interesting finding: four of five users were not interested in the distribution of consumption in their group. They liked comparing themselves with others as a starting point, but their main interest was comparing their own historical data to save energy, which they would do daily or several times a week.
+</Chapter>
+
+<Chapter title="Implementation" id="implementation">
+  The implementation was put on hold, as the team needed to focus on other functionality first. I created the final design based on our findings, so we can pick it up once the roadmap allows.
+
+  <Fragment slot="media">
+    <Figure src={finalFlow} alt="Final flow of the feature, redesigned around users' own historical data" size="text" />
+  </Fragment>
+</Chapter>

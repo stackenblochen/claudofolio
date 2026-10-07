@@ -10,6 +10,7 @@ import BackToTop from '../components/BackToTop.astro';
 import LoadingBar from '../components/LoadingBar.astro';
 import { ClientRouter } from 'astro:transitions';
 import { SITE, url } from '../lib/site';
+import { gradientCss } from '../lib/gradients';
 
 interface Props {
   /** Page name. Rendered as "{title} — Wolfgang Lattermann". Omit on the home page. */
@@ -63,6 +64,7 @@ const fontFace = editorial
     {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
     <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
     {fontFace && <style set:html={fontFace} />}
+    <style is:global set:html={gradientCss()} /> <!-- gradient tokens + .gradient classes, see src/lib/gradients.ts -->
     <script is:inline>
       // Runs before first paint: .js flag + theme. Dark is the default; "light" is the only stored value.
       (function () {

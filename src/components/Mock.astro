@@ -1,0 +1,91 @@
+---
+/**
+ * I9 Mock: screenshots in a device frame on an optional stage. Styles: src/styles/mock.css (phone frames in
+ * src/styles/frames/), drawn window chrome: ./mock-chrome.mjs. Rules and all options: docs/foundations/05-mocks.md.
+ *
+ *   <Mock size="full" stage="dusk" devices={[{ device: 'desktop', src: shot, alt: '…' }]} />
+ *   <Mock size="third" align="cut-bottom" stage="calm-blue" devices={[{ device: 'ios', src: shot, alt: '…' }]} />
+ *
+ * size full / cover / media stand on their own; half and third go inside a .grid-12 row.
+ */
+import { Image, getImage } from 'astro:assets';
+import type { ImageMetadata } from 'astro';
+import '../styles/mock.css';
+import { desktopBar, browserChrome } from './mock-chrome.mjs';
+import { GRADIENTS, MOODS } from '../lib/gradients';
+
+type Device = {
+  device: 'desktop' | 'browser' | 'ios' | 'android' | 'element' | 'none';
+  src: ImageMetadata;
+  srcDark?: ImageMetadata;          // optional dark screenshot, swaps with the theme
+  alt: string;
+  fill?: 'solid' | 'transparent';   // desktop: bar fill (default solid). transparent = bar takes the page's own background
+  controls?: 'color' | 'mono';      // desktop: window controls (default color)
+  browser?: 'chrome' | 'safari';    // browser: which chrome to draw (default chrome)
+  bar?: string | false;             // browser: the address. desktop: false hides the bar (screenshot has its own)
+  tab?: string;                     // browser, Chrome only: tab title (default: the host of the address)
+  cutout?: 'none';                  // ios: frame without the dynamic island, for screenshots that already contain it
+  ratio?: string;                   // crop the screen, e.g. '16 / 10'
+  focus?: string;                   // object-position of the crop, e.g. 'top right'
+};
+interface Props {
+  size?: 'full' | 'media' | 'cover' | 'half' | 'third';
+  align?: 'center' | 'cut-right' | 'cut-left' | 'cut-top' | 'cut-bottom';
+  theme?: 'light' | 'dark' | 'auto';   // colours the chrome; auto follows the site theme
+  layout?: 'set' | 'row';              // set: desktop + phone · row: 2 or 3 phones side by side
+  phone?: 'left' | 'right';
+  /** Stage background: a gradient name from src/lib/gradients.ts ("dusk", "calm-blue" …) or any CSS background. Default: none. */
+  stage?: string;
+  devices: Device[];
+  caption?: string;
+}
+const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, devices, caption } = Astro.props;
+
+// a gradient name resolves to the site's gradient tokens, so the stage follows the theme
+const gradientId = stage && (MOODS.find((m) => m.name === stage)?.id ?? GRADIENTS.find((g) => g.id === stage)?.id);
+const stageCss = gradientId
+  ? `linear-gradient(180deg, var(--gradient-${gradientId}-top), var(--gradient-${gradientId}-bottom))`
+  : stage;
+
+// a transparent desktop bar takes the page background: a small copy of the screenshot is passed to the bar
+const shot = async (img?: ImageMetadata) => (img ? (await getImage({ src: img, width: Math.min(img.width, 1200), format: 'webp' })).src : undefined);
+const items = await Promise.all(
+  devices.map(async (d) => {
+    const glass = d.device === 'desktop' && d.fill === 'transparent' && d.bar !== false;
+    const [a, b] = glass ? await Promise.all([shot(d.src), shot(d.srcDark)]) : [];
+    const style = [d.ratio && `--mock-ratio:${d.ratio}`, d.focus && `--mock-focus:${d.focus}`, a && `--mock-shot:url(${a})`, b && `--mock-shot-dark:url(${b})`]
+      .filter(Boolean).join(';') || undefined;
+    return { d, style };
+  }),
+);
+const widths = [480, 768, 1200, 1600, 2400];
+const sizes = { full: '(min-width: 1230px) 1170px, 100vw', cover: '(min-width: 1230px) 1170px, 100vw', media: '(min-width: 1230px) 970px, 100vw', half: '(min-width: 768px) 900px, 100vw', third: '(min-width: 768px) 500px, 100vw' }[size];
+const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-media', half: undefined, third: undefined }[size];
+---
+
+<figure class:list={['mock-fig', measure, 'reveal']} data-size={size}>
+  <div class="mock" data-size={size} data-align={align} data-theme={theme} data-layout={layout} data-phone={phone}
+    data-stage={stageCss ? '' : undefined} style={stageCss ? `--mock-stage:${stageCss}` : undefined}>
+    {items.map(({ d, style }) => (
+      <div class="mock__device" data-device={d.device} data-fill={d.device === 'desktop' ? d.fill : undefined} data-cutout={d.cutout} data-crop={d.ratio ? '' : undefined} style={style}>
+        {d.device === 'browser' && <Fragment set:html={browserChrome({ browser: d.browser, url: d.bar || '', tab: d.tab })} />}
+        {d.device === 'desktop' && d.bar !== false && <Fragment set:html={desktopBar({ controls: d.controls })} />}
+        <div class="mock__screen">
+          <Image class:list={['mock__img', d.srcDark && 'mock__img--light']} src={d.src} alt={d.alt} widths={widths} sizes={sizes} format="webp" />
+          {d.srcDark && <Image class="mock__img mock__img--dark" src={d.srcDark} alt="" widths={widths} sizes={sizes} format="webp" />}
+        </div>
+      </div>
+    ))}
+  </div>
+  {caption && <figcaption class="caption">{caption}</figcaption>}
+</figure>
+
+<style>
+  .mock-fig { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; margin-block: 0; }
+  .mock-fig:not(.measure-media):not(.measure-wide) { margin-inline: 0; }
+  /* half and third sit in a .grid-12 row */
+  @media (min-width: 768px) {
+    .mock-fig[data-size='half'] { grid-column: span 6; }
+    .mock-fig[data-size='third'] { grid-column: span 4; }
+  }
+</style>
