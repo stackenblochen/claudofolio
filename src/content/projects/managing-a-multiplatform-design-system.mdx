@@ -27,11 +27,12 @@ draft: false
 ---
 
 import { url as siteUrl } from '../../lib/site';
-import then from '../../assets/projects/design-system/then.png';
+import thenDesktop from '../../assets/projects/design-system/then-desktop.png';
+import thenPhone from '../../assets/projects/design-system/then-phone.png';
 import arrowDown from '../../assets/arrow-red-down.svg';
-import arrowRight from '../../assets/arrow-red-right.svg';
-import nowBackground from '../../assets/projects/design-system/now-background.jpg';
-import now from '../../assets/projects/design-system/now.png';
+import arrowClick from '../../assets/arrow-red-right-click.svg';
+import nowDesktop from '../../assets/projects/design-system/now-desktop.png';
+import nowPhone from '../../assets/projects/design-system/now-phone.png';
 import tokensPoster from '../../assets/projects/design-system/tokens-poster.png';
 import navIos from '../../assets/projects/design-system/nav-ios-screen.png';
 import navAndroid from '../../assets/projects/design-system/nav-android-screen.png';
@@ -39,7 +40,7 @@ import colorContrast from '../../assets/projects/design-system/color-contrast.pn
 import a11yDark from '../../assets/projects/design-system/a11y-dark.png';
 import designmd from '../../assets/projects/design-system/designmd.png';
 import bubbleSpec from '../../assets/projects/design-system/bubble-spec.png';
-import claudeDesign from '../../assets/projects/design-system/claude-design.png';
+import claudeDesign from '../../assets/projects/design-system/claude-design-screen.png';
 
 <Chapter title="Then and now" id="then-now">
   In 2020, the app looked nice on screenshots, but was not built for enterprise. A strategic pivot to enterprise collaboration redefined its design from 2024 on.
@@ -48,10 +49,20 @@ import claudeDesign from '../../assets/projects/design-system/claude-design.png'
     <Comparison
       labels={false}
       arrow={arrowDown}
-      afterBackground={nowBackground}
-      before={{ src: then, alt: 'The app in 2020: a light, consumer-style messenger interface' }}
-      after={{ src: now, alt: 'The app today: an enterprise collaboration interface with navigation, conversation list and group details' }}
-    />
+    >
+      <Fragment slot="before">
+        <Mock size="cover" layout="set" shadow="soft" stage="var(--bg-card)" devices={[
+          { device: 'desktop', bar: false, src: thenDesktop, alt: 'The app in 2020 on desktop: a light, consumer-style messenger interface with a call, a chart in the conversation and group details' },
+          { device: 'ios', cutout: 'none', src: thenPhone, alt: 'The 2020 app on a phone: a video call with eight participants' },
+        ]} />
+      </Fragment>
+      <Fragment slot="after">
+        <Mock size="cover" layout="set" shadow="soft" stage="active-violet" devices={[
+          { device: 'desktop', bar: false, src: nowDesktop, alt: 'The app today on desktop: an enterprise collaboration interface with navigation, conversation list and group details' },
+          { device: 'ios', cutout: 'none', src: nowPhone, alt: 'The app today on a phone: a video call with eight participants' },
+        ]} />
+      </Fragment>
+    </Comparison>
   </Fragment>
 </Chapter>
 
@@ -64,10 +75,10 @@ import claudeDesign from '../../assets/projects/design-system/claude-design.png'
       title="Interactive demo: switching accent color and theme through the token layer"
       height={440}
       fullOnLaptop
-      arrow={arrowRight}
-      arrowRight="180px"
+      arrow={arrowClick}
+      arrowRight="129px"
       arrowTop="-48px"
-      arrowWidth="55px"
+      arrowWidth="106px"
       poster={tokensPoster}
       posterAlt="The app UI in the blue accent and dark theme, as shown in the token demo"
       note="Interactive token demo, best viewed on desktop."
@@ -79,10 +90,6 @@ import claudeDesign from '../../assets/projects/design-system/claude-design.png'
   Each client builds on its native system (SwiftUI on iOS, Material 2/3 on Android, a React-based UI kit on desktop), which brings platform conventions and the accessibility baseline.
 
   The additional set of custom tokens and components add the brand and product tonality on top.
-
-  On Android and iOS, Wire follows each platform's native patterns, like Apple's Liquid Glass or Material's floating action button, so the app feels native on every device.
-
-  Shared iconography, colors and other foundations add the product's personality and make the app recognizable.
 
   <Fragment slot="media">
     <Schema size="media" width={1400} height={810} alt="Diagram: iOS, Android and Desktop feed a UI library, design tokens and a code library, which together form the Wire design system next to the native design system">
@@ -101,6 +108,10 @@ import claudeDesign from '../../assets/projects/design-system/claude-design.png'
       <SchemaList x={813} y={152} title="Wire Design System" items={['Wire Colors', 'Wire Fonts', 'Wire Icons', 'Wire specific components']} />
       <SchemaList x={813} y={567} title="Native Design System" items={['Native components', 'Native user flows', 'Accessibility']} />
     </Schema>
+    <div class="measure-text prose reveal">
+      <p>On Android and iOS, Wire follows each platform’s native patterns, like Apple’s Liquid Glass or Material’s floating action button, so the app feels native on every device.</p>
+      <p>Shared iconography, colors and other foundations add the product’s personality and make the app recognizable.</p>
+    </div>
     <div class="grid-12 measure-media">
       <Mock size="half" align="fit" stage="var(--bg-raised)" devices={[{ device: 'ios', src: navIos, alt: 'Main navigation on iOS' }]} />
       <Mock size="half" align="fit" stage="var(--bg-raised)" devices={[{ device: 'android', src: navAndroid, alt: 'Main navigation on Android' }]} />
@@ -140,7 +151,7 @@ import claudeDesign from '../../assets/projects/design-system/claude-design.png'
       A Claude design system has the main views defined, so that PMs and designers can use it to prototype and test quickly.
 
       <Fragment slot="media">
-        <Figure src={claudeDesign} alt="The design system set up in Claude, showing the conversation details view with the group details panel" />
+        <Mock size="media" align="cut-bottom" zoom={1.05} stage="var(--bg-card)" devices={[{ device: 'desktop', src: claudeDesign, alt: 'The design system set up in Claude, showing the conversation details view with the group details panel' }]} />
         <Video src={siteUrl('/videos/design-system/prototype-login.mp4')} title="Prototype of the login flow" loop />
         <Video src={siteUrl('/videos/design-system/prototype-connect.mp4')} title="Prototype of the connect flow" loop />
       </Fragment>

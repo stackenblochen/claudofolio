@@ -36,6 +36,7 @@
   --mock-outline: transparent;
   --mock-shadow: var(--shadow-screenshot, 0 0 40px 0 rgba(0, 0, 0, 0.5));
   --mock-shadow-phone: drop-shadow(0 0 20px light-dark(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.5)));    /* the same shadow, following the phone's outline */
+  /* shadow levels (prop `shadow`): heavy = the two values above (default), soft = a lighter, tighter one, none */
   --mock-radius: var(--radius-m, 12px);                              /* desktop, browser, frameless, element */
   --mock-stage-radius: var(--radius-l, 16px);                        /* the image area the mock sits in */
 
@@ -59,6 +60,13 @@
   border-radius: var(--mock-stage-radius);
   background: var(--mock-stage, transparent);
 }
+
+/* shadow levels, set per mock with the `shadow` prop */
+.mock[data-shadow="soft"] {
+  --mock-shadow: 0 2px 16px 0 light-dark(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.3));
+  --mock-shadow-phone: drop-shadow(0 2px 8px light-dark(rgba(0, 0, 0, 0.07), rgba(0, 0, 0, 0.3)));
+}
+.mock[data-shadow="none"] { --mock-shadow: 0 0 0 0 transparent; --mock-shadow-phone: none; }
 
 /* ---------- theme ----------
  * theme="auto" follows the site: dark unless <html data-theme="light">. */
@@ -257,16 +265,18 @@
 /* ---------- desktop + phone set ----------
  * Window sits top-left, phone bottom-right and lower than the window,
  * so no desktop UI shows underneath the phone. */
-.mock[data-layout="set"] { --mock-desktop-w: 90cqw; --mock-phone-h: 72cqh; }
-.mock[data-layout="set"][data-size="cover"] { --mock-desktop-w: 85cqw; }
+/* Set: window in the top left, phone in front at the right, hanging a little below the window's bottom edge. Proportions taken from the
+ * reference layout (stage 1953 × 1218): window 85 % wide, 4.5 % from the left, 4 % from the top; phone 38 % high (counted in stage widths),
+ * 3.7 % from the right, its top 22 % from the top. All in cqw, so the set looks the same on every stage ratio. */
+.mock[data-layout="set"] { --mock-desktop-w: 85cqw; --mock-phone-h: 38cqw; }
 .mock[data-layout="set"] .mock__device[data-device="desktop"],
-.mock[data-layout="set"] .mock__device[data-device="browser"] { place-self: start start; margin: 2cqh 0 0 1cqw; max-height: 90cqh; }  /* always ends above the phone's bottom edge; a taller screenshot is cropped */
+.mock[data-layout="set"] .mock__device[data-device="browser"] { place-self: start start; margin: 4cqw 0 0 4.5cqw; max-height: 90cqh; }  /* a taller screenshot is cropped */
 .mock[data-layout="set"] .mock__device[data-device="ios"],
-.mock[data-layout="set"] .mock__device[data-device="android"] { place-self: end end; margin: 0 1.5cqw 2cqh 0; z-index: 1; }
+.mock[data-layout="set"] .mock__device[data-device="android"] { place-self: start end; margin: 22cqw 3.7cqw 0 0; z-index: 1; }
 .mock[data-layout="set"][data-phone="left"] .mock__device[data-device="desktop"],
-.mock[data-layout="set"][data-phone="left"] .mock__device[data-device="browser"] { place-self: start end; margin: 2cqh 1cqw 0 0; }
+.mock[data-layout="set"][data-phone="left"] .mock__device[data-device="browser"] { place-self: start end; margin: 4cqw 4.5cqw 0 0; }
 .mock[data-layout="set"][data-phone="left"] .mock__device[data-device="ios"],
-.mock[data-layout="set"][data-phone="left"] .mock__device[data-device="android"] { place-self: end start; margin: 0 0 2cqh 1.5cqw; }
+.mock[data-layout="set"][data-phone="left"] .mock__device[data-device="android"] { place-self: start start; margin: 22cqw 0 0 3.7cqw; }
 
 /* ---------- row of 2 or 3 phones ---------- */
 .mock[data-layout="row"] {
@@ -295,6 +305,8 @@
 /* ---------- no device: the screenshot fills the stage, with the same outline, shadow and radius ----------
  * The stage stops clipping, so the shadow can fall outside the grid area like on a plain screenshot. */
 .mock:has(> .mock__device[data-device="none"]) { overflow: visible; border-radius: 0; }
+/* No stage and nothing cut off: the mock is just its devices, so their shadow may fall outside the box instead of being clipped by it */
+.mock:not([data-stage]):not([data-align^="cut"]) { overflow: visible; }
 .mock__device[data-device="none"] {
   --w: 100cqw;
   height: 100cqh;

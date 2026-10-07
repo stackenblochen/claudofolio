@@ -36,10 +36,14 @@ interface Props {
   phone?: 'left' | 'right';
   /** Stage background: a gradient name from src/lib/gradients.ts ("dusk", "calm-blue" …) or any CSS background. Default: none. */
   stage?: string;
+  /** Shadow under the devices: heavy (default), soft or none. */
+  shadow?: 'none' | 'soft' | 'heavy';
+  /** Cut alignments: how much the window is enlarged (default 1.7 from mock.css). */
+  zoom?: number;
   devices: Device[];
   caption?: string;
 }
-const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, devices, caption } = Astro.props;
+const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, zoom, shadow = 'heavy', devices, caption } = Astro.props;
 
 // a gradient name resolves to the site's gradient tokens, so the stage follows the theme
 const gradientId = stage && (MOODS.find((m) => m.name === stage)?.id ?? GRADIENTS.find((g) => g.id === stage)?.id);
@@ -64,8 +68,8 @@ const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-m
 ---
 
 <figure class:list={['mock-fig', measure, 'reveal']} data-size={size}>
-  <div class="mock" data-size={size} data-align={align} data-theme={theme} data-layout={layout} data-phone={phone}
-    data-stage={stageCss ? '' : undefined} style={stageCss ? `--mock-stage:${stageCss}` : undefined}>
+  <div class="mock" data-size={size} data-align={align} data-theme={theme} data-layout={layout} data-phone={phone} data-shadow={shadow}
+    data-stage={stageCss ? '' : undefined} style={[stageCss && `--mock-stage:${stageCss}`, zoom && `--mock-zoom:${zoom}`].filter(Boolean).join(';') || undefined}>
     {items.map(({ d, style }) => (
       <div class="mock__device" data-device={d.device} data-fill={d.device === 'desktop' ? d.fill : undefined} data-cutout={d.cutout} data-crop={d.ratio ? '' : undefined} style={style}>
         {d.device === 'browser' && <Fragment set:html={browserChrome({ browser: d.browser, url: d.bar || '', tab: d.tab })} />}

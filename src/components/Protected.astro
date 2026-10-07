@@ -86,6 +86,9 @@ const payload = enabled ? encryptHtml(await Astro.slots.render('default'), getCa
     tpl.content.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-visible'));
     gate.replaceWith(tpl.content);
     window.scrollTo(0, 0);
+    // Videos created from an HTML string do not get their `muted` property from the attribute (Safari), so autoplay is refused and they
+    // stay empty: set it and start them by hand.
+    document.querySelectorAll<HTMLVideoElement>('video[autoplay]').forEach((v) => { v.muted = true; v.play().catch(() => {}); });
     document.dispatchEvent(new Event('content-unlocked'));
   }
 

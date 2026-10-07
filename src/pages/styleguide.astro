@@ -49,18 +49,19 @@ import { GRADIENT_HUES, gradientFromHues } from '../lib/pen';
 import { INTENSITIES, INTENSITY_NOTES, TONALITIES, TONALITY_IDS, GRADIENTS, MOODS, gradientById } from '../lib/gradients';
 
 // [role, dark palette var, dark hex, light palette var, light hex]
-const colors = [
-  ['bg.page', '--gray-950', '#0d0d12', '--gray-50', '#fafafc'],
-  ['bg.pure · sections with the case study teasers', '--color-black', '#000000', '--color-white', '#ffffff'],
-  ['bg.raised', '--gray-900', '#18181e', '--gray-100', '#eeeef3'],
-  ['bg.surface · panels on a raised stage', '--gray-800', '#26272c', '--gray-200', '#e0e1e8'],
-  ['bg.card · border.subtle', '--gray-700', '#34373d', '--gray-200', '#e0e1e8'],
-  ['border.strong · lines on a surface', '--gray-700', '#34373d', '--gray-300', '#c6c7d2'],
-  ['text.default', '--gray-400', '#9a9aab', '--gray-500', '#6a6b7c'],
-  ['text.strong', '--gray-50', '#fafafc', '--gray-950', '#0d0d12'],
-  ['accent.positive', '--color-green', '#00ff32', '--color-green-700', '#008a21'],
-  ['accent.primary · links, focus ring, nav underline, timeline dot, errors, negative marks', '--color-salmon', '#fa8072', '--color-salmon-600', '#e8553d'],
-  ['selection', '--color-salmon', '#fa8072', '--color-salmon', '#fa8072'],
+const colors: [string[], string, string, string, string, string][] = [
+  // [semantic tokens, use, dark palette var, dark hex, light palette var, light hex]
+  [['--bg-page'], 'Page background', '--gray-950', '#0d0d12', '--gray-50', '#fafafc'],
+  [['--bg-pure'], 'Sections with the case study teasers', '--color-black', '#000000', '--color-white', '#ffffff'],
+  [['--bg-raised'], 'Cards and stages on the page', '--gray-900', '#18181e', '--gray-100', '#eeeef3'],
+  [['--bg-surface'], 'Panels on a raised stage', '--gray-800', '#26272c', '--gray-200', '#e0e1e8'],
+  [['--bg-card', '--border-subtle'], 'Card fill, hairlines and borders', '--gray-700', '#34373d', '--gray-200', '#e0e1e8'],
+  [['--border-strong'], 'Lines on a surface', '--gray-700', '#34373d', '--gray-300', '#c6c7d2'],
+  [['--text-default'], 'Body text', '--gray-400', '#9a9aab', '--gray-500', '#6a6b7c'],
+  [['--text-strong'], 'Headings, labels, emphasis', '--gray-50', '#fafafc', '--gray-950', '#0d0d12'],
+  [['--accent-positive'], 'Positive marks', '--color-green', '#00ff32', '--color-green-700', '#008a21'],
+  [['--accent-primary', '--accent-link'], 'Links, focus ring, nav underline, timeline dot, errors, negative marks', '--color-salmon', '#fa8072', '--color-salmon-600', '#e8553d'],
+  [['--selection-bg'], 'Text selection', '--color-salmon', '#fa8072', '--color-salmon', '#fa8072'],
 ];
 // The gray ramp: [step, hex, use]
 const ramp = [
@@ -129,12 +130,12 @@ const cards: CardData[] = [
     </div>
     <div class="measure-media">
       <div class="colors">
-      <div class="crow chead t-label"><span>Role</span><span>Dark</span><span>Light</span></div>
-      {colors.map(([role, dv, dh, lv, lh]) => (
+      <div class="crow chead t-label"><span>Token</span><span>Dark</span><span>Light</span></div>
+      {colors.map(([tokens, use, dv, dh, lv, lh]) => (
         <div class="crow">
-          <span class="t-label t-strong">{role}</span>
-          <span class="cell"><span class="chip" style={`background:var(${dv})`}></span><code class="hex t-label">{dh}</code></span>
-          <span class="cell"><span class="chip" style={`background:var(${lv})`}></span><code class="hex t-label">{lh}</code></span>
+          <span class="ctoken">{tokens.map((t) => <code class="t-label">{t}</code>)}<span class="t-label cuse">{use}</span></span>
+          <span class="cell"><span class="chip" style={`background:var(${dv})`}></span><span class="chex"><code class="hex t-label">{dh}</code><code class="t-label cvar">{dv}</code></span></span>
+          <span class="cell"><span class="chip" style={`background:var(${lv})`}></span><span class="chex"><code class="hex t-label">{lh}</code><code class="t-label cvar">{lv}</code></span></span>
         </div>
       ))}
     </div>
@@ -325,6 +326,11 @@ const cards: CardData[] = [
       <Mock size="third" align="cut-bottom" stage="soft-salmon" devices={[{ device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }]} caption="Cut at the bottom" />
       <Mock size="third" align="cut-bottom" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Cut at the bottom" />
     </div>
+    <div class="grid-12 measure-media">
+      <Mock size="third" stage="soft-salmon" shadow="none" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Shadow: none" />
+      <Mock size="third" stage="soft-salmon" shadow="soft" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Shadow: soft" />
+      <Mock size="third" stage="soft-salmon" shadow="heavy" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Shadow: heavy (default)" />
+    </div>
     <Mock size="media" layout="set" stage="sundown" devices={[{ device: 'browser', bar: 'https://app.wire.com', src: mockWeb, alt: 'Schedule a meeting in the web app' }, { device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Set: browser and phone" />
     <Mock size="media" layout="row" stage="calm-violet" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }, { device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }, { device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Row of three phones" />
     <Mock size="media" theme="dark" devices={[{ device: 'desktop', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="No stage: a dark window gets the 1px outline" />
@@ -381,6 +387,9 @@ const cards: CardData[] = [
   .chead { color: var(--text-default); }
   .cell { display: flex; align-items: center; gap: var(--space-3); }
   .hex { text-transform: uppercase; }
+  .ctoken, .chex { display: flex; flex-direction: column; gap: 2px; }
+  .ctoken code { color: var(--text-strong); }
+  .cuse, .cvar { color: var(--text-default); }
   .chip { width: 44px; height: 44px; flex: none; border-radius: var(--radius-m); border: 1px solid var(--border-subtle); }
   @media (max-width: 767px) { .crow { grid-template-columns: 1fr 1fr; } .crow > :first-child { grid-column: 1 / -1; } .chead { display: none; } }
   .ramp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); padding-block: var(--space-5); }

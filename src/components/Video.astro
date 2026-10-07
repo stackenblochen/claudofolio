@@ -20,7 +20,7 @@ const posterUrl = poster ? (typeof poster === 'string' ? poster : poster.src) : 
     poster={posterUrl}
     muted
     playsinline
-    preload="metadata"
+    preload={loop ? 'auto' : 'metadata'}
     controls={!loop}
     autoplay={loop}
     loop={loop}
