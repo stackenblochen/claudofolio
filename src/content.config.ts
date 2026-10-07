@@ -45,8 +45,8 @@ const projects = defineCollection({
       protected: z.boolean().default(false), // password gate, see components/Protected.astro
       company: z.string(),
       role: z.string(),
-      team: z.string(),
-      timeline: z.string(),
+      team: z.string().optional(), // the meta row (role, team, timeline, platforms) only shows with at least 3 of these filled in
+      timeline: z.string().optional(),
       year: z.number(),
       platforms: z.array(z.string()).optional(), // e.g. ['iOS', 'Android', 'Web']
       lead: z.array(z.string()).min(1).max(3), // 2–3 sentences, rendered in the Lead block

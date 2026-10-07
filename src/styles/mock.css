@@ -96,6 +96,8 @@
 }
 
 /* ---------- alignment ---------- */
+/* fit: a single phone as big as the stage allows without cutting anything (3% of the stage height free above and below) */
+.mock[data-align="fit"] { --mock-phone-h: 94cqh; }
 .mock[data-align="cut-right"]  { place-items: start start; }
 .mock[data-align="cut-left"]   { place-items: start end; }
 .mock[data-align="cut-bottom"] { place-items: start center; }

@@ -14,11 +14,11 @@ const { images, caption } = Astro.props;
   <div class="shots">
     {images.map((i) => <Img src={i.src} alt={i.alt} class="media-m media-hairline media-shadow" />)}
   </div>
-  {caption && <figcaption class="caption">{caption}</figcaption>}
+  {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
 </figure>
 
 <style>
   .stack-fig { display: flex; flex-direction: column; gap: var(--space-3); }
-  .shots { display: flex; flex-direction: column; gap: var(--space-3); }
+  .shots { display: flex; flex-direction: column; gap: var(--space-5); }
   .shots :global(img) { width: 100%; }
 </style>

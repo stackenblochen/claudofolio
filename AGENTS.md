@@ -33,8 +33,8 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `04-page-r
   system/auto mode). Components use only semantic tokens
   (`--bg-page`, `--text-default`, `--text-strong`, `--accent-*` …), never raw palette colours or hex values. White-only SVG
   logos get `filter: var(--filter-logo)`; the confidential stamp is never filtered. There is no pure black or white, except `--bg-pure` (`.section--pure`) for the sections that hold the case study teasers: page and strong text use the tinted `ink-950` (#0d0d12) and `paper-50` (#fafafc). Light values are contrast-checked (see the comment in `tokens.css`).
-- **Base:** `src/styles/base.css` has the six type roles (`.t-display`, `.t-title`, `.t-heading`, `.t-subheading`, `.t-body`, `.t-label`;
-  modifiers `.t-upper`, `.t-serif`; weights depend on the theme: dark = headlines 600, body 300; light = headlines 700, body 400; label is always 300; bold inside text uses `--weight-emphasis`; main nav uses `.t-body`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
+- **Base:** `src/styles/base.css` has the seven type roles (`.t-display`, `.t-title`, `.t-heading`, `.t-subheading`, `.t-body`, `.t-label`, `.t-caption`;
+  modifiers `.t-upper`, `.t-serif`; heading and subheading are bold (700) with no letter spacing, heading 34px at the top and subheading 24px; display and body weights depend on the theme (dark 600 / 300, light 700 / 400); label is always 300; bold inside text uses `--weight-emphasis`; main nav uses `.t-body`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
   `.prose`, `.section`, media helpers and the `.reveal` scroll effect.
 - **Components:** `src/components/`, one per module ID in `03-modules.md` (Chapter, Lead, ProjectMeta, Figure, ScreenStack,
   Comparison, Embed, Outcome, ProjectGrid …). Content goes in via props and slots, never style overrides.

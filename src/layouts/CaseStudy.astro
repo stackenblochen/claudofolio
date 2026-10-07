@@ -19,12 +19,13 @@ interface Props {
 const { project } = Astro.props;
 const d = project.data;
 
+// the meta row only shows with at least 3 data points
 const meta = [
   { label: 'Role', value: d.role },
   { label: 'Team', value: d.team },
   { label: 'Timeline', value: d.timeline },
-  ...(d.platforms?.length ? [{ label: 'Platforms', value: d.platforms.join(', ') }] : []),
-];
+  { label: 'Platforms', value: d.platforms?.join(', ') },
+].filter((i): i is { label: string; value: string } => !!i.value);
 const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard);
 ---
 
@@ -39,7 +40,7 @@ const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard
       confidential={d.confidential}
     />
     <Lead sentences={d.lead} />
-    <ProjectMeta items={meta} />
+    {meta.length >= 3 && <ProjectMeta items={meta} />}
     <div class="chapters chapter-flow"><slot /></div>
     <Outcome items={d.outcome} />
     {others.length > 0 && (

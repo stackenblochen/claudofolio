@@ -17,10 +17,10 @@ const { a, b, caption } = Astro.props;
     <div class="span-6"><Img src={a.src} alt={a.alt} class="media-l" sizes="(min-width: 768px) 600px, 100vw" /></div>
     <div class="span-6"><Img src={b.src} alt={b.alt} class="media-l" sizes="(min-width: 768px) 600px, 100vw" /></div>
   </div>
-  {caption && <figcaption class="caption">{caption}</figcaption>}
+  {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
 </figure>
 
 <style>
-  .pair { display: flex; flex-direction: column; gap: var(--space-3); }
+  .pair { display: flex; flex-direction: column; gap: var(--space-5); }
   .pair :global(img) { width: 100%; }
 </style>

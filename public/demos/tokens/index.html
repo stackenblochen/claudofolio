@@ -19,8 +19,8 @@
 
    The demo fills 100% of the height it is given (browser window, or the host
    iframe's height). The app image is scaled to fit that space without cropping.
-   Below 960px container width only the Blue / Dark image is shown, full width,
-   with no frame and no controls (and only that one image is downloaded).
+   There is no breakpoint inside the demo: the host page decides when to show it
+   (below 992px the case study shows a poster image instead).
 
    App images are loaded externally from the same folder as this HTML file
    (see APP_SHOTS). All 8 are fetched in parallel on page load behind one
@@ -83,8 +83,6 @@ p,h3{margin:0}
   width:100%;height:100%;
   display:flex;align-items:stretch;
   background:var(--chrome-bg);
-  border:1px solid var(--chrome-border);
-  border-radius:16px;
   overflow:hidden;
   color:var(--chrome-text-primary);
 }
@@ -128,14 +126,6 @@ p,h3{margin:0}
 .chip{flex:none;width:10px;height:10px;border-radius:3px;display:block}
 .chip.bd{border:1px solid var(--chrome-border)}
 .tok-n{flex:1 0 0;min-width:1px;font-family:var(--mono);font-weight:300;font-size:9px;line-height:12px;color:var(--chrome-text-secondary);overflow-wrap:normal;word-break:normal}
-
-/* ---- Mobile (< 960px): image only, Blue / Dark, full width, no controls ---- */
-@container demo (max-width:959.98px){
-  .wds-demo{height:auto;display:block;background:transparent;border:0;border-radius:0}
-  .app{padding:0;display:block}
-  .app-imgwrap{aspect-ratio:984/553.5}
-  .ctrl{display:none}
-}
 </style>
 </head>
 <body>
@@ -274,9 +264,9 @@ p,h3{margin:0}
   });
 
   /* ---------- App images ----------
-     Desktop (>= 960px): all 8 are fetched up front behind one spinner, so switching is instant.
-     Mobile  (<  960px): only blue_dark is shown and fetched; the rest load if the demo widens. */
-  var MOBILE_MAX = 960, MOBILE_KEY = 'blue_dark';
+     All 8 are fetched up front behind one spinner, so switching is instant. There is no narrow-width mode any more
+     (MOBILE_MAX = 0): the host page decides when the demo is shown. */
+  var MOBILE_MAX = 0, MOBILE_KEY = 'blue_dark';
   var outer = $('.wds-outer');
   var appImg = $('#app-shot'), appSpinner = $('#app-spinner'), appError = $('#app-error');
   var currentKey = null, status = {}, requested = {}, isMobile = false;

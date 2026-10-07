@@ -50,7 +50,7 @@ Measured values:
 | Option | Values | Notes |
 |---|---|---|
 | `size` | `full` 12 col 3:2 · `media` 10 col 3:2 · `cover` 12 col 16:10 · `half` 6 col 1:1 · `third` 4 col 3:4 | All stack to 12 col below 768 px |
-| `align` | `center` · `cut-right` · `cut-left` · `cut-top` · `cut-bottom` | Cut = device is enlarged, anchored on the opposite side and runs off the stage |
+| `align` | `center` · `fit` · `cut-right` · `cut-left` · `cut-top` · `cut-bottom` | `fit` = a single phone as big as the stage allows (94% of its height), nothing cut. Cut = device is enlarged, anchored on the opposite side and runs off the stage |
 | `device` | `desktop` · `browser` · `ios` · `android` · `element` · `none` | `element` = bare dialog/modal with shadow. `none` = screenshot fills the stage, no frame |
 | `theme` | `light` · `dark` · `auto` | Colours the chrome. `auto` follows the site theme |
 | `fill` | `solid` (default) · `transparent` | `desktop` only. Both sit above the screenshot. Transparent takes the page's own background behind the bar, as Safari does: a sidebar or coloured header continues into it, with the template's tint on top. Needs a screenshot whose top edge is plain background (no border, no content touching the edge) |

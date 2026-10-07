@@ -18,14 +18,21 @@ interface Props {
   caption?: string;
   /** Red hand-drawn arrow overlapping the top-right corner of the iframe, pointing at the demo's controls (desktop only). */
   arrow?: ImageMetadata | string;
+  /** Arrow placement (CSS lengths): distance from the embed's right edge, from its top edge (negative = above), and its width. Defaults: 5%, -110px, 80px. */
+  arrowRight?: string;
+  arrowTop?: string;
+  arrowWidth?: string;
+  /** 12 columns instead of 10 on laptops (992–1229 px). */
+  fullOnLaptop?: boolean;
   /** Gradient name from src/lib/gradients.ts ("dusk", "calm-blue" …): the demo sits on that gradient with padding around it. */
   stage?: string;
 }
-const { src, title, height, poster, posterAlt = '', note = 'Interactive demo, best viewed on desktop.', caption, arrow, stage } = Astro.props;
+const { src, title, height, poster, posterAlt = '', note = 'Interactive demo, best viewed on desktop.', caption, arrow, stage, arrowRight, arrowTop, arrowWidth, fullOnLaptop = false } = Astro.props;
 const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undefined;
 ---
 
-<figure class:list={['embed measure-media reveal', { 'has-poster': !!poster }]} style={height ? `--embed-h:${height}px` : undefined}>
+<figure class:list={['embed measure-media reveal', { 'has-poster': !!poster, 'full-laptop': fullOnLaptop }]}
+  style={[height && `--embed-h:${height}px`, arrowRight && `--arrow-right:${arrowRight}`, arrowTop && `--arrow-top:${arrowTop}`, arrowWidth && `--arrow-w:${arrowWidth}`].filter(Boolean).join(';') || undefined}>
   <div class:list={['stage', stage && `gradient gradient--${stage}`]}>
     <div class="frame">
       <iframe class:list={[stage ? 'media-m' : 'media-l media-hairline']} src={src} title={title} loading="lazy"></iframe>
@@ -35,10 +42,10 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
   {poster && (
     <div class="poster">
       <Img src={poster} alt={posterAlt} class="media-l media-hairline" />
-      <p class="t-body">{note}</p>
+      <p class="t-caption caption">{note}</p>
     </div>
   )}
-  {caption && <figcaption class="caption">{caption}</figcaption>}
+  {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
 </figure>
 
 <style>
@@ -59,7 +66,10 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
   .poster :global(img) { width: 100%; }
   @media (min-width: 768px) { .stage.gradient { --stage-pad: var(--space-4); border-radius: var(--radius-l); } }
   @media (min-width: 992px) {
-    .frame :global(.annot) { display: block; position: absolute; z-index: 2; pointer-events: none; right: 5%; top: -110px; width: 80px; }
+    .frame :global(.annot) { display: block; position: absolute; z-index: 2; pointer-events: none; right: var(--arrow-right, 5%); top: var(--arrow-top, -110px); width: var(--arrow-w, 80px); }
+  }
+  @media (min-width: 992px) and (max-width: 1229px) {
+    .full-laptop { --n: 12; }
   }
   @media (max-width: 991px) {
     .has-poster iframe { display: none; }

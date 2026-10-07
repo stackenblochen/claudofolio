@@ -9,14 +9,14 @@
    * There is no pure black or white except for the teaser sections (bg.pure): the page and the strong text use a near-black (ink) and a near-white (paper) with a faint
    * blue-violet cast that matches the grey-blue text and the borders. Light values are adjusted for contrast on the light page (#fafafc):
    *   text 4.9:1, green 4.5:1, salmon 3.5:1 (graphical use).
-   * Default text is kept as weak as AA allows: dark 5.0:1 on bg.page / 4.6:1 on bg.raised, light 4.9:1 on bg.page / 4.6:1 on bg.raised.
+   * Default text: dark 7.0:1 on bg.page / 6.4:1 on bg.raised (#9a9aab), light 4.9:1 on bg.page / 4.6:1 on bg.raised (as weak as AA allows).
    * Do not use text.default on bg.card (below 4.5:1). */
   --color-black: #000000; /* only for the teaser sections (bg.pure) */
   --color-white: #ffffff;
   --color-ink-950: #0d0d12; /* dark page, and strong text in light mode: near-black with a faint blue-violet cast */
   --color-grey-950: #18181e; /* dark raised surface, same cast */
   --color-grey-800: #34373d;
-  --color-grey-blue-500: #808096; /* was #9a9aab: lowered so default text reads clearly weaker than strong text, still AA */
+  --color-grey-blue-500: #9a9aab; /* dark default text (the original palette value) */
   --color-green: #00ff32;
   --color-salmon: #fa8072;
   /* light-mode counterparts */
@@ -56,20 +56,20 @@
   /* Type scale (fluid) */
   --text-display-size: clamp(3.125rem, 1.136rem + 8.485vw, 7.5rem);
   --text-display-lh: clamp(3.5rem, 2.023rem + 6.303vw, 6.75rem);
-  /* weights depend on the theme: dark 600 headlines + 300 body, light 700 headlines + 400 body (override at the end of this file) */
+  /* weights: heading and subheading are bold (700) in both themes; display and body depend on the theme (dark 600 / 300, light 700 / 400, override at the end of this file) */
   --text-display-weight: 600;
   --text-display-ls: 0;
   --text-title-size: clamp(2.25rem, 1rem + 5.333vw, 5rem);
   --text-title-lh: clamp(2.875rem, 1.341rem + 6.545vw, 6.25rem);
   --text-title-weight: 800;
   --text-title-ls: -0.0025em;
-  --text-heading-size: clamp(1.625rem, 1.227rem + 1.697vw, 2.5rem);
-  --text-heading-lh: clamp(2rem, 1.375rem + 2.667vw, 3.375rem);
-  --text-heading-weight: 600;
+  --text-heading-size: clamp(1.625rem, 1.2rem + 1.2vw, 2.125rem); /* 34px at the top */
+  --text-heading-lh: clamp(2rem, 1.5rem + 1.6vw, 2.75rem);
+  --text-heading-weight: 700;
   --text-heading-ls: 0;
   --text-subheading-size: clamp(1.125rem, 0.9545rem + 0.7273vw, 1.5rem);
   --text-subheading-lh: clamp(1.625rem, 1.455rem + 0.7273vw, 2rem);
-  --text-subheading-weight: 600;
+  --text-subheading-weight: 700;
   --weight-emphasis: 600; /* bold inside body text, labels in tags */
   --ls-emphasis: 0;
   --text-subheading-ls: 0;
@@ -131,10 +131,10 @@
 /* Light theme (set by the switch): darker text on a light page needs more weight in the headlines and a regular body */
 :root[data-theme='light'] {
   color-scheme: light; --filter-logo: invert(1);
-  --text-display-weight: 700; --text-heading-weight: 700; --text-subheading-weight: 700;
+  --text-display-weight: 700;
   --text-body-weight: 400; --weight-emphasis: 700;
   /* Geist is wider at heavier weights (measured: 600→700 +0.011em per character, 300→400 +0.007em), so light mode is tightened by that amount
-   * to keep the text flowing the same as in dark mode. Label (300 in both) and title (800) are unchanged. */
-  --text-display-ls: -0.011em; --text-heading-ls: -0.011em; --text-subheading-ls: -0.011em;
+   * to keep the text flowing the same as in dark mode. Label (300 in both), title (800), heading and subheading (700 in both) are unchanged. */
+  --text-display-ls: -0.011em;
   --text-body-ls: -0.007em; --ls-emphasis: -0.011em;
 }

@@ -12,8 +12,6 @@ confidential: true
 protected: true
 company: Wire
 role: Product Designer
-team: TODO
-timeline: TODO
 year: 2026
 platforms: [iOS, Android, Web]
 lead:
@@ -36,8 +34,8 @@ import nowBackground from '../../assets/projects/design-system/now-background.jp
 import now from '../../assets/projects/design-system/now.png';
 import tokensPoster from '../../assets/projects/design-system/tokens-poster.png';
 import dsStructure from '../../assets/projects/design-system/ds-structure.png';
-import navIos from '../../assets/projects/design-system/nav-ios.png';
-import navAndroid from '../../assets/projects/design-system/nav-android.png';
+import navIos from '../../assets/projects/design-system/nav-ios-screen.png';
+import navAndroid from '../../assets/projects/design-system/nav-android-screen.png';
 import colorContrast from '../../assets/projects/design-system/color-contrast.png';
 import a11yDark from '../../assets/projects/design-system/a11y-dark.png';
 import designmd from '../../assets/projects/design-system/designmd.png';
@@ -65,8 +63,12 @@ import claudeDesign from '../../assets/projects/design-system/claude-design.png'
     <Embed
       src={siteUrl('/demos/tokens/index.html?theme=light&accent=blue')}
       title="Interactive demo: switching accent color and theme through the token layer"
-      height={556}
+      height={440}
+      fullOnLaptop
       arrow={arrowRight}
+      arrowRight="180px"
+      arrowTop="-48px"
+      arrowWidth="55px"
       poster={tokensPoster}
       posterAlt="The app UI in the blue accent and dark theme, as shown in the token demo"
       note="Interactive token demo, best viewed on desktop."
@@ -85,10 +87,10 @@ import claudeDesign from '../../assets/projects/design-system/claude-design.png'
 
   <Fragment slot="media">
     <Figure src={dsStructure} alt="Diagram: iOS, Android and Desktop feed a UI library, design tokens and a code library, which together form the Wire design system next to the native design system" />
-    <FigurePair
-      a={{ src: navIos, alt: 'Main navigation on iOS' }}
-      b={{ src: navAndroid, alt: 'Main navigation on Android' }}
-    />
+    <div class="grid-12 measure-media">
+      <Mock size="half" align="fit" stage="var(--bg-raised)" devices={[{ device: 'ios', src: navIos, alt: 'Main navigation on iOS' }]} />
+      <Mock size="half" align="fit" stage="var(--bg-raised)" devices={[{ device: 'android', src: navAndroid, alt: 'Main navigation on Android' }]} />
+    </div>
   </Fragment>
 </Chapter>
 

@@ -20,6 +20,8 @@ const hasMedia = Astro.slots.has('media');
 
 <style>
   .sub { display: flex; flex-direction: column; gap: var(--space-6); margin-top: calc(var(--chapter-gap) - var(--space-6)); }
+  /* straight under a chapter heading (no text between them) the sub-chapter follows closely instead of leaving a chapter-sized gap */
+  .sub:first-child { margin-top: 0; }
   .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
   .body { margin-top: var(--space-3); }
   .media { display: flex; flex-direction: column; gap: var(--space-4); }

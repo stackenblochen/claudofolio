@@ -79,13 +79,18 @@ button { font: inherit; color: inherit; }
   font-size: var(--text-label-size); line-height: var(--text-label-lh);
   font-weight: var(--text-label-weight); letter-spacing: var(--text-label-ls);
 }
+.t-caption {
+  font-size: var(--text-label-size); line-height: var(--text-label-lh);
+  font-weight: var(--text-label-weight); letter-spacing: var(--text-label-ls);
+  font-style: italic; color: var(--text-default);
+}
 .t-upper { text-transform: uppercase; letter-spacing: 0.06em; }
 .t-serif { font-family: var(--font-serif); font-weight: 800; letter-spacing: var(--text-title-ls); }
 .t-strong { color: var(--text-strong); }
 
 /* ---------- Prose (running text inside modules) ---------- */
-/* Image caption: smaller than body, italic, centred below the media. */
-.caption { font-size: var(--text-label-size); line-height: var(--text-label-lh); font-style: italic; text-align: center; color: var(--text-default); }
+/* Image caption layout (type is .t-caption): centred below the media, with 30 px of extra space below it. */
+.caption { margin-bottom: var(--space-5); text-align: center; }
 .prose { font-size: var(--text-body-size); line-height: var(--text-body-lh); font-weight: var(--text-body-weight); letter-spacing: var(--text-body-ls); }
 .prose > * + * { margin-top: 1.5em; }
 .prose strong, .prose b { color: var(--text-strong); font-weight: var(--weight-emphasis); letter-spacing: var(--ls-emphasis); }
