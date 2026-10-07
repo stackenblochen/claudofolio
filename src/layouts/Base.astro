@@ -39,8 +39,10 @@ const canonical = new URL(Astro.url.pathname, Astro.site);
 
 // Editorial New is a licensed font: only declare it once the woff2 exists in public/fonts/.
 const editorial = existsSync('public/fonts/EditorialNew-Ultrabold.woff2');
+const editorialItalic = existsSync('public/fonts/EditorialNew-UltraboldItalic.woff2');
 const fontFace = editorial
   ? `@font-face{font-family:'Editorial New';font-weight:800;font-style:normal;font-display:swap;src:url('${url('/fonts/EditorialNew-Ultrabold.woff2')}') format('woff2')}`
+    + (editorialItalic ? `@font-face{font-family:'Editorial New';font-weight:800;font-style:italic;font-display:swap;src:url('${url('/fonts/EditorialNew-UltraboldItalic.woff2')}') format('woff2')}` : '')
   : '';
 ---
 

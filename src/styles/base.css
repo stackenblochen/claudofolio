@@ -44,7 +44,7 @@ button { font: inherit; color: inherit; }
 /* ---------- Type roles ----------
  * Six roles. Semantic level (h1/h2/…) and visual role (.t-*) are decoupled.
  *   .t-display     Home hero only
- *   .t-title       H1 page titles (Editorial New)
+ *   .t-title       H1 page titles (Geist bold, highlights in Editorial New)
  *   .t-heading     Lead statements, section titles, chapter titles, statement, company names
  *   .t-subheading  Sub-chapters, card titles, roles
  *   .t-body        Paragraphs, lists, meta values, main navigation
@@ -59,7 +59,7 @@ button { font: inherit; color: inherit; }
   font-weight: var(--text-display-weight); letter-spacing: var(--text-display-ls);
 }
 .t-title {
-  font-family: var(--font-serif);
+  font-family: var(--font-sans);
   font-size: var(--text-title-size); line-height: var(--text-title-lh);
   font-weight: var(--text-title-weight); letter-spacing: var(--text-title-ls);
 }
@@ -84,6 +84,8 @@ button { font: inherit; color: inherit; }
   font-weight: var(--text-label-weight); letter-spacing: var(--text-label-ls);
   font-style: italic; color: var(--text-default);
 }
+/* Highlighted words inside a title (`*word*` in the text) switch to the Editorial face. */
+.t-title em { font-family: var(--font-serif); font-style: italic; font-weight: 800; }
 .t-upper { text-transform: uppercase; letter-spacing: 0.06em; }
 .t-serif { font-family: var(--font-serif); font-weight: 800; letter-spacing: var(--text-title-ls); }
 .t-strong { color: var(--text-strong); }

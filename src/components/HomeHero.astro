@@ -1,34 +1,26 @@
 ---
 /**
- * H1 Home intro: the headline and a victory emoji, on the page background, in a block as wide as the regular text (8 columns on wide
- * desktops, 9 on tablets, full width on phones). Type and emoji are sized so both sit inside that measure. The emoji is static: it rests
- * to the right of the headline, slightly tilted. It cycles through the emoji list on its own, every 2-4 seconds while the page is
- * visible and the mouse is not over the emoji, with a fast transform transition (the glyph swells, shears and splits into colour fringes while it turns into the next
- * one, see lib/emoji-morph.ts). Every new emoji gets a random tilt (left or right) and a slightly different size, hops up and down once, and then drifts a little (rotation left or right at random, slight growth) until the next change. It is
- * decorative and not clickable.
+ * H1 Home intro: the headline and subline on the left, a stack of doodles (DoodleStack) behind the right half (the headline may overlap
+ * it), on the page background. The stage is 10 columns wide (media measure). Below 768 px the stack sits under the text.
  *
- * Prism effect on the headline and the emoji (see lib/prism.ts): while the pointer is over the stage, slices of the text and the emoji
- * shear sideways and split into red / green / blue fringes around the cursor (stronger while it moves, a base level while it rests). The real DOM text stays in place; a
- * transparent WebGL canvas on top only paints where there is distortion. Needs a fine hovering pointer and no reduced-motion
+ * Prism effect on the headline (see lib/prism.ts): while the pointer is over the stage, slices of the text shear sideways and split
+ * into red / green / blue fringes around the cursor (stronger while it moves, a base level while it rests). The real DOM text stays in
+ * place; a transparent WebGL canvas on top only paints where there is distortion. Needs a fine hovering pointer and no reduced-motion
  * preference, otherwise the headline is simply static.
  *
- * Slot: "intro" (the headline).
+ * Slots: "intro" (the headline), "subline" (optional line below it, not part of the prism effect).
  */
-interface Props {
-  /** Emojis to cycle through automatically; the first one is shown initially. */
-  emojis?: string[];
-}
-const { emojis = ['✌️', '❤️', '✍️', '💭', '🎨', '❓', '🫧', '🙂'] } = Astro.props;
+import DoodleStack from './DoodleStack.astro';
 ---
 
 <section class="home-hero" data-hero>
   <div class="container">
-    <div class="stage measure-text" data-stage>
-      <h1 class="intro t-display" data-intro><slot name="intro" /></h1>
-      <span class="emoji" data-emoji-button data-emojis={JSON.stringify(emojis)} aria-hidden="true">
-        <span class="glyph">{emojis[0]}</span>
-        <canvas class="morph"></canvas>
-      </span>
+    <div class="stage measure-media" data-stage>
+      <div class="text">
+        <h1 class="intro t-title" data-intro><slot name="intro" /></h1>
+        {Astro.slots.has('subline') && <p class="subline t-heading"><slot name="subline" /></p>}
+      </div>
+      <DoodleStack />
       <canvas class="fx" data-fx aria-hidden="true"></canvas>
     </div>
   </div>
@@ -39,126 +31,37 @@ const { emojis = ['✌️', '❤️', '✍️', '💭', '🎨', '❓', '🫧', '
     padding-top: calc(var(--header-h) + var(--space-3));
     background: var(--bg-page);
   }
-  /* headline left, emoji right; below 768 px the emoji sits under the text */
+  /* headline left, doodle stack right; below 768 px the stack sits under the text */
   .stage {
     position: relative; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--space-5);
     height: clamp(26rem, 40vw + 15rem, 650px); /* about 650 px on desktop, so the stage no longer fills the whole screen */
   }
+  .text { position: relative; z-index: 3; display: flex; flex-direction: column; gap: var(--space-6); }
+  .subline { font-weight: 400; text-wrap: pretty; }
   .intro { font-size: 2rem; line-height: 1.19; /* fixed steps, no fluid scaling */ }
-  .emoji {
-    position: relative; z-index: 1; display: block; user-select: none; pointer-events: none;
-    font-size: 3.25rem; line-height: 1; margin-left: 0.15em; /* keeps the tilted glyph inside the grid */
-    /* every new emoji gets a slightly different tilt and size (set by JS), animated with a springy overshoot */
-    transform: rotate(var(--tilt, 14deg));
-    scale: var(--size, 1);
-    transition: transform 340ms cubic-bezier(0.34, 1.56, 0.64, 1), scale 340ms cubic-bezier(0.34, 1.56, 0.64, 1);
-  }
-  /* a slight hop up and down while the emoji changes */
-  .emoji:global(.is-hopping) { animation: emoji-hop 400ms cubic-bezier(0.3, 0, 0.3, 1); }
-  @keyframes emoji-hop {
-    0% { translate: 0 0; }
-    32% { translate: 0 -16%; }
-    68% { translate: 0 3%; }
-    100% { translate: 0 0; }
-  }
-  @media (prefers-reduced-motion: reduce) { .emoji, .emoji:global(.is-hopping), .glyph:global(.is-drifting) { transition: none; animation: none; } }
-  .glyph { display: block; }
-  /* between changes the glyph drifts very slowly: a tiny extra rotation and growth, lasting until the next change (--dwell, set by JS);
-     it starts from zero again with every new emoji */
-  .glyph:global(.is-drifting) { animation: glyph-drift var(--dwell, 3s) ease-out forwards; }
-  @keyframes glyph-drift {
-    from { transform: rotate(0deg) scale(1); }
-    to { transform: rotate(var(--drift-rot, 4deg)) scale(var(--drift-scale, 1.06)); }
-  }
-  /* transition canvas: larger than the glyph so the swell and the fringes have room; only shown while morphing */
-  .morph { position: absolute; inset: -70%; width: 240%; height: 240%; max-width: none; pointer-events: none; visibility: hidden; }
-  .emoji:global(.is-morphing) .morph { visibility: visible; }
-  .emoji:global(.is-morphing) .glyph { visibility: hidden; }
   @media (min-width: 768px) {
-    .stage { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-5); }
+    .stage { flex-direction: row; align-items: center; justify-content: flex-start; }
     .intro { font-size: 2.5rem; }
-    .emoji { font-size: 4rem; flex: none; margin: 0 0.18em 0 0; }
   }
   @media (min-width: 992px) {
     .intro { font-size: 3rem; }
-    .emoji { font-size: 5rem; }
   }
   @media (min-width: 1230px) {
     .intro { font-size: 3.5rem; }
-    .emoji { font-size: 5.5rem; }
   }
-  /* effect canvas: same box as the stage, transparent, only visible while there is distortion; above the emoji, which it distorts too */
-  .fx { position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 260ms ease; }
+  /* effect canvas: same box as the stage, transparent, only visible while there is distortion; above the stack */
+  .fx { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 260ms ease; }
   .fx:global(.is-on) { opacity: 1; }
 
   /* line breaks as designed on larger screens; the text reflows freely below 768 px */
-  .intro :global(.br-md) { display: none; }
-  @media (min-width: 768px) { .intro :global(.br-md) { display: inline; } }
+  .intro :global(.br-md), .subline :global(.br-md) { display: none; }
+  @media (min-width: 768px) { .intro :global(.br-md), .subline :global(.br-md) { display: inline; } }
 </style>
 
 <script>
-  import { paintGlyph, paintText, setupPrism, type Prism } from '../lib/prism';
-  import { setupEmojiMorph, type EmojiMorph } from '../lib/emoji-morph';
+  import { paintText, setupPrism, type Prism } from '../lib/prism';
 
   let stop: (() => void) | undefined;
-  let stopEmoji: (() => void) | undefined;
-
-  // The emoji cycles on its own (not on click). With reduced motion it stays as it is.
-  function initEmoji() {
-    stopEmoji?.();
-    const button = document.querySelector<HTMLElement>('[data-emoji-button]');
-    const glyph = button?.querySelector<HTMLElement>('.glyph');
-    const canvas = button?.querySelector<HTMLCanvasElement>('.morph');
-    if (!button || !glyph || !canvas) return;
-    let emojis: string[] = [];
-    try { emojis = JSON.parse(button.dataset.emojis ?? '[]'); } catch {}
-    if (emojis.length < 2) return;
-    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const nextDelay = () => 400 + Math.random() * 2000;
-    let delay = nextDelay();
-    button.style.setProperty('--dwell', `${Math.round(delay)}ms`);
-    const morph: EmojiMorph = setupEmojiMorph({ button, glyph, canvas, emojis, instant: reduced });
-
-    // Automatic cycling every 2-4 s (random each time), only while the emoji is on screen and the tab is visible, never with reduced
-    // motion.
-    let visible = true;
-    let timer = 0;
-    // The cycling holds while the mouse is over the emoji. The emoji itself ignores the mouse (the stage underneath gets the events),
-    // so hovering is worked out from the pointer position against the emoji's current box, a few px generous.
-    let hovering = false;
-    const stageEl = document.querySelector<HTMLElement>('[data-stage]');
-    const onStageMove = (e: PointerEvent) => {
-      if (e.pointerType === 'touch') return;
-      const r = button.getBoundingClientRect();
-      const m = 6;
-      hovering = e.clientX >= r.left - m && e.clientX <= r.right + m && e.clientY >= r.top - m && e.clientY <= r.bottom + m;
-    };
-    const onStageLeave = () => { hovering = false; };
-    stageEl?.addEventListener('pointermove', onStageMove);
-    stageEl?.addEventListener('pointerleave', onStageLeave);
-    const schedule = () => {
-      window.clearTimeout(timer);
-      if (reduced) return;
-      timer = window.setTimeout(() => {
-        if (visible && !document.hidden && !hovering) morph.next();
-        // the drift of the next emoji lasts until the change after it
-        delay = nextDelay();
-        button.style.setProperty('--dwell', `${Math.round(delay)}ms`);
-        schedule();
-      }, delay);
-    };
-    const io = new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; });
-    io.observe(button);
-    schedule();
-    stopEmoji = () => {
-      window.clearTimeout(timer);
-      stageEl?.removeEventListener('pointermove', onStageMove);
-      stageEl?.removeEventListener('pointerleave', onStageLeave);
-      io.disconnect();
-      morph.dispose();
-      stopEmoji = undefined;
-    };
-  }
 
   function init() {
     stop?.();
@@ -170,19 +73,13 @@ const { emojis = ['✌️', '❤️', '✍️', '💭', '🎨', '❓', '🫧', '
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
     if (!matchMedia('(hover: hover) and (pointer: fine)').matches) return;
 
-    const emojiBox = document.querySelector<HTMLElement>('[data-emoji-button]');
-    const emojiGlyph = emojiBox?.querySelector<HTMLElement>('.glyph') ?? null;
     const prism: Prism | null = setupPrism({
       stage,
       canvas,
       bg: document.querySelector<HTMLElement>('[data-hero]')!,
-      // headline and emoji both go into the effect; the emoji moves (hop, tilt, size, swap), so its texture is refreshed while it animates
-      paint: (ctx, rect) => {
-        paintText(ctx, rect, intro);
-        if (emojiBox && emojiGlyph) paintGlyph(ctx, rect, emojiBox, emojiGlyph);
-      },
-      repaintEachFrame: () => !!emojiBox && performance.now() - Number(emojiBox.dataset.changedAt ?? 0) < 900,
-      idleRepaintMs: 90, // the slow drift between changes
+      paint: (ctx, rect) => paintText(ctx, rect, intro),
+      repaintEachFrame: false,
+      idleRepaintMs: 0,
     });
     if (!prism) return;
 
@@ -202,6 +99,6 @@ const { emojis = ['✌️', '❤️', '✍️', '💭', '🎨', '❓', '🫧', '
     };
   }
 
-  document.addEventListener('astro:page-load', () => { init(); initEmoji(); });
-  document.addEventListener('astro:before-swap', () => { stop?.(); stopEmoji?.(); });
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-swap', () => stop?.());
 </script>

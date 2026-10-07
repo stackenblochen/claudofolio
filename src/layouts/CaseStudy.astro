@@ -12,6 +12,7 @@ import Outcome from '../components/Outcome.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
 import { getProjects, toCard, type ProjectEntry } from '../lib/projects';
+import { plain } from '../lib/site';
 
 interface Props {
   project: ProjectEntry;
@@ -30,7 +31,7 @@ const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard
 ---
 
 <Base title={d.shortTitle} description={d.summary} ogImage={d.cover.src}>
-  <Protected enabled={d.protected} title={d.title}>
+  <Protected enabled={d.protected} title={plain(d.title)}>
     <CaseHero
       title={d.title}
       variant={d.heroVariant}

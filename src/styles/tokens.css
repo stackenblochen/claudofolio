@@ -67,7 +67,7 @@
   --text-display-ls: 0;
   --text-title-size: clamp(2.25rem, 1rem + 5.333vw, 5rem);
   --text-title-lh: clamp(2.875rem, 1.341rem + 6.545vw, 6.25rem);
-  --text-title-weight: 800;
+  --text-title-weight: 700;
   --text-title-ls: -0.0025em;
   --text-heading-size: clamp(1.625rem, 1.2rem + 1.2vw, 2.125rem); /* 34px at the top */
   --text-heading-lh: clamp(2rem, 1.5rem + 1.6vw, 2.75rem);

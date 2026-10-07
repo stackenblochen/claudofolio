@@ -7,6 +7,7 @@
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
 import Stamp from './Stamp.astro';
+import { highlight } from '../lib/site';
 
 interface Props {
   title: string;
@@ -23,7 +24,7 @@ const bg = background ? (typeof background === 'string' ? background : backgroun
 <section class:list={['hero', variant, { 'has-stamp': confidential }]}>
   {variant === 'backdrop' && bg && <div class="bg" style={`background-image:url("${bg}")`} aria-hidden="true"></div>}
   <div class="container">
-    <h1 class:list={['t-title', variant === 'backdrop' ? 'measure-media' : 'measure-wide']}>{title}</h1>
+    <h1 class:list={['t-title', variant === 'backdrop' ? 'measure-media' : 'measure-wide']} set:html={highlight(title)} />
 
     {variant === 'mockup' && image && (
       <div class="cover-wrap">

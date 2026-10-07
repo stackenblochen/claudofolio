@@ -20,3 +20,11 @@ export function url(path = ''): string {
   if (/^(https?:|mailto:|#)/.test(path)) return path;
   return `${base}${path.startsWith('/') ? path : `/${path}`}`;
 }
+
+/** Headline markup: `*word*` becomes an Editorial New highlight (<em>) inside a Geist title. Input is escaped first. */
+export function highlight(text: string): string {
+  const esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  return esc.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+}
+/** The same headline without the markup (for <title>, aria labels, props that expect plain text). */
+export const plain = (text: string) => text.replace(/\*/g, '');
