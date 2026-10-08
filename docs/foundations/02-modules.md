@@ -55,7 +55,7 @@ Images always go through `Img` (local files in `src/assets/` → AVIF/WebP with 
 ## G — Global
 
 ### G1 Site header
-Wordmark logo (left), text menu (right): "About me", "Contact", then the theme switch. Menu items are `.t-body` in `--text-default`; hover and current page show `--text-strong` with a 2 px salmon underline. Sticky and transparent over the hero; height 54 (xs) / 56 (sm) / 64 px (md and up). Below 768 px the menu opens as a full-screen overlay (`--overlay-menu`) with centred items, opened by a hamburger.
+Wordmark logo (left), text menu (right): "About me", "Contact", then the theme switch (an icon button). Menu items are `.t-body` in `--text-default`; hover and current page show `--text-strong` with a 2 px salmon underline. Sticky and transparent over the hero; height 54 (xs) / 56 (sm) / 64 px (md and up). Below 768 px the menu opens as a full-screen overlay on a solid background (`--overlay-menu`, not transparent) with centred items and a "Theme" label above Dark / Light tabs underneath, opened by a hamburger.
 
 ### G3 Footer
 One line at the text measure (8 / 9 cols, full width on phones): "© year Wolfgang Lattermann. All rights reserved. Imprint" left, the contact links (email, LinkedIn, CV) right, wrapping on mobile. Links look like the main navigation. Values come from `SITE` in `src/lib/site.ts`; empty values hide their link.

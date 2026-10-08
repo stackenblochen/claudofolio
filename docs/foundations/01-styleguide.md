@@ -18,7 +18,7 @@ Root font size is 16 px; all tokens are `rem` or `px` at that base.
 
 ## 1. Themes
 
-Dark is the default. The nav switch (`ThemeSwitch`) is a single icon button that toggles `data-theme="light"` on `<html>`; only `light` is stored in `localStorage`, and there is no system/auto mode.
+Dark is the default. The nav switch (`ThemeSwitch`) is an icon button in the desktop nav and, in the mobile menu, a label "Theme" above a segmented Dark | Light control (like shadcn Tabs; toggle buttons with `aria-pressed` in a labelled group); both set `data-theme="light"` on `<html>`; only `light` is stored in `localStorage`, and there is no system/auto mode.
 
 - Semantic colour tokens use `light-dark(light, dark)`; `color-scheme` follows the theme.
 - Components use only semantic tokens (`--bg-page`, `--text-default`, `--text-strong`, `--accent-*` …), never palette steps (`--gray-*`) or hex.
@@ -108,7 +108,7 @@ There is no pure black or white, except `--bg-pure` (`.section--pure`), used onl
 | `--accent-primary` | salmon-600 | salmon | Brand accent: link underlines, focus ring, nav underline, timeline dot, arrows, errors, negative marks, highlighted words |
 | `--accent-positive` | green-700 | green | Positive marks (the "Solution" bullet) |
 | `--accent-link` | = `--accent-primary` | | |
-| `--overlay-menu` | white 97 % | gray 97 % | Mobile menu |
+| `--overlay-menu` | gray-100 | gray-900 | Mobile menu background (solid, not transparent) |
 | `--overlay-thumb` | black 35 % | black 50 % | Reserved for thumbnail overlays |
 
 **Contrast.** Default text (400) on dark is 7.0:1 on the page, 6.4:1 on raised, 5.4:1 on surface and 4.4:1 on card. Default text (500) on light is 5.0:1 on the page, 4.5:1 on raised and 4.0:1 on surface. So: do not set default text on `--bg-card` below 18 px, and keep strong text for anything on a card. Salmon on the light page is 3.5:1 (graphic or large text only); light-mode green is 4.5:1.
@@ -137,7 +137,7 @@ Seven roles, applied with a class. The semantic level (`h1`, `h2` …) and the l
 | `.t-title` | 36 → 80 px | 46 → 100 px | 700 / 800 | −0.0025em / −0.0135em | H1: page titles, case titles, the home stage headline |
 | `.t-heading` | 26 → 34 px | 32 → 44 px | 700 | 0 | Lead statements, section and chapter titles, statements, company names |
 | `.t-subheading` | 18 → 24 px | 26 → 32 px | 700 | 0 | Sub-chapters, card titles, roles, intro paragraphs |
-| `.t-body` | 16 → 19 px | 28 → 28.5 px | 300 / 400 | 0 / −0.007em | Paragraphs, lists, meta values, main navigation |
+| `.t-body` | 16 → 19 px | 25.6 → 28.5 px | 300 / 400 | 0 / −0.007em | Paragraphs, lists, meta values, main navigation |
 | `.t-label` | 15 → 18 px | 24 → 26 px | 300 | 0 | Eyebrows, meta labels, dates, footer |
 | `.t-caption` | = label | = label | 300, italic | | Image captions, `--text-default` |
 
@@ -206,7 +206,7 @@ No information is available on hover only.
 | Element | Spec |
 |---|---|
 | Header (`SiteHeader`) | Wordmark left, text menu right ("About me", "Contact"), main nav in `.t-body`. Height 54 / 56 / 64 px. Overlay menu below 768 px, with the `--overlay-menu` background |
-| Theme switch | Icon button in the nav, see 1 |
+| Theme switch | Icon button in the desktop nav; "Theme" label above Dark / Light tabs in the mobile menu; see 1 |
 | Footer (`SiteFooter`) | One line at the text measure: copyright and imprint left, contact links (email, LinkedIn, CV) right; wraps on mobile |
 | Loading bar | Salmon bar at the top of the viewport during navigation |
 | Back to top | Appears after one viewport of scrolling |

@@ -1,15 +1,31 @@
 ---
 /**
- * Dark / light toggle. One icon button: a click flips dark <-> light. Dark is the default;
- * only "light" is stored in localStorage. Sets data-theme on <html>, tokens.css does the rest.
+ * Dark / light control. Dark is the default; only "light" is stored in localStorage. Sets data-theme on <html>, tokens.css does the rest.
+ * variant "icon" (desktop nav): one icon button, a click flips dark <-> light.
+ * variant "tabs" (mobile menu): the label "Theme" with a two-option segmented control below it, Dark | Light, like shadcn's Tabs. The options are
+ * toggle buttons (aria-pressed) inside a labelled group.
  */
+interface Props {
+  variant?: 'icon' | 'tabs';
+}
+const { variant = 'icon' } = Astro.props;
 ---
 
-<button class="toggle" type="button" aria-label="Switch to light mode" data-theme-toggle>
-  <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
-    <circle cx="12" cy="12" r="9" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none" />
-  </svg>
-</button>
+{variant === 'tabs' ? (
+  <div class="tabs-row">
+    <span class="t-label" id="theme-label">Theme</span>
+    <div class="tabs" role="group" aria-labelledby="theme-label">
+      <button type="button" aria-pressed="true" data-theme-set="dark">Dark</button>
+      <button type="button" aria-pressed="false" data-theme-set="light">Light</button>
+    </div>
+  </div>
+) : (
+  <button class="toggle" type="button" aria-label="Switch to light mode" data-theme-toggle>
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+      <circle cx="12" cy="12" r="9" /><path d="M12 3a9 9 0 0 1 0 18z" fill="currentColor" stroke="none" />
+    </svg>
+  </button>
+)}
 
 <style>
   .toggle {
@@ -18,6 +34,17 @@
   }
   .toggle:hover { color: var(--text-strong); }
   .toggle svg { display: block; }
+
+  .tabs-row { display: inline-flex; flex-direction: column; align-items: center; gap: var(--space-3); color: var(--text-default); }
+  .tabs { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius-m); background: var(--bg-card); }
+  .tabs button {
+    border: 0; margin: 0; padding: var(--space-2) var(--space-4); cursor: pointer;
+    border-radius: calc(var(--radius-m) - var(--space-1)); background: transparent; color: var(--text-default);
+    font: inherit; font-size: var(--text-label-size); line-height: 1.2; transition: background 200ms ease, color 200ms ease;
+  }
+  .tabs button:hover { color: var(--text-strong); }
+  .tabs button[aria-pressed='true'] { background: var(--bg-page); color: var(--text-strong); box-shadow: var(--shadow-screenshot); }
+  @media (prefers-reduced-motion: reduce) { .tabs button { transition: none; } }
 </style>
 
 <script>
@@ -26,18 +53,23 @@
 
   const current = () => (root.dataset.theme === 'light' ? 'light' : 'dark');
   const sync = () => {
-    const next = current() === 'light' ? 'dark' : 'light';
-    document.querySelectorAll<HTMLElement>('[data-theme-toggle]').forEach((b) =>
-      b.setAttribute('aria-label', `Switch to ${next} mode`));
+    const theme = current();
+    const next = theme === 'dark' ? 'light' : 'dark';
+    document.querySelectorAll<HTMLElement>('[data-theme-set]').forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.themeSet === theme)));
+    document.querySelectorAll<HTMLElement>('[data-theme-toggle]').forEach((b) => b.setAttribute('aria-label', `Switch to ${next} mode`));
   };
-
-  document.addEventListener('click', (e) => {
-    if (!(e.target as HTMLElement).closest('[data-theme-toggle]')) return;
-    const next = current() === 'light' ? 'dark' : 'light';
+  const apply = (next: 'light' | 'dark') => {
     root.dataset.theme = next;
     try { if (next === 'light') localStorage.setItem(KEY, 'light'); else localStorage.removeItem(KEY); } catch {}
     document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next === 'light' ? '#fafafc' : '#0d0d12');
     sync();
+  };
+
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const set = target.closest<HTMLElement>('[data-theme-set]');
+    if (set) return apply(set.dataset.themeSet === 'light' ? 'light' : 'dark');
+    if (target.closest('[data-theme-toggle]')) apply(current() === 'light' ? 'dark' : 'light');
   });
 
   document.addEventListener('astro:page-load', sync);

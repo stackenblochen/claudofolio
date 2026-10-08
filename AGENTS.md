@@ -29,7 +29,7 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `03-page-r
 
 - **Tokens:** `src/styles/tokens.css` (colour, type, spacing, radius, motion). Never hard-code values in pages or components.
 - **Themes:** dark (default) and light. Semantic colour tokens in `tokens.css` use `light-dark(light, dark)`; the nav
-  switch is a single icon button that toggles `data-theme="light"` on `<html>` (stored in localStorage, absent = dark; no
+  switch (an icon button in the desktop nav, a labelled "Theme" tabs control with Dark | Light options in the mobile menu) toggles `data-theme="light"` on `<html>` (stored in localStorage, absent = dark; no
   system/auto mode). Components use only semantic tokens
   (`--bg-page`, `--text-default`, `--text-strong`, `--accent-*` …), never raw palette colours or hex values. White-only SVG
   logos get `filter: var(--filter-logo)`; the confidential stamp is never filtered. There is no pure black or white, except `--bg-pure` (`.section--pure`) for the sections that hold the case study teasers: page and strong text use the tinted ends of the gray ramp (`--gray-950` #0d0d12, `--gray-50` #fafafc). The ramp `--gray-50 … --gray-950` is one cool gray scale for both themes (backgrounds, surfaces, borders, default text); its steps and contrast are listed in `tokens.css`. Light values are contrast-checked (see the comment in `tokens.css`).
