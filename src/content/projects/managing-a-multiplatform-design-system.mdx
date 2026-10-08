@@ -1,7 +1,7 @@
 ---
 title: Managing a legacy multiplatform *design system*
 shortTitle: Multiplatform design system
-summary: "Modernizing a fragmented design system across iOS, Android and Web: shared tokens, WCAG 2.1 AA accessibility and documentation built for people and AI."
+summary: "Modernizing a fragmented design system across iOS, Android and Web with shared tokens."
 labels: [Design Systems]
 tags: [Design tokens, Accessibility, AI]
 cover: ../../assets/projects/design-system/cover.png
@@ -23,6 +23,7 @@ outcome:
   - A shared set of implemented color tokens across all three clients results in a properly implemented light and dark mode.
   - Adoption was slow, so I built the foundations alongside feature work, and the color tokens in production today are the result.
 order: 2
+outcomeNumber: "07"
 draft: false
 ---
 
@@ -42,7 +43,7 @@ import designmd from '../../assets/projects/design-system/designmd.png';
 import bubbleSpec from '../../assets/projects/design-system/bubble-spec.png';
 import claudeDesign from '../../assets/projects/design-system/claude-design-screen.png';
 
-<Chapter title="Then and now" id="then-now">
+<StorySection number="01" title="Then and now" id="then-now">
   In 2020, the app looked nice on screenshots, but was not built for enterprise. A strategic pivot to enterprise collaboration redefined its design from 2024 on.
 
   <Fragment slot="media">
@@ -61,9 +62,9 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
       </Fragment>
     </Comparison>
   </Fragment>
-</Chapter>
+</StorySection>
 
-<Chapter title="Shared effort" id="shared-effort">
+<StorySection number="02" title="Shared effort" id="shared-effort">
   I see a design system as shared infrastructure, not only a Figma library. So I drove the token rollout on both sides: one naming structure in Figma and in the codebase, with semantic tokens replacing raw values. Step by step, designers and engineers started working with the same base values and components.
 
   <Fragment slot="media">
@@ -81,9 +82,9 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
       note="Interactive token demo, best viewed on desktop."
     />
   </Fragment>
-</Chapter>
+</StorySection>
 
-<Chapter title="Multiplatform" id="multiplatform">
+<StorySection number="03" title="Multiplatform" id="multiplatform">
   Each client builds on its native system (SwiftUI on iOS, Material 2/3 on Android, a React-based UI kit on desktop), which brings platform conventions and the accessibility baseline.
 
   The additional set of custom tokens and components add the brand and product tonality on top.
@@ -114,9 +115,9 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
       <Mock size="half" align="fit" stage="var(--bg-raised)" devices={[{ device: 'android', src: navAndroid, alt: 'Main navigation on Android' }]} />
     </div>
   </Fragment>
-</Chapter>
+</StorySection>
 
-<Chapter title="Accessibility" id="accessibility">
+<StorySection number="04" title="Accessibility" id="accessibility">
   Early on, the design team ran an audit together with the accessibility experts at adesso. It revealed significant gaps and moved accessibility high up the roadmap. I pushed to invest the time in fixing the problems at the system level rather than feature by feature.
 
   We reworked the color palette to meet WCAG 2.1 AA contrast in both light and dark mode and defined all necessary states for interactive components.
@@ -129,37 +130,33 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
       b={{ src: a11yDark, alt: 'An Add people dialog annotated for accessibility, with a Close dialog label on the close button and the avatars marked as decorative' }}
     />
   </Fragment>
-</Chapter>
+</StorySection>
 
-<Chapter title="AI-ready" id="ai-ready">
+<StorySection number="05" title="AI-ready" id="ai-ready">
   <Fragment slot="media">
-    <SubChapter number={1} title="Documentation" id="documentation">
-      I documented the system in a DESIGN.md file that covers tokens, typography, contrast rules and accessibility details, amongst other fundamentals. This can be used by anyone to build prototypes, as well as engineers to implement a final design solution based on the same foundations.
+    <div class="measure-text prose reveal">
+      <h3 class="t-subheading" id="documentation">Documentation</h3>
+      <p>I documented the system in a DESIGN.md file that covers tokens, typography, contrast rules and accessibility details, amongst other fundamentals. This can be used by anyone to build prototypes, as well as engineers to implement a final design solution based on the same foundations.</p>
+    </div>
+    <FigurePair
+      a={{ src: designmd, alt: 'The DESIGN.md file, opening with the product context and rules for token IDs' }}
+      b={{ src: bubbleSpec, alt: 'Component documentation for the chat bubble, shown next to the component in Figma' }}
+    />
 
-      <Fragment slot="media">
-        <FigurePair
-          a={{ src: designmd, alt: 'The DESIGN.md file, opening with the product context and rules for token IDs' }}
-          b={{ src: bubbleSpec, alt: 'Component documentation for the chat bubble, shown next to the component in Figma' }}
-        />
-      </Fragment>
-    </SubChapter>
-
-    <SubChapter number={2} title="Prototyping" id="prototyping">
-      A Claude design system has the main views defined, so that PMs and designers can use it to prototype and test quickly.
-
-      <Fragment slot="media">
-        <Mock size="media" align="cut-bottom" zoom={1.05} stage="var(--bg-card)" devices={[{ device: 'desktop', src: claudeDesign, alt: 'The design system set up in Claude, showing the conversation details view with the group details panel' }]} />
-        <Video src={siteUrl('/videos/design-system/prototype-login.mp4')} title="Prototype of the login flow" loop />
-        <Video src={siteUrl('/videos/design-system/prototype-connect.mp4')} title="Prototype of the connect flow" loop />
-      </Fragment>
-    </SubChapter>
+    <div class="measure-text prose reveal">
+      <h3 class="t-subheading" id="prototyping">Prototyping</h3>
+      <p>A Claude design system has the main views defined, so that PMs and designers can use it to prototype and test quickly.</p>
+    </div>
+    <Mock size="media" align="cut-bottom" zoom={1.05} stage="var(--bg-card)" devices={[{ device: 'desktop', src: claudeDesign, alt: 'The design system set up in Claude, showing the conversation details view with the group details panel' }]} />
+    <Video src={siteUrl('/videos/design-system/prototype-login.mp4')} title="Prototype of the login flow" loop />
+    <Video src={siteUrl('/videos/design-system/prototype-connect.mp4')} title="Prototype of the connect flow" loop />
   </Fragment>
-</Chapter>
+</StorySection>
 
-<Chapter title="Reality check" id="reality-check">
+<StorySection number="06" title="Reality check" id="reality-check">
   Adoption was slow. Engineers were busy with legacy code, and the roadmap favored new features.
 
   I worked around it: I ran sessions with some motivated engineers and built the token system alongside my feature work. Once I had access to AI tools, I could analyze the codebase myself, and results came much faster. The color tokens in production today are the result.
 
   Looking back, I wouldn't wait for permission to improve the system. I'd build the foundations alongside feature work from the start, and push to get it on the roadmap early.
-</Chapter>
+</StorySection>

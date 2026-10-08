@@ -36,13 +36,13 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `03-page-r
 - **Base:** `src/styles/base.css` has the seven type roles (`.t-display`, `.t-title`, `.t-heading`, `.t-subheading`, `.t-body`, `.t-label`, `.t-caption`;
   modifiers `.t-upper`, `.t-serif`; heading and subheading are bold (700) with no letter spacing, heading 34px at the top and subheading 24px; display, title and body weights depend on the theme (dark 600 / 700 / 300, light 700 / 800 / 400; letter spacing is tightened in light mode by the same step); label is always 300; bold inside text uses `--weight-emphasis`; main nav uses `.t-body`), layout (`.container`, `.measure-text`, `.measure-media`, `.grid-12` + `.span-*`),
   `.prose`, `.section`, media helpers and the `.reveal` scroll effect.
-- **Components:** `src/components/`, one per module ID in `02-modules.md` (Chapter, Lead, ProjectMeta, Figure, ScreenStack,
+- **Components:** `src/components/`, one per module ID in `02-modules.md` (StorySection, Overview, Figure, ScreenStack,
   Comparison, Embed, Outcome, ProjectGrid …). Content goes in via props and slots, never style overrides.
 - **Schemas:** diagrams (structures, processes, hierarchies, flows) are live SVG via `Schema` (I10) and the parts in `src/components/schema/`, in the same frame as mocks and theme aware. Rules and parts: `docs/foundations/05-schemas.md`.
-- **Layouts:** `Base.astro` (head, fonts, header, footer) for every page. `CaseStudy.astro` renders hero, lead, meta, outcome
-  and other projects from frontmatter; the MDX body holds chapters only.
+- **Layouts:** `Base.astro` (head, fonts, header, footer) for every page. `CaseStudy.astro` renders hero (title + labels), overview, outcome
+  and other projects from frontmatter; the MDX body holds numbered `StorySection`s only (the one case-study layout).
 - **Case studies:** copy `src/content/projects/_template.mdx` to `<slug>.mdx`. The schema is in `src/content.config.ts`.
-  Chapter, Figure & co. are available in MDX without imports (see `src/pages/projects/[id].astro`).
+  StorySection, Figure & co. are available in MDX without imports (see `src/pages/projects/[id].astro`).
 - **Gradients:** named `<intensity>-<tonality>`: intensity `soft` | `calm` | `active`, tonality `yellow` | `salmon` | `violet` | `blue` | `green`
   (15 gradients), plus moods `morning` (soft-yellow), `day` (soft-blue), `meadow` (calm-green), `dusk` (calm-violet), `sundown` (active-salmon),
   `night` (active-blue). "Add an active gradient with blue tonality" = `class="gradient gradient--active-blue"`; tokens are
@@ -55,8 +55,8 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `03-page-r
 - **Grid:** fixed 12 columns (grid 1170 / 896 / 656 px with 30 px outer padding; xl ≥ 1230 has 70 px columns and 30 px gutters; full width below 768 with 20 px padding). Text 8/9/9/12/12 columns, media 10/10/10/12/12
   (xl/lg/md/sm/xs), always inside the grid padding. Live demo: `/styleguide#grid-demo`.
 - **H1 titles:** `.t-title` is Geist Bold; `*word*` in a title (`PageHeader`, `CaseHero`, frontmatter `title`) becomes an Editorial New Ultrabold Italic highlight via `highlight()` in `src/lib/site.ts` (`plain()` strips it). One or two words at most.
-- **Home stage:** `HomeHero` (headline in `.t-title`, name highlighted in `--accent-primary`, subline in `.t-heading`) plus `DoodleStack`: pictures from `src/assets/doodles/` pop up on pointer movement (scroll on tablets, timer on phones). Black or white single-colour pictures follow the theme (`BLACK` / `WHITE` sets in `DoodleStack.astro`).
-- **Heading levels vs looks:** one `h1` per page, `h2` chapters, `h3` sub-chapters; the look comes from the `.t-*` class.
+- **Home stage:** `HomeHero` (headline in `.t-title`, name highlighted in `--accent-primary`, subline in `.t-heading`) plus `DoodleStack`: pictures from `src/assets/doodles/` pop up on their own (max 3 visible, beside the text, never over it; no new ones while the pointer is over them). Black or white single-colour pictures follow the theme (`BLACK` / `WHITE` sets in `DoodleStack.astro`); the flat salmon ones (`ACCENT`) use `--accent-primary`.
+- **Heading levels vs looks:** one `h1` per page, `h2` sections, `h3` sub-headings; the look comes from the `.t-*` class.
 - **Links:** wrap internal paths with `url()` from `src/lib/site.ts` (the site is served under `/claudofolio`).
 - **Images:** local files in `src/assets/`, via `Figure`/`Img` (AVIF/WebP + srcset). Always write alt text; `alt=""` for decoration.
 - **Mobile parity:** all text visible at every breakpoint; only media may be swapped (`Embed` poster). One exception: the teaser summary is hidden below 992 px to keep the teasers compact.

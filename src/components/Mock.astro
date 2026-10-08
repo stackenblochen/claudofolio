@@ -6,7 +6,7 @@
  *   <Mock size="full" stage="dusk" devices={[{ device: 'desktop', src: shot, alt: '…' }]} />
  *   <Mock size="third" align="cut-bottom" stage="calm-blue" devices={[{ device: 'ios', src: shot, alt: '…' }]} />
  *
- * size full / cover / media stand on their own; half and third go inside a .grid-12 row.
+ * size full / cover / media stand on their own; half, pair and third go inside a .grid-12 row (pair = 6 col 3:2, the window fills it).
  */
 import { Image, getImage } from 'astro:assets';
 import type { ImageMetadata } from 'astro';
@@ -29,7 +29,7 @@ type Device = {
   focus?: string;                   // object-position of the crop, e.g. 'top right'
 };
 interface Props {
-  size?: 'full' | 'media' | 'cover' | 'half' | 'third';
+  size?: 'full' | 'media' | 'cover' | 'half' | 'pair' | 'third';
   align?: 'center' | 'fit' | 'cut-right' | 'cut-left' | 'cut-top' | 'cut-bottom';
   theme?: 'light' | 'dark' | 'auto';   // colours the chrome; auto follows the site theme
   layout?: 'set' | 'row';              // set: desktop + phone · row: 2 or 3 phones side by side
@@ -63,8 +63,8 @@ const items = await Promise.all(
   }),
 );
 const widths = [480, 768, 1200, 1600, 2400];
-const sizes = { full: '(min-width: 1230px) 1170px, 100vw', cover: '(min-width: 1230px) 1170px, 100vw', media: '(min-width: 1230px) 970px, 100vw', half: '(min-width: 768px) 900px, 100vw', third: '(min-width: 768px) 500px, 100vw' }[size];
-const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-media', half: undefined, third: undefined }[size];
+const sizes = { full: '(min-width: 1230px) 1170px, 100vw', cover: '(min-width: 1230px) 1170px, 100vw', media: '(min-width: 1230px) 970px, 100vw', half: '(min-width: 768px) 900px, 100vw', pair: '(min-width: 768px) 900px, 100vw', third: '(min-width: 768px) 500px, 100vw' }[size];
+const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-media', half: undefined, pair: undefined, third: undefined }[size];
 ---
 
 <figure class:list={['mock-fig', measure, 'reveal']} data-size={size}>
@@ -89,7 +89,7 @@ const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-m
   .mock-fig:not(.measure-media):not(.measure-wide) { margin-inline: 0; }
   /* half and third sit in a .grid-12 row */
   @media (min-width: 768px) {
-    .mock-fig[data-size='half'] { grid-column: span 6; }
+    .mock-fig[data-size='half'], .mock-fig[data-size='pair'] { grid-column: span 6; }
     .mock-fig[data-size='third'] { grid-column: span 4; }
   }
 </style>

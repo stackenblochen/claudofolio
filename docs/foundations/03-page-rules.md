@@ -12,7 +12,7 @@ Target stack: **Astro (static output)**, content in **Markdown/MDX content colle
 2. **Dark editorial.** Dark is the default theme, with a light theme behind the nav switch. Strong text (`--text-strong`) is reserved for headings, leads and emphasis; body copy uses `--text-default`. Colour comes from the work (screenshots), the salmon accent and the green positive mark only. Components use semantic tokens, never hex values.
 3. **Story before chrome.** Every case study answers *context → problem → my role → process/insight → solution → outcome → learning*, in that order.
 4. **Mobile parity.** Every text block appears on every breakpoint. Only *media* may be swapped for a lighter fallback.
-5. **Scannable for recruiters, deep for designers.** The first screen and the meta row give the 10-second summary. Chapters give the depth.
+5. **Scannable for recruiters, deep for designers.** The first screen and the meta row give the 10-second summary. The numbered sections give the depth.
 
 ---
 
@@ -25,7 +25,7 @@ src/
   components/            # one file per module ID in 02-modules.md; schema/ holds the Schema parts
   layouts/
     Base.astro           # <html>, fonts, tokens, header, footer, page transition
-    CaseStudy.astro      # hero + lead + meta + chapters (slot) + outcome + other projects
+    CaseStudy.astro      # hero + overview + numbered story sections (slot) + outcome + other projects
   pages/                 # index, about, styleguide, projects/[id]
   lib/                   # site.ts (SITE, url(), highlight()), projects.ts, gradients.ts, prism.ts, lock.ts …
   styles/                # tokens.css, base.css, mock.css, frames/
@@ -40,19 +40,19 @@ public/
 
 The schema is `src/content.config.ts` (Zod); it is the single source of truth for frontmatter, so it is not repeated here. The fields in short:
 
-- **Titles and teaser:** `title` (H1, sentence case, ≤ 70 chars, `*word*` marks an Editorial highlight), `shortTitle` (card and `<title>`), `summary` (≤ 160), `labels` (1–3 expertise pills, see L3 in `02-modules.md`), `tags`, `cover` + `coverAlt`, optional `thumb` (teaser as a `Mock`).
+- **Titles and teaser:** `title` (H1, sentence case, ≤ 70 chars, `*word*` marks an Editorial highlight), `shortTitle` (card and `<title>`), `summary` (≤ 160, but aim for about 90 characters: the wide card shows three lines), `labels` (1–3 expertise pills, see L3 in `02-modules.md`), `tags`, `cover` + `coverAlt`, optional `thumb` (teaser as a `Mock`).
 - **Hero:** `heroVariant` (`mockup` | `backdrop`), `heroBackground`, `confidential` (stamp), `protected` (password gate).
 - **Meta:** `company`, `role`, `team`, `timeline`, `year`, `platforms`. The meta row shows only with at least three of role, team, timeline, platforms.
 - **Story:** `lead` (1–3 sentences), `outcome` (exactly 3 points).
 - **Housekeeping:** `order` (grid position), `draft`.
 
-The layout renders hero, lead, meta, outcome and other projects from the frontmatter; the MDX body holds chapters only.
+The layout renders hero, overview, outcome and other projects from the frontmatter; the MDX body holds the numbered StorySections only.
 
 ### 2.2 Global rules for components
 - Components take **content as props or slots**, never style overrides. No `style=` attributes in MDX.
 - Spacing between modules comes from the parent layout (a `flow` / stack utility with `--chapter-gap`), not from margins on each module.
 - Grid spans follow `02-modules.md` → *Responsive behaviour summary*. Use two layout wrappers: `.measure-text` (8 / 9 / 12 cols) and `.measure-media` (10 / 12 cols).
-- Headings are semantic (`h1` once per page, then `h2` for chapters, `h3` for sub-chapters). The visual size comes from the type role class (`.t-heading` etc.), so the level and the look are decoupled.
+- Headings are semantic (`h1` once per page, then `h2` for sections, `h3` for sub-headings). The visual size comes from the type role class (`.t-heading` etc.), so the level and the look are decoupled.
 
 ---
 
@@ -65,33 +65,31 @@ Required (★) and optional (○) blocks, in this order:
 | # | Block | Module | Rules |
 |---|---|---|---|
 | ★1 | Hero | `CaseHero` | H1 ≤ 8 words, sentence case. Mockup or backdrop. Stamp if `confidential` |
-| ★2 | Lead | `Lead` | Eyebrow "Background". 2–3 sentences: situation → why it mattered → what you did |
-| ★3 | Meta | `ProjectMeta` | Role · Team · Timeline (+ Platforms/Company optional) |
-| ○4 | Insights | `Chapter` + 3× `ImageText` | Source of insights in one sentence, then 3 insights (title ≤ 4 words + 1–2 sentences) |
-| ○5 | Framing | `Chapter` + `Figure wide` | The reframe / key decision that unlocked the solution |
-| ★6 | Solution chapters | 2–5× `Chapter` (or `SubChapter`s) | Each: heading ≤ 4 words, 1–3 paragraphs, ≥ 1 visual |
-| ○7 | Constraints | `ChallengeSolution` inside chapters | Max 1 per chapter. Be honest about trade-offs |
-| ○8 | Interactive demo | `Embed` | Always with a `poster` placeholder and a `note` for tablet and mobile (< 992 px); an optional `caption` for desktop and laptop |
-| ★9 | Outcome | `Outcome` | Exactly 3 points, each starting with the result. ≥ 1 number or concrete artefact |
-| ○10 | Learnings | `Chapter` (short) | 2–3 sentences: what you'd do differently / what's next |
-| ★11 | Other projects | `ProjectGrid exclude=current` | Up to 2 cards |
+| ★2 | Overview | `Overview` (from `lead` + role/team/timeline) | 1–3 sentences: situation → why it mattered → what you did. Role, team and timeline as the row under it |
+| ★3 | Story sections | 4–8× numbered `StorySection` (MDX) | Each: title ≤ 4 words, then The problem / The decision / The outcome (one or two sentences each) and the media that shows it. A section that does not fit the three beats uses plain paragraphs |
+| ○4 | Insights | `StorySection` + 3× `ImageText` in its media | Source of the insights in one sentence, then 3 insights (title ≤ 4 words + 1–2 sentences) |
+| ○5 | Interactive demo | `Embed` in a section's media | Always with a `poster` placeholder and a `note` for tablet and mobile (< 992 px); an optional `caption` for desktop and laptop |
+| ○6 | Screen gallery | `ScreenGallery` (MDX, after the sections) | More screens as cards, each with title and category |
+| ★7 | Outcome | `Outcome` (from `outcome`, `outcomeNumber`) | Exactly 3 points, each starting with the result. ≥ 1 number or concrete artefact |
+| ★8 | Other projects | `ProjectGrid exclude=current` | Up to 2 cards |
+
+The media is different for every case study: pick the module that fits what each section shows (mock, figure, schema, embed, video, before/after).
 
 Length guide: **900–1,500 words**, **6–12 visuals**, readable in 5–7 minutes.
 
-Chapter heading vocabulary (keep it short and concrete): *Then and now · Shared effort · Multiplatform · Accessibility · AI-ready · Key user insights · From X to Y · Design solution · Outcome · Learnings*.
+Section title vocabulary (keep it short and concrete): *Then and now · Shared effort · Multiplatform · Accessibility · AI-ready · Key user insights · From X to Y · Design solution · Outcome · Learnings*.
 
 ### 3.2 Case study, variant: Design vision (next planned)
-Same frame, with these chapters suggested: **Where we were** (Comparison: today) → **Principles** (3 × ImageText or a numbered list) → **The vision** (Figure wide + ScreenStack of key screens) → **How it travels** (how it was shared: workshops, prototype, embed) → **What it changed** (Outcome) → Learnings. Mark speculative screens clearly as "Vision, not shipped" in captions.
+Same frame, with these sections suggested: **Where we were** (Comparison: today) → **Principles** (3 × ImageText or a numbered list) → **The vision** (Figure wide + ScreenStack of key screens) → **How it travels** (how it was shared: workshops, prototype, embed) → **What it changed** → Learnings (the Outcome follows the sections). Mark speculative screens clearly as "Vision, not shipped" in captions.
 
 ### 3.3 Home
 
 | # | Block | Module | Rules |
 |---|---|---|---|
-| ★1 | Stage | `HomeHero` (+ `DoodleStack`) | Title-style headline ≤ 12 words: who + what + where, name highlighted. One subline. Doodle stack (pointer, scroll or timer driven) |
-| ★2 | Statement | `Statement` | 1–2 sentences on how you work **and** what roles/problems you're looking for |
+| ★1 | Stage | `HomeHero` (+ `DoodleStack`) | Title-style headline ≤ 12 words: who + what + where, name highlighted. One subline. Doodle stack (pops up on its own, max 3 at a time) |
 | ★3 | Selected work | `SectionTitle` + `ProjectGrid` | All non-draft projects by `order`. Card: cover, shortTitle, labels, summary |
 | ○4 | Demos / experiments | `ProjectGrid` (variant `compact`) | Links to standalone interactive demos |
-| ○5 | Contact CTA | `Statement` + links | Email, LinkedIn, CV (PDF) |
+| ○5 | Contact CTA | `ContactBlock` | Email, LinkedIn, CV (PDF) |
 | ★6 | Footer | `SiteFooter` | |
 
 ### 3.4 About
@@ -107,7 +105,7 @@ Same frame, with these chapters suggested: **Where we were** (Comparison: today)
 
 ### 3.5 Other page types (when needed)
 - **Imprint / Privacy:** `PageHeader` (no intro) + prose at `.measure-text`, Body style.
-- **Standalone demo page:** `PageHeader` + `Embed` (full 12 cols) + 1 `Chapter` explaining the system thinking behind it.
+- **Standalone demo page:** `PageHeader` + `Embed` (full 12 cols) + 1 `StorySection` explaining the system thinking behind it.
 
 ---
 
@@ -115,14 +113,14 @@ Same frame, with these chapters suggested: **Where we were** (Comparison: today)
 
 - **Voice:** first person singular for your own actions ("I led…"); use "we" only for genuine team decisions. Present tense for the product, past tense for the project.
 - **Sentence case** everywhere (titles, headings, buttons). No Title Case.
-- **Lead sentences:** each ≤ 25 words, one idea per sentence, no jargon in the first one.
+- **Overview sentences:** each ≤ 25 words, one idea per sentence, no jargon in the first one.
 - **Paragraphs:** ≤ 4 sentences. One message per paragraph.
 - **Outcome items:** start with the effect, then the cause ("Qualifies Wire for public-sector tenders by meeting WCAG and BITV").
 - **Numbers:** use real numbers wherever possible (team size, timeline, tokens, components, contrast fixes, adoption, launch date).
 - **Confidential work:** describe it at the level of patterns and decisions, blur or mark sensitive data, and keep the stamp.
 - **Spelling:** run a spell-check before publishing.
 - **Labels:** eyebrows are one word ("Background"). Meta labels are "Role", "Team", "Timeline", "Platforms".
-- **Em-dash marker:** appears above every chapter heading (rendered by the component, not typed into the content).
+- **Section number:** "— 01" appears above every section heading (rendered by the component from the `number` prop).
 
 ---
 
@@ -151,7 +149,7 @@ Same frame, with these chapters suggested: **Where we were** (Comparison: today)
 - **Grid:** fixed 12 columns. The grid width is fixed per breakpoint: xl 1170 (col 70, gutter 30), lg 896 (col 60, gutter 16), md 656 (col 40, gutter 16), full width below 768. Outer padding around the grid: 30 px (≥ 768) / 20 px (< 768). No floating widths inside a breakpoint.
 - **Text measure:** 8 cols (xl) → 9 (lg, md) → 12 (sm, xs). Never set body copy wider than 8 cols on desktop. Hero has its own rules.
 - **Media measure:** 10 cols (xl, lg, md) → 12 (sm, xs). Embeds and grids use 12. All measures sit inside the grid padding.
-- **Vertical rhythm:** `--chapter-gap` (40 → 80 px fluid) between chapters; `--space-4` (20 px) between modules inside a chapter; `--space-3` (12 px) between a heading and its body.
+- **Vertical rhythm:** `--chapter-gap` (80 → 160 px fluid) between sections; `--space-4` (20 px) between modules inside a section; `--space-3` (12 px) between a heading and its body.
 - **Hero:** `--hero-top` (60 → 160 px) above the H1.
 - **Section backgrounds:** `--bg-page` by default. `--bg-raised` for raised sections, mock and schema stages. `--bg-pure` (pure white or black) only for the sections that hold the teasers (Outcome and Other projects, Home grid), applied consistently on all pages.
 - **Overlaps** (stamp, arrow) use CSS `translate`/negative margins inside the component only, and are reduced by 50 % below 768 px.
@@ -186,7 +184,7 @@ Same frame, with these chapters suggested: **Where we were** (Comparison: today)
 ## 9. Definition of done: new case study
 
 - [ ] Frontmatter complete (schema validates), `draft: false`
-- [ ] Hero, Lead, Meta, ≥ 2 chapters, Outcome, Other projects present
+- [ ] Hero, Overview, ≥ 2 numbered sections, Outcome (with `outcomeNumber`), Other projects present
 - [ ] Outcome has 3 points, ≥ 1 concrete number or artefact
 - [ ] All text visible at 375 px; demo has a fallback
 - [ ] All images have alt text and the correct ratio/size; covers 16:10
@@ -210,7 +208,7 @@ Problem — what wasn't working, for whom?
 My contribution — what did *I* do / decide / drive?
 Insights (optional) — 3 findings + source
 Key reframe / decision (optional)
-Solution chapters — 2–5 headings, each with 2–4 bullet facts + the visuals I have
+Sections — 4–8 titles, each with the problem, the decision, the outcome + the visuals I have
 Constraints & trade-offs (optional) — challenge → how I handled it
 Outcome — 3 results (numbers if any)
 Learning — what I'd do differently / what's next

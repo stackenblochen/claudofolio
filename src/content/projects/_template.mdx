@@ -1,9 +1,10 @@
 ---
 # Copy this file to <slug>.mdx (no leading underscore) to publish a case study.
-# Hero, Lead, Meta, Outcome and "Other projects" are rendered by the CaseStudy layout from this frontmatter.
+# The CaseStudy layout renders the hero (title + labels), the Overview (lead + role, team, timeline), the Outcome and "Other projects" from this frontmatter.
+# The body below holds only the numbered StorySections (and, optionally, a ScreenGallery).
 title: Sentence case title of at most eight words
 shortTitle: Short title
-summary: One line, 160 characters max. Used on the card and as the meta description.
+summary: One short line, about 90 characters (three lines on the wide card). Used on the card and as the meta description.
 labels: [Product Design] # 1–3 of: Product Design | Design Systems | Design Vision | Research | Prototyping (src/lib/label-names.ts)
 tags: []
 cover: ../../assets/placeholders/cover.svg # 16:10, 2560×1600
@@ -17,24 +18,26 @@ team: Who was on the team # optional; the meta row needs at least 3 of role, tea
 timeline: Duration # optional
 year: 2026
 platforms: [iOS, Android, Web]
-lead:
+lead: # shown in the Overview, 1–3 sentences
   - Situation.
-  - Why it mattered.
-  - What I did.
-outcome:
+  - Why it mattered and what I did.
+outcome: # exactly three points, result first, then cause
   - Result first, then cause.
   - Result first, then cause.
   - Result first, then cause.
+outcomeNumber: "02" # the number after the last StorySection
 order: 1
 draft: true
 ---
 
 import diagram from '../../assets/placeholders/diagram.svg';
 
-<Chapter title="Chapter heading" id="chapter-one">
-  One to three paragraphs of body text, at most four sentences each.
+<StorySection number="01" title="Section title" id="section-one">
+  <p slot="problem">What the problem was and who it affected.</p>
+  <p slot="decision">What I decided and why.</p>
+  <p slot="outcome">What it led to.</p>
 
   <Fragment slot="media">
     <Figure src={diagram} alt="What the image shows and why it matters" caption="Short caption" />
   </Fragment>
-</Chapter>
+</StorySection>

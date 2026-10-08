@@ -1,6 +1,6 @@
 # 02 — Modules
 
-Every content module has a stable ID and one Astro component in `src/components/`. Content goes in through props and slots, never through style overrides. Case-study components (Chapter, Figure & co.) are available in MDX without imports (see `src/pages/projects/[id].astro`).
+Every content module has a stable ID and one Astro component in `src/components/`. Content goes in through props and slots, never through style overrides. Case-study components (StorySection, Figure & co.) are available in MDX without imports (see `src/pages/projects/[id].astro`).
 
 Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992–1229 · **xl** ≥ 1230. Spans are out of 12 columns; "stack" means 100 % width, one item under another. Type, colour and spacing names refer to `01-styleguide.md`.
 
@@ -18,16 +18,11 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | H3 | Case hero, mockup | `CaseHero variant="mockup"` | Case studies |
 | H4 | Page header (eyebrow, title, intro) | `PageHeader` | About, Styleguide |
 | **T — Text** | | | |
-| T1 | Intro statement | `Statement` | Home (when used) |
-| T2 | Lead block | `Lead` | Case studies |
 | T3 | Section title | `SectionTitle` | Home, About |
-| T4 | Chapter | `Chapter` | Case studies |
-| T5 | Sub-chapter | `SubChapter` | Case studies |
-| T6 | Challenge / Solution | `ChallengeSolution` | Case studies |
 | T7 | Outcome | `Outcome` | Case studies |
+| T9 | Overview | `Overview` | Case studies |
+| T10 | Story section | `StorySection` | Case studies |
 | T8 | Career entry | `CareerEntry` inside `Timeline` | About |
-| **M — Meta** | | | |
-| M1 | Project meta row | `ProjectMeta` | Case studies |
 | **I — Media** | | | |
 | I1 | Wide figure | `Figure` | Case studies |
 | I2 | Figure pair | `FigurePair` | Case studies |
@@ -39,6 +34,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | I8 | Annotations | `Stamp`, `Arrow` | Case studies |
 | I9 | Device mock | `Mock` | see `04-mocks.md` |
 | I10 | Schema (live SVG diagram) | `Schema` + parts | see `05-schemas.md` |
+| I11 | Screen gallery | `ScreenGallery` | Case studies (optional) |
 | **L — Collections** | | | |
 | L1 | Project teasers | `ProjectGrid`, `ProjectCard` | Home |
 | L2 | Other projects | `ProjectGrid` with `exclude` | Case studies |
@@ -55,7 +51,7 @@ Images always go through `Img` (local files in `src/assets/` → AVIF/WebP with 
 ## G — Global
 
 ### G1 Site header
-Wordmark logo (left), text menu (right): "About me", "Contact", then the theme switch (an icon button). Menu items are `.t-body` pills with a blurred translucent background (`--bg-glass`) and a hairline border; hover and the current page switch to `--text-strong` on `--bg-card`, and the theme icon is a matching glass circle. Sticky and transparent over the hero; height 54 (xs) / 56 (sm) / 64 px (md and up). Below 768 px the menu opens as a full-screen overlay on a solid background (`--overlay-menu`, not transparent) with centred items (Home, About me, Contact) and a "Theme" label above Dark / Light tabs underneath, opened by a hamburger.
+Wordmark logo (left), text menu (right): "About me", "Contact", then the theme switch (an icon button). Menu items are `.t-body` pills in strong text on a mostly opaque, blurred background (`--bg-glass`, so they stay readable over light and dark screenshots); hover and the current page switch to `--text-strong` on `--bg-card`, and the theme icon is a matching glass circle. Sticky and transparent over the hero; height 54 (xs) / 56 (sm) / 64 px (md and up). Below 768 px the menu opens as a full-screen overlay on a solid background (`--overlay-menu`, not transparent) with centred items (Home, About me, Contact) and a "Theme" label above Dark / Light tabs underneath, opened by a hamburger.
 
 ### G3 Footer
 One line at the text measure (8 / 9 cols, full width on phones): "© year Wolfgang Lattermann. All rights reserved. Imprint" left, the contact links (email, LinkedIn, CV) right, wrapping on mobile. Links look like the main navigation. Values come from `SITE` in `src/lib/site.ts`; empty values hide their link.
@@ -68,17 +64,16 @@ One line at the text measure (8 / 9 cols, full width on phones): "© year Wolfga
 ## H — Heroes
 
 ### H1 Home stage
-A section on the page background, as wide as the media measure (10 cols; stack below 768 px).
+A section on the page background, as wide as the media measure (10 cols). Text and doodles sit side by side from 992 px as one centred group; below 992 px they stack.
 
 - **Headline** (`<h1 class="t-title">`, slot `intro`): Geist Bold with the name highlighted in Editorial New Ultrabold Italic and `--accent-primary`. Fixed sizes (2 / 2.5 / 3 / 3.5 rem from xs / 768 / 992 / 1230 px), set in lines with `<br class="br-md">` from 768 px.
 - **Subline** (`<p class="t-heading">`, slot `subline`, weight 400): below the headline, 40 px gap, one forced break from 768 px.
 - **Prism effect** on the headline while the pointer is over the stage (`src/lib/prism.ts`). The real text stays in the DOM; a transparent WebGL canvas on top paints only where there is distortion. Needs a fine hovering pointer and no reduced-motion preference.
-- **Doodle stack** (`DoodleStack`, decorative, `aria-hidden`): from 768 px an absolutely positioned area on the right (46 % of the stage width), behind the text, which may overlap it. On phones it sits under the text (15 rem high).
-  - A new picture lands on top at a random spot, tilt (2–14°) and size; older ones sink back (smaller and fainter, up to five levels); 3–5 are visible at once; the oldest fade out.
-  - **Trigger:** pointer movement anywhere over the hero (every ~200 px, at most one per 160 ms); scroll on touch devices from 768 px (every ~120 px); a timer on phones (a new picture at a random 3–5 s). Reduced motion: a static arrangement of four.
-  - **Idle:** after 2.6 s without movement the stack settles to two pictures and a new one still lands every 3–5 s, far less often than while moving.
-  - Pictures come from `src/assets/doodles/` (WebP ≤ 640 px) via a shuffled bag; none repeats before all have been shown. Single-colour black or white pictures follow the theme.
-  - A subtle endless float, a soft shadow, and spring-in. All tuning constants are at the top of the script.
+- **Doodle stack** (`DoodleStack`, decorative, `aria-hidden`): from 992 px a fixed-width box (13–18 rem) right next to the text, with a 30 px gap, never over the headline or subline; text and box form one group that is centred in the stage, and the box is as high as the text block (nothing higher or lower); below 992 px it sits under the text (15 rem, 18 rem from 768 px).
+  - Pictures pop up on their own, **independent of the mouse**: a new one lands on top every 2.5–4.5 s at a random spot, tilt (2–14°) and size, always inside the box vertically; sideways they may use the box width (`SPREAD_X`), up and down the text block's height (`SPREAD_Y`; up to 50 the pictures stay in the box, above 50 the value is literal and they may leave it, onto the text or past the stage), the hero reaching at most into the gap to the text (never onto it), so pictures sometimes overlap. The newest is the hero (30 % bigger); when the next one lands it shrinks back and sinks (smaller, fainter). **At most 3 are visible at once**, the oldest fades out as a new one lands.
+  - **Hover:** while the pointer is over the box, no new pictures spawn (they resume when it leaves). Spawning also pauses while the box is off screen or the tab is hidden. Reduced motion: a static arrangement of three.
+  - Pictures come from `src/assets/doodles/` (WebP ≤ 640 px) via a shuffled bag; none repeats before all have been shown. Black or white single-colour pictures follow the theme; the flat salmon marks (`wl-red`, `wolfgang-red`, `swoosh-red`) are drawn in `--accent-primary` through a mask, so they use the styleguide salmon in both themes.
+  - A subtle endless float, a soft shadow, and spring-in. The tuning constants (`MAX` visible at once, any number: the depth fade adapts; `EVERY`; `SCALE`, `HERO`, `SPREAD_X`, `SPREAD_Y`; the `SMALL`, `BIG`, `BLACK`, `WHITE` and `ACCENT` sets) are at the top of the file.
 
 ### H2 Case hero, backdrop
 Full-cover background image (dimmed), H1 bottom-aligned, stamp below. H1 on the media measure.
@@ -95,36 +90,26 @@ Eyebrow (`.t-label`), H1 (`.t-title`, text measure) and optional intro paragraph
 
 ## T — Text modules
 
-### T1 Statement
-One or two sentences in `.t-heading` on the raised background, text measure. Props/slot: the sentence.
-
-### T2 Lead
-Eyebrow ("Background") plus 2–3 sentences in `.t-heading`, strong colour, each its own paragraph. Text measure. Prop: `sentences`.
-
 ### T3 Section title
 `.t-heading` title with a dash marker ("Selected work", "Career"). Semantic level configurable.
 
-### T4 Chapter
-1. dash marker (rendered by the component), 2. heading (h2, look `.t-heading`), 3. body paragraphs (`--text-default`, `.t-body`), 4. optional media in the `media` slot (Figure, FigurePair, ScreenStack, Embed …). Text on the text measure, media on the media measure. Chapters sit in `.chapter-flow` (`--chapter-gap` between them). One heading level only.
+### Case study structure (T9, T10, T7, I11)
+Every case study uses one layout, `layouts/CaseStudy.astro`. Order: hero (`CaseHero`: labels, title, cover) → `Overview` → numbered `StorySection`s (the MDX body) → optional `ScreenGallery` (MDX) → `Outcome` → other projects. Overview and Outcome come from the frontmatter; the sections are written in the MDX. No full-width dividers: the space between sections is `--chapter-gap`. `unlisted: true` keeps a case study off Home and out of "Other projects" while its URL still works. Media (screenshots, mocks, schemas, embeds) is different for every case study and always goes in a section's `media` slot.
 
-### T5 Sub-chapter
-Like T4 with a numbered `.t-subheading` title (h3), nested in a chapter ("1. Instant meetings"). Usually followed by T6 and I3.
+### T9 Overview
+From `lead` and the meta, stacked on the centred text measure (8 / 9 cols): h2 "Project overview", the lead paragraphs in the same style as the About page intro (`.t-subheading` at weight 400, strong colour, `text-wrap: pretty`), then role, team and timeline as a row (only with at least three of role, team, timeline, platforms). Props: `title`, `sentences`, `meta`; the default slot takes custom paragraphs.
 
-### T6 Challenge / Solution
-Two labelled blocks, each a label followed by body text: `● Challenges` (bullet in `--accent-primary`), `► Solution` (bullet in `--accent-positive`), labels in strong text. Takes the width of its parent (place it in a chapter body). Slots: `challenge`, `solution`. Maximum one per chapter; be honest about trade-offs.
+### T10 Story section
+Props `number` ("01", then "02" …), `title`, `id`. "— 01" in `.t-number` (Geist, body weight, 32 px on desktop, `--accent-primary`), then an h2 in `.t-heading`, then up to three beats: The problem, The decision, The outcome (slots `problem`, `decision`, `outcome`; labels in `.t-body`, sentence case, strong colour, emphasis weight; text in the default colour; no dividers). All on the centred text measure (8 / 9 cols). A section that does not fit the three beats uses the default slot instead, which renders plain paragraphs. Media goes in the `media` slot and runs on the media measure below the text. Subheadings inside a section are plain markup: a `div.measure-text.prose` with an `h3.t-subheading`.
 
 ### T7 Outcome
-Dash, heading, numbered list (01, 02, 03) on a full-bleed `--bg-pure` section. Prop `items` (strings) or `<li>` children. Exactly three points; each starts with the result and at least one has a number or concrete artefact.
+Section number (`outcomeNumber` in the frontmatter, "— 06": the one after the last StorySection, same `.t-number` style as the section numbers), heading, numbered list (01, 02, 03) on a full-bleed `--bg-page` section, with less space above (0.5 × `--section-y`) than below (1.5 ×). Prop `items` (strings) or `<li>` children. The list numbers are salmon (`--accent-primary`). Exactly three points; each starts with the result and at least one has a number or concrete artefact.
+
+### I11 Screen gallery
+Optional, after the story sections. `title`, `intro`, `note` (uppercase), `items` (`src`, `alt`, `title`, `category`, `wide`). Cards two per row from 768 px (one on phones); `wide: true` takes the full row. Images like `Figure` (radius 12, hairline, shadow).
 
 ### T8 Career entry
 A timeline item: bullet on a vertical line, optional logo (own height per logo, decorative), company and role (both `.t-subheading`, strong colour), dates (`.t-label`, default colour), body. Use inside `<Timeline>`, which provides the grid container.
-
----
-
-## M — Meta
-
-### M1 Project meta
-Label over value, spread evenly across the text measure. Rendered only with at least three items (Role, Team, Timeline; optional Platforms, Company, Year). Stacks below 768 px. Required on every case study.
 
 ---
 
@@ -166,7 +151,7 @@ Device frames and live SVG diagrams. Rules and options in `04-mocks.md` and `05-
 ### L1 Project teasers
 `ProjectGrid` renders one `ProjectCard` per row: 12 cols on mobile, 10 up to 1229 px, 9 from 1230 px. Gap `wide` on Home (60 px from 992, 30 tablet, 20 mobile). Feed it from `getProjects()` → `toCard()`.
 
-`ProjectCard`: a full media-width panel. From 1230 px two equal columns, 380 px high: text left (title, labels, summary), cover right. 992–1229 px: 5/7 columns, 340 px, summary cut to three lines. 768–991 px: no summary, height follows the cover. Below 768 px the title and labels sit on top of the cover, 20 px padding, no summary. Sections holding teasers use `.section--pure`.
+`ProjectCard`: a full media-width panel. From 1230 px two equal columns, 340 px high: text left (labels on top, then title, summary of at most three lines (about 90 characters), and a "Show case study →" text link; 40 px padding on top), cover right. From 992 px the title shrinks with its column (18–24 px) so it stays on one line wherever it fits. 992–1229 px: 5/7 columns, 340 px, summary cut to three lines. 768–991 px: no summary, height follows the cover. Below 768 px the labels and title sit on top of the cover, 20 px padding, no summary. Sections holding teasers use `.section--pure`.
 
 From 992 px with a fine hovering pointer (and no reduced motion) the card grows by 5 % and gets a hairline border and a shadow while hovered; the border also shows on keyboard focus. The whole panel is the link. On touch, below 992 px and with reduced motion the teaser stays plain. The former colour-split ripple on hover is switched off; its code is kept in `src/lib/teaser-fx.ts` (see the note at its top to re-enable it).
 
@@ -202,5 +187,5 @@ Square photo at half the text measure (4 of 8 columns on wide desktops), radius 
 | Section padding | Fluid (`--section-y`, `--chapter-gap`, `--hero-top`) |
 | Decorative overlaps | Kept, reduced by half below 768 px |
 | Interactive embeds | Below 992 px replaced by poster + note; the text stays |
-| Home stage | Doodle stack moves under the text below 768 px |
+| Home stage | Doodles move under the text below 992 px |
 | Mobile parity | All text is visible at every breakpoint; only media may be swapped |

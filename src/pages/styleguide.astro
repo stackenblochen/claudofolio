@@ -2,16 +2,13 @@
 /** Living styleguide: tokens + every component with placeholder data. Not indexed. */
 import Base from '../layouts/Base.astro';
 import PageHeader from '../components/PageHeader.astro';
-import Statement from '../components/Statement.astro';
-import Lead from '../components/Lead.astro';
 import SectionTitle from '../components/SectionTitle.astro';
-import Chapter from '../components/Chapter.astro';
-import SubChapter from '../components/SubChapter.astro';
-import ChallengeSolution from '../components/ChallengeSolution.astro';
+import Overview from '../components/Overview.astro';
+import StorySection from '../components/StorySection.astro';
+import ScreenGallery from '../components/ScreenGallery.astro';
 import Outcome from '../components/Outcome.astro';
 import CareerEntry from '../components/CareerEntry.astro';
 import Timeline from '../components/Timeline.astro';
-import ProjectMeta from '../components/ProjectMeta.astro';
 import CaseHero from '../components/CaseHero.astro';
 import Figure from '../components/Figure.astro';
 import FigurePair from '../components/FigurePair.astro';
@@ -254,28 +251,17 @@ const cards: CardData[] = [
 
   <!-- ===== Text modules ===== -->
   <SectionTitle id="text">Text modules</SectionTitle>
-  <Statement>Statement (T1). One or two sentences on how I work and what I'm looking for.</Statement>
-  <Lead sentences={['Lead (T2): situation in one sentence.', 'Why it mattered.', 'What I did about it.']} />
-  <ProjectMeta items={[{ label: 'Role', value: 'Lead designer' }, { label: 'Team', value: '1 PM, 6 engineers' }, { label: 'Timeline', value: '6 months' }, { label: 'Platforms', value: 'iOS, Android' }]} />
-  <div class="gap"></div>
-  <Chapter title="Chapter (T4)" id="sg-chapter">
-    <p>Body text sits at the text measure: eight columns on wide desktops, nine on tablets, full width on phones. <a href="#">Links are in the strong text colour with a salmon underline.</a></p>
-    <p>Paragraphs are spaced 1.5em. <strong>Strong text uses the strong colour.</strong></p>
+  <Overview sentences={['Overview (T9): the lead text, one to three sentences, in the same style as the About intro.', 'It sits on the text measure, with role, team and timeline as a row underneath.']} meta={[{ label: 'Role', value: 'Lead designer' }, { label: 'Team', value: '1 PM, 6 engineers' }, { label: 'Timeline', value: '6 months' }]} />
+  <StorySection number="01" title="Story section (T10)" id="sg-story">
+    <p slot="problem">What the problem was and who it affected, in one or two sentences. <a href="#">Links are in the strong text colour with a salmon underline.</a></p>
+    <p slot="decision">What I decided and why. <strong>Strong text uses the strong colour.</strong></p>
+    <p slot="outcome">What it led to, ideally with a number or a concrete result.</p>
     <Figure slot="media" src={diagram} alt="Placeholder diagram" caption="Figure (I1) with caption" />
-  </Chapter>
-  <div class="gap"></div>
-  <Chapter title="Design solution" id="sg-sub">
-    <p>A chapter with sub-chapters and a challenge/solution pair.</p>
-    <Fragment slot="media">
-      <SubChapter title="Instant meetings" number={1}>
-        <p>Sub-chapter (T5): numbered heading-m under a chapter.</p>
-      </SubChapter>
-      <div class="measure-text"><ChallengeSolution>
-        <p slot="challenge">What constrained the design, stated honestly.</p>
-        <p slot="solution">How the constraint was handled and what was traded off.</p>
-      </ChallengeSolution></div>
-    </Fragment>
-  </Chapter>
+  </StorySection>
+  <StorySection number="02" title="A section without the three beats" id="sg-plain">
+    <p>Sections that do not fit the pattern use plain text: paragraphs of at most four sentences at the text measure, then the media underneath.</p>
+  </StorySection>
+  <ScreenGallery title="Screen gallery (I11)" intro="Optional, after the story sections: more screens as cards, two per row." items={[{ src: screen, alt: 'Placeholder screen one', title: 'Screen title', category: 'Category' }, { src: screen, alt: 'Placeholder screen two', title: 'Another screen', category: 'Category' }, { src: screen, alt: 'Placeholder wide screen', title: 'A wide screen', category: 'Category', wide: true }]} />
   <Timeline>
     <CareerEntry company="Company" role="Senior product designer" dates="Jan 2021 – Present">
       <p>Career entry (T8) in a timeline: bullet on a line, company and role as subheading, dates as label.</p>
@@ -284,7 +270,7 @@ const cards: CardData[] = [
       <p>A second entry shows how the line connects the bullets.</p>
     </CareerEntry>
   </Timeline>
-  <Outcome items={['Outcome (T7) starts with the result, then the cause.', 'A second point, ideally with a number.', 'A third point.']} />
+  <Outcome number="03" items={['Outcome (T7) starts with the result, then the cause.', 'A second point, ideally with a number.', 'A third point.']} />
 
   <!-- ===== Media modules ===== -->
   <SectionTitle id="media">Media modules</SectionTitle>
@@ -321,6 +307,10 @@ const cards: CardData[] = [
     </div>
     <Mock size="media" stage="meadow" devices={[{ device: 'browser', bar: 'https://app.wire.com', tab: 'Wire', src: mockWeb, alt: 'Schedule a meeting in the web app' }]} caption="Browser, Chrome" />
     <Mock size="media" theme="dark" stage="night" devices={[{ device: 'browser', browser: 'safari', bar: 'https://app.wire.com', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="Browser, Safari, dark" />
+    <div class="grid-12 measure-media">
+      <Mock size="pair" theme="dark" devices={[{ device: 'desktop', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="Pair: two windows side by side, no stage" />
+      <Mock size="pair" theme="dark" devices={[{ device: 'desktop', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="The window fills its half" />
+    </div>
     <div class="grid-12 measure-media">
       <Mock size="third" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="iOS" />
       <Mock size="third" stage="soft-salmon" devices={[{ device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }]} caption="Android" />

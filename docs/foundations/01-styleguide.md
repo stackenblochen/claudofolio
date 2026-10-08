@@ -63,7 +63,7 @@ Both measures resolve to whole-column widths and sit inside the container paddin
 
 | Usage | Columns |
 |---|---|
-| Reading column (text, chapters, lead, meta) | text measure |
+| Reading column (text, story sections, overview) | text measure |
 | Wide image, diagram, screenshot stack, mock | media measure (10) |
 | Embed, full-bleed mock | 12 |
 | Image pair | 5 + 5 |
@@ -108,7 +108,7 @@ There is no pure black or white, except `--bg-pure` (`.section--pure`), used onl
 | `--accent-primary` | salmon-600 | salmon | Brand accent: link underlines, focus ring, nav underline, timeline dot, arrows, errors, negative marks, highlighted words |
 | `--accent-positive` | green-700 | green | Positive marks (the "Solution" bullet) |
 | `--accent-link` | = `--accent-primary` | | |
-| `--bg-glass` | white 60 % | black 50 % | Translucent fill for the nav pills, with a blur behind |
+| `--bg-glass` | white 82 % | black 78 % | Mostly opaque fill for the nav pills, with a blur behind, so the text stays readable over light or dark screenshots |
 | `--overlay-menu` | gray-100 | gray-900 | Mobile menu background (solid, not transparent) |
 | `--overlay-thumb` | black 35 % | black 50 % | Reserved for thumbnail overlays |
 
@@ -130,14 +130,14 @@ Named `<intensity>-<tonality>`: intensity `soft` | `calm` | `active`, tonality `
 
 ### 5.2 Roles
 
-Seven roles, applied with a class. The semantic level (`h1`, `h2` …) and the look are decoupled: one `h1` per page, `h2` for chapters, `h3` for sub-chapters, and the look comes from the class.
+Seven roles, applied with a class. The semantic level (`h1`, `h2` …) and the look are decoupled: one `h1` per page, `h2` for sections, `h3` for sub-headings, and the look comes from the class.
 
 | Class | Size (mobile → desktop) | Line height | Weight (dark / light) | Letter spacing (dark / light) | Role |
 |---|---|---|---|---|---|
 | `.t-display` | 50 → 120 px | 56 → 108 px | 600 / 700 | 0 / −0.011em | Reserved display style |
 | `.t-title` | 36 → 80 px | 46 → 100 px | 700 / 800 | −0.0025em / −0.0135em | H1: page titles, case titles, the home stage headline |
-| `.t-heading` | 26 → 34 px | 32 → 44 px | 700 | 0 | Lead statements, section and chapter titles, statements, company names |
-| `.t-subheading` | 18 → 24 px | 26 → 32 px | 700 | 0 | Sub-chapters, card titles, roles, intro paragraphs |
+| `.t-heading` | 26 → 34 px | 32 → 44 px | 700 | 0 | Section titles, the home subline, company names |
+| `.t-subheading` | 18 → 24 px | 26 → 32 px | 700 | 0 | Sub-headings, card titles, roles, intro paragraphs (About, Overview) |
 | `.t-body` | 16 → 19 px | 25.6 → 28.5 px | 300 / 400 | 0 / −0.007em | Paragraphs, lists, meta values, main navigation |
 | `.t-label` | 15 → 18 px | 24 → 26 px | 300 | 0 | Eyebrows, meta labels, dates, footer |
 | `.t-caption` | = label | = label | 300, italic | | Image captions, `--text-default` |
@@ -146,7 +146,7 @@ All sizes are fluid (`clamp()`), so every step shrinks monotonically as the view
 
 ### 5.3 Title with highlighted words
 
-H1 titles are Geist Bold; selected words switch to Editorial New Ultrabold Italic. In `PageHeader` and `CaseHero` the title text takes `*word*` markup (`highlight()` in `src/lib/site.ts`), which renders `<em>`; `.t-title em` sets the Editorial face. Titles in frontmatter may contain the markup; `plain()` strips it for `<title>`, labels and props that expect plain text. On the home stage the name is a plain `<em>`, coloured with `--accent-primary`.
+H1 titles are Geist Bold; selected words switch to Editorial New Ultrabold Italic. In `PageHeader` and `CaseHero` the title text takes `*word*` markup (`highlight()` in `src/lib/site.ts`), which renders `<em>`; `.t-title em` sets the Editorial face and the salmon `--accent-primary`. Titles in frontmatter may contain the markup; `plain()` strips it for `<title>`, labels and props that expect plain text. On the home stage the name is a plain `<em>`, styled the same way.
 
 - Highlight one word, two at most. Never a whole line.
 - Editorial only ships weight 800, so highlights are always that weight.
@@ -163,7 +163,7 @@ H1 titles are Geist Bold; selected words switch to Editorial New Ultrabold Itali
 | `--space-1` | 4 | Icon gaps |
 | `--space-2` | 8 | List-item gap, label → value |
 | `--space-3` | 12 | Heading → body inside a module |
-| `--space-4` | 20 | Between modules in a chapter, grid row gap |
+| `--space-4` | 20 | Between modules in a section, grid row gap |
 | `--space-5` | 30 | Gutter-sized gaps |
 | `--space-6` | 40 | Between headline and subline on the stage |
 | `--space-7` | 60 | |
@@ -171,7 +171,7 @@ H1 titles are Geist Bold; selected words switch to Editorial New Ultrabold Itali
 | `--space-9` | 120 | |
 | `--space-10` | 160 | |
 
-Fluid section tokens: `--section-y` (40 → 80 px), `--chapter-gap` (= 2 × `--section-y`, between chapters and from Outcome to Other projects), `--hero-top` (60 → 160 px above the H1). Sections use `.section` (vertical padding `--section-y`); chapters sit in `.chapter-flow`. Spacing between modules comes from the parent layout, not from margins on each module.
+Fluid section tokens: `--section-y` (48 → 96 px), `--chapter-gap` (80 → 160 px, between sections and from the last section to the Outcome; its own value, not tied to `--section-y`), `--hero-top` (60 → 160 px above the H1). Sections use `.section` (vertical padding `--section-y`); chapters sit in `.chapter-flow`. Spacing between modules comes from the parent layout, not from margins on each module.
 
 Section backgrounds: `.section--raised`, `.section--black` (page background), `.section--pure` (teaser sections).
 
@@ -195,7 +195,7 @@ Doodles in the home stack use their own light drop shadow (`--doodle-shadow` in 
 | Element | Default | Hover / active |
 |---|---|---|
 | Body and prose link | `--text-strong`, 2 px salmon underline, offset 4 px | |
-| Nav item (desktop) | Pill with a blurred translucent background (`--bg-glass`, `backdrop-filter: blur(12px)`), hairline border, `--text-default` | `--text-strong` on `--bg-card`; the current page looks the same |
+| Nav item (desktop) | Pill with a blurred translucent background (`--bg-glass`, `backdrop-filter: blur(16px)`), `--text-strong` | `--bg-card` fill; the current page looks the same |
 | Footer link | `--text-default`, no underline | `--text-strong` with a 2 px salmon underline |
 | Project teaser | the whole panel is the link | grows 5 %, hairline border and a lifted shadow (`--shadow-elevated`) (pointer devices from 992 px, not with reduced motion) |
 | Focus | 2 px `--accent-primary` outline, 4 px offset (`:focus-visible`) on every interactive element | |
@@ -220,7 +220,7 @@ No information is available on hover only.
 |---|---|
 | Section reveal | `.reveal`: scale 0.98 + 12 px rise + opacity, 700 ms `--ease-out`, on scroll-in (JS adds `.js` to `<html>`) |
 | Home headline | Prism effect while the pointer is over the stage: sheared slices and red/green/blue fringes (`src/lib/prism.ts`). Pointer devices only |
-| Home doodle stack | Pictures land on top of a stack, driven by pointer movement (scroll on tablets, a timer on phones); idle fade-out |
+| Home doodle stack | Pictures pop up on their own every 2.5–4.5 s (max 3 visible, never over the headline); spawning pauses while the pointer is over them |
 | Teaser hover | See 8 (the former colour-split ripple is switched off, code kept in `src/lib/teaser-fx.ts`) |
 | Page and loading | Fade, loading bar |
 
@@ -228,9 +228,9 @@ Everything respects `prefers-reduced-motion`: no reveal, no prism, no teaser hov
 
 ## 11. Graphic devices
 
-- **Em-dash marker "—":** on its own line above every chapter heading, same style as the heading, rendered by the component (never typed into content).
+- **Section number "— 01":** on its own line above every section heading (and the Outcome heading, "— 06"), Geist (`.t-number`: the body weight, 300 in dark and 400 in light mode; 24 px, 32 px from 992 px) in the accent colour, rendered by the component from the `number` prop (never typed into content). Other headings (Home, About) keep a plain em-dash marker.
 - **Confidential stamp** (`Stamp`): always as delivered (white disc, black artwork), light and dark. Overlaps the hero image's bottom-right corner; decorative parts get `aria-hidden`, the stamp itself an accessible name.
 - **Hand-drawn arrow** (`Arrow`): salmon, connects before/after or points to an embed. Decorative.
 - **Challenge / Solution marks:** ● in `--accent-primary`, ► in `--accent-positive`, label in strong text.
 - **Numbered outcome list:** `decimal-leading-zero`.
-- **Doodles:** the pictures in `src/assets/doodles/` (WebP, max 640 px). Black ones follow the theme to white in dark mode, white ones to black in light mode; add new single-colour pictures to the `BLACK` or `WHITE` set in `DoodleStack.astro`.
+- **Doodles:** the pictures in `src/assets/doodles/` (WebP, max 640 px). Black ones follow the theme to white in dark mode, white ones to black in light mode; add new single-colour pictures to the `BLACK` or `WHITE` set in `DoodleStack.astro`. The flat salmon marks are in the `ACCENT` set and are drawn in `--accent-primary`, so they follow the styleguide salmon.

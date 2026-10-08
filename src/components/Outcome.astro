@@ -2,18 +2,22 @@
 /**
  * T7 Outcome: dash + heading + numbered list (01, 02, 03) on the black full-bleed section.
  * Pass `items` (strings) or put <li> children in the slot. Each item starts with the result.
+ * With `number` (structured case studies) the dash becomes the section number, "— 06" in the same `.t-number` style as the StorySection numbers.
  */
 interface Props {
   title?: string;
   items?: string[];
+  number?: string;
 }
-const { title = 'Outcome', items } = Astro.props;
+const { title = 'Outcome', items, number } = Astro.props;
 ---
 
 <section class="outcome section section--black" aria-labelledby="outcome-title">
   <div class="container">
     <div class="measure-text reveal">
-      <span class="dash t-heading" aria-hidden="true">—</span>
+      {number
+        ? <span class="t-number" aria-hidden="true">— {number}</span>
+        : <span class="dash t-heading" aria-hidden="true">—</span>}
       <h2 class="t-heading" id="outcome-title">{title}</h2>
       <ol class="list prose">
         {items?.map((i) => <li>{i}</li>)}
@@ -24,8 +28,10 @@ const { title = 'Outcome', items } = Astro.props;
 </section>
 
 <style>
+  /* less space above (the chapters before it already end with a gap), more below before the next section */
+  .outcome { padding-top: calc(var(--section-y) * 0.5); padding-bottom: calc(var(--section-y) * 1.5); }
   .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
   .list { margin-top: var(--space-5); padding-left: 0; list-style: none; counter-reset: outcome; display: grid; gap: var(--space-4); }
   .list :global(li) { counter-increment: outcome; color: var(--text-strong); display: grid; grid-template-columns: 2.5em 1fr; margin: 0; }
-  .list :global(li)::before { content: counter(outcome, decimal-leading-zero); color: var(--text-default); }
+  .list :global(li)::before { content: counter(outcome, decimal-leading-zero); color: var(--accent-primary); }
 </style>

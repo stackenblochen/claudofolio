@@ -1,8 +1,8 @@
 ---
 /**
- * L1 Project teaser: full media-width panel (same measure as figures). From 1230 px two equal columns, fixed 380 px high: text left
+ * L1 Project teaser: full media-width panel (same measure as figures). From 1230 px two equal columns, fixed 340 px high: text left
  * (top aligned) with summary, cover right (centred). 992–1229 px: 5/7 columns, 340 px high, summary cut to three lines with an ellipsis. 768–991 px: no summary, 5/7 columns, height follows the cover.
- * Below 768 px the title and labels sit on top of the cover, 20 px padding all round, no summary.
+ * Below 768 px the labels and title sit on top of the cover, 20 px padding all round, no summary.
  *
  * From 992 px, with a fine hovering pointer (and no reduced-motion preference), the card grows slightly (5 %), gets a hairline border and a
  * lifted shadow while the pointer is on it. The border also shows on keyboard focus. The whole panel is the link. On touch, below 992 px and with
@@ -22,9 +22,10 @@ const { card } = Astro.props;
 <article class="teaser" data-teaser>
   <a href={card.href} class="link-block">
     <div class="copy" data-teaser-copy>
-      <h3 class="t-subheading">{card.title}</h3>
       <LabelList labels={card.labels} />
+      <h3 class="t-subheading">{card.title}</h3>
       {card.summary && <p class="sum t-label">{card.summary}</p>}
+      <span class="more t-body">Show case study</span>
     </div>
     <div class="stage">
     <div class:list={['thumb', 'media-l', !card.thumb && 'thumb--img']} data-teaser-thumb>
@@ -47,6 +48,9 @@ const { card } = Astro.props;
   .copy { display: flex; flex-direction: column; gap: var(--space-2); } /* tight on mobile and tablet */
   .sum { color: var(--text-default); }
   .sum { display: none; } /* the summary only shows from 992 px, below that the teaser stays compact */
+  /* text link under the description (the whole panel is the link, so this is its visible label); shown with the summary, from 992 px */
+  .more { display: none; width: fit-content; color: var(--text-strong); text-decoration: underline; text-decoration-color: var(--accent-primary); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+  .more .arrow { display: inline-block; transition: transform 300ms var(--ease-out); }
   .stage { display: grid; place-items: center; }
   .thumb { position: relative; width: 100%; }
   .thumb--img :global(img) { display: block; width: 100%; height: auto; }
@@ -55,23 +59,28 @@ const { card } = Astro.props;
   @media (min-width: 768px) {
     .link-block { display: grid; grid-template-columns: 5fr 7fr; align-items: start; gap: 0; padding: 0; }
     /* the teaser is half a column wider on each side than the headline above it, so the text starts half a column in and lines up with it */
-    .copy { padding: var(--space-6); padding-left: calc(var(--col-step) / 2); }
+    .copy { padding: var(--space-5) var(--space-6) var(--space-6); padding-left: calc(var(--col-step) / 2); }
     .stage { align-self: stretch; padding: var(--space-5); }
   }
 
-  @media (min-width: 992px) { .copy { gap: var(--space-4); } }
+  @media (min-width: 992px) {
+    .copy { gap: var(--space-4); container-type: inline-size; }
+    .more { display: inline-block; }
+    /* the title shrinks (down to 18 px) with the text column, so it stays on one line wherever it fits; a longer title still wraps */
+    .copy h3 { font-size: clamp(1.125rem, 7cqi, 1.5rem); }
+  }
 
   /* 992–1229: with the summary; cover column one column wider than half (7 of 12), fixed 340 px, summary clamped to three lines */
   @media (min-width: 992px) {
     .link-block { grid-template-rows: 340px; }
-    .copy { padding: var(--space-6) var(--space-5); padding-left: calc(var(--col-step) / 2); }
+    .copy { padding: var(--space-5); padding-left: calc(var(--col-step) / 2); }
     .sum { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; } /* three lines, then an ellipsis */
   }
-  /* from 1230 px: two equal columns, fixed 380 px high */
+  /* from 1230 px: two equal columns, fixed 340 px high (text column about 325 px, tallest cover about 335 px) */
   @media (min-width: 1230px) {
-    .link-block { grid-template-columns: 1fr 1fr; grid-template-rows: 380px; }
-    .copy { padding: var(--space-7); padding-left: calc(var(--col-step) / 2); }
-    .sum { display: block; overflow: visible; }
+    .link-block { grid-template-columns: 1fr 1fr; grid-template-rows: 340px; }
+    .copy { padding: var(--space-6) var(--space-7) var(--space-7); padding-left: calc(var(--col-step) / 2); }
+    .sum { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; } /* three lines at most, then an ellipsis */
   }
 
   /* hover effects: only from 992 px, with a fine hovering pointer and without reduced motion. The card grows slightly and gets a border
@@ -80,6 +89,7 @@ const { card } = Astro.props;
     .teaser { transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 450ms ease; }
     .teaser:hover { transform: scale(1.05); box-shadow: var(--shadow-elevated); }
     .teaser:hover::after { border-color: var(--border-subtle); }
+    .teaser:hover .arrow { transform: translateX(4px); }
   }
 </style>
 

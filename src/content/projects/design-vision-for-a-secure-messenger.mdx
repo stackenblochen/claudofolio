@@ -1,7 +1,7 @@
 ---
 title: A design *vision* for a secure messenger
 shortTitle: Design vision
-summary: "Defining how a secure messenger could look and feel next: a personality layer, a unified design system and a path to build it."
+summary: "How a secure messenger could look and feel next: a personality layer and one design system."
 labels: [Design Vision, Design Systems]
 tags: [Vision, Enterprise, Prototyping]
 cover: ../../assets/placeholders/cover.svg
@@ -24,6 +24,7 @@ outcome:
   - The personality layer showed how Wire can stay calm and focused and still carry a brand, on all three platforms. Early tests inside the company were positive.
   - The vision made the case for a desktop rewrite concrete. The decision was still open when I left, but AI support has made it much more realistic.
 order: 4
+outcomeNumber: "06"
 draft: false
 ---
 
@@ -35,7 +36,7 @@ import desktopDark from '../../assets/placeholders/mocks/desktop-dark.png';
 import ios from '../../assets/placeholders/mocks/ios.png';
 import android from '../../assets/placeholders/mocks/android.png';
 
-<Chapter title="Defining 'modern'" id="modern">
+<StorySection number="01" title="Defining 'modern'" id="modern">
   Customers expect a modern, focused app that feels familiar next to their other tools, and still guides them through the highest levels of security and privacy, in a friendly tone. Stakeholders, however, meant different things by "modern": the CTO asked for a modern look, while much of the discussion was about new features.
 
   I ran workshops with the design and product team to agree on which aspects we consider modern, and how we stand against our competitors. Leadership didn't want to work out these details, so I brought them clear decisions instead of open questions.
@@ -43,17 +44,17 @@ import android from '../../assets/placeholders/mocks/android.png';
   <Fragment slot="media">
     <Figure src={illustration} alt="TODO: workshop result showing the aspects of a modern app" caption="Placeholder: workshop outcome" />
   </Fragment>
-</Chapter>
+</StorySection>
 
-<Chapter title="Vision and principles" id="principles">
+<StorySection number="02" title="Vision and principles" id="principles">
   I wrote a vision statement and tied it to the new product vision, "highest security for people who depend on it". Features like a global search, a new navigation and the most critical flows became part of it, but a vision needs balance. Look and feel and onboarding shape a product's personality more directly than features do.
 
   <Fragment slot="media">
     <Figure src={diagram} alt="TODO: how the design vision connects to the product vision" caption="Placeholder: vision statement and product vision" />
   </Fragment>
-</Chapter>
+</StorySection>
 
-<Chapter title="A personality layer" id="personality">
+<StorySection number="03" title="A personality layer" id="personality">
   The central idea is a minimal frame around the app, a layer the UI sits on. It carries the personality and can project any tonality, such as Wire branded, calm or playful, and fits the accent color theming we already had. The UI itself stays minimal and focused, so the personality never gets in the way of productivity. Users can customize it to make the app their own.
 
   I built a web prototype with AI support, based on shadcn, and then applied the idea to iOS and Android, where it worked just as well. The vision builds on a unified multiplatform design system that all three platforms share, which I cover in <a href={siteUrl('/projects/managing-a-multiplatform-design-system/')}>a separate case study</a>.
@@ -68,16 +69,16 @@ import android from '../../assets/placeholders/mocks/android.png';
       { device: 'android', src: android, alt: 'TODO: Android app with the personality layer' },
     ]} />
   </Fragment>
-</Chapter>
+</StorySection>
 
-<Chapter title="Getting it built" id="implementation">
+<StorySection number="04" title="Getting it built" id="implementation">
   I laid out several ways to implement the vision, from a full rewrite to a step-by-step approach alongside feature work. A deep dive with engineers settled the picture: iOS already had a rewrite planned, Android could adopt the new design system easily, and the legacy-ridden web app would need a full rewrite. That decision was still open when I left.
 
   <Fragment slot="media">
     <Figure src={diagram} alt="TODO: implementation options per platform" caption="Placeholder: rewrite or step by step, per platform" />
   </Fragment>
-</Chapter>
+</StorySection>
 
-<Chapter title="Learnings" id="learnings">
+<StorySection number="05" title="Learnings" id="learnings">
   I presented the vision at an all-hands meeting after good feedback from early tests. The biggest lesson: define the details with the team, and bring leadership decisions, not open questions.
-</Chapter>
+</StorySection>

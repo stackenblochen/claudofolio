@@ -15,9 +15,9 @@ export interface CardData {
   thumb?: ProjectEntry['data']['thumb'];
 }
 
-/** All published projects by `order`, optionally without the current one. */
-export async function getProjects(opts: { exclude?: string; limit?: number } = {}): Promise<ProjectEntry[]> {
-  const all = await getCollection('projects', ({ data }) => !data.draft);
+/** All published projects by `order`, optionally without the current one. Unlisted ones (iterations) only with `includeUnlisted` (page routes). */
+export async function getProjects(opts: { exclude?: string; limit?: number; includeUnlisted?: boolean } = {}): Promise<ProjectEntry[]> {
+  const all = await getCollection('projects', ({ data }) => !data.draft && (opts.includeUnlisted || !data.unlisted));
   return all
     .filter((p) => p.id !== opts.exclude)
     .sort((a, b) => a.data.order - b.data.order)

@@ -18,7 +18,7 @@ One system for showing websites, apps and UI elements in a device frame. Module 
 </div>
 ```
 
-`stage` takes a gradient name from `src/lib/gradients.ts` (`dusk`, `calm-blue`, `active-salmon` …) and then follows the theme, or any CSS background. Without `stage` the mock is transparent. `full`, `cover` and `media` stand on their own; `half` and `third` go inside a `.grid-12` row. Everything inside scales with the stage width.
+`stage` takes a gradient name from `src/lib/gradients.ts` (`dusk`, `calm-blue`, `active-salmon` …) and then follows the theme, or any CSS background. Without `stage` the mock is transparent. `full`, `cover` and `media` stand on their own; `half`, `pair` and `third` go inside a `.grid-12` row. Everything inside scales with the stage width.
 
 ## Frames
 
@@ -49,7 +49,7 @@ Measured values:
 
 | Option | Values | Notes |
 |---|---|---|
-| `size` | `full` 12 col 3:2 · `media` 10 col 3:2 · `cover` 12 col 16:10 · `half` 6 col 1:1 · `third` 4 col 3:4 | All stack to 12 col below 768 px |
+| `size` | `full` 12 col 3:2 · `media` 10 col 3:2 · `cover` 12 col 16:10 · `half` 6 col 1:1 · `pair` 6 col 3:2, the window fills the whole cell (two windows side by side, no stage, `theme="dark"` for the thin outline) · `third` 4 col 3:4 | All stack to 12 col below 768 px |
 | `align` | `center` · `fit` · `cut-right` · `cut-left` · `cut-top` · `cut-bottom` | `fit` = a single phone as big as the stage allows (94% of its height), nothing cut. Cut = device is enlarged, anchored on the opposite side and runs off the stage |
 | `device` | `desktop` · `browser` · `ios` · `android` · `element` · `none` | `element` = bare dialog/modal with shadow. `none` = screenshot fills the stage, no frame |
 | `theme` | `light` · `dark` · `auto` | Colours the chrome. `auto` follows the site theme |
@@ -76,7 +76,7 @@ The same values as the site's other screenshots (`--shadow-screenshot`, `--borde
 
 | Part | Value | Token |
 |---|---|---|
-| Outline | 1px `#34373d`, only on a dark window that has no stage behind it, so it does not dissolve into a dark page. Light windows and every mock on a stage have none. The stage must be passed as `stage` (or `--mock-stage` in the export spec) for the mock to know it is there | `--mock-outline` |
+| Outline | 1px `#34373d`, only on a dark window that has no stage behind it, so it does not dissolve into a dark page. Light windows and every mock on a stage have none. While the site is in light mode a dark window without a stage gets `--border-subtle` (`#e0e1e8`) instead of the dark outline. The stage must be passed as `stage` (or `--mock-stage` in the export spec) for the mock to know it is there | `--mock-outline` |
 | Shadow | `0 0 40px rgba(0,0,0,.5)` | `--mock-shadow` = `--shadow-screenshot` |
 | Radius, mocks | 12px on desktop, browser, frameless and UI element, at every size and zoom | `--mock-radius` = `--radius-m` |
 | Radius, stage | 16px, the image area the mock sits in, so the corners nest | `--mock-stage-radius` = `--radius-l` |

@@ -83,6 +83,8 @@
 /* the stage is announced with data-stage (set by Mock.astro and render.mjs whenever a stage is given) */
 .mock[data-theme="dark"]:not([data-stage]),
 :root:not([data-theme="light"]) .mock[data-theme="auto"]:not([data-stage]) { --mock-outline: var(--gray-700, #34373d); }
+/* on the light page a dark window gets the subtle light border instead of the dark outline */
+:root[data-theme="light"] .mock[data-theme="dark"]:not([data-stage]) { --mock-outline: var(--border-subtle); }
 .mock__img--dark { display: none; }
 .mock[data-theme="dark"] .mock__img--light,
 :root:not([data-theme="light"]) .mock[data-theme="auto"] .mock__img--light { display: none; }
@@ -94,9 +96,10 @@
 .mock[data-size="media"] { aspect-ratio: 3 / 2; }
 .mock[data-size="cover"] { aspect-ratio: 16 / 10; --mock-desktop-w: 76cqw; }
 .mock[data-size="half"]  { aspect-ratio: 1; --mock-desktop-w: 88cqw; --mock-phone-cut-w: 62cqw; --mock-element-w: 76cqw; }
+.mock[data-size="pair"]  { aspect-ratio: 3 / 2; --mock-desktop-w: 100cqw; } /* two windows side by side, each filling its half */
 .mock[data-size="third"] { aspect-ratio: 3 / 4; --mock-desktop-w: 90cqw; --mock-phone-cut-w: 78cqw; --mock-element-w: 84cqw; }
 @media (min-width: 768px) {
-  .mock[data-size="half"]  { grid-column: span 6; }
+  .mock[data-size="half"], .mock[data-size="pair"] { grid-column: span 6; }
   .mock[data-size="third"] { grid-column: span 4; }
 }
 @media (min-width: 992px) {

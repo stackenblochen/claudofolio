@@ -45,8 +45,8 @@ button { font: inherit; color: inherit; }
  * Six roles. Semantic level (h1/h2/…) and visual role (.t-*) are decoupled.
  *   .t-display     Home hero only
  *   .t-title       H1 page titles (Geist bold, highlights in Editorial New)
- *   .t-heading     Lead statements, section titles, chapter titles, statement, company names
- *   .t-subheading  Sub-chapters, card titles, roles
+ *   .t-heading     Section titles, the home subline, company names
+ *   .t-subheading  Sub-headings, card titles, roles, intro paragraphs
  *   .t-body        Paragraphs, lists, meta values, main navigation
  *   .t-label       Eyebrows, meta labels, dates, footer (always weight 300)
  * Modifiers: .t-upper (uppercase), .t-serif (Editorial face inside a Display line). */
@@ -84,8 +84,11 @@ button { font: inherit; color: inherit; }
   font-weight: var(--text-label-weight); letter-spacing: var(--text-label-ls);
   font-style: italic; color: var(--text-default);
 }
+/* Section numbers ("— 01" above story section and outcome headings): Geist at the body weight (300 dark / 400 light), 24 px, 32 px from 992 px, in the accent colour. */
+.t-number { display: block; font-family: var(--font-sans); font-style: normal; font-weight: var(--text-body-weight); letter-spacing: var(--text-body-ls); font-size: 1.5rem; line-height: 1; color: var(--accent-primary); margin-bottom: var(--space-2); }
+@media (min-width: 992px) { .t-number { font-size: 2rem; } }
 /* Highlighted words inside a title (`*word*` in the text) switch to the Editorial face. */
-.t-title em { font-family: var(--font-serif); font-style: italic; font-weight: 800; }
+.t-title em { font-family: var(--font-serif); font-style: italic; font-weight: 800; color: var(--accent-primary); }
 .t-upper { text-transform: uppercase; letter-spacing: 0.06em; }
 .t-serif { font-family: var(--font-serif); font-weight: 800; letter-spacing: var(--text-title-ls); }
 .t-strong { color: var(--text-strong); }

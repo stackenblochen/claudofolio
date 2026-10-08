@@ -1,0 +1,56 @@
+---
+/**
+ * T10 Story section: numbered chapter with the same three beats every time: The problem, The decision, The outcome.
+ * Text sits on the centred text measure (8 / 9 cols): "— 01" (`.t-number`: Geist, accent) over an h2 `.t-heading`, then the three blocks
+ * (labels in `.t-body`, strong colour, emphasis weight, text in the default colour, no dividers). Media in the `media` slot runs on the media measure underneath.
+ * Without any of those three slots, the default slot is shown as plain text instead (for sections that don't fit the pattern).
+ * Slots: problem, decision, outcome (optional), default, media. Use plain `<p slot="…">` elements.
+ */
+interface Props {
+  number: string;
+  title: string;
+  id?: string;
+}
+const { number, title, id } = Astro.props;
+const hasMedia = Astro.slots.has('media');
+const beats = [
+  { slot: 'problem', label: 'The problem' },
+  { slot: 'decision', label: 'The decision' },
+  { slot: 'outcome', label: 'The outcome' },
+].filter((b) => Astro.slots.has(b.slot));
+---
+
+<section class="story" aria-labelledby={id}>
+  <div class="container">
+    <div class="inner">
+      <div class="text measure-text reveal">
+        <span class="t-number" aria-hidden="true">— {number}</span>
+        <h2 class="t-heading" id={id}>{title}</h2>
+        {beats.length === 0 && Astro.slots.has('default') && <div class="plain prose"><slot /></div>}
+        {beats.length > 0 && (
+          <div class="beats">
+            {beats.map((b) => (
+              <div class="beat">
+                <h3 class="t-body label">{b.label}</h3>
+                <div class="prose"><slot name={b.slot} /></div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+      {hasMedia && <div class="media"><slot name="media" /></div>}
+    </div>
+  </div>
+</section>
+
+<style>
+  .inner { display: grid; grid-template-columns: 1fr; gap: var(--space-6); }
+  .plain { margin-top: var(--space-6); }
+  .beats { margin-top: var(--space-6); display: flex; flex-direction: column; }
+  .beat { display: flex; flex-direction: column; gap: var(--space-3); padding-block: var(--space-4); }
+  .beat:first-child { padding-top: 0; }
+  .label { color: var(--text-strong); font-weight: var(--weight-emphasis); }
+  /* titles of the insight rows (ImageText) match the block labels */
+  .media :global(.image-text h3) { font-weight: var(--weight-emphasis); }
+  .media { display: flex; flex-direction: column; gap: var(--space-4); }
+</style>

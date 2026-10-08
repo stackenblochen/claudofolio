@@ -1,0 +1,48 @@
+---
+/**
+ * T9 Overview: on the centred text measure (8 / 9 cols), stacked: heading, then the lead text (in the same style as the About page intro: subheading size, regular weight, strong colour), then the project facts (role, team, timeline) as a row.
+ * Fed from the frontmatter `lead` and the meta by the structured layout; or use the default slot for custom paragraphs.
+ */
+interface Props {
+  title?: string;
+  sentences?: string[];
+  meta?: { label: string; value: string }[];
+}
+const { title = 'Project overview', sentences, meta = [] } = Astro.props;
+---
+
+<section class="overview" aria-labelledby="overview-title">
+  <div class="container">
+    <div class="measure-text reveal">
+      <h2 class="t-heading" id="overview-title">{title}</h2>
+      <div class="copy stack t-subheading" style="--stack-gap: var(--space-4)">
+        {sentences?.map((s) => <p>{s}</p>)}
+        <slot />
+      </div>
+      {meta.length > 0 && (
+        <dl class="meta" style={`--count:${meta.length}`}>
+          {meta.map((i) => (
+            <div class="cell">
+              <dt class="t-label">{i.label}</dt>
+              <dd class="t-body">{i.value}</dd>
+            </div>
+          ))}
+        </dl>
+      )}
+    </div>
+  </div>
+</section>
+
+<style>
+  .overview { padding-block: var(--section-y) 0; }
+  .copy { margin-top: var(--space-6); color: var(--text-strong); font-weight: 400; }
+  /* paragraphs (also the ones from the slot) take the container's style, like the intro in PageHeader */
+  .copy :global(p) { font: inherit; text-wrap: pretty; }
+  .meta { margin: var(--space-6) 0 0; display: grid; grid-template-columns: 1fr; gap: var(--space-4); }
+  .cell { display: flex; flex-direction: column; gap: var(--space-2); }
+  dt { color: var(--text-default); }
+  dd { color: var(--text-strong); margin: 0; }
+  @media (min-width: 768px) {
+    .meta { grid-template-columns: repeat(var(--count), minmax(0, 1fr)); column-gap: var(--gutter); }
+  }
+</style>
