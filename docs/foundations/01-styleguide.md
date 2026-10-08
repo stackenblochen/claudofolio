@@ -138,7 +138,7 @@ Seven roles, applied with a class. The semantic level (`h1`, `h2` …) and the l
 | `.t-heading` | 26 → 34 px | 32 → 44 px | 700 | 0 | Lead statements, section and chapter titles, statements, company names |
 | `.t-subheading` | 18 → 24 px | 26 → 32 px | 700 | 0 | Sub-chapters, card titles, roles, intro paragraphs |
 | `.t-body` | 16 → 19 px | 28 → 28.5 px | 300 / 400 | 0 / −0.007em | Paragraphs, lists, meta values, main navigation |
-| `.t-label` | 15 → 18 px | 24 → 26 px | 300 | 0 | Eyebrows, meta labels, dates, footer, card categories |
+| `.t-label` | 15 → 18 px | 24 → 26 px | 300 | 0 | Eyebrows, meta labels, dates, footer |
 | `.t-caption` | = label | = label | 300, italic | | Image captions, `--text-default` |
 
 All sizes are fluid (`clamp()`), so every step shrinks monotonically as the viewport narrows. Modifiers: `.t-upper` (uppercase, +0.06em) and `.t-serif` (Editorial face inside a line). Text colour: headings and strong text use `--text-strong`; body, nav and captions use `--text-default`. Bold inside text uses `--weight-emphasis` (600 dark / 700 light) and `--text-strong`.
@@ -181,6 +181,7 @@ Section backgrounds: `.section--raised`, `.section--black` (page background), `.
 | `--radius-m` | 12 px | UI screenshots, mock windows, hero mockup (`.media-m`) |
 | `--radius-l` | 16 px | Diagrams, image pairs, video, cards, embeds, stages (`.media-l`; 12 px below 768 px) |
 | `--radius-xl` | 24 px | Large panels |
+| `--radius-pill` | 999 px | Labels (expertise pills) |
 | `--border-hairline` | 1 px `--border-subtle` | Screenshots, cards, video (`.media-hairline`) |
 | `--shadow-screenshot` | 0 0 40 px, black 14 % light / 50 % dark | Screenshots and mocks (`.media-shadow`) |
 | `--shadow-elevated` | 0 24 px 48 px −12 px, black 22 % light / 70 % dark | A card lifted on hover (project teaser) |

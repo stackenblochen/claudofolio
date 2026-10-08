@@ -40,7 +40,7 @@ public/
 
 The schema is `src/content.config.ts` (Zod); it is the single source of truth for frontmatter, so it is not repeated here. The fields in short:
 
-- **Titles and teaser:** `title` (H1, sentence case, ≤ 70 chars, `*word*` marks an Editorial highlight), `shortTitle` (card and `<title>`), `summary` (≤ 160), `category`, `tags`, `cover` + `coverAlt`, optional `thumb` (teaser as a `Mock`).
+- **Titles and teaser:** `title` (H1, sentence case, ≤ 70 chars, `*word*` marks an Editorial highlight), `shortTitle` (card and `<title>`), `summary` (≤ 160), `labels` (1–3 expertise pills, see L3 in `02-modules.md`), `tags`, `cover` + `coverAlt`, optional `thumb` (teaser as a `Mock`).
 - **Hero:** `heroVariant` (`mockup` | `backdrop`), `heroBackground`, `confidential` (stamp), `protected` (password gate).
 - **Meta:** `company`, `role`, `team`, `timeline`, `year`, `platforms`. The meta row shows only with at least three of role, team, timeline, platforms.
 - **Story:** `lead` (1–3 sentences), `outcome` (exactly 3 points).
@@ -89,7 +89,7 @@ Same frame, with these chapters suggested: **Where we were** (Comparison: today)
 |---|---|---|---|
 | ★1 | Stage | `HomeHero` (+ `DoodleStack`) | Title-style headline ≤ 12 words: who + what + where, name highlighted. One subline. Doodle stack (pointer, scroll or timer driven) |
 | ★2 | Statement | `Statement` | 1–2 sentences on how you work **and** what roles/problems you're looking for |
-| ★3 | Selected work | `SectionTitle` + `ProjectGrid` | All non-draft projects by `order`. Card: cover, shortTitle, category, summary |
+| ★3 | Selected work | `SectionTitle` + `ProjectGrid` | All non-draft projects by `order`. Card: cover, shortTitle, labels, summary |
 | ○4 | Demos / experiments | `ProjectGrid` (variant `compact`) | Links to standalone interactive demos |
 | ○5 | Contact CTA | `Statement` + links | Email, LinkedIn, CV (PDF) |
 | ★6 | Footer | `SiteFooter` | |
@@ -202,7 +202,7 @@ Same frame, with these chapters suggested: **Where we were** (Comparison: today)
 Project: <name>            Company: <company>     Year: <yyyy>
 Role: <your role>          Team: <who>            Timeline: <duration>
 Platforms: <iOS / Android / Web / …>              Confidential: yes/no
-Category: <Product Design | Design Systems | Design Vision | …>
+Labels: <1–3 of Product Design | Design Systems | Design Vision | Research | Prototyping>
 
 One-line summary (≤160 chars):
 Context — what was the situation and why did it matter?

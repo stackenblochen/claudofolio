@@ -1,6 +1,7 @@
 import { defineCollection } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { z } from 'astro/zod';
+import { LABEL_NAMES } from './lib/label-names';
 
 /**
  * One MDX file per case study in src/content/projects/.
@@ -15,7 +16,7 @@ const projects = defineCollection({
       title: z.string().max(70), // H1, sentence case
       shortTitle: z.string().max(40), // card + <title>
       summary: z.string().max(160), // card text + meta description
-      category: z.enum(['Product Design', 'Design Systems', 'Design Vision', 'Research', 'Prototyping']),
+      labels: z.array(z.enum(LABEL_NAMES)).min(1).max(3), // expertise pills on the teaser (icon per label in src/lib/labels.ts)
       tags: z.array(z.string()).max(4).default([]),
       cover: image(), // 16:10 card + hero mockup
       coverAlt: z.string(),

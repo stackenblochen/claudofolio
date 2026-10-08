@@ -1,0 +1,27 @@
+---
+/**
+ * Expertise label: a small pill with a Tabler icon and the name ("Product Design", "Design Systems" …). Names and icons are in
+ * src/lib/label-names.ts and src/lib/labels.ts. Text is label size (a step below body), icon in the accent colour, on the card surface.
+ */
+import { labelIcon } from '../lib/labels';
+
+interface Props {
+  name: string;
+}
+const { name } = Astro.props;
+---
+
+<span class="label t-label"><span class="icon" set:html={labelIcon(name)} />{name}</span>
+
+<style>
+  .label {
+    display: inline-flex; align-items: center; gap: 0.4em; white-space: nowrap;
+    padding: 0.2em 0.8em 0.2em 0.55em; border-radius: var(--radius-pill);
+    background: var(--bg-pure); color: var(--text-strong); font-weight: 400;
+    /*border: 1px solid var(--border-subtle);*/
+    font-size: 0.875rem; line-height: 1.5; /* 14 px: a step below the body size */
+  }
+  @media (min-width: 992px) { .label { font-size: 0.9375rem; } }
+  .icon { display: inline-flex; color: var(--text-default); }
+  .icon :global(svg) { width: 1.0em; height: 1.0em; stroke-width: 1.5; }
+</style>

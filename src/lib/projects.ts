@@ -7,7 +7,7 @@ export type ProjectEntry = CollectionEntry<'projects'>;
 /** Plain shape used by ProjectCard / ProjectGrid, so the styleguide can feed them without the collection. */
 export interface CardData {
   title: string;
-  category: string;
+  labels: string[];
   summary?: string;
   href: string;
   cover: ImageMetadata;
@@ -27,7 +27,7 @@ export async function getProjects(opts: { exclude?: string; limit?: number } = {
 export function toCard(p: ProjectEntry): CardData {
   return {
     title: p.data.shortTitle,
-    category: p.data.category,
+    labels: p.data.labels,
     summary: p.data.summary,
     href: url(`/projects/${p.id}/`),
     cover: p.data.cover,

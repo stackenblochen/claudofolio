@@ -93,14 +93,14 @@ const roles = [
   ['t-title', 'Title', 'H1: page, case and home titles (Geist bold; highlighted words in Editorial New italic)'],
   ['t-heading', 'Heading', 'Lead statements, section and chapter titles, statement, home subline'],
   ['t-subheading', 'Subheading', 'Sub-chapters, card titles'],
-  ['t-body', 'Body', 'Paragraphs, lists, meta values, main navigation, card categories'],
+  ['t-body', 'Body', 'Paragraphs, lists, meta values, main navigation'],
   ['t-label', 'Label', 'Eyebrows, meta labels, dates, footer, card summaries (weight 300)'],
   ['t-caption', 'Caption', 'Captions and notes below media (label size, italic, weight 300)'],
 ];
 const spaces = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
 const cards: CardData[] = [
-  { title: 'Project title', category: 'Product Design', summary: 'One-line summary of the project, 160 characters at most.', href: '#', cover, coverAlt: 'Placeholder cover' },
-  { title: 'Another project', category: 'Design Systems', summary: 'Cards show cover, short title, category and summary.', href: '#', cover, coverAlt: 'Placeholder cover' },
+  { title: 'Project title', labels: ['Product Design', 'Design Systems'], summary: 'One-line summary of the project, 160 characters at most.', href: '#', cover, coverAlt: 'Placeholder cover' },
+  { title: 'Another project', labels: ['Prototyping'], summary: 'Cards show cover, short title, labels and summary.', href: '#', cover, coverAlt: 'Placeholder cover' },
 ];
 ---
 

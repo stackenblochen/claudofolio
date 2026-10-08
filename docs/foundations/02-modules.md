@@ -42,6 +42,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | **L — Collections** | | | |
 | L1 | Project teasers | `ProjectGrid`, `ProjectCard` | Home |
 | L2 | Other projects | `ProjectGrid` with `exclude` | Case studies |
+| L3 | Expertise label | `Label` | Teasers |
 | **O — Other** | | | |
 | O1 | Contact block | `ContactBlock` | About, Home |
 | O2 | Portrait | `Portrait` | About |
@@ -165,9 +166,12 @@ Device frames and live SVG diagrams. Rules and options in `04-mocks.md` and `05-
 ### L1 Project teasers
 `ProjectGrid` renders one `ProjectCard` per row: 12 cols on mobile, 10 up to 1229 px, 9 from 1230 px. Gap `wide` on Home (60 px from 992, 30 tablet, 20 mobile). Feed it from `getProjects()` → `toCard()`.
 
-`ProjectCard`: a full media-width panel. From 1230 px two equal columns, 380 px high: text left (title, category, summary), cover right. 992–1229 px: 5/7 columns, 340 px, summary cut to three lines. 768–991 px: no summary, height follows the cover. Below 768 px the title and category sit on top of the cover, 20 px padding, no summary. Sections holding teasers use `.section--pure`.
+`ProjectCard`: a full media-width panel. From 1230 px two equal columns, 380 px high: text left (title, labels, summary), cover right. 992–1229 px: 5/7 columns, 340 px, summary cut to three lines. 768–991 px: no summary, height follows the cover. Below 768 px the title and labels sit on top of the cover, 20 px padding, no summary. Sections holding teasers use `.section--pure`.
 
 From 992 px with a fine hovering pointer (and no reduced motion) the card grows by 5 % and gets a hairline border and a shadow while hovered; the border also shows on keyboard focus. The whole panel is the link. On touch, below 992 px and with reduced motion the teaser stays plain. The former colour-split ripple on hover is switched off; its code is kept in `src/lib/teaser-fx.ts` (see the note at its top to re-enable it).
+
+### L3 Expertise label
+`Label`: a small pill with a Tabler icon and an expertise name ("Product Design", "Design Systems", "Design Vision", "Research", "Prototyping"). A project carries one to three (frontmatter `labels`), shown under the title on its teaser. Text is a step below the body size (14 px, 15 px from 992), weight 400 in `--text-strong`, on `--bg-card`, radius `--radius-pill`; the icon is an outline Tabler icon (MIT) in `--accent-primary`. Names live in `src/lib/label-names.ts`, icons in `src/lib/labels.ts` (`@tabler/icons`, file names under `outline/`, browse https://tabler.io/icons). To add an expertise: add the name to the first file and its icon to the second; the content schema picks it up.
 
 ### L2 Other projects
 The same grid with gap `tight` (30 px from 992, 20 tablet, 12 mobile) under a dash and heading "Other projects". Pass `{ exclude: current.id, limit: 2 }`; the current project never appears.

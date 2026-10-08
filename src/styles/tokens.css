@@ -118,6 +118,7 @@
   --radius-m: 12px;
   --radius-l: 16px;
   --radius-xl: 24px;
+  --radius-pill: 999px; /* labels */
   --border-hairline: 1px solid var(--border-subtle);
   --shadow-screenshot: 0 0 40px 0 light-dark(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.5));
   --shadow-elevated: 0 24px 48px -12px light-dark(rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.7)); /* a raised card: offset downwards so it looks lifted off the page */
