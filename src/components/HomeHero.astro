@@ -1,7 +1,7 @@
 ---
 /**
- * H1 Home intro: the headline and subline on the left, a stack of doodles (DoodleStack) behind the right half (the headline may overlap
- * it), on the page background. The stage is 10 columns wide (media measure). Below 768 px the stack sits under the text.
+ * H1 Home intro: the headline and subline on the left, the doodles (DoodleStack) right next to them and never over them, on the page background.
+ * Text and doodles form one group, centred in the stage (10 columns, media measure). Below 992 px the doodles sit under the text.
  *
  * Prism effect on the headline (see lib/prism.ts): while the pointer is over the stage, slices of the text shear sideways and split
  * into red / green / blue fringes around the cursor (stronger while it moves, a base level while it rests). The real DOM text stays in
@@ -16,11 +16,13 @@ import DoodleStack from './DoodleStack.astro';
 <section class="home-hero" data-hero>
   <div class="container">
     <div class="stage measure-media" data-stage>
-      <div class="text">
-        <h1 class="intro t-title" data-intro><slot name="intro" /></h1>
-        {Astro.slots.has('subline') && <p class="subline t-heading"><slot name="subline" /></p>}
+      <div class="group">
+        <div class="text">
+          <h1 class="intro t-title" data-intro><slot name="intro" /></h1>
+          {Astro.slots.has('subline') && <p class="subline t-heading"><slot name="subline" /></p>}
+        </div>
+        <DoodleStack />
       </div>
-      <DoodleStack />
       <canvas class="fx" data-fx aria-hidden="true"></canvas>
     </div>
   </div>
@@ -31,24 +33,28 @@ import DoodleStack from './DoodleStack.astro';
     padding-top: calc(var(--header-h) + var(--space-3));
     background: var(--bg-page);
   }
-  /* headline left, doodle stack right; below 768 px the stack sits under the text */
+  /* headline left, doodles right from 992 px; below that the doodles sit under the text */
   .stage {
     position: relative; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--space-5);
     /* below 768 px the stage grows with its content (text + stack) and starts at the top, so the headline never slides under the header */
     justify-content: flex-start; padding-top: var(--space-4);
   }
+  .group { display: flex; flex-direction: column; gap: var(--space-5); align-items: flex-start; width: 100%; }
   .text { position: relative; z-index: 3; display: flex; flex-direction: column; gap: var(--space-6); }
   .intro :global(em) { color: var(--accent-primary); }
   .subline { font-weight: 400; text-wrap: pretty; }
   .intro { font-size: 2rem; line-height: 1.19; /* fixed steps, no fluid scaling */ }
   @media (min-width: 768px) {
-    .stage {
-      flex-direction: row; align-items: center; justify-content: flex-start; padding-top: 0;
-      height: clamp(26rem, 40vw + 15rem, 650px); /* about 650 px on desktop, so the stage no longer fills the whole screen */
-    }
     .intro { font-size: 2.5rem; }
   }
   @media (min-width: 992px) {
+    .stage {
+      flex-direction: row; align-items: center; justify-content: center; padding-top: 0;
+      height: clamp(26rem, 40vw + 15rem, 650px); /* about 650 px on desktop, so the stage no longer fills the whole screen */
+    }
+    /* text and doodles form one group, centred in the stage (and so on the screen), a small gap apart; the doodles are as high as the text block, no higher or lower */
+    .group { flex-direction: row; align-items: stretch; gap: var(--space-5); width: auto; }
+    .text { flex: 0 1 auto; }
     .intro { font-size: 3rem; }
   }
   @media (min-width: 1230px) {

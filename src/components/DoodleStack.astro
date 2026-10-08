@@ -1,43 +1,52 @@
 ---
 /**
- * Home stage: a stack of doodles, screenshots and emoji behind the right half of the headline (the headline may overlap them). A new
- * picture lands on top at a random spot, tilt and size inside the box; the older ones sink back (smaller and fainter) and the oldest
- * fade out, so 3-5 are visible at once. With a mouse, pictures are triggered by moving over the hero: every ~200 px of travel
- * spawns one anywhere over the hero (at most one per 160 ms), so fast movement piles them up and a resting pointer adds nothing. On
- * touch devices from 768 px (tablets) scrolling does the same (every ~120 px while the hero is on screen); on phones a new one lands
- * at random every 3-5 s. Pictures come from src/assets/doodles/ (already optimised WebP, max 640 px); they are drawn from a shuffled bag, so none
- * repeats until all have been shown. Decorative only (aria-hidden). With reduced motion a static arrangement of four is shown.
- * Single-colour black/white pictures follow the theme (see BLACK / WHITE).
+ * Home stage: doodles, screenshots and emoji that pop up on their own next to the headline, never over it. Every 2.5-4.5 s a new picture lands on top at a
+ * random spot, tilt and size inside the box; the newest is the hero (bigger), the older ones sink back (smaller and fainter) and the oldest fades out, so at most 3 are visible at once.
+ * The box is as high as the text block and the pictures cluster in its middle, overlapping each other.
+ * Nothing depends on the pointer, except that no new picture spawns while the mouse is over the box. From 992 px the box sits to the right of the text,
+ * below that under it. Pictures come from src/assets/doodles/ (already optimised WebP, max 640 px); they are drawn from a shuffled bag, so none repeats
+ * until all have been shown. Decorative only (aria-hidden). With reduced motion a static arrangement of three is shown.
+ * Single-colour pictures follow the theme: black ones turn white in dark mode, white ones black in light mode (BLACK / WHITE), and the salmon marks are
+ * recoloured with the accent colour (ACCENT).
  */
-/** Single-colour pictures that follow the theme: black ones are inverted to white in dark mode, white ones to black in light mode. */
 /** Pictures shown at emoji size (emoji, plus any others listed here). */
 const SMALL = new Set(['reader']);
 /** Pictures shown a bit bigger than the rest. */
 const BIG = new Set(['holo-shape', 'blob-gradient']);
 const BLACK = new Set(['wl', 'wolfgang-black', 'blob-black-2', 'arrow-curve', 'arrow-loop']);
 const WHITE = new Set(['shape-white-a', 'shape-white-b']);
+/** Flat one-colour marks, drawn through a mask in `--accent-primary` (the styleguide salmon, theme aware) instead of their own pixels. */
+const ACCENT = new Set(['wl-red', 'wolfgang-red', 'swoosh-red']);
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/doodles/*.webp', { eager: true });
 const items = Object.entries(files).map(([path, mod]) => {
   const name = path.split('/').pop()!.replace('.webp', '');
   const { src, width, height } = mod.default;
-  return { src, ratio: +(width / height).toFixed(3), small: name.startsWith('emoji') || SMALL.has(name), big: BIG.has(name), mono: BLACK.has(name) ? 'dark' : WHITE.has(name) ? 'light' : '' };
+  return {
+    src,
+    ratio: +(width / height).toFixed(3),
+    small: name.startsWith('emoji') || SMALL.has(name),
+    big: BIG.has(name),
+    accent: ACCENT.has(name),
+    mono: BLACK.has(name) ? 'dark' : WHITE.has(name) ? 'light' : '',
+  };
 });
 ---
 
 <div class="doodles" data-doodles data-items={JSON.stringify(items)} aria-hidden="true"></div>
 
 <style>
-  .doodles { --doodle-shadow: 0.2; position: relative; width: 100%; height: 15rem; flex: none; user-select: none; pointer-events: none; }
-  /* from 768 px: behind the right half of the stage, the headline sits above it */
-  @media (min-width: 768px) { .doodles { position: absolute; z-index: 1; right: 0; top: 0; width: 46%; height: 100%; } }
+  /* under the text; from 992 px beside it, a fixed-width box right next to the text (HomeHero centres the group). The box itself takes the pointer (to pause spawning), the pictures do not. */
+  .doodles { --doodle-shadow: 0.2; position: relative; width: 100%; height: 15rem; flex: none; user-select: none; }
+  @media (min-width: 768px) { .doodles { height: 18rem; } }
+  @media (min-width: 992px) { .doodles { flex: none; width: clamp(13rem, 22vw, 18rem); height: auto; align-self: stretch; } }
   :global(:root[data-theme='light']) .doodles { --doodle-shadow: 0.08; }
   .doodles :global(.doodle) {
     position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%);
     width: calc(var(--w) * 1%); max-height: 60%; object-fit: contain; height: auto;
     translate: -50% -50%;
     rotate: calc(var(--r) * 1deg);
-    scale: calc(var(--s, 1) * (1 - var(--depth, 0) * 0.045));
-    opacity: 0; z-index: var(--z, 1);
+    scale: calc(var(--s, 1) * var(--hero, 1) * (1 - var(--depth, 0) * 0.045));
+    opacity: 0; z-index: var(--z, 1); pointer-events: none;
     transition: opacity 380ms ease, scale 520ms cubic-bezier(0.34, 1.4, 0.64, 1), rotate 520ms cubic-bezier(0.34, 1.4, 0.64, 1), translate 520ms cubic-bezier(0.34, 1.4, 0.64, 1);
     filter: drop-shadow(0 0.3rem 0.7rem rgb(0 0 0 / var(--doodle-shadow)));
     /* very subtle, endless float; amplitude, direction and speed are random per picture (set by JS) */
@@ -49,26 +58,33 @@ const items = Object.entries(files).map(([path, mod]) => {
   }
   /* new picture: starts smaller, tilted the other way and slightly low, then springs into place */
   .doodles :global(.doodle.is-new) { scale: calc(var(--s, 1) * 0.7); rotate: calc(var(--r) * -0.6deg); translate: -50% -42%; transition: none; }
-  .doodles :global(.doodle[data-depth='0']) { opacity: 1; }
-  .doodles :global(.doodle[data-depth='1']) { opacity: 0.72; }
-  .doodles :global(.doodle[data-depth='2']) { opacity: 0.48; }
-  .doodles :global(.doodle[data-depth='3']) { opacity: 0.3; }
-  .doodles :global(.doodle[data-depth='4']) { opacity: 0.18; }
+  /* every picture gets its depth (0 = newest) from the script: it gets fainter and smaller the further back it is, for any number of pictures (MAX) */
+  .doodles :global(.doodle[data-depth]) { opacity: max(0.15, calc(1 - var(--depth, 0) * 0.28)); }
+  .doodles :global(.doodle[data-depth='0']) { --hero: 1.3; } /* the newest picture is the hero: bigger, and it shrinks back when the next one lands */
   .doodles :global(.doodle.is-gone) { opacity: 0; }
-  /* idle: fades out in place */
-  .doodles :global(.doodle.is-dissolving) { opacity: 0; transition: opacity 1100ms ease-in; }
   :global(:root:not([data-theme='light'])) .doodles :global(.doodle[data-mono='dark']),
   :global(:root[data-theme='light']) .doodles :global(.doodle[data-mono='light']) { filter: invert(1) drop-shadow(0 0.3rem 0.7rem rgb(0 0 0 / var(--doodle-shadow))); }
+  /* accent marks: the picture's own pixels are pushed out of the box and the accent colour shows through the picture's shape instead */
+  .doodles :global(.doodle.is-accent) {
+    background: var(--accent-primary); object-position: 999px 999px; filter: none;
+    -webkit-mask: var(--mask) center / contain no-repeat; mask: var(--mask) center / contain no-repeat;
+  }
   @media (prefers-reduced-motion: reduce) { .doodles :global(.doodle) { transition: none; animation: none; } }
 </style>
 
 <script>
-  type Item = { src: string; ratio: number; small: boolean; big: boolean; mono: '' | 'dark' | 'light' };
+  type Item = { src: string; ratio: number; small: boolean; big: boolean; accent: boolean; mono: '' | 'dark' | 'light' };
+
+  const MAX = 1; // pictures visible at once
+  const SCALE = 1.3; // picture sizes relative to the (narrow) box
+  const HERO = 1.6; // the newest picture is this much bigger (matches --hero in the CSS)
+  const SPREAD_X = 20; // max distance of a picture's centre from the box middle, sideways, in % of the box width (50 = the box edges). Up to 50 the pictures stay in the box (the text limits the left side); above 50 they may leave it
+  const SPREAD_Y = 5; // the same, up and down, in % of the box height (the box is as high as the text block). Up to 50 the pictures stay in the box; above 50 they may leave it
+  const EVERY: [number, number] = [2500, 4500]; // ms between two new pictures (random in this range)
 
   let stop: (() => void) | undefined;
 
   const rand = (a: number, b: number) => a + Math.random() * (b - a);
-  const randInt = (a: number, b: number) => Math.floor(rand(a, b + 1));
 
   function init() {
     stop?.();
@@ -83,7 +99,7 @@ const items = Object.entries(files).map(([path, mod]) => {
     let z = 1;
     let last: { x: number; y: number }[] = [];
     const live: HTMLImageElement[] = []; // newest last
-    let timer = 0, visible = true;
+    let timer = 0, visible = true, hovering = false;
     const starts: number[] = [];
 
     const draw = (): Item => {
@@ -97,32 +113,50 @@ const items = Object.entries(files).map(([path, mod]) => {
       return bag.shift()!;
     };
 
-    // spot: anywhere in the middle of the box, but away from the last two
-    const spot = () => {
+    // spot: fully inside the box (so never over the headline), away from the last two
+    const spot = (w: number, ratio: number) => {
+      const r = box.getBoundingClientRect();
+      const hp = Math.min(60, ((w / 100) * r.width / ratio / Math.max(r.height, 1)) * 100) * HERO; // ... and this high, in % of the box height
+      const pad = 8; // % kept free at the top and bottom: the tilt and the float push a picture a little past its box
+      // Sideways: SPREAD_X limits how far from the middle a picture's centre may be, but a picture (as the hero, HERO times wider) may reach over the
+      // box edge only into the gap to the text (never onto it) and a little over the right edge. So the room left of the middle is what limits wide pictures.
+      const gap = parseFloat(getComputedStyle(box.parentElement!).columnGap) || 30;
+      const we = w * HERO;
+      // Up to 50 (the box edge) the safe limits above apply; above 50 the value is taken literally and the pictures may leave the box
+      // (then they can also reach the text on the left, or the top and bottom of the stage).
+      const xr: [number, number] = SPREAD_X > 50
+        ? [50 - SPREAD_X, 50 + SPREAD_X]
+        : [Math.max(50 - SPREAD_X, we / 2 - (gap * 0.7 / r.width) * 100), Math.min(50 + SPREAD_X, 100 - we / 2 + 12)];
+      const yr: [number, number] = SPREAD_Y > 50
+        ? [50 - SPREAD_Y, 50 + SPREAD_Y]
+        : [Math.min(Math.max(50 - SPREAD_Y, hp / 2 + pad), 50), Math.max(Math.min(50 + SPREAD_Y, 100 - hp / 2 - pad), 50)];
       let best = { x: 50, y: 50 }, bestD = -1;
       for (let i = 0; i < 8; i++) {
-        const c = { x: rand(26, 74), y: rand(30, 70) };
+        const c = { x: rand(Math.min(...xr), Math.max(...xr)), y: rand(...yr) };
         const d = Math.min(...last.map((p) => Math.hypot(p.x - c.x, p.y - c.y)), 99);
         if (d > bestD) { bestD = d; best = c; }
       }
       return best;
     };
 
-    const restack = () => live.forEach((el, i) => { el.dataset.depth = String(live.length - 1 - i); });
+    const setDepth = (el: HTMLElement, d: number) => { el.dataset.depth = String(d); el.style.setProperty('--depth', String(d)); };
+    const restack = () => live.forEach((el, i) => setDepth(el, live.length - 1 - i));
 
     const add = (it: Item, instant = false) => {
       const el = document.createElement('img');
-      el.className = 'doodle' + (instant ? '' : ' is-new');
+      el.className = 'doodle' + (instant ? '' : ' is-new') + (it.accent ? ' is-accent' : '');
       el.src = it.src; el.alt = ''; el.decoding = 'async'; el.draggable = false;
       el.dataset.src = it.src;
       if (it.mono) el.dataset.mono = it.mono;
-      const { x, y } = spot();
-      last = [{ x, y }, ...last].slice(0, 2);
+      if (it.accent) el.style.setProperty('--mask', `url("${it.src}")`);
       // emoji (and the other small pictures) are small, photos and screenshots bigger, wide ones widest; a tall small picture gets the height of an emoji, a few pictures a bit more; the rest is chance
-      const base = it.small ? 36 * Math.min(1, it.ratio * 1.1) : (it.ratio > 1.6 ? 62 : 50) * (it.big ? 1.35 : 1);
+      const base = (it.small ? 36 * Math.min(1, it.ratio * 1.1) : (it.ratio > 1.6 ? 62 : 50) * (it.big ? 1.35 : 1)) * SCALE;
+      const w = Math.min(base * rand(0.85, 1.2), 100 / HERO); // never wider than the box, even as the hero
+      const { x, y } = spot(w, it.ratio);
+      last = [{ x, y }, ...last].slice(0, 2);
       el.style.setProperty('--x', x.toFixed(1));
       el.style.setProperty('--y', y.toFixed(1));
-      el.style.setProperty('--w', (base * rand(0.85, 1.2)).toFixed(1));
+      el.style.setProperty('--w', w.toFixed(1));
       el.style.setProperty('--r', ((Math.random() < 0.5 ? -1 : 1) * rand(2, 14)).toFixed(1));
       el.style.setProperty('--z', String(z++));
       el.style.setProperty('--fx', `${((Math.random() < 0.5 ? -1 : 1) * rand(2, 5)).toFixed(1)}px`);
@@ -139,95 +173,45 @@ const items = Object.entries(files).map(([path, mod]) => {
       }
     };
 
+    // never more than MAX at a time: the oldest fades out as a new one lands
     const trim = () => {
-      const target = randInt(3, 5);
-      let removed = 0;
-      while (live.length > target && removed < 2) {
+      while (live.length > MAX) {
         const old = live.shift()!;
         old.classList.add('is-gone');
-        old.dataset.depth = '4';
+        setDepth(old, MAX);
         window.setTimeout(() => old.remove(), 500);
-        removed++;
       }
       restack();
     };
 
-    const step = () => { add(draw()); trim(); };
-
-    // idle: after a pause without movement (or scroll) the stack calms down: the oldest pictures fade out
-    // until two are left, and every few seconds one new picture still pops up, far less often than while the pointer moves
-    const IDLE = 2600, IDLE_KEEP = 2, IDLE_EVERY: [number, number] = [3200, 5200];
-    let idleT = 0, idleLoop = 0;
-    const FADE = 1100;
-    const sink = (el: HTMLImageElement, delay: number) => window.setTimeout(() => {
-      el.classList.add('is-dissolving');
-      window.setTimeout(() => el.remove(), FADE + 50);
-    }, delay);
-    const idleTick = () => {
-      if (visible && !document.hidden) {
-        add(draw());
-        // the oldest leave one after the other, not all at once
-        live.splice(0, Math.max(0, live.length - IDLE_KEEP)).forEach((el, i) => sink(el, i * 700));
-        restack();
-      }
-      idleLoop = window.setTimeout(idleTick, rand(...IDLE_EVERY));
+    const step = () => {
+      if (!visible || document.hidden || hovering) return; // paused: off screen, hidden tab, or the mouse is over the doodles
+      add(draw());
+      trim();
     };
-    const poke = () => {
-      window.clearTimeout(idleT); window.clearTimeout(idleLoop);
-      idleT = window.setTimeout(idleTick, IDLE);
-    };
-    const mouse = matchMedia('(hover: hover) and (pointer: fine)').matches;
-    const scroll = !mouse && matchMedia('(min-width: 768px)').matches;
     const schedule = () => {
-      timer = window.setTimeout(() => {
-        if (visible && !document.hidden) step();
-        schedule();
-      }, rand(1600, 5000));
+      timer = window.setTimeout(() => { step(); schedule(); }, rand(...EVERY));
     };
 
     if (reduced) {
-      for (let i = 0; i < 4; i++) add(draw(), true);
+      for (let i = 0; i < MAX; i++) add(draw(), true);
       stop = () => { box.replaceChildren(); stop = undefined; };
       return;
     }
 
-    // first three land in quick succession; then the pointer (or, without one, a timer) takes over
-    for (let i = 0; i < 3; i++) starts.push(window.setTimeout(() => add(draw()), 150 + i * 380));
-    if (!mouse && !scroll) starts.push(window.setTimeout(schedule, 150 + 3 * 380));
+    // the first ones land in quick succession, then the regular rhythm
+    for (let i = 0; i < MAX; i++) starts.push(window.setTimeout(() => add(draw()), 150 + i * 380));
+    starts.push(window.setTimeout(schedule, 150 + MAX * 380));
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
     io.observe(box);
+    const onEnter = () => { hovering = true; };
+    const onLeave = () => { hovering = false; };
+    box.addEventListener('pointerenter', onEnter);
+    box.addEventListener('pointerleave', onLeave);
 
-    // mouse: spawn by distance travelled over the stage
-    const stage = box.closest<HTMLElement>('[data-hero]') ?? box; // the whole hero section, edge to edge
-    const EVERY = 200, MIN_GAP = 160;
-    let px = 0, py = 0, has = false, acc = 0, lastSpawn = 0;
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType === 'touch') return;
-      if (has) acc += Math.hypot(e.clientX - px, e.clientY - py);
-      px = e.clientX; py = e.clientY; has = true;
-      poke();
-      const now = performance.now();
-      if (acc >= EVERY && now - lastSpawn >= MIN_GAP) { acc = 0; lastSpawn = now; step(); }
-    };
-    const onLeave = () => { has = false; acc = 0; };
-
-    let sy = scrollY, sacc = 0;
-    const onScroll = () => {
-      sacc += Math.abs(scrollY - sy); sy = scrollY;
-      if (visible) poke();
-      const now = performance.now();
-      if (visible && sacc >= 120 && now - lastSpawn >= MIN_GAP) { sacc = 0; lastSpawn = now; step(); }
-    };
-    if (mouse || scroll) starts.push(window.setTimeout(poke, 150 + 3 * 380));
-    if (scroll) addEventListener('scroll', onScroll, { passive: true });
-    if (mouse) {
-      stage.addEventListener('pointermove', onMove);
-      stage.addEventListener('pointerleave', onLeave);
-    }
     stop = () => {
-      starts.forEach(clearTimeout); window.clearTimeout(timer); window.clearTimeout(idleT); window.clearTimeout(idleLoop); io.disconnect();
-      removeEventListener('scroll', onScroll);
-      stage.removeEventListener('pointermove', onMove); stage.removeEventListener('pointerleave', onLeave);
+      starts.forEach(clearTimeout); window.clearTimeout(timer); io.disconnect();
+      box.removeEventListener('pointerenter', onEnter); box.removeEventListener('pointerleave', onLeave);
       box.replaceChildren(); stop = undefined;
     };
   }
