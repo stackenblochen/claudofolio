@@ -1,8 +1,8 @@
 ---
 /**
  * I7 Interactive embed: iframe to a self-contained demo in public/demos/<slug>/.
- * Rule: text is always visible. Below 992 px the iframe is replaced by `poster` + `note`
- * (pass `poster` for demos that don't work at 375 px; omit it for demos that are responsive).
+ * Rule: text is always visible. Below 992 px (tablet and mobile) the iframe is always replaced by a placeholder: the `poster` image with `note`
+ * as its caption. On desktop and laptop the live demo shows, with the optional `caption` below it.
  */
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
@@ -12,9 +12,12 @@ interface Props {
   src: string; // already base-prefixed, e.g. url('/demos/tokens/index.html')
   title: string; // required: accessible name of the iframe
   height?: number; // px at desktop; omit for a height that follows the width (53.4 % of the width + 170 px)
-  poster?: ImageMetadata | string;
+  /** Placeholder image for tablet and mobile (required). */
+  poster: ImageMetadata | string;
   posterAlt?: string;
+  /** Caption under the placeholder on tablet and mobile. Default: "Interactive demo, best viewed on desktop." */
   note?: string;
+  /** Optional caption under the live demo on desktop and laptop. Hidden on tablet and mobile, where `note` is shown instead. */
   caption?: string;
   /** Red hand-drawn arrow overlapping the top-right corner of the iframe, pointing at the demo's controls (desktop only). */
   arrow?: ImageMetadata | string;
@@ -31,7 +34,7 @@ const { src, title, height, poster, posterAlt = '', note = 'Interactive demo, be
 const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undefined;
 ---
 
-<figure class:list={['embed measure-media reveal', { 'has-poster': !!poster, 'full-laptop': fullOnLaptop }]}
+<figure class:list={['embed measure-media reveal', { 'full-laptop': fullOnLaptop }]}
   style={[height && `--embed-h:${height}px`, arrowRight && `--arrow-right:${arrowRight}`, arrowTop && `--arrow-top:${arrowTop}`, arrowWidth && `--arrow-w:${arrowWidth}`].filter(Boolean).join(';') || undefined}>
   <div class:list={['stage', 'live', stage && `gradient gradient--${stage}`]}>
     <div class="frame">
@@ -39,15 +42,13 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
       {arrowSrc && <Arrow src={arrowSrc} class="annot" />}
     </div>
   </div>
-  {poster && (
-    <div class="poster">
-      <div class:list={['stage', stage && `gradient gradient--${stage}`]}>
-        <Img src={poster} alt={posterAlt} class={stage ? undefined : 'media-l media-hairline'} />
-      </div>
-      <p class="t-caption caption">{note}</p>
+  <div class="poster">
+    <div class:list={['stage', stage && `gradient gradient--${stage}`]}>
+      <Img src={poster} alt={posterAlt} class={stage ? undefined : 'media-l media-hairline'} />
     </div>
-  )}
-  {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
+    <p class="t-caption caption">{note}</p>
+  </div>
+  {caption && <figcaption class="t-caption caption live-caption">{caption}</figcaption>}
 </figure>
 
 <style>
@@ -75,7 +76,8 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
     .full-laptop { --n: 12; }
   }
   @media (max-width: 991px) {
-    .has-poster .live { display: none; }
-    .has-poster .poster { display: flex; }
+    .live { display: none; }
+    .poster { display: flex; }
+    .live-caption { display: none; } /* the caption describes the live demo: the poster has its own note */
   }
 </style>

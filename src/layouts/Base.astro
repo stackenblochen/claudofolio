@@ -59,6 +59,8 @@ const fontFace = editorial
     <link rel="canonical" href={canonical} />
     <link rel="icon" type="image/svg+xml" href={url('/favicon.svg')} />
     <link rel="icon" href={url('/favicon.ico')} sizes="32x32" />
+    <link rel="icon" type="image/png" sizes="64x64" href={url('/favicon-light.png')} media="(prefers-color-scheme: light)" />
+    <link rel="icon" type="image/png" sizes="64x64" href={url('/favicon-dark.png')} media="(prefers-color-scheme: dark)" />
     {noindex && <meta name="robots" content="noindex" />}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={fullTitle} />

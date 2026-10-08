@@ -1,4 +1,8 @@
 /**
+ * SWITCHED OFF (kept for later). Nothing imports this module any more. To bring the ripple back: add `<canvas class="fx" data-teaser-fx aria-hidden="true">`
+ * to ProjectCard.astro with its `.fx` styles (absolute, inset 0, z-index 2, opacity 0, `.is-on` = 1, shown only from 992 px with a fine pointer), and import
+ * this file in a <script> in ProjectCard.astro and in CaseStudy.astro. It adds `.is-active` to the teaser on pointer enter, so CSS can key off that instead of :hover.
+ *
  * Hover effect of the project teasers: a one-off colour-split ripple that runs across the whole card (text and cover) from the
  * point where the pointer entered, then stops and leaves the content untouched. See ProjectCard.astro for the markup and styles.
  * Lives in its own module so a page can import it directly: teasers inside a password gate are rendered to a string and

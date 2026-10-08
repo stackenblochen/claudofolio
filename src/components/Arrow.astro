@@ -1,22 +1,15 @@
 ---
 /**
  * I8 Salmon hand-drawn arrow pointing down (annotation between before/after, or towards an embed).
- * Decorative: aria-hidden. Placeholder artwork; pass `src` to use your arrow-red-2.svg.
+ * Decorative: aria-hidden. Defaults to src/assets/arrow-red-down.svg; pass `src` for another arrow (e.g. arrow-red-right.svg).
  */
+import arrowDown from '../assets/arrow-red-down.svg';
+
 interface Props {
   src?: string;
   class?: string;
 }
-const { src, class: cls } = Astro.props;
+const { src = arrowDown.src, class: cls } = Astro.props;
 ---
 
-{src
-  ? <img src={src} alt="" aria-hidden="true" class={cls} />
-  : (
-    <svg class={cls} viewBox="0 0 153 267" aria-hidden="true" focusable="false" role="presentation">
-      <g fill="none" stroke="var(--accent-primary)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M74 8c-10 50 12 92 4 140-4 30-2 66 4 108" />
-        <path d="M28 190c20 22 40 46 54 68 18-26 38-48 44-72" />
-      </g>
-    </svg>
-  )}
+<img src={src} alt="" aria-hidden="true" class={cls} />

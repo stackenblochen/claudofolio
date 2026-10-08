@@ -1,8 +1,8 @@
 ---
 /**
- * I4 Before → after: "Then" card, red hand-drawn arrow overlapping both, "Now" card.
- * Either side can be a slot (`before`, `after`) instead of an image,
- * e.g. a <Mock>: it fills the whole card (no padding), use size="cover" (16:10) and set the card's background with the Mock's `stage`.
+ * I4 Then → now: two cards with the red hand-drawn arrow overlapping both. No text inside the cards (the sides only get accessible names).
+ * Either side is an image (`before`, `after`) or a slot (`before`, `after`), typically a <Mock layout="set" size="cover">: it fills the whole card (no padding);
+ * set the card's background with the Mock's `stage`.
  */
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
@@ -14,23 +14,19 @@ interface Props {
   after?: Side;
   beforeLabel?: string;
   afterLabel?: string;
-  /** Show the "Then" / "Now" tags inside the cards. The labels stay as accessible names either way. */
-  labels?: boolean;
-  /** Arrow artwork between the cards (e.g. an imported SVG's `.src`). Falls back to the placeholder arrow. */
+  /** Arrow artwork between the cards (an imported SVG). Defaults to the down arrow from Arrow.astro. */
   arrow?: ImageMetadata | string;
 }
-const { before, after, beforeLabel = 'Then', afterLabel = 'Now', labels = true, arrow } = Astro.props;
+const { before, after, beforeLabel = 'Then', afterLabel = 'Now', arrow } = Astro.props;
 const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undefined;
 ---
 
 <div class="cmp measure-media reveal">
   <section class="card then" aria-label={beforeLabel}>
-    {labels && <p class="tag t-label">{beforeLabel}</p>}
     <slot name="before">{before && <Img src={before.src} alt={before.alt} class="media-m" />}</slot>
   </section>
   <div class="arrow-slot"><Arrow class="arrow" src={arrowSrc} /></div>
   <section class="card now" aria-label={afterLabel}>
-    {labels && <p class="tag t-label">{afterLabel}</p>}
     <slot name="after">{after && <Img src={after.src} alt={after.alt} class="media-m" />}</slot>
   </section>
 </div>
@@ -41,7 +37,6 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
     border-radius: var(--radius-l); padding: var(--space-4); background: var(--bg-card);
     display: flex; flex-direction: column; gap: var(--space-3);
   }
-  .tag { color: var(--text-strong); font-weight: var(--weight-emphasis); letter-spacing: var(--ls-emphasis); }
   .card :global(img) { width: 100%; }
   /* The arrow sits in a zero-height slot between the cards, centred on the gap, so it overlaps both cards and the gap between them is
      always the same (one gap), whatever the arrow's height. */

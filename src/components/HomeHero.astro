@@ -37,6 +37,7 @@ import DoodleStack from './DoodleStack.astro';
     height: clamp(26rem, 40vw + 15rem, 650px); /* about 650 px on desktop, so the stage no longer fills the whole screen */
   }
   .text { position: relative; z-index: 3; display: flex; flex-direction: column; gap: var(--space-6); }
+  .intro :global(em) { color: var(--accent-primary); }
   .subline { font-weight: 400; text-wrap: pretty; }
   .intro { font-size: 2rem; line-height: 1.19; /* fixed steps, no fluid scaling */ }
   @media (min-width: 768px) {

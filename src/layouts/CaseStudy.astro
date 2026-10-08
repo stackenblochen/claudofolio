@@ -58,11 +58,6 @@ const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard
   </Protected>
 </Base>
 
-<script>
-  // the "other projects" teasers sit inside the encrypted gate content, so the page has to load their hover effect itself
-  import '../lib/teaser-fx';
-</script>
-
 <style>
   .chapters { padding-top: var(--chapter-gap); padding-bottom: var(--section-y); }
   .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }

@@ -1,4 +1,4 @@
-# 05 — Mocks (device frames for screenshots)
+# 04 — Mocks (device frames for screenshots)
 
 One system for showing websites, apps and UI elements in a device frame. Module ID **I9**, component `Mock`.
 
@@ -58,7 +58,7 @@ Measured values:
 | `browser` | `chrome` (default) · `safari` | `browser` only |
 | `bar` | text, or `false` on desktop | `browser`: the address (Chrome shows it in full with the protocol dimmed, Safari shows the host). `desktop`: `false` hides the bar when the screenshot still has its own |
 | `tab` | text | Chrome only: tab title (default = host of the address) |
-| `layout="set"` | + `phone="right"` (default) or `"left"` | Desktop/browser top-left (or top-right) with a phone in front at the right. Window 85 % of the stage width, 4.5 % from the left, 4 % from the top; phone 38 % of the stage width high, 3.7 % from the right, its top 22 % from the top, so it hangs a little below the window. All in stage widths, so the set looks the same on every ratio. Use on `full`, `media`, `cover` |
+| `layout="set"` | + `phone="right"` (default) or `"left"` | Desktop/browser top-left (or top-right) with a phone in front at the right. Window 85 % of the stage width, 4.5 % from the left, 4 % from the top; phone 38 % of the stage width high, 3.7 % from the right, its bottom 2.4 % above the stage's bottom edge (22 % from the top on the 16:10 `cover` stage, the case-study then/now layout), so it hangs a little below the window and keeps its corner on any stage ratio. All in stage widths. A window screenshot that is much taller than the stage is cropped. Use on `full`, `media`, `cover` |
 | `layout="row"` | 2 or 3 phones in `devices` | Phones side by side, centred or `cut-bottom` / `cut-top`. Three need `full`, `media` or `cover`; two also fit `half` |
 | `srcDark` | image | Second screenshot that swaps in on dark |
 | `cutout="none"` | | iOS only: frame without the island, when the screenshot already contains it. The Android notch is part of the frame |
@@ -72,7 +72,7 @@ Tuning variables on `.mock` (never override outline or radius per mock; the shad
 
 ## Outline, shadow, radius (same on every mock)
 
-Taken from the case-study page of the live site (`.is-content`, `.transparent-border`, `.transparent-shadow`), so a mock looks like the screenshots already on the site:
+The same values as the site's other screenshots (`--shadow-screenshot`, `--border-hairline`, `--radius-m`), so a mock looks like the screenshots already on the pages:
 
 | Part | Value | Token |
 |---|---|---|

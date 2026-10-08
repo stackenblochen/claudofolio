@@ -1,4 +1,4 @@
-# 06 — Schemas (diagrams as live SVG)
+# 05 — Schemas (diagrams as live SVG)
 
 Module ID **I10**, component `Schema` plus the parts in `src/components/schema/`. Use it for structures, processes, hierarchies and flows. Text, lines and shapes are real SVG, so they follow dark and light mode and stay sharp. Do not use a transparent PNG for these: baked-in text and line colours vanish on the wrong theme. (A transparent PNG is fine for content that brings its own surface, e.g. a UI screenshot.)
 

@@ -5,12 +5,12 @@
  * fade out, so 3-5 are visible at once. With a mouse, pictures are triggered by moving over the hero: every ~200 px of travel
  * spawns one anywhere over the hero (at most one per 160 ms), so fast movement piles them up and a resting pointer adds nothing. On
  * touch devices from 768 px (tablets) scrolling does the same (every ~120 px while the hero is on screen); on phones a new one lands
- * every 1.4-2.6 s. Pictures come from src/assets/doodles/ (already optimised WebP, max 640 px); they are drawn from a shuffled bag, so none
+ * at random every 3-5 s. Pictures come from src/assets/doodles/ (already optimised WebP, max 640 px); they are drawn from a shuffled bag, so none
  * repeats until all have been shown. Decorative only (aria-hidden). With reduced motion a static arrangement of four is shown.
  * Single-colour black/white pictures follow the theme (see BLACK / WHITE).
  */
 /** Single-colour pictures that follow the theme: black ones are inverted to white in dark mode, white ones to black in light mode. */
-const BLACK = new Set(['wl', 'wolfgang-black', 'blob-black', 'blob-black-2', 'cursor-black']);
+const BLACK = new Set(['wl', 'wolfgang-black', 'blob-black', 'blob-black-2']);
 const WHITE = new Set(['shape-white-a', 'shape-white-b']);
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/doodles/*.webp', { eager: true });
 const items = Object.entries(files).map(([path, mod]) => {
@@ -178,7 +178,7 @@ const items = Object.entries(files).map(([path, mod]) => {
       timer = window.setTimeout(() => {
         if (visible && !document.hidden) step();
         schedule();
-      }, rand(1400, 2600));
+      }, rand(1600, 5000));
     };
 
     if (reduced) {

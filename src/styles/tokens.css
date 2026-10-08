@@ -1,6 +1,5 @@
-/* Portfolio design tokens — derived from hallo-wl.de (Semplice) on 2026-10-01.
- * Raw values are as-is; type scale is the proposed fluid consolidation (375→1200px).
- * Root font-size assumed 16px. Source of truth: tokens.json */
+/* Portfolio design tokens: the single source of truth for colour, type, spacing, grid, shape and motion.
+ * Rules and usage: docs/foundations/01-styleguide.md. Root font-size is 16px. */
 :root {
   /* Breakpoints (reference only — use in @media as px) */
   /* --bp-sm: 544px; --bp-md: 768px; --bp-lg: 992px; --bp-xl: 1170px; */
@@ -62,7 +61,7 @@
   /* Type scale (fluid) */
   --text-display-size: clamp(3.125rem, 1.136rem + 8.485vw, 7.5rem);
   --text-display-lh: clamp(3.5rem, 2.023rem + 6.303vw, 6.75rem);
-  /* weights: heading and subheading are bold (700) in both themes; display and body depend on the theme (dark 600 / 300, light 700 / 400, override at the end of this file) */
+  /* weights: heading and subheading are bold (700) in both themes; display, title and body depend on the theme (dark 600 / 700 / 300, light 700 / 800 / 400, override at the end of this file) */
   --text-display-weight: 600;
   --text-display-ls: 0;
   --text-title-size: clamp(2.25rem, 1rem + 5.333vw, 5rem);
@@ -121,6 +120,7 @@
   --radius-xl: 24px;
   --border-hairline: 1px solid var(--border-subtle);
   --shadow-screenshot: 0 0 40px 0 light-dark(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.5));
+  --shadow-elevated: 0 24px 48px -12px light-dark(rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.7)); /* a raised card: offset downwards so it looks lifted off the page */
   --filter-appshot: drop-shadow(1px 1px 0 var(--border-subtle)) drop-shadow(-1px -1px 0 var(--border-subtle)) drop-shadow(0 4px 40px light-dark(#0001, #0003)) drop-shadow(0 4px 40px light-dark(#0001, #0003));
 
   /* Motion */
@@ -137,10 +137,10 @@
 /* Light theme (set by the switch): darker text on a light page needs more weight in the headlines and a regular body */
 :root[data-theme='light'] {
   color-scheme: light; --filter-logo: invert(1);
-  --text-display-weight: 700;
+  --text-display-weight: 700; --text-title-weight: 800;
   --text-body-weight: 400; --weight-emphasis: 700;
   /* Geist is wider at heavier weights (measured: 600→700 +0.011em per character, 300→400 +0.007em), so light mode is tightened by that amount
-   * to keep the text flowing the same as in dark mode. Label (300 in both), title (800), heading and subheading (700 in both) are unchanged. */
-  --text-display-ls: -0.011em;
+   * to keep the text flowing the same as in dark mode (the title goes 700→800, the same step). Label (300 in both), heading and subheading (700 in both) are unchanged. */
+  --text-display-ls: -0.011em; --text-title-ls: -0.0135em;
   --text-body-ls: -0.007em; --ls-emphasis: -0.011em;
 }

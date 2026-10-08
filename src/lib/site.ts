@@ -3,8 +3,8 @@ export const SITE = {
   name: 'Wolfgang Lattermann',
   shortName: 'wolfgang',
   /** TODO: placeholders, replace with the real values before publishing. Empty values hide the link. */
-  email: 'hello@example.com',
-  linkedin: 'https://www.linkedin.com/in/your-name',
+  email: 'wl@hallo-wl.de',
+  linkedin: 'https://www.linkedin.com/in/wolfgang-lattermann-68439b80/',
   /** Path under /public (e.g. public/cv/wolfgang-lattermann-cv.pdf). */
   cvUrl: '/cv/wolfgang-lattermann-cv.pdf',
   description: 'Wolfgang Lattermann is a product designer based in Berlin.',

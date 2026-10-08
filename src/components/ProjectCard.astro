@@ -4,10 +4,9 @@
  * (top aligned) with summary, cover right (centred). 992–1229 px: 5/7 columns, 340 px high, summary cut to three lines with an ellipsis. 768–991 px: no summary, 5/7 columns, height follows the cover.
  * Below 768 px the title and category sit on top of the cover, 20 px padding all round, no summary.
  *
- * From 992 px, with a fine hovering pointer (and no reduced-motion preference), the whole card grows by 1% while the pointer is on it, and a one-off colour-split ripple (see lib/prism.ts, lib/teaser-fx.ts) runs over the whole card, text and cover, from the
- * point where the pointer entered: slices shear sideways and split into red / green / blue fringes along a travelling wave front,
- * then everything is shown untouched again. The real DOM stays in place; a transparent canvas on top only paints where there is
- * distortion. The whole panel is the link. On touch, below 992 px and with reduced motion the teaser stays plain.
+ * From 992 px, with a fine hovering pointer (and no reduced-motion preference), the card grows slightly (5 %), gets a hairline border and a
+ * lifted shadow while the pointer is on it. The border also shows on keyboard focus. The whole panel is the link. On touch, below 992 px and with
+ * reduced motion the teaser stays plain. (The former colour-split ripple on hover is switched off; its code is kept in lib/teaser-fx.ts.)
  */
 import type { CardData } from '../lib/projects';
 import Img from './Img.astro';
@@ -35,7 +34,6 @@ const { card } = Astro.props;
     </div>
     </div>
   </a>
-  <canvas class="fx" data-teaser-fx aria-hidden="true"></canvas>
 </article>
 
 <style>
@@ -43,7 +41,7 @@ const { card } = Astro.props;
   /* hairline border, only shown on hover (and keyboard focus). Drawn as an overlay, so it adds no size and shifts nothing (the text keeps
      lining up with the section headline). */
   .teaser::after { content: ''; position: absolute; inset: 0; z-index: 3; border: var(--border-hairline); border-color: transparent; border-radius: inherit; pointer-events: none; transition: border-color 250ms ease; }
-  .teaser:global(.is-active)::after, .teaser:has(:focus-visible)::after { border-color: var(--border-subtle); }
+  .teaser:has(:focus-visible)::after { border-color: var(--border-subtle); }
   .link-block { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-4); text-decoration: none; color: inherit; }
   .copy { display: flex; flex-direction: column; gap: var(--space-2); } /* tight on mobile and tablet */
   .cat, .sum { color: var(--text-default); }
@@ -75,18 +73,12 @@ const { card } = Astro.props;
     .sum { display: block; overflow: visible; }
   }
 
-  /* hover effects: only from 992 px, with a fine hovering pointer and without reduced motion */
-  .fx { display: none; }
+  /* hover effects: only from 992 px, with a fine hovering pointer and without reduced motion. The card grows slightly and gets a border
+     (see ::after above) and a shadow while the pointer is on it. */
   @media (min-width: 992px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-    /* transparent canvas over the card, only visible while the ripple runs */
-    .fx { display: block; position: absolute; inset: 0; z-index: 2; width: 100%; height: 100%; border-radius: var(--radius-l); pointer-events: none; opacity: 0; transition: opacity 60ms ease; }
-    .fx:global(.is-on) { opacity: 1; }
-    /* the whole card grows very slightly while the pointer is on it */
-    .teaser { transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1); }
-    .teaser:global(.is-active) { transform: scale(1.05); }
+    .teaser { transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 450ms ease; }
+    .teaser:hover { transform: scale(1.05); box-shadow: var(--shadow-elevated); }
+    .teaser:hover::after { border-color: var(--border-subtle); }
   }
 </style>
 
-<script>
-  import '../lib/teaser-fx';
-</script>

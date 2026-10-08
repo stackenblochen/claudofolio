@@ -267,16 +267,17 @@
  * so no desktop UI shows underneath the phone. */
 /* Set: window in the top left, phone in front at the right, hanging a little below the window's bottom edge. Proportions taken from the
  * reference layout (stage 1953 × 1218): window 85 % wide, 4.5 % from the left, 4 % from the top; phone 38 % high (counted in stage widths),
- * 3.7 % from the right, its top 22 % from the top. All in cqw, so the set looks the same on every stage ratio. */
+ * 3.7 % from the right, its bottom 2.4 % above the stage's bottom edge (= top 22 % on the reference 16:10 stage). All in cqw; the phone is
+ * anchored to the bottom, so on a taller stage (3:2) it keeps its place in the corner instead of floating up. */
 .mock[data-layout="set"] { --mock-desktop-w: 85cqw; --mock-phone-h: 38cqw; }
 .mock[data-layout="set"] .mock__device[data-device="desktop"],
 .mock[data-layout="set"] .mock__device[data-device="browser"] { place-self: start start; margin: 4cqw 0 0 4.5cqw; max-height: 90cqh; }  /* a taller screenshot is cropped */
 .mock[data-layout="set"] .mock__device[data-device="ios"],
-.mock[data-layout="set"] .mock__device[data-device="android"] { place-self: start end; margin: 22cqw 3.7cqw 0 0; z-index: 1; }
+.mock[data-layout="set"] .mock__device[data-device="android"] { place-self: end end; margin: 0 3.7cqw 2.4cqw 0; z-index: 1; }
 .mock[data-layout="set"][data-phone="left"] .mock__device[data-device="desktop"],
 .mock[data-layout="set"][data-phone="left"] .mock__device[data-device="browser"] { place-self: start end; margin: 4cqw 4.5cqw 0 0; }
 .mock[data-layout="set"][data-phone="left"] .mock__device[data-device="ios"],
-.mock[data-layout="set"][data-phone="left"] .mock__device[data-device="android"] { place-self: start start; margin: 22cqw 0 0 3.7cqw; }
+.mock[data-layout="set"][data-phone="left"] .mock__device[data-device="android"] { place-self: end start; margin: 0 0 2.4cqw 3.7cqw; }
 
 /* ---------- row of 2 or 3 phones ---------- */
 .mock[data-layout="row"] {
