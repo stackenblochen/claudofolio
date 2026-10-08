@@ -16,6 +16,8 @@ const items = [
   ...NAV.map((n) => ({ ...n, href: url(n.href) })),
   ...(SITE.email ? [{ label: 'Contact', href: `mailto:${SITE.email}` }] : []),
 ];
+// The mobile menu also lists Home (on desktop the logo is the way home).
+const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
 ---
 
 <header class="site-header" data-site-header>
@@ -26,7 +28,7 @@ const items = [
       <nav class="menu" aria-label="Main">
         <ul role="list">
           {items.map((i) => (
-            <li><a class="t-body" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
+            <li><a class="t-label" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>
           ))}
         </ul>
       </nav>
@@ -42,7 +44,7 @@ const items = [
   <div class="overlay" id="overlay-menu" hidden data-overlay>
     <nav aria-label="Main (overlay)">
       <ul role="list">
-        {items.map((i) => <li><a class="t-heading" href={i.href}>{i.label}</a></li>)}
+        {overlayItems.map((i) => <li><a class="t-heading" href={i.href} aria-current={current === i.label ? 'page' : undefined}>{i.label}</a></li>)}
       </ul>
     </nav>
     <ThemeSwitch variant="tabs" />
@@ -60,13 +62,16 @@ const items = [
   .logo { display: block; width: 100px; color: var(--text-strong); line-height: 0; }
   .logo :global(svg) { width: 100%; height: auto; }
   @media (min-width: 768px) { .logo { width: 140px; } }
-  .right { display: none; align-items: center; gap: var(--space-6); }
-  .menu ul { display: flex; gap: var(--space-6); padding: 0; margin: 0; list-style: none; }
+  .right { display: none; align-items: center; gap: var(--space-2); }
+  .menu ul { display: flex; gap: var(--space-2); padding: 0; margin: 0; list-style: none; }
+  /* nav items are pills with a blurred, translucent background, so they stay readable over the hero */
   .menu a {
-    color: var(--text-default); text-decoration: none; padding-block: var(--space-1);
-    border-bottom: 2px solid transparent;
+    display: inline-block; color: var(--text-default); text-decoration: none; padding: var(--space-1) var(--space-4);
+    border: 0px solid var(--border-subtle); border-radius: var(--radius-pill);
+    background: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+    transition: background 200ms ease, color 200ms ease;
   }
-  .menu a:hover, .menu a[aria-current='page'] { color: var(--text-strong); border-bottom-color: var(--accent-primary); }
+  .menu a:hover, .menu a[aria-current='page'] { color: var(--text-strong); background: var(--bg-card); }
   .burger { background: none; border: 0; padding: var(--space-3) 0 var(--space-3) var(--space-3); cursor: pointer; }
   .bars, .bars::before { display: block; width: 24px; height: 2px; background: var(--text-default); }
   .bars { position: relative; margin-block: 6px; }

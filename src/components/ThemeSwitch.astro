@@ -29,10 +29,14 @@ const { variant = 'icon' } = Astro.props;
 
 <style>
   .toggle {
-    display: grid; place-items: center; width: 32px; height: 32px; padding: 0;
-    border: 0; border-radius: 50%; background: transparent; color: var(--text-default); cursor: pointer;
+    display: grid; place-items: center; padding: 0;
+    /* the same height as the nav pills (body line height + their vertical padding + the 2 px border), so it is a circle of that size */
+    width: calc(var(--text-body-lh) + var(--space-2) + 2px); height: calc(var(--text-body-lh) + var(--space-2) + 2px);
+    border: 0px solid var(--border-subtle); border-radius: 50%; color: var(--text-default); cursor: pointer;
+    background: var(--bg-glass); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); /* same glass as the nav pills */
+    transition: background 200ms ease, color 200ms ease;
   }
-  .toggle:hover { color: var(--text-strong); }
+  .toggle:hover { color: var(--text-strong); background: var(--bg-card); }
   .toggle svg { display: block; }
 
   .tabs-row { display: inline-flex; flex-direction: column; align-items: center; gap: var(--space-3); color: var(--text-default); }

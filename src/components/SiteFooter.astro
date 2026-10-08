@@ -1,5 +1,5 @@
 ---
-/** G3 Footer: one line at the text measure (8 columns on wide desktops, 9 on tablets, full width on phones): copyright + imprint left, contact links right (wraps on mobile). Links look like the main navigation: no underline, a 2 px salmon underline on hover. */
+/** G3 Footer: one line at the text measure (8 columns on wide desktops, 9 on tablets, full width on phones): copyright + imprint left, contact links right (wraps on mobile). Text links: no underline, a 2 px salmon underline on hover. */
 import { SITE, url } from '../lib/site';
 
 const year = new Date().getFullYear();
@@ -26,7 +26,7 @@ const links = [
 <style>
   .site-footer { margin-top: var(--space-8); padding-block: var(--space-5) var(--space-8); background: var(--bg-page); }
   .bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2) var(--space-5); }
-  /* same as the main navigation: no underline by default, strong text and a 2 px salmon underline on hover (the border is always 2 px, so nothing shifts) */
+  /* text links: no underline by default, strong text and a 2 px salmon underline on hover (the border is always 2 px, so nothing shifts) */
   .site-footer a {
     color: var(--text-default); text-decoration: none; padding-block: var(--space-1);
     border-bottom: 2px solid transparent;

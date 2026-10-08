@@ -108,6 +108,7 @@ There is no pure black or white, except `--bg-pure` (`.section--pure`), used onl
 | `--accent-primary` | salmon-600 | salmon | Brand accent: link underlines, focus ring, nav underline, timeline dot, arrows, errors, negative marks, highlighted words |
 | `--accent-positive` | green-700 | green | Positive marks (the "Solution" bullet) |
 | `--accent-link` | = `--accent-primary` | | |
+| `--bg-glass` | white 60 % | black 50 % | Translucent fill for the nav pills, with a blur behind |
 | `--overlay-menu` | gray-100 | gray-900 | Mobile menu background (solid, not transparent) |
 | `--overlay-thumb` | black 35 % | black 50 % | Reserved for thumbnail overlays |
 
@@ -194,7 +195,8 @@ Doodles in the home stack use their own light drop shadow (`--doodle-shadow` in 
 | Element | Default | Hover / active |
 |---|---|---|
 | Body and prose link | `--text-strong`, 2 px salmon underline, offset 4 px | |
-| Nav item and footer link | `--text-default`, no underline | `--text-strong` with a 2 px salmon underline |
+| Nav item (desktop) | Pill with a blurred translucent background (`--bg-glass`, `backdrop-filter: blur(12px)`), hairline border, `--text-default` | `--text-strong` on `--bg-card`; the current page looks the same |
+| Footer link | `--text-default`, no underline | `--text-strong` with a 2 px salmon underline |
 | Project teaser | the whole panel is the link | grows 5 %, hairline border and a lifted shadow (`--shadow-elevated`) (pointer devices from 992 px, not with reduced motion) |
 | Focus | 2 px `--accent-primary` outline, 4 px offset (`:focus-visible`) on every interactive element | |
 | Selection | salmon background, black text | |

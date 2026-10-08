@@ -55,7 +55,7 @@ Images always go through `Img` (local files in `src/assets/` → AVIF/WebP with 
 ## G — Global
 
 ### G1 Site header
-Wordmark logo (left), text menu (right): "About me", "Contact", then the theme switch (an icon button). Menu items are `.t-body` in `--text-default`; hover and current page show `--text-strong` with a 2 px salmon underline. Sticky and transparent over the hero; height 54 (xs) / 56 (sm) / 64 px (md and up). Below 768 px the menu opens as a full-screen overlay on a solid background (`--overlay-menu`, not transparent) with centred items and a "Theme" label above Dark / Light tabs underneath, opened by a hamburger.
+Wordmark logo (left), text menu (right): "About me", "Contact", then the theme switch (an icon button). Menu items are `.t-body` pills with a blurred translucent background (`--bg-glass`) and a hairline border; hover and the current page switch to `--text-strong` on `--bg-card`, and the theme icon is a matching glass circle. Sticky and transparent over the hero; height 54 (xs) / 56 (sm) / 64 px (md and up). Below 768 px the menu opens as a full-screen overlay on a solid background (`--overlay-menu`, not transparent) with centred items (Home, About me, Contact) and a "Theme" label above Dark / Light tabs underneath, opened by a hamburger.
 
 ### G3 Footer
 One line at the text measure (8 / 9 cols, full width on phones): "© year Wolfgang Lattermann. All rights reserved. Imprint" left, the contact links (email, LinkedIn, CV) right, wrapping on mobile. Links look like the main navigation. Values come from `SITE` in `src/lib/site.ts`; empty values hide their link.
@@ -86,7 +86,7 @@ Full-cover background image (dimmed), H1 bottom-aligned, stamp below. H1 on the 
 ### H3 Case hero, mockup
 H1 on the full grid width, then the cover image on the media measure (radius 12), with the stamp overlapping its bottom-right corner (stamp `confidential`). Same component as H2, selected with `variant`.
 
-`CaseHero` props: `title` (sentence case, ≤ 8 words, `*word*` highlight markup), `variant: 'mockup' | 'backdrop'`, `image`, `imageAlt`, `background`, `confidential`. Padding above the H1 is `--hero-top`.
+`CaseHero` props: `title` (sentence case, ≤ 8 words, `*word*` highlight markup), `labels` (the project's expertise labels, shown centred as an eyebrow on top of the H1), `variant: 'mockup' | 'backdrop'`, `image`, `imageAlt`, `background`, `confidential`. Padding above the H1 is `--hero-top`.
 
 ### H4 Page header
 Eyebrow (`.t-label`), H1 (`.t-title`, text measure) and optional intro paragraphs in the default slot: `.t-subheading` at weight 400, strong colour, text-wrap `pretty`. Props: `eyebrow`, `title` (`*word*` highlight markup).
@@ -171,7 +171,7 @@ Device frames and live SVG diagrams. Rules and options in `04-mocks.md` and `05-
 From 992 px with a fine hovering pointer (and no reduced motion) the card grows by 5 % and gets a hairline border and a shadow while hovered; the border also shows on keyboard focus. The whole panel is the link. On touch, below 992 px and with reduced motion the teaser stays plain. The former colour-split ripple on hover is switched off; its code is kept in `src/lib/teaser-fx.ts` (see the note at its top to re-enable it).
 
 ### L3 Expertise label
-`Label`: a small pill with a Tabler icon and an expertise name ("Product Design", "Design Systems", "Design Vision", "Research", "Prototyping"). A project carries one to three (frontmatter `labels`), shown under the title on its teaser. Text is a step below the body size (14 px, 15 px from 992), weight 400 in `--text-strong`, on `--bg-card`, radius `--radius-pill`; the icon is an outline Tabler icon (MIT) in `--accent-primary`. Names live in `src/lib/label-names.ts`, icons in `src/lib/labels.ts` (`@tabler/icons`, file names under `outline/`, browse https://tabler.io/icons). To add an expertise: add the name to the first file and its icon to the second; the content schema picks it up.
+`Label`: a small pill with a Tabler icon and an expertise name ("Product Design", "Design Systems", "Design Vision", "Research", "Prototyping"). A project carries one to three (frontmatter `labels`), shown under the title on its teaser and on top of the H1 in the case hero (`LabelList` renders the row). Text is a step below the body size (14 px, 15 px from 992), weight 400 in `--text-strong`, on `--bg-card`, radius `--radius-pill`; the icon is an outline Tabler icon (MIT) in `--accent-primary`. Names live in `src/lib/label-names.ts`, icons in `src/lib/labels.ts` (`@tabler/icons`, file names under `outline/`, browse https://tabler.io/icons). To add an expertise: add the name to the first file and its icon to the second; the content schema picks it up.
 
 ### L2 Other projects
 The same grid with gap `tight` (30 px from 992, 20 tablet, 12 mobile) under a dash and heading "Other projects". Pass `{ exclude: current.id, limit: 2 }`; the current project never appears.

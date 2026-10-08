@@ -47,6 +47,7 @@
   --gradient-hero-top: light-dark(#bdb6f5, #4936dc);
   --gradient-hero-bottom: light-dark(#f6c3d3, #c187b1);
   --overlay-menu: light-dark(var(--gray-100), var(--gray-900)); /* the mobile menu: solid, not see-through */
+  --bg-glass: light-dark(rgba(250, 250, 252, 0.6), rgba(13, 13, 18, 0.5)); /* translucent fill for pills over the page; used with backdrop-filter: blur */
   --overlay-thumb: light-dark(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.5));
 
   /* Theme: dark by default; the switch in the nav toggles data-theme="light" on <html> (stored in localStorage). */

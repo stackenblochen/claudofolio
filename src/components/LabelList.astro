@@ -1,0 +1,19 @@
+---
+/** A row of expertise labels (pills). `align="center"` for the case hero eyebrow, default start-aligned for teasers. */
+import Label from './Label.astro';
+
+interface Props {
+  labels: string[];
+  align?: 'start' | 'center';
+}
+const { labels, align = 'start' } = Astro.props;
+---
+
+<ul class:list={['labels', { center: align === 'center' }]} role="list">
+  {labels.map((name) => <li><Label name={name} /></li>)}
+</ul>
+
+<style>
+  .labels { display: flex; flex-wrap: wrap; gap: var(--space-2); margin: 0; padding: 0; list-style: none; }
+  .labels.center { justify-content: center; }
+</style>

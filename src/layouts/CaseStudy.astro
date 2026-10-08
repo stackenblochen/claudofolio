@@ -34,6 +34,7 @@ const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard
   <Protected enabled={d.protected} title={plain(d.title)}>
     <CaseHero
       title={d.title}
+      labels={d.labels}
       variant={d.heroVariant}
       image={d.cover}
       imageAlt={d.coverAlt}
