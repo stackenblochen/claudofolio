@@ -10,13 +10,17 @@
  * Single-colour black/white pictures follow the theme (see BLACK / WHITE).
  */
 /** Single-colour pictures that follow the theme: black ones are inverted to white in dark mode, white ones to black in light mode. */
-const BLACK = new Set(['wl', 'wolfgang-black', 'blob-black-2']);
+/** Pictures shown at emoji size (emoji, plus any others listed here). */
+const SMALL = new Set(['reader']);
+/** Pictures shown a bit bigger than the rest. */
+const BIG = new Set(['holo-shape', 'blob-gradient']);
+const BLACK = new Set(['wl', 'wolfgang-black', 'blob-black-2', 'arrow-curve', 'arrow-loop']);
 const WHITE = new Set(['shape-white-a', 'shape-white-b']);
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/doodles/*.webp', { eager: true });
 const items = Object.entries(files).map(([path, mod]) => {
   const name = path.split('/').pop()!.replace('.webp', '');
   const { src, width, height } = mod.default;
-  return { src, ratio: +(width / height).toFixed(3), kind: name.startsWith('emoji') ? 'emoji' : 'pic', mono: BLACK.has(name) ? 'dark' : WHITE.has(name) ? 'light' : '' };
+  return { src, ratio: +(width / height).toFixed(3), small: name.startsWith('emoji') || SMALL.has(name), big: BIG.has(name), mono: BLACK.has(name) ? 'dark' : WHITE.has(name) ? 'light' : '' };
 });
 ---
 
@@ -59,7 +63,7 @@ const items = Object.entries(files).map(([path, mod]) => {
 </style>
 
 <script>
-  type Item = { src: string; ratio: number; kind: 'emoji' | 'pic'; mono: '' | 'dark' | 'light' };
+  type Item = { src: string; ratio: number; small: boolean; big: boolean; mono: '' | 'dark' | 'light' };
 
   let stop: (() => void) | undefined;
 
@@ -114,8 +118,8 @@ const items = Object.entries(files).map(([path, mod]) => {
       if (it.mono) el.dataset.mono = it.mono;
       const { x, y } = spot();
       last = [{ x, y }, ...last].slice(0, 2);
-      // emoji are small by nature, photos and screenshots bigger, wide ones widest; the rest is chance
-      const base = it.kind === 'emoji' ? 36 : it.ratio > 1.6 ? 62 : 50;
+      // emoji (and the other small pictures) are small, photos and screenshots bigger, wide ones widest; a tall small picture gets the height of an emoji, a few pictures a bit more; the rest is chance
+      const base = it.small ? 36 * Math.min(1, it.ratio * 1.1) : (it.ratio > 1.6 ? 62 : 50) * (it.big ? 1.35 : 1);
       el.style.setProperty('--x', x.toFixed(1));
       el.style.setProperty('--y', y.toFixed(1));
       el.style.setProperty('--w', (base * rand(0.85, 1.2)).toFixed(1));

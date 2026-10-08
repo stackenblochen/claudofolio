@@ -115,6 +115,10 @@ export function paintText(ctx: CanvasRenderingContext2D, stage: DOMRect, el: HTM
     const cs = getComputedStyle(node.parentElement!);
     ctx.fillStyle = cs.color;
     ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+    // letter spacing must match the DOM, or the redrawn words drift out of line with the real text (titles are tightened, more so in light mode)
+    const spacing = cs.letterSpacing === 'normal' ? 0 : parseFloat(cs.letterSpacing) || 0;
+    const native = 'letterSpacing' in ctx;
+    if (native) (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = `${spacing}px`;
     const ascent = ctx.measureText('Hg').fontBoundingBoxAscent;
     // text cut off by a clipping ancestor (line clamp, overflow hidden) still has rects: leave those words out, like the page does
     let clip: DOMRect | null = null;
@@ -128,9 +132,18 @@ export function paintText(ctx: CanvasRenderingContext2D, stage: DOMRect, el: HTM
       range.setEnd(node, m.index + m[0].length);
       const r = range.getClientRects()[0];
       if (r && clip && (r.bottom > clip.bottom + 1 || r.top < clip.top - 1 || r.right > clip.right + 1)) continue;
-      if (r) ctx.fillText(m[0], (r.left - stage.left) * k, (r.top - stage.top) * k + ascent);
+      if (!r) continue;
+      const x = (r.left - stage.left) * k, y = (r.top - stage.top) * k + ascent;
+      if (spacing && !native) {
+        // no canvas letterSpacing: place the letters one by one
+        let cx = x;
+        for (const ch of m[0]) { ctx.fillText(ch, cx, y); cx += ctx.measureText(ch).width + spacing * k; }
+      } else {
+        ctx.fillText(m[0], x, y);
+      }
     }
   }
+  if ('letterSpacing' in ctx) (ctx as CanvasRenderingContext2D & { letterSpacing: string }).letterSpacing = '0px';
 }
 
 /**
