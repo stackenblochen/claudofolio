@@ -10,7 +10,7 @@
  * Single-colour black/white pictures follow the theme (see BLACK / WHITE).
  */
 /** Single-colour pictures that follow the theme: black ones are inverted to white in dark mode, white ones to black in light mode. */
-const BLACK = new Set(['wl', 'wolfgang-black', 'blob-black', 'blob-black-2']);
+const BLACK = new Set(['wl', 'wolfgang-black', 'blob-black-2']);
 const WHITE = new Set(['shape-white-a', 'shape-white-b']);
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/doodles/*.webp', { eager: true });
 const items = Object.entries(files).map(([path, mod]) => {
