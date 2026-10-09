@@ -16,7 +16,7 @@ interface Props {
   /** Page name. Rendered as "{title} — Wolfgang Lattermann". Omit on the home page. */
   title?: string;
   description?: string;
-  /** Absolute or base-prefixed URL of the Open Graph image. */
+  /** Absolute or base-prefixed URL of the Open Graph image. Defaults to the logo type (public/og-default.png). */
   ogImage?: string;
   noindex?: boolean;
   /** Label of the active nav item. */
@@ -65,8 +65,10 @@ const fontFace = editorial
     <meta property="og:type" content="website" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    {ogImage && <meta property="og:image" content={new URL(ogImage, Astro.site)} />}
-    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta property="og:image" content={new URL(ogImage ?? url('/og-default.png'), Astro.site)} />
+    <meta property="og:image:width" content={ogImage ? undefined : '1200'} />
+    <meta property="og:image:height" content={ogImage ? undefined : '630'} />
+    <meta name="twitter:card" content="summary_large_image" />
     {fontFace && <style set:html={fontFace} />}
     <style is:global set:html={gradientCss()} /> <!-- gradient tokens + .gradient classes, see src/lib/gradients.ts -->
     <script is:inline>
