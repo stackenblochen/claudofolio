@@ -44,7 +44,7 @@ The schema is `src/content.config.ts` (Zod); it is the single source of truth fo
 - **Hero:** `heroVariant` (`mockup` | `backdrop`), `heroBackground`, `confidential` (stamp), `protected` (password gate).
 - **Meta:** `company`, `role`, `team`, `timeline`, `year`, `platforms`. The meta row shows only with at least three of role, team, timeline, platforms.
 - **Story:** `lead` (1–3 sentences), `outcome` (exactly 3 points).
-- **Housekeeping:** `order` (grid position), `draft`.
+- **Housekeeping:** `order` (grid position), `draft`. A draft with a title, summary and label shows (thumb mock or cover, else the placeholder) on Home as a non-clickable "Coming soon" teaser; any other draft stays hidden.
 
 The layout renders hero, overview, outcome and other projects from the frontmatter; the MDX body holds the numbered StorySections only.
 

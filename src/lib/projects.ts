@@ -9,7 +9,9 @@ export interface CardData {
   title: string;
   labels: string[];
   summary?: string;
-  href: string;
+  /** Missing for "coming soon" cards, which are not clickable. */
+  href?: string;
+  comingSoon?: boolean;
   cover: ImageMetadata;
   coverAlt: string;
   thumb?: ProjectEntry['data']['thumb'];
@@ -22,6 +24,21 @@ export async function getProjects(opts: { exclude?: string; limit?: number; incl
     .filter((p) => p.id !== opts.exclude)
     .sort((a, b) => a.data.order - b.data.order)
     .slice(0, opts.limit);
+}
+
+/**
+ * A draft is shown as "coming soon" (teaser with a tag, not clickable, no page) once it has a title, a description and a label
+ * (the thumb mock or cover shows, the template placeholder if none is set). Any other draft stays hidden.
+ */
+export function isComingSoon(p: ProjectEntry): boolean {
+  const d = p.data;
+  return d.draft && !d.unlisted && !!d.shortTitle.trim() && !!d.summary.trim() && d.labels.length > 0;
+}
+
+/** Teasers for Home: published projects plus "coming soon" drafts, together by `order`. */
+export async function getTeasers(): Promise<CardData[]> {
+  const all = await getCollection('projects', (p) => isComingSoon(p) || (!p.data.draft && !p.data.unlisted));
+  return all.sort((a, b) => a.data.order - b.data.order).map((p) => ({ ...toCard(p), ...(p.data.draft && { href: undefined, comingSoon: true }) }));
 }
 
 export function toCard(p: ProjectEntry): CardData {

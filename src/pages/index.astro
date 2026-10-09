@@ -3,9 +3,9 @@ import Base from '../layouts/Base.astro';
 import HomeHero from '../components/HomeHero.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
-import { getProjects, toCard } from '../lib/projects';
+import { getTeasers } from '../lib/projects';
 
-const projects = (await getProjects()).map(toCard);
+const projects = await getTeasers();
 ---
 
 <Base description="Wolfgang Lattermann is a product designer based in Berlin. Selected work in product design and design systems.">
