@@ -4,31 +4,33 @@ shortTitle: Design vision
 summary: "How a secure messenger could look and feel next: a personality layer and one design system."
 labels: [Design Vision, Design Systems]
 tags: [Vision, Enterprise, Prototyping]
-cover: ../../assets/placeholders/cover.svg
-coverAlt: TODO what the cover shows
+cover: ../../assets/projects/design-vision/cover.webp
+coverAlt: The desktop onboarding of a secure messenger with the iOS app in front of it
 heroVariant: mockup
 confidential: true
 protected: true
 company: Wire
 role: Lead Product Designer
-team: Me, with the design team, product and engineering
-timeline: About 2 months, alongside day-to-day work
+team: Design, CPO, CTO
+timeline: 3 months
 year: 2026
-platforms: [iOS, Android, Desktop]
 lead:
-  - Years of backlog items and explorations had never come together, and the product's foundations were a decade old.
-  - With a new CTO who wanted to emphasize design, I used the moment to define how Wire could look and feel next.
-  - "I led a design vision across iOS, Android and desktop: a shared direction, a prototype and a path to build it."
+  - The design team at Wire had years of good ideas and explorations, and a foundation ready for its next chapter.
+  - With a new CTO on board, I defined a global design vision and gave the scattered discussions common ground.
 outcome:
   - The design and product team agreed on what "modern" means for Wire, which gave the vision a shared direction.
   - The personality layer showed how Wire can stay calm and focused and still carry a brand, on all three platforms. Early tests inside the company were positive.
   - The vision made the case for a desktop rewrite concrete. The decision was still open when I left, but AI support has made it much more realistic.
 order: 4
-outcomeNumber: "06"
-draft: true
+outcomeNumber: "07"
+draft: false
+unlisted: false # reachable by URL only (password protected), no card
 ---
 
 import { url as siteUrl } from '../../lib/site';
+import feelsLikeHome from '../../assets/projects/design-vision/feels-like-home.webp';
+import securityRight from '../../assets/projects/design-vision/security-right.webp';
+import skippedTools from '../../assets/projects/design-vision/skipped-tools.webp';
 import diagram from '../../assets/placeholders/diagram.svg';
 import illustration from '../../assets/placeholders/illustration.svg';
 import desktopLight from '../../assets/placeholders/mocks/desktop-light.png';
@@ -36,17 +38,33 @@ import desktopDark from '../../assets/placeholders/mocks/desktop-dark.png';
 import ios from '../../assets/placeholders/mocks/ios.png';
 import android from '../../assets/placeholders/mocks/android.png';
 
-<StorySection number="01" title="Defining 'modern'" id="modern">
-  Customers expect a modern, focused app that feels familiar next to their other tools, and still guides them through the highest levels of security and privacy, in a friendly tone. Stakeholders, however, meant different things by "modern": the CTO asked for a modern look, while much of the discussion was about new features.
+<StorySection number="01" title="Key insights" id="insights">
+  These insights shaped the starting point of the vision. I gathered them from internal and external interviews, sector research, competitor analysis and a survey among our users.
 
-  I ran workshops with the design and product team to agree on which aspects we consider modern, and how we stand against our competitors. Leadership didn't want to work out these details, so I brought them clear decisions instead of open questions.
+  <Fragment slot="media">
+    <ImageText image={skippedTools} outline="dark" alt="Chart from Wire's State of Secure Collaboration 2026 on why official tools get skipped: 47% urgent situation or faster alternative needed, 37% external partner doesn't use official tools, 30% official tools too complex" title="Ease beats security">
+      People gravitate to the easiest, most frictionless tools, even when those have severe security and privacy issues. For enterprises, that is a high risk.
+    </ImageText>
+    <ImageText image={feelsLikeHome} ratio="2000 / 1704" alt="A relaxed woman smiling and looking away from the laptop on her lap, in a cosy, warmly lit café-style workspace" title="Feels like home">
+      Customers want an app that gets work done, but also feels familiar and welcoming.
+    </ImageText>
+    <ImageText image={securityRight}  alt="Abstract illustration: a glowing sphere with flowing blue, orange and yellow gradients on a dark background" title="Security done right">
+      Security should be strict, but never threatening. Admins and regular users alike should understand the implications of their choices without being security experts. 
+    </ImageText>
+  </Fragment>
+</StorySection>
+
+<StorySection number="02" title="Aligning expectations" id="expectations">
+  <p slot="problem">The CTO asked for a "modern" look, but design had no clear idea what he meant exactly, and much of the discussion was about features.</p>
+  <p slot="decision">I ran workshops with design and product to set expectations, and brought leadership clear proposals instead of open questions.</p>
+  <p slot="outcome">We aligned on what to expect from the vision: the key attributes to communicate, how the app should look and feel to new users, and the feature work needed to bring functionality up to date.</p>
 
   <Fragment slot="media">
     <Figure src={illustration} alt="TODO: workshop result showing the aspects of a modern app" caption="Placeholder: workshop outcome" />
   </Fragment>
 </StorySection>
 
-<StorySection number="02" title="Vision and principles" id="principles">
+<StorySection number="03" title="Vision and principles" id="principles">
   I wrote a vision statement and tied it to the new product vision, "highest security for people who depend on it". Features like a global search, a new navigation and the most critical flows became part of it, but a vision needs balance. Look and feel and onboarding shape a product's personality more directly than features do.
 
   <Fragment slot="media">
@@ -54,7 +72,7 @@ import android from '../../assets/placeholders/mocks/android.png';
   </Fragment>
 </StorySection>
 
-<StorySection number="03" title="A personality layer" id="personality">
+<StorySection number="04" title="A personality layer" id="personality">
   The central idea is a minimal frame around the app, a layer the UI sits on. It carries the personality and can project any tonality, such as Wire branded, calm or playful, and fits the accent color theming we already had. The UI itself stays minimal and focused, so the personality never gets in the way of productivity. Users can customize it to make the app their own.
 
   I built a web prototype with AI support, based on shadcn, and then applied the idea to iOS and Android, where it worked just as well. The vision builds on a unified multiplatform design system that all three platforms share, which I cover in <a href={siteUrl('/projects/managing-a-multiplatform-design-system/')}>a separate case study</a>.
@@ -71,7 +89,7 @@ import android from '../../assets/placeholders/mocks/android.png';
   </Fragment>
 </StorySection>
 
-<StorySection number="04" title="Getting it built" id="implementation">
+<StorySection number="05" title="Getting it built" id="implementation">
   I laid out several ways to implement the vision, from a full rewrite to a step-by-step approach alongside feature work. A deep dive with engineers settled the picture: iOS already had a rewrite planned, Android could adopt the new design system easily, and the legacy-ridden web app would need a full rewrite. That decision was still open when I left.
 
   <Fragment slot="media">
@@ -79,6 +97,6 @@ import android from '../../assets/placeholders/mocks/android.png';
   </Fragment>
 </StorySection>
 
-<StorySection number="05" title="Learnings" id="learnings">
+<StorySection number="06" title="Learnings" id="learnings">
   I presented the vision at an all-hands meeting after good feedback from early tests. The biggest lesson: define the details with the team, and bring leadership decisions, not open questions.
 </StorySection>

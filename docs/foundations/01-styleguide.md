@@ -186,7 +186,7 @@ Section backgrounds: `.section--raised`, `.section--black` (page background), `.
 | `--border-hairline` | 1 px `--border-subtle` | Screenshots, cards, video (`.media-hairline`) |
 | `--shadow-screenshot` | 0 0 40 px, black 14 % light / 50 % dark | Screenshots and mocks (`.media-shadow`) |
 | `--shadow-elevated` | 0 24 px 48 px −12 px, black 22 % light / 70 % dark | A card lifted on hover (project teaser) |
-| `--filter-appshot` | 1 px outline + 2 × soft drop shadow | Transparent PNG app shots (`.app-shot`) |
+| `--filter-appshot` | One soft drop shadow (the 1 px outline is baked into the image) | Cutout covers and transparent PNG app shots (`.app-shot`) |
 
 Doodles in the home stack use their own light drop shadow (`--doodle-shadow` in `DoodleStack`). Do not add other radii.
 
@@ -219,12 +219,11 @@ No information is available on hover only.
 | Effect | Spec |
 |---|---|
 | Section reveal | `.reveal`: scale 0.98 + 12 px rise + opacity, 700 ms `--ease-out`, on scroll-in (JS adds `.js` to `<html>`) |
-| Home headline | Prism effect while the pointer is over the stage: sheared slices and red/green/blue fringes (`src/lib/prism.ts`). Pointer devices only |
 | Home doodle stack | Pictures pop up on their own every 2.5–4.5 s (max 3 visible, never over the headline); spawning pauses while the pointer is over them |
 | Teaser hover | See 8 (the former colour-split ripple is switched off, code kept in `src/lib/teaser-fx.ts`) |
 | Page and loading | Fade, loading bar |
 
-Everything respects `prefers-reduced-motion`: no reveal, no prism, no teaser hover zoom, a static doodle arrangement; `--duration-reveal` becomes 0.
+Everything respects `prefers-reduced-motion`: no reveal, no teaser hover zoom, a static doodle arrangement; `--duration-reveal` becomes 0.
 
 ## 11. Graphic devices
 

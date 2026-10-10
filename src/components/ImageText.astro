@@ -10,12 +10,16 @@ interface Props {
   image: ImageMetadata | string;
   alt?: string;
   title: string;
+  /** 1 px edge for a screenshot-like image, by its own tone: a dark image gets a dark-grey edge, a light one a light-grey edge. */
+  outline?: 'light' | 'dark';
+  /** Crop the image to a ratio (CSS aspect-ratio, e.g. '2000 / 1704'), so rows in a stack share one height. The crop is done in CSS, the file stays untouched. */
+  ratio?: string;
 }
-const { image, alt = '', title } = Astro.props;
+const { image, alt = '', title, outline, ratio } = Astro.props;
 ---
 
 <div class="image-text measure-text reveal">
-  <div class="art media-l"><Img src={image} alt={alt} sizes="(min-width: 768px) 480px, 60vw" /></div>
+  <div class="art media-l" data-outline={outline} style={ratio && `--art-ratio: ${ratio}`}><Img src={image} alt={alt} sizes="(min-width: 768px) 480px, 60vw" /></div>
   <div class="copy">
     <h3 class="t-body">{title}</h3>
     <div class="prose"><slot /></div>
@@ -23,15 +27,21 @@ const { image, alt = '', title } = Astro.props;
 </div>
 
 <style>
-  .image-text { display: grid; grid-template-columns: 1fr; align-items: start; row-gap: var(--space-4); }
+  .image-text { display: grid; grid-template-columns: 1fr; align-items: center; row-gap: var(--space-4); }
   .art { max-width: 60%; overflow: hidden; } /* corners: .media-l (16 px, 12 px on phones) */
   .art :global(img) { width: 100%; }
-  .copy { display: flex; flex-direction: column; gap: var(--space-3); }
+  .art[style*="--art-ratio"] :global(img) { aspect-ratio: var(--art-ratio); object-fit: cover; }
+  .art[data-outline="dark"] { border: 1px solid var(--gray-700); }
+  .art[data-outline="light"] { border: 1px solid var(--gray-200); }
+  /* extra space between stacked rows, on top of the media slot's gap (20 px): 40 px in total */
+  .image-text + .image-text { margin-top: var(--space-4); }
+  .copy { display: flex; flex-direction: column; gap: var(--space-2); }
   /* body text in the strong colour (not bold); the first line's cap height starts level with the top of the image */
   .copy h3 { color: var(--text-strong); text-box: trim-start cap alphabetic; }
   @media (min-width: 768px) {
-    .image-text { grid-template-columns: repeat(var(--measure-text-cols), minmax(0, 1fr)); column-gap: var(--gutter); }
+    .image-text { grid-template-columns: repeat(var(--measure-text-cols), minmax(0, 1fr));  column-gap: var(--gutter); }
     .art { grid-column: 1 / 4; max-width: none; }
     .copy { grid-column: 4 / -1; }
   }
+
 </style>

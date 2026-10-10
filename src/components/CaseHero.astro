@@ -1,6 +1,7 @@
 ---
 /**
- * H2 + H3 Case hero. variant "mockup": H1, then cover image with the stamp overlapping its bottom-right corner.
+ * H2 + H3 Case hero. variant "mockup": H1, then the cover image with the stamp overlapping its bottom-right corner. The cover is a cutout
+ * (window and phone on transparent) exported with its 1 px outline baked in; the soft shadow comes from .app-shot. No radius, no extra outline.
  * variant "backdrop": full-cover dimmed background image, H1 bottom-aligned, stamp below.
  * H1 is sentence case, ≤ 8 words. The expertise labels sit on top of it as an eyebrow.
  */
@@ -32,7 +33,7 @@ const bg = background ? (typeof background === 'string' ? background : backgroun
     {variant === 'mockup' && image && (
       <div class="cover-wrap">
         <div class="cover">
-          <Img src={image} alt={imageAlt} class="media-m app-shot" loading="eager" fetchpriority="high" sizes="(min-width: 1230px) 900px, 100vw" />
+          <Img src={image} alt={imageAlt} class="app-shot" loading="eager" fetchpriority="high" sizes="(min-width: 1230px) 900px, 100vw" />
         </div>
       </div>
     )}
@@ -64,8 +65,8 @@ const bg = background ? (typeof background === 'string' ? background : backgroun
   /* The stamp sits right under the visual, inside the text measure, and reaches down into the lead's top padding
    * so the "Background" eyebrow lines up with its lower edge. */
   .hero.has-stamp, .hero.backdrop.has-stamp { padding-bottom: 0; }
-  .stamp-row { position: relative; z-index: 5; margin-top: var(--space-2); margin-bottom: calc(var(--section-y) * -1); }
-  .stamp-row :global(.stamp) { width: min(60%, 260px); margin-left: auto; }
-  @media (min-width: 768px) { .stamp-row :global(.stamp) { width: 33%; margin-right: 8%; } }
+  .stamp-row { position: relative; z-index: 5; margin-top: var(--space-6); margin-bottom: calc(var(--section-y) * -1 - var(--space-5)); }
+  .stamp-row :global(.stamp) { width: min(40%, 260px); margin-left: auto; }
+  @media (min-width: 768px) { .stamp-row :global(.stamp) { width: 28%; margin-right: 8%; } }
   .hero:not(.has-stamp) .cover-wrap { padding-bottom: var(--space-5); }
 </style>

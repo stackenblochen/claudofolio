@@ -123,7 +123,7 @@
   --border-hairline: 1px solid var(--border-subtle);
   --shadow-screenshot: 0 0 40px 0 light-dark(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.5));
   --shadow-elevated: 0 24px 48px -12px light-dark(rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.7)); /* a raised card: offset downwards so it looks lifted off the page */
-  --filter-appshot: drop-shadow(1px 1px 0 var(--border-subtle)) drop-shadow(-1px -1px 0 var(--border-subtle)) drop-shadow(0 4px 40px light-dark(#0001, #0003)) drop-shadow(0 4px 40px light-dark(#0001, #0003));
+  --filter-appshot: drop-shadow(0 4px 40px light-dark(#0000001f, #0000005c)); /* cutout screenshots (.app-shot): the outline is baked into the image, this is only the soft shadow */
 
   /* Motion */
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);

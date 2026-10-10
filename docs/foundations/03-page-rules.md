@@ -166,7 +166,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 | 544–767 (sm) | All rows stack. Image inner padding 0. Radius 12 |
 | < 544 (xs) | Same as sm. Hero type at minimum. Embeds → poster placeholder + note (all embeds, below 992 px) |
 | touch devices | No hover-only information. The home stage works without a pointer (scroll or timer) |
-| reduced motion | No reveal, prism, teaser hover zoom or doodle animation (static arrangement) |
+| reduced motion | No reveal, teaser hover zoom or doodle animation (static arrangement) |
 
 ---
 
