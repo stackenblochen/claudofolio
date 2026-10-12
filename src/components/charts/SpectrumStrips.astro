@@ -1,0 +1,62 @@
+---
+/**
+ * I13 Spectrum strips: one track per dimension, every product as a marker, names under their own marker. Styles: ./spectrum-strips.css.
+ * Values are 0-100 along the track. A name that would touch its neighbour drops to a second line (Wire is placed first, so it keeps the first line).
+ *
+ *   <SpectrumStrips alt="…" rows={[{ title: 'Tone', low: 'Formal', high: 'Personal', items: [{ name: 'Wire', value: 75, accent: true }] }]} />
+ */
+import './chart-head.css';
+import './spectrum-strips.css';
+
+type Item = { name: string; value: number; accent?: boolean };
+type Row = { title: string; low: string; high: string; items: Item[] };
+interface Props { alt: string; rows: Row[]; caption?: string; title?: string; intro?: string }
+const { alt, rows, caption, title, intro } = Astro.props;
+
+// Each name sits under its own marker (kept inside the track). A name that would touch its neighbour drops to the next line.
+// Widths are estimates in track percent (reference: 12 px names on a ~600 px track).
+const CHAR = 1.15, PAD = 1.5;
+const prepared = rows.map((row) => {
+  const lines: [number, number][][] = [];
+  const labels = [...row.items].sort((a, b) => Number(!!b.accent) - Number(!!a.accent) || a.value - b.value).map((item) => {
+    const w = item.name.length * CHAR * (item.accent ? 1.15 : 1);
+    const x = Math.min(Math.max(item.value, w / 2), 100 - w / 2);
+    let line = lines.findIndex((l) => l.every(([lo, hi]) => x - w / 2 >= hi + PAD || x + w / 2 + PAD <= lo));
+    if (line < 0) line = lines.length;
+    (lines[line] ??= []).push([x - w / 2, x + w / 2]);
+    return { item, x, line: line + 1 };
+  });
+  return { ...row, labels, depth: lines.length };
+});
+const pct = (n: number) => `${+n.toFixed(2)}%`;
+---
+
+<div class="chart">
+  {(title || intro) && (
+    <div class="chart__head measure-text reveal">
+      {title && <h3 class="t-subheading">{title}</h3>}
+      {intro && <p class="prose">{intro}</p>}
+    </div>
+  )}
+<figure class="strips measure-media reveal">
+  <div class="strips__stage">
+    <ul class="strips__list" role="img" aria-label={alt}>
+      {prepared.map((row) => (
+        <li class="strips__row" aria-hidden="true">
+          <span class="strips__title">{row.title}</span>
+          <span class="strips__end strips__end--low">{row.low}</span>
+          <div class="strips__track" style={`--depth:${row.depth}`}>
+            <span class="strips__mid"></span>
+            {row.items.map((i) => <span class:list={['strips__mark', { 'is-accent': i.accent }]} style={`--x:${pct(i.value)}`}></span>)}
+            {row.labels.map((l) => (
+              <span class:list={['strips__item', { 'is-accent': l.item.accent }]} style={`--x:${pct(l.x)};--row:${l.line}`}>{l.item.name}</span>
+            ))}
+          </div>
+          <span class="strips__end strips__end--high">{row.high}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+  {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
+</figure>
+</div>

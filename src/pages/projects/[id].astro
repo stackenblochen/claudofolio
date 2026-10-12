@@ -18,6 +18,8 @@ import SchemaGroup from '../../components/schema/SchemaGroup.astro';
 import SchemaPill from '../../components/schema/SchemaPill.astro';
 import SchemaArrow from '../../components/schema/SchemaArrow.astro';
 import SchemaList from '../../components/schema/SchemaList.astro';
+import PositioningMap from '../../components/charts/PositioningMap.astro';
+import SpectrumStrips from '../../components/charts/SpectrumStrips.astro';
 
 export async function getStaticPaths() {
   const projects = await getProjects({ includeUnlisted: true });
@@ -28,7 +30,7 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 
 // Available in every case-study MDX without imports.
-const components = { StorySection, ScreenGallery, Figure, FigurePair, ScreenStack, Comparison, ImageText, Video, Embed, Arrow, Mock, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList };
+const components = { StorySection, ScreenGallery, Figure, FigurePair, ScreenStack, Comparison, ImageText, Video, Embed, Arrow, Mock, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips };
 ---
 
 <CaseStudy project={project}>

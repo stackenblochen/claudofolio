@@ -1,0 +1,133 @@
+/* I13 Spectrum strips — one track per dimension, every product as a marker, names or icons stacked below.
+ * Colours are the site's semantic tokens (light-dark aware). Sizes scale with the figure width (container query units), reference width 995 px. */
+
+.strips {
+  --st-text: var(--text-default);
+  --st-strong: var(--text-strong);
+  --st-line: var(--border-strong);
+  --st-accent: var(--accent-positive);
+
+  container: strips / inline-size;
+  margin-block: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+  font-family: var(--font-sans);
+}
+
+.strips__list {
+  --fs-end: clamp(11px, 1.51cqi, 15px);
+  --fs-title: clamp(11px, 1.51cqi, 15px);
+  --fs-name: clamp(10px, 1.2cqi, 12px);
+  --fs-hero: clamp(11px, 1.4cqi, 14px);
+  --icon: clamp(20px, 2.81cqi, 28px);
+  --marker: clamp(7px, 1.01cqi, 10px);
+  --marker-hero: clamp(11px, 1.61cqi, 16px);
+  --end-w: clamp(90px, 16cqi, 160px);
+  --stack-gap: clamp(2px, 0.3cqi, 3px);
+  --item-h: calc(var(--fs-name) * 1.45);
+
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: clamp(36px, 6.5cqi, 64px);
+}
+
+/* one dimension */
+.strips__row {
+  display: grid;
+  grid-template-columns: var(--end-w) minmax(0, 1fr) var(--end-w);
+  grid-template-areas:
+    ".   title  ."
+    "low track high";
+  column-gap: clamp(12px, 2.4cqi, 24px);
+  row-gap: clamp(6px, 1cqi, 10px);
+  align-items: start;
+}
+.strips__title { grid-area: title; text-align: center; font-size: var(--fs-title); color: var(--st-strong); font-weight: 600; }
+.strips__end { font-size: var(--fs-end); font-style: italic; color: var(--st-text); line-height: 1.45; transform: translateY(-50%); margin-top: calc(var(--marker-hero) / 2); }
+.strips__end--low { grid-area: low; text-align: right; }
+.strips__end--high { grid-area: high; text-align: left; }
+
+/* narrow figures: the end labels sit above the track */
+@container strips (max-width: 600px) {
+  .strips__row {
+    grid-template-columns: 1fr 1fr;
+    grid-template-areas: "title title" "low high" "track track";
+  }
+  .strips__title { text-align: left; }
+  .strips__end { transform: none; margin-top: 0; }
+  .strips__end--low { text-align: left; }
+  .strips__end--high { text-align: right; }
+}
+
+/* the track: a hairline; height leaves room for the deepest stack */
+.strips__track {
+  grid-area: track;
+  position: relative;
+  height: calc(var(--marker-hero) + var(--stack-gap) * 2 + var(--depth) * (var(--item-h) + var(--stack-gap)));
+}
+.strips__track::before {
+  content: "";
+  position: absolute;
+  left: 0; right: 0;
+  top: calc(var(--marker-hero) / 2);
+  height: 1px;
+  background: var(--st-line);
+}
+
+/* the middle of the scale: a short vertical line across the track */
+.strips__mid {
+  position: absolute;
+  left: 50%;
+  top: calc(var(--marker-hero) / 2 - var(--marker-hero) * 0.7);
+  width: 1px;
+  height: calc(var(--marker-hero) * 1.4);
+  background: var(--st-line);
+}
+
+/* markers on the track */
+.strips__mark {
+  --m: var(--marker);
+  position: absolute;
+  top: calc(var(--marker-hero) / 2 - var(--m) / 2);
+  left: var(--x);
+  width: var(--m); height: var(--m);
+  margin-left: calc(var(--m) / -2);
+  border-radius: 50%;
+  background: var(--st-text);
+}
+.strips__mark.is-accent { --m: var(--marker-hero); background: var(--st-accent); z-index: 1; }
+
+/* a name under its own marker; --row (1-based) picks the line */
+.strips__item {
+  position: absolute;
+  top: calc(var(--marker-hero) + var(--stack-gap) * 2 + (var(--row) - 1) * (var(--item-h) + var(--stack-gap)));
+  left: var(--x);
+  transform: translateX(-50%);
+  height: var(--item-h);
+  display: flex;
+  align-items: center;
+  font-size: var(--fs-name);
+  line-height: 1.45;
+  color: var(--st-text);
+  white-space: nowrap;
+}
+.strips__item.is-accent { color: var(--st-accent); font-weight: 600; font-size: var(--fs-hero); }
+.strips__icon { display: block; width: var(--icon); height: var(--icon); object-fit: contain; }
+.strips__item.is-accent .strips__icon { outline: 2px solid var(--st-accent); outline-offset: 3px; border-radius: 50%; }
+
+.strips__sr {
+  position: absolute !important;
+  width: 1px; height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+
+/* elevated stage */
+.strips__stage { background: var(--bg-raised); border-radius: var(--radius-l); padding: clamp(16px, 3.5cqi, 36px); }

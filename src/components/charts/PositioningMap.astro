@@ -1,0 +1,87 @@
+---
+/**
+ * I12 Positioning map: a quadrant chart in HTML/CSS (points, axis labels, one highlighted quadrant), plus an optional arrow
+ * between two points (a move, e.g. Wire today to Wire vision). Styles: ./positioning-map.css. Theme follows the site tokens.
+ *
+ *   <PositioningMap alt="…" yAxis={['Enterprise', 'Security posture', 'Consumer']} xAxis={['Specialist', 'User expertise', 'Intuitive']}
+ *     quadrants={{ tl: '…', tr: '…', bl: '…', br: '…' }} highlight="tr"
+ *     points={[{ name: 'Wire', x: 91.67, y: 16.67, accent: true }]} move={{ from: 'Wire today', to: 'Wire' }} />
+ *
+ * x and y are percentages inside the plot (0,0 = top left). `side` = where the name sits next to its dot.
+ */
+import './chart-head.css';
+import './positioning-map.css';
+
+type Point = { name: string; x: number; y: number; side?: 'right' | 'left' | 'bottom'; accent?: boolean; ghost?: boolean };
+type Q = 'tl' | 'tr' | 'bl' | 'br';
+interface Props {
+  alt: string;
+  /** top, centre title, bottom */
+  yAxis: [string, string, string];
+  /** left, centre title, right */
+  xAxis: [string, string, string];
+  quadrants: Record<Q, string>;
+  highlight?: Q;
+  points: Point[];
+  move?: { from: string; to: string };
+  caption?: string;
+  /** subheadline above the chart */
+  title?: string;
+  /** text under the headline */
+  intro?: string;
+}
+const { alt, yAxis, xAxis, quadrants, highlight = 'tr', points, move, caption, title, intro } = Astro.props;
+
+// the arrow is drawn in the plot's own units (795 × 560, same ratio as the plot), so it never distorts
+const W = 795, H = 560;
+const at = (name: string) => points.find((p) => p.name === name);
+let arrow = '';
+const from = move && at(move.from);
+const to = move && at(move.to);
+if (from && to) {
+  const a = [(from.x / 100) * W, (from.y / 100) * H];
+  const b = [(to.x / 100) * W, (to.y / 100) * H];
+  const len = Math.hypot(b[0] - a[0], b[1] - a[1]) || 1;
+  const u = [(b[0] - a[0]) / len, (b[1] - a[1]) / len];
+  const gap = (p: Point) => (p.accent ? 10 : 7) + 8;
+  const s = [a[0] + u[0] * gap(from), a[1] + u[1] * gap(from)];
+  const e = [b[0] - u[0] * gap(to), b[1] - u[1] * gap(to)];
+  const ang = Math.atan2(-u[1], -u[0]);
+  const wing = (k: number) => `M${e[0]} ${e[1]} L${e[0] + Math.cos(ang + k * 0.6) * 12} ${e[1] + Math.sin(ang + k * 0.6) * 12}`;
+  arrow = `M${s[0]} ${s[1]} L${e[0]} ${e[1]} ${wing(1)} ${wing(-1)}`;
+}
+const q = (k: Q) => quadrants[k];
+---
+
+<div class="chart">
+  {(title || intro) && (
+    <div class="chart__head measure-text reveal">
+      {title && <h3 class="t-subheading">{title}</h3>}
+      {intro && <p class="prose">{intro}</p>}
+    </div>
+  )}
+<figure class="pmap measure-media reveal">
+  <div class="pmap__stage">
+  <div class="pmap__chart" role="img" aria-label={alt}>
+    <div class="pmap__y" aria-hidden="true"><span>{yAxis[0]}</span><span class="pmap__title">{yAxis[1]}</span><span>{yAxis[2]}</span></div>
+    <div class="pmap__plot" aria-hidden="true">
+      <div class="pmap__hl" data-q={highlight}></div>
+      <span class="pmap__q" data-q="tl">{q('tl')}</span>
+      <span class:list={['pmap__q', { 'is-accent': highlight === 'tr' }]} data-q="tr">{q('tr')}</span>
+      <span class:list={['pmap__q', { 'is-accent': highlight === 'bl' }]} data-q="bl">{q('bl')}</span>
+      <span class:list={['pmap__q', { 'is-accent': highlight === 'br' }]} data-q="br">{q('br')}</span>
+      {arrow && (
+        <svg class="pmap__move" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none"><path d={arrow} /></svg>
+      )}
+      {points.map((p) => (
+        <div class:list={['pmap__pt', { 'is-accent': p.accent, 'is-ghost': p.ghost }]} data-side={p.side ?? 'right'} style={`--x:${p.x}%;--y:${p.y}%`}>
+          <span class="pmap__dot"></span><span class="pmap__name">{p.name}</span>
+        </div>
+      ))}
+    </div>
+    <div class="pmap__x" aria-hidden="true"><span>{xAxis[0]}</span><span class="pmap__title">{xAxis[1]}</span><span>{xAxis[2]}</span></div>
+  </div>
+  </div>
+  {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
+</figure>
+</div>
