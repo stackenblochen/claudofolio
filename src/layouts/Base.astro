@@ -81,7 +81,7 @@ const fontFace = editorial
           try { if (localStorage.getItem('theme') === 'light') t = 'light'; } catch (e) {}
           root.dataset.theme = t;
           var m = document.querySelector('meta[name="theme-color"]');
-          if (m) m.setAttribute('content', t === 'light' ? '#fafafc' : '#0d0d12');
+          if (m) m.setAttribute('content', t === 'light' ? '#f5f5f7' : '#0d0d12');
         }
         theme();
         // View transitions replace the <html> attributes: re-apply after every swap.

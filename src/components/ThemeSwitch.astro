@@ -36,18 +36,18 @@ const { variant = 'icon' } = Astro.props;
     background: var(--bg-glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); /* same glass as the nav pills */
     transition: background 200ms ease, color 200ms ease;
   }
-  .toggle:hover { color: var(--text-strong); background: var(--bg-card); }
+  .toggle:hover { color: var(--text-strong); background: var(--fill); }
   .toggle svg { display: block; }
 
   .tabs-row { display: inline-flex; flex-direction: column; align-items: center; gap: var(--space-3); color: var(--text-default); }
-  .tabs { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius-m); background: var(--bg-card); }
+  .tabs { display: inline-flex; gap: var(--space-1); padding: var(--space-1); border-radius: var(--radius-m); background: var(--fill); }
   .tabs button {
     border: 0; margin: 0; padding: var(--space-2) var(--space-4); cursor: pointer;
     border-radius: calc(var(--radius-m) - var(--space-1)); background: transparent; color: var(--text-default);
     font: inherit; font-size: var(--text-label-size); line-height: 1.2; transition: background 200ms ease, color 200ms ease;
   }
   .tabs button:hover { color: var(--text-strong); }
-  .tabs button[aria-pressed='true'] { background: var(--bg-page); color: var(--text-strong); box-shadow: var(--shadow-screenshot); }
+  .tabs button[aria-pressed='true'] { background: var(--bg-primary); color: var(--text-strong); box-shadow: var(--shadow-screenshot); }
   @media (prefers-reduced-motion: reduce) { .tabs button { transition: none; } }
 </style>
 
@@ -65,7 +65,7 @@ const { variant = 'icon' } = Astro.props;
   const apply = (next: 'light' | 'dark') => {
     root.dataset.theme = next;
     try { if (next === 'light') localStorage.setItem(KEY, 'light'); else localStorage.removeItem(KEY); } catch {}
-    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next === 'light' ? '#fafafc' : '#0d0d12');
+    document.querySelector('meta[name="theme-color"]')?.setAttribute('content', next === 'light' ? '#f5f5f7' : '#0d0d12');
     sync();
   };
 

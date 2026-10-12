@@ -9,7 +9,7 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  background: var(--bg-page);
+  background: var(--bg-primary);
   color: var(--text-default);
   font-family: var(--font-sans);
   font-weight: var(--text-body-weight);
@@ -158,9 +158,14 @@ a { color: var(--text-strong); }
 
 /* ---------- Sections ---------- */
 .section { padding-block: var(--section-y); }
-.section--raised { background: var(--bg-raised); }
-.section--black { background: var(--bg-page); }
-.section--pure { background: var(--bg-pure); } /* sections that hold the case study teasers */
+.section--raised { background: var(--bg-secondary); }
+.section--black { background: var(--bg-primary); }
+.section--pure { /* sections that hold the case study teasers: the standard context (white / black base, gray cards) */
+  --bg-primary: light-dark(var(--color-white), var(--color-black));
+  --bg-secondary: light-dark(var(--gray-75), var(--gray-900));
+  --bg-tertiary: light-dark(var(--color-white), var(--gray-800));
+  background: var(--bg-primary);
+}
 .stack { display: flex; flex-direction: column; gap: var(--stack-gap, var(--space-4)); }
 .chapter-flow { display: flex; flex-direction: column; gap: var(--chapter-gap); }
 
@@ -179,14 +184,14 @@ a { color: var(--text-strong); }
 }
 .skip-link {
   position: absolute; left: var(--space-4); top: -100px; z-index: 1000;
-  background: var(--text-strong); color: var(--bg-page); padding: var(--space-2) var(--space-4);
+  background: var(--text-strong); color: var(--bg-primary); padding: var(--space-2) var(--space-4);
 }
 .skip-link:focus { top: var(--space-2); }
 .hide-sm { display: none; }
 @media (min-width: 768px) { .hide-sm { display: revert; } .show-sm-only { display: none; } }
 
 /* ---------- Page transition (fade out, then fade in; see Base.astro) ---------- */
-html { background: var(--bg-page); }
+html { background: var(--bg-primary); }
 @keyframes pt-fade-out { to { opacity: 0; } }
 @keyframes pt-fade-in { from { opacity: 0; } }
 

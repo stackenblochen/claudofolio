@@ -50,7 +50,7 @@ const payload = enabled ? encryptHtml(await Astro.slots.render('default'), getCa
   /* input spans 5 grid columns (of the text measure); the button sits next to it */
   .field { position: relative; flex: 0 1 calc((100% - (var(--measure-text-cols) - 1) * var(--gutter)) / var(--measure-text-cols) * 5 + 4 * var(--gutter)); min-width: 0; }
   @media (max-width: 767px) { .field { flex: 1; } }
-  input { width: 100%; padding: var(--space-3) calc(var(--space-3) + 2.25rem) var(--space-3) var(--space-4); color: var(--text-strong); background: var(--bg-raised);
+  input { width: 100%; padding: var(--space-3) calc(var(--space-3) + 2.25rem) var(--space-3) var(--space-4); color: var(--text-strong); background: var(--bg-secondary);
     border: 1px solid var(--border-subtle); border-radius: var(--radius-m); font: inherit; transition: border-color 0.15s, box-shadow 0.15s; }
   input::placeholder { color: var(--text-default); opacity: 0.7; }
   input:focus-visible { outline: 0; border-color: var(--text-default); box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-default) 35%, transparent); }
@@ -59,8 +59,8 @@ const payload = enabled ? encryptHtml(await Astro.slots.render('default'), getCa
   .toggle:hover { color: var(--text-strong); background: color-mix(in srgb, var(--text-strong) 8%, transparent); }
   .toggle:focus-visible { outline: 0; box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-default) 35%, transparent); }
   .toggle svg[hidden] { display: none; }
-  .submit { cursor: pointer; padding: var(--space-3) var(--space-5); color: var(--text-strong); background: var(--bg-card); border: 0; border-radius: var(--radius-m); font: inherit; transition: color 0.15s, background-color 0.15s; }
-  .submit:hover:not(:disabled) { color: var(--bg-page); background: var(--text-strong); }
+  .submit { cursor: pointer; padding: var(--space-3) var(--space-5); color: var(--text-strong); background: var(--fill); border: 0; border-radius: var(--radius-m); font: inherit; transition: color 0.15s, background-color 0.15s; }
+  .submit:hover:not(:disabled) { color: var(--bg-primary); background: var(--text-strong); }
   .submit:focus-visible { outline: 0; box-shadow: 0 0 0 3px color-mix(in srgb, var(--text-default) 35%, transparent); }
   .submit:disabled { opacity: 0.6; cursor: progress; }
   .error { color: var(--accent-primary); }

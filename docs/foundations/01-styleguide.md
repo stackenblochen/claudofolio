@@ -21,7 +21,7 @@ Root font size is 16 px; all tokens are `rem` or `px` at that base.
 Dark is the default. The nav switch (`ThemeSwitch`) is an icon button in the desktop nav and, in the mobile menu, a label "Theme" above a segmented Dark | Light control (like shadcn Tabs; toggle buttons with `aria-pressed` in a labelled group); both set `data-theme="light"` on `<html>`; only `light` is stored in `localStorage`, and there is no system/auto mode.
 
 - Semantic colour tokens use `light-dark(light, dark)`; `color-scheme` follows the theme.
-- Components use only semantic tokens (`--bg-page`, `--text-default`, `--text-strong`, `--accent-*` …), never palette steps (`--gray-*`) or hex.
+- Components use only semantic tokens (`--bg-primary`, `--text-default`, `--text-strong`, `--accent-*` …), never palette steps (`--gray-*`) or hex.
 - White-only SVG logos get `filter: var(--filter-logo)` (inverted in light mode). The confidential stamp is never filtered.
 - Single-colour pictures that must follow the theme (black or white doodles) are inverted in the matching theme; see `DoodleStack`.
 - Weights and letter spacing differ by theme (see 4.2): light mode needs more weight on a light page, and Geist gets wider as it gets bolder, so light mode is tightened by the same step.
@@ -87,20 +87,22 @@ One cool (blue-violet) gray ramp, used by both themes, plus three signal colours
 | `gray-400` | `#9a9aab` | Dark-mode default text |
 | `gray-300` | `#c6c7d2` | Light lines on a surface |
 | `gray-200` | `#e0e1e8` | Light surface, card, borders |
-| `gray-100` | `#eeeef3` | Light raised |
-| `gray-50` | `#fafafc` | Light page, strong text in dark mode |
+| `gray-100` | `#eeeef3` | Light mobile menu |
+| `gray-75` | `#f5f5f7` | Light page; light card on a white base |
+| `gray-50` | `#fafafc` | Strong text in dark mode |
 
-There is no pure black or white, except `--bg-pure` (`.section--pure`), used only for the sections that hold the case study teasers. Signal colours: salmon `#fa8072` (`#e8553d` in light mode), green `#00ff32` (`#008a21` in light mode). Selection is salmon with black text in both themes.
+White and black appear only as the base of the standard context (the teaser sections) and as the light card colour of the grouped context. Signal colours: salmon `#fa8072` (`#e8553d` in light mode), green `#00ff32` (`#008a21` in light mode). Selection is salmon with black text in both themes.
 
 ### 4.2 Semantic roles
 
+**Backgrounds follow iOS.** Three levels (primary, secondary, tertiary) in two contexts. *Grouped* is the default: a gray base with white cards. *Standard* (`.section--pure`, the sections that hold the teasers) is a white / black base with gray cards. Components only use the level tokens; the context decides the colour.
+
 | Role | Light | Dark | Use |
 |---|---|---|---|
-| `--bg-page` | gray-50 | gray-950 | Default page background |
-| `--bg-pure` | white | black | Teaser sections only |
-| `--bg-raised` | gray-100 | gray-900 | Raised sections, mock and schema stages |
-| `--bg-surface` | gray-200 | gray-800 | A panel on a raised stage |
-| `--bg-card` | gray-200 | gray-700 | Cards |
+| `--bg-primary` | gray-75 (white in standard) | gray-950 (black in standard) | The base: page background |
+| `--bg-secondary` | white (gray-75 in standard) | gray-900 | A card on the base: raised sections, teaser cards, stages, charts. `--border-secondary` (gray-200, none in dark) outlines it |
+| `--bg-tertiary` | gray-75 (white in standard) | gray-800 | Inside a card: schema groups and pills |
+| `--fill` | gray-200 | gray-700 | Small controls: hover pills, labels, theme switch, comparison cards |
 | `--text-default` | gray-500 | gray-400 | Body, nav, captions, meta labels |
 | `--text-strong` | gray-950 | gray-50 | Headings, leads, emphasis, links |
 | `--border-subtle` | gray-200 | gray-700 | Hairlines around screenshots and cards |
@@ -112,7 +114,7 @@ There is no pure black or white, except `--bg-pure` (`.section--pure`), used onl
 | `--overlay-menu` | gray-100 | gray-900 | Mobile menu background (solid, not transparent) |
 | `--overlay-thumb` | black 35 % | black 50 % | Reserved for thumbnail overlays |
 
-**Contrast.** Default text (400) on dark is 7.0:1 on the page, 6.4:1 on raised, 5.4:1 on surface and 4.4:1 on card. Default text (500) on light is 5.0:1 on the page, 4.5:1 on raised and 4.0:1 on surface. So: do not set default text on `--bg-card` below 18 px, and keep strong text for anything on a card. Salmon on the light page is 3.5:1 (graphic or large text only); light-mode green is 4.5:1.
+**Contrast.** Default text (400) on dark is 7.0:1 on primary, 6.4:1 on secondary, 5.4:1 on tertiary and 4.4:1 on fill. Default text (500) on light is 4.8:1 on the page (primary), about 5.3:1 on a white card and 4.0:1 on fill. So: do not set default text on `--fill` below 18 px, and keep strong text for anything on a fill. Salmon on the light page is 3.3:1 (graphic or large text only); light-mode green is 4.1:1 (below 4.5:1 for small text).
 
 ### 4.3 Gradients
 
@@ -195,7 +197,7 @@ Doodles in the home stack use their own light drop shadow (`--doodle-shadow` in 
 | Element | Default | Hover / active |
 |---|---|---|
 | Body and prose link | `--text-strong`, 2 px salmon underline, offset 4 px | |
-| Nav item (desktop) | Pill with a blurred translucent background (`--bg-glass`, `backdrop-filter: blur(16px)`), `--text-strong` | `--bg-card` fill; the current page looks the same |
+| Nav item (desktop) | Pill with a blurred translucent background (`--bg-glass`, `backdrop-filter: blur(16px)`), `--text-strong` | `--fill`; the current page looks the same |
 | Footer link | `--text-default`, no underline | `--text-strong` with a 2 px salmon underline |
 | Project teaser | the whole panel is the link | grows 5 %, hairline border and a lifted shadow (`--shadow-elevated`) (pointer devices from 992 px, not with reduced motion) |
 | Focus | 2 px `--accent-primary` outline, 4 px offset (`:focus-visible`) on every interactive element | |

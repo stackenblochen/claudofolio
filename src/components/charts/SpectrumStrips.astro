@@ -1,17 +1,16 @@
 ---
 /**
- * I13 Spectrum strips: one track per dimension, every product as a marker, names under their own marker. Styles: ./spectrum-strips.css.
+ * I13 Spectrum strips: one track per dimension, every product as a marker, names under their own marker. Goes inside a `Diagram`. Styles: ./spectrum-strips.css.
  * Values are 0-100 along the track. A name that would touch its neighbour drops to a second line (Wire is placed first, so it keeps the first line).
  *
  *   <SpectrumStrips alt="…" rows={[{ title: 'Tone', low: 'Formal', high: 'Personal', items: [{ name: 'Wire', value: 75, accent: true }] }]} />
  */
-import './chart-head.css';
 import './spectrum-strips.css';
 
 type Item = { name: string; value: number; accent?: boolean };
 type Row = { title: string; low: string; high: string; items: Item[] };
-interface Props { alt: string; rows: Row[]; caption?: string; title?: string; intro?: string }
-const { alt, rows, caption, title, intro } = Astro.props;
+interface Props { alt: string; rows: Row[] }
+const { alt, rows } = Astro.props;
 
 // Each name sits under its own marker (kept inside the track). A name that would touch its neighbour drops to the next line.
 // Widths are estimates in track percent (reference: 12 px names on a ~600 px track).
@@ -31,15 +30,7 @@ const prepared = rows.map((row) => {
 const pct = (n: number) => `${+n.toFixed(2)}%`;
 ---
 
-<div class="chart">
-  {(title || intro) && (
-    <div class="chart__head measure-text reveal">
-      {title && <h3 class="t-subheading">{title}</h3>}
-      {intro && <p class="prose">{intro}</p>}
-    </div>
-  )}
-<figure class="strips measure-media reveal">
-  <div class="strips__stage">
+<div class="strips">
     <ul class="strips__list" role="img" aria-label={alt}>
       {prepared.map((row) => (
         <li class="strips__row" aria-hidden="true">
@@ -56,7 +47,4 @@ const pct = (n: number) => `${+n.toFixed(2)}%`;
         </li>
       ))}
     </ul>
-  </div>
-  {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
-</figure>
 </div>

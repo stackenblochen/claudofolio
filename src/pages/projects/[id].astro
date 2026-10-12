@@ -14,6 +14,7 @@ import Embed from '../../components/Embed.astro';
 import Arrow from '../../components/Arrow.astro';
 import Mock from '../../components/Mock.astro';
 import Schema from '../../components/Schema.astro';
+import Diagram from '../../components/Diagram.astro';
 import SchemaGroup from '../../components/schema/SchemaGroup.astro';
 import SchemaPill from '../../components/schema/SchemaPill.astro';
 import SchemaArrow from '../../components/schema/SchemaArrow.astro';
@@ -30,7 +31,7 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 
 // Available in every case-study MDX without imports.
-const components = { StorySection, ScreenGallery, Figure, FigurePair, ScreenStack, Comparison, ImageText, Video, Embed, Arrow, Mock, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips };
+const components = { StorySection, ScreenGallery, Figure, FigurePair, ScreenStack, Comparison, ImageText, Video, Embed, Arrow, Mock, Diagram, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips };
 ---
 
 <CaseStudy project={project}>

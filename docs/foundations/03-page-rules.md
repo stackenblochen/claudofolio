@@ -140,7 +140,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 
 - Every content image has meaningful `alt` text (what it shows and why it matters), and decorative images have empty `alt`.
 - Captions are optional, but when used they're the `Caption` style in `text-default`, placed under the image, ≤ 8 words.
-- Never set default text on `--bg-card` below 18 px (4.4:1 in dark, below 4.0:1 in light); use strong text on cards.
+- Never set default text on `--fill` below 18 px (4.4:1 in dark, below 4.0:1 in light); use strong text on fills.
 
 ---
 
@@ -151,7 +151,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 - **Media measure:** 10 cols (xl, lg, md) → 12 (sm, xs). Embeds and grids use 12. All measures sit inside the grid padding.
 - **Vertical rhythm:** `--chapter-gap` (80 → 160 px fluid) between sections; `--space-4` (20 px) between modules inside a section; `--space-3` (12 px) between a heading and its body.
 - **Hero:** `--hero-top` (60 → 160 px) above the H1.
-- **Section backgrounds:** `--bg-page` by default. `--bg-raised` for raised sections, mock and schema stages. `--bg-pure` (pure white or black) only for the sections that hold the teasers (Outcome and Other projects, Home grid), applied consistently on all pages.
+- **Section backgrounds:** `--bg-primary` by default (grouped context: gray base, white cards via `--bg-secondary`). `--bg-secondary` for raised sections, mock, schema and chart stages. `.section--pure` (standard context: white or black base, gray cards) only for the sections that hold the teasers (Outcome and Other projects, Home grid), applied consistently on all pages.
 - **Overlaps** (stamp, arrow) use CSS `translate`/negative margins inside the component only, and are reduced by 50 % below 768 px.
 
 ---

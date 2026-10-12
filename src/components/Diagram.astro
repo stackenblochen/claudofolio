@@ -1,0 +1,67 @@
+---
+/**
+ * I10 Diagram: the frame for every schema, chart or map (anything that is neither a screenshot nor a mock): a stage on `--bg-secondary`
+ * with an optional headline and intro above and a caption and longer text below. The drawing goes in the default slot: `Schema`
+ * (live SVG with the parts in `schema/`), `PositioningMap`, `SpectrumStrips` (in `charts/`).
+ *
+ *   <Diagram title="…" caption="…" size="media" outline>
+ *     <p slot="intro">Text above the drawing.</p>
+ *     <PositioningMap … />
+ *     <Fragment slot="text"><p>Longer text below it.</p></Fragment>
+ *   </Diagram>
+ *
+ * `fixed`: the stage gets the aspect ratio of its size (media 3:2, cover 16:10, half 1:1, third 3:4) and the drawing fills it (Schema).
+ * Without it the stage hugs the drawing with padding. `outline`: a 1 px outline in light mode (`--border-secondary`).
+ * Drawings scale with the figure width (container `diagram`, query units), reference width 995 px.
+ */
+interface Props {
+  size?: 'full' | 'media' | 'cover' | 'half' | 'third';
+  title?: string;
+  caption?: string;
+  fixed?: boolean;
+  outline?: boolean;
+}
+const { size = 'media', title, caption, fixed = false, outline = false } = Astro.props;
+const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-media', half: undefined, third: undefined }[size];
+const hasHead = !!title || Astro.slots.has('intro');
+---
+
+<div class="diagram" data-size={size}>
+  {hasHead && (
+    <div class="head measure-text reveal">
+      {title && <h3 class="t-subheading">{title}</h3>}
+      {Astro.slots.has('intro') && <div class="prose"><slot name="intro" /></div>}
+    </div>
+  )}
+  <figure class:list={['fig', measure, 'reveal']}>
+    <div class="stage" data-size={size} data-fixed={fixed || undefined} data-outline={outline || undefined}><slot /></div>
+    {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
+  </figure>
+  {Astro.slots.has('text') && <div class="text measure-text prose reveal"><slot name="text" /></div>}
+</div>
+
+<style>
+  .diagram { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
+  /* extra space between stacked diagrams, on top of the media slot gap */
+  .diagram + .diagram { margin-top: var(--space-8); }
+  .head { display: flex; flex-direction: column; gap: var(--space-2); }
+  .head h3 { color: var(--text-strong); }
+  .fig { container: diagram / inline-size; display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; margin-block: 0; }
+  .fig:not(.measure-media):not(.measure-wide) { margin-inline: 0; }
+  .stage {
+    background: var(--bg-secondary);
+    border-radius: var(--radius-l);
+    padding: clamp(16px, 3.5cqi, 36px);
+    min-width: 0;
+  }
+  .stage[data-outline] { box-shadow: inset 0 0 0 1px var(--border-secondary); }
+  .stage[data-fixed] { padding: 0; overflow: hidden; aspect-ratio: 3 / 2; }
+  .stage[data-fixed][data-size='cover'] { aspect-ratio: 16 / 10; }
+  .stage[data-fixed][data-size='half'] { aspect-ratio: 1 / 1; }
+  .stage[data-fixed][data-size='third'] { aspect-ratio: 3 / 4; }
+  /* half and third sit in a .grid-12 row */
+  @media (min-width: 768px) {
+    .diagram[data-size='half'] { grid-column: span 6; }
+    .diagram[data-size='third'] { grid-column: span 4; }
+  }
+</style>

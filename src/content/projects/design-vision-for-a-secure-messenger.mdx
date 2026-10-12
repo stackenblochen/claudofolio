@@ -55,45 +55,47 @@ import android from '../../assets/placeholders/mocks/android.png';
 
 <StorySection number="02" title="Aligning expectations" id="expectations">
   <p slot="problem">The CTO asked for a "modern" look, but design had no clear idea what he meant exactly, and much of the discussion was about features.</p>
-  <p slot="decision">In several workshops, we aligned our expectations and brought leadership clear proposals instead of open questions.</p>
+  <p slot="decision">In 2 workshops, we aligned our expectations and brought leadership clear proposals instead of open questions.</p>
   <p slot="outcome">We aligned on what to expect from the vision: how to place the vision in relation to our competitos, and what "modern" means to us.</p>
 
   <Fragment slot="media">
-    <PositioningMap
-      alt="Positioning map of messengers by user expertise (specialist to intuitive) and security posture (consumer to enterprise). Wire moves from today's position toward the easy and enterprise-grade quadrant, where no other messenger sits."
-      yAxis={['Enterprise', 'Security posture', 'Consumer']}
-      xAxis={['Specialist', 'User expertise', 'Intuitive']}
-      quadrants={{ tl: 'Specialist and enterprise-grade', tr: 'Easy and enterprise-grade', bl: 'Specialist and consumer-grade', br: 'Easy and consumer-grade' }}
-      highlight="tr"
-      points={[
-        { name: 'Wickr', x: 8.33, y: 12.5 },
-        { name: 'Element', x: 21.67, y: 13.12 },
-        { name: 'Wire today', x: 45, y: 21, side: 'bottom', ghost: true },
-        { name: 'Teams', x: 54.17, y: 29.79 },
-        { name: 'Slack', x: 70.83, y: 39.58 },
-        { name: 'Google Meet', x: 70.83, y: 43.75 },
-        { name: 'Signal', x: 70.83, y: 78.75 },
-        { name: 'WhatsApp', x: 91.67, y: 66.67, side: 'left' },
-        { name: 'Wire vision', x: 91.67, y: 16.67, side: 'bottom', accent: true },
-      ]}
-      move={{ from: 'Wire today', to: 'Wire vision' }}
-      title="Competitor analysis"
-    />
-    <SpectrumStrips
-      alt="Four spectra on which Wire and seven competitors were placed: tone and personality from formal to personal, interaction design from standardized to custom, visual presence from neutral to expressive, and brand presence from subtle to strong."
-      title="What ‘modern' means"
-      intro="These are the attributes I mapped our competitors and Wire on, so stakeholders and design assessed each one against the same scale. Placing the products side by side gave us a shared meaning for what we say when we talk about these aspects."
-      rows={[
-        { title: 'Tone and personality', low: 'Formal, serious', high: 'Personal', items: [
-          { name: 'Wickr', value: 0 }, { name: 'Teams', value: 8.7 }, { name: 'Element', value: 19.4 }, { name: 'G Meet', value: 30.4 }, { name: 'Wire', value: 75, accent: true }, { name: 'Slack', value: 82.5 }, { name: 'WhatsApp', value: 97.5 }, { name: 'Signal', value: 97.5 } ] },
-        { title: 'Interaction design', low: 'Standardized', high: 'Custom', items: [
-          { name: 'Signal', value: 0 }, { name: 'WhatsApp', value: 3.9 }, { name: 'Wire', value: 8.7, accent: true }, { name: 'Teams', value: 25 }, { name: 'G Meet', value: 36.2 }, { name: 'Slack', value: 46.9 }, { name: 'Element', value: 60 }, { name: 'Wickr', value: 67.5 } ] },
-        { title: 'Visual presence', low: 'Neutral', high: 'Expressive', items: [
-          { name: 'Wickr', value: 0 }, { name: 'Element', value: 13.9 }, { name: 'G Meet', value: 21.3 }, { name: 'WhatsApp', value: 30 }, { name: 'Signal', value: 32.5 }, { name: 'Wire', value: 65, accent: true }, { name: 'Slack', value: 100 } ] },
-        { title: 'Brand presence', low: 'Subtle', high: 'Strong', items: [
-          { name: 'Wickr', value: 0 }, { name: 'Signal', value: 15.4 }, { name: 'Wire', value: 25, accent: true }, { name: 'Element', value: 33.2 }, { name: 'WhatsApp', value: 68 }, { name: 'Teams', value: 74 }, { name: 'G Meet', value: 81.7 }, { name: 'Slack', value: 100 } ] },
-      ]}
-    />
+    <Diagram title="Competitor analysis" caption="Competitor analysis, as presented to the stakeholders">
+      <PositioningMap
+        alt="Positioning map of messengers by user expertise (specialist to intuitive) and security posture (consumer to enterprise). Wire moves from today's position toward the easy and enterprise-grade quadrant, where no other messenger sits."
+        yAxis={['Enterprise', 'Security posture', 'Consumer']}
+        xAxis={['Specialist', 'User expertise', 'Intuitive']}
+        quadrants={{ tl: 'Specialist and enterprise-grade', tr: 'Easy and enterprise-grade', bl: 'Specialist and consumer-grade', br: 'Easy and consumer-grade' }}
+        highlight="tr"
+        points={[
+          { name: 'Wickr', x: 8.33, y: 12.5 },
+          { name: 'Element', x: 21.67, y: 13.12 },
+          { name: 'Wire today', x: 45, y: 21, side: 'bottom', ghost: true },
+          { name: 'Teams', x: 54.17, y: 29.79 },
+          { name: 'Slack', x: 70.83, y: 39.58 },
+          { name: 'Google Meet', x: 70.83, y: 43.75 },
+          { name: 'Signal', x: 70.83, y: 78.75 },
+          { name: 'WhatsApp', x: 91.67, y: 66.67, side: 'left' },
+          { name: 'Wire vision', x: 91.67, y: 16.67, side: 'bottom', accent: true },
+        ]}
+        move={{ from: 'Wire today', to: 'Wire vision' }}
+      />
+    </Diagram>
+    <Diagram title="Attributes of a modern app" caption="What “modern” means">
+      <p slot="intro">To pin down what we mean by 'modern', I took the four aspects stakeholders kept focusing on and gave each a scale. We placed the competitors and Wire's vision on them, so everyone worked from the same picture.</p>
+      <SpectrumStrips
+        alt="Four spectra on which Wire and seven competitors were placed: tone and personality from formal to personal, interaction design from standardized to custom, visual presence from neutral to expressive, and brand presence from subtle to strong."
+        rows={[
+          { title: 'Tone and personality', low: 'Formal, serious', high: 'Personal', items: [
+            { name: 'Wickr', value: 0 }, { name: 'Teams', value: 12 }, { name: 'Element', value: 28 }, { name: 'G Meet', value: 16 }, { name: 'Wire', value: 75, accent: true }, { name: 'Slack', value: 82.5 }, { name: 'Signal', value: 90.0 }, { name: 'WhatsApp', value: 100 } ] },
+          { title: 'Interaction design', low: 'Standardized', high: 'Custom', items: [
+            { name: 'Signal', value: 0 }, { name: 'WhatsApp', value: 5 }, { name: 'Wire', value: 10, accent: true }, { name: 'Teams', value: 25 }, { name: 'G Meet', value: 36.2 }, { name: 'Slack', value: 46.9 }, { name: 'Element', value: 60 }, { name: 'Wickr', value: 70 } ] },
+          { title: 'Visual presence', low: 'Neutral', high: 'Expressive', items: [
+            { name: 'Wickr', value: 0 }, { name: 'Element', value: 13.9 }, { name: 'G Meet', value: 21.3 }, { name: 'WhatsApp', value: 30 }, { name: 'Signal', value: 32.5 }, { name: 'Wire', value: 65, accent: true }, { name: 'Slack', value: 100 } ] },
+          { title: 'Brand presence', low: 'Subtle', high: 'Strong', items: [
+            { name: 'Wickr', value: 0 }, { name: 'Signal', value: 15.4 }, { name: 'Wire', value: 25, accent: true }, { name: 'Element', value: 33.2 }, { name: 'WhatsApp', value: 68 }, { name: 'Teams', value: 78 }, { name: 'G Meet', value: 86 }, { name: 'Slack', value: 100 } ] },
+        ]}
+      />
+    </Diagram>
   </Fragment>
 </StorySection>
 

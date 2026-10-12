@@ -1,5 +1,5 @@
 /* I13 Spectrum strips — one track per dimension, every product as a marker, names or icons stacked below.
- * Colours are the site's semantic tokens (light-dark aware). Sizes scale with the figure width (container query units), reference width 995 px. */
+ * Colours are the site's semantic tokens (light-dark aware). Sizes scale with the width of the Diagram figure (container `diagram`, query units), reference width 995 px. */
 
 .strips {
   --st-text: var(--text-default);
@@ -7,7 +7,6 @@
   --st-line: var(--border-strong);
   --st-accent: var(--accent-positive);
 
-  container: strips / inline-size;
   margin-block: 0;
   display: flex;
   flex-direction: column;
@@ -53,7 +52,7 @@
 .strips__end--high { grid-area: high; text-align: left; }
 
 /* narrow figures: the end labels sit above the track */
-@container strips (max-width: 600px) {
+@container diagram (max-width: 600px) {
   .strips__row {
     grid-template-columns: 1fr 1fr;
     grid-template-areas: "title title" "low high" "track track";
@@ -129,5 +128,3 @@
 }
 
 
-/* elevated stage */
-.strips__stage { background: var(--bg-raised); border-radius: var(--radius-l); padding: clamp(16px, 3.5cqi, 36px); }

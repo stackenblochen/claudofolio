@@ -5,11 +5,11 @@
   /* --bp-sm: 544px; --bp-md: 768px; --bp-lg: 992px; --bp-xl: 1170px; */
 
   /* Colour — palette (raw values; do not use directly in components, use the semantic tokens below).
-   * Gray ramp: one cool (blue-violet) gray scale, 950 darkest to 50 lightest, used by both themes. There is no pure black or white except
-   * for the teaser sections (bg.pure). Contrast of the two default-text steps:
+   * Gray ramp: one cool (blue-violet) gray scale, 950 darkest to 50 lightest, used by both themes. White and black appear only as the base of the standard context
+   * (teaser sections) and as the light card colour of the grouped context (bg.secondary). Contrast of the two default-text steps:
    *   400 (#9a9aab, dark text): 7.0:1 on 950, 6.4:1 on 900, 5.4:1 on 800, 4.4:1 on 700 (do not use on bg.card)
-   *   500 (#6a6b7c, light text): 5.0:1 on 50, 4.5:1 on 100, 4.0:1 on 200 (do not use on bg.card)
-   * Green 4.5:1 and salmon 3.5:1 (graphical use) on the light page (#fafafc). */
+   *   500 (#6a6b7c, light text): 5.0:1 on 50, 4.8:1 on 75 (page), 4.5:1 on 100, 4.0:1 on 200 (do not use on bg.card)
+   * Green 4.1:1 and salmon 3.3:1 (graphical use) on the light page (#f5f5f7). */
   --gray-950: #0d0d12; /* dark page; strong text in light mode */
   --gray-900: #18181e; /* dark raised */
   --gray-800: #26272c; /* dark surface (a panel on a raised stage) */
@@ -19,9 +19,10 @@
   --gray-400: #9a9aab; /* dark default text */
   --gray-300: #c6c7d2; /* light lines on a surface */
   --gray-200: #e0e1e8; /* light surface, card, borders */
-  --gray-100: #eeeef3; /* light raised */
-  --gray-50: #fafafc; /* light page; strong text in dark mode */
-  --color-black: #000000; /* only for the teaser sections (bg.pure) */
+  --gray-100: #eeeef3; /* light mobile menu */
+  --gray-75: #f5f5f7; /* light page (bg.primary); light card on a white base (bg.secondary in the standard context) */
+  --gray-50: #fafafc; /* strong text in dark mode */
+  --color-black: #000000; /* only as the dark base of the standard context (.section--pure) */
   --color-white: #ffffff;
   --color-green: #00ff32;
   --color-salmon: #fa8072;
@@ -30,14 +31,16 @@
   --color-salmon-600: #e8553d;
 
   /* Colour — semantic: light-dark(light, dark). The theme is set by color-scheme (see below). */
-  --bg-page: light-dark(var(--gray-50), var(--gray-950));
-  --bg-pure: light-dark(var(--color-white), var(--color-black)); /* pure white / black: the sections that hold the case study teasers */
-  --bg-raised: light-dark(var(--gray-100), var(--gray-900));
-  --bg-surface: light-dark(var(--gray-200), var(--gray-800)); /* a panel on a raised stage (schema groups) */
-  --bg-card: light-dark(var(--gray-200), var(--gray-700));
+  /* Backgrounds: three levels, like iOS. primary is the base, secondary a card on it, tertiary something inside that card.
+   * Two contexts: grouped (default; gray base, white cards) and standard (.section--pure in base.css; white / black base, gray cards). */
+  --bg-primary: light-dark(var(--gray-75), var(--gray-950));
+  --bg-secondary: light-dark(var(--color-white), var(--gray-900));
+  --bg-tertiary: light-dark(var(--gray-75), var(--gray-800));
+  --fill: light-dark(var(--gray-200), var(--gray-700)); /* small controls: hover pills, labels, switch, comparison cards */
   --text-default: light-dark(var(--gray-500), var(--gray-400));
   --text-strong: light-dark(var(--gray-950), var(--gray-50));
   --border-subtle: light-dark(var(--gray-200), var(--gray-700));
+  --border-secondary: light-dark(var(--gray-200), transparent); /* 1px outline around a secondary card (charts, schemas): light mode only */
   --border-strong: light-dark(var(--gray-300), var(--gray-700)); /* lines on a surface (schema pills) */
   --accent-positive: light-dark(var(--color-green-700), var(--color-green));
   --accent-primary: light-dark(var(--color-salmon-600), var(--color-salmon)); /* the brand accent: link underlines, focus rings, nav underline, timeline dot, errors, negative marks */
@@ -47,7 +50,7 @@
   --gradient-hero-top: light-dark(#bdb6f5, #4936dc);
   --gradient-hero-bottom: light-dark(#f6c3d3, #c187b1);
   --overlay-menu: light-dark(var(--gray-100), var(--gray-900)); /* the mobile menu: solid, not see-through */
-  --bg-glass: light-dark(rgba(250, 250, 252, 0.82), rgba(13, 13, 18, 0.78)); /* mostly opaque fill for pills over the page (so text stays readable over light or dark screenshots); used with backdrop-filter: blur */
+  --bg-glass: light-dark(rgba(245, 245, 247, 0.82), rgba(13, 13, 18, 0.78)); /* mostly opaque fill for pills over the page (so text stays readable over light or dark screenshots); used with backdrop-filter: blur */
   --overlay-thumb: light-dark(rgba(0, 0, 0, 0.35), rgba(0, 0, 0, 0.5));
 
   /* Theme: dark by default; the switch in the nav toggles data-theme="light" on <html> (stored in localStorage). */

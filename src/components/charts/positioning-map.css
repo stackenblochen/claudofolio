@@ -1,6 +1,6 @@
 /* I12 Positioning map — quadrant chart in HTML/CSS.
  * Colours are the site's semantic tokens (light-dark aware), so the theme follows the site.
- * Everything inside scales with the figure width (container query units), reference width 995 px. */
+ * Everything inside scales with the width of the Diagram figure (container `diagram`, query units), reference width 995 px. */
 
 .pmap {
   --pm-text: var(--text-default);
@@ -10,7 +10,6 @@
   --pm-accent: var(--accent-positive);
   --pm-tint: 12%; /* highlight quadrant: accent tint */
 
-  container: pmap / inline-size;
   margin-block: 0;
   display: flex;
   flex-direction: column;
@@ -58,7 +57,7 @@
 .pmap__title { color: var(--pm-strong); font-weight: 600; }
 
 /* narrow figures: the y-axis turns vertical so the plot keeps its width */
-@container pmap (max-width: 600px) {
+@container diagram (max-width: 600px) {
   .pmap__y { writing-mode: vertical-rl; transform: rotate(180deg); flex-direction: row-reverse; align-items: center; padding-block: 0; }
 }
 
@@ -148,5 +147,3 @@
 .pmap__pt.is-ghost { color: var(--pm-text); }
 .pmap__pt.is-ghost .pmap__dot { background: none; box-shadow: inset 0 0 0 2px currentColor; }
 
-/* elevated stage */
-.pmap__stage { background: var(--bg-raised); border-radius: var(--radius-l); padding: clamp(16px, 3.5cqi, 36px); }

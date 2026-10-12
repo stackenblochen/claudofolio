@@ -49,13 +49,13 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
   <Fragment slot="media">
     <Comparison arrow={arrowDown}>
       <Fragment slot="before">
-        <Mock size="cover" layout="set" shadow="soft" stage="var(--bg-card)" devices={[
+        <Mock size="cover" layout="set" shadow="soft" stage="var(--fill)" devices={[
           { device: 'desktop', bar: false, src: thenDesktop, alt: 'The app in 2020 on desktop: a light, consumer-style messenger interface with a call, a chart in the conversation and group details' },
           { device: 'ios', cutout: 'none', src: thenPhone, alt: 'The 2020 app on a phone: a video call with eight participants' },
         ]} />
       </Fragment>
       <Fragment slot="after">
-        <Mock size="cover" layout="set" shadow="soft" stage="var(--bg-card)" devices={[
+        <Mock size="cover" layout="set" shadow="soft" stage="var(--fill)" devices={[
           { device: 'desktop', bar: false, src: nowDesktop, alt: 'The app today on desktop: an enterprise collaboration interface with navigation, conversation list and group details' },
           { device: 'ios', cutout: 'none', src: nowPhone, alt: 'The app today on a phone: a video call with eight participants' },
         ]} />
@@ -90,29 +90,31 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
   The additional set of custom tokens and components add the brand and product tonality on top.
 
   <Fragment slot="media">
-    <Schema size="media" width={1400} height={810} alt="Diagram: iOS, Android and Desktop feed a UI library, design tokens and a code library, which together form the Wire design system next to the native design system">
-      <SchemaGroup x={185} y={113} w={496} h={400} />
-      <SchemaPill variant="outline" x={228.74} y={156.74} w={408.52} h={73.7} label="Code library" />
-      <SchemaPill variant="outline" x={228.74} y={278.9} w={408.52} h={73.7} label="Design tokens" />
-      <SchemaPill variant="outline" x={228.74} y={401.1} w={408.52} h={73.7} label="UI library" />
-      <SchemaArrow points={[[433, 270], [433, 239]]} />
-      <SchemaArrow points={[[433, 392], [433, 361]]} />
-      <SchemaPill x={127.5} y={622.5} w={185.9} h={67.7} label="iOS" />
-      <SchemaPill x={339.6} y={622.5} w={185.9} h={67.7} label="Android" />
-      <SchemaPill x={551.8} y={622.5} w={185.9} h={67.7} label="Desktop" />
-      <SchemaArrow points={[[239, 615], [239, 568], [408, 568], [408, 522]]} />
-      <SchemaArrow points={[[433, 615], [433, 521]]} />
-      <SchemaArrow points={[[627, 615], [627, 568], [458, 568], [458, 522]]} />
-      <SchemaList x={813} y={152} title="Wire Design System" items={['Wire Colors', 'Wire Fonts', 'Wire Icons', 'Wire specific components']} />
-      <SchemaList x={813} y={567} title="Native Design System" items={['Native components', 'Native user flows', 'Accessibility']} />
-    </Schema>
-    <div class="measure-text prose reveal">
-      <p>On Android and iOS, Wire follows each platform’s native patterns, like Apple’s Liquid Glass or Material’s floating action button, so the app feels native on every device.</p>
-      <p>Shared iconography, colors and other foundations add the product’s personality and make the app recognizable.</p>
-    </div>
+    <Diagram size="media" fixed>
+      <Schema width={1400} height={810} alt="Diagram: iOS, Android and Desktop feed a UI library, design tokens and a code library, which together form the Wire design system next to the native design system">
+        <SchemaGroup x={185} y={113} w={496} h={400} />
+        <SchemaPill variant="outline" x={228.74} y={156.74} w={408.52} h={73.7} label="Code library" />
+        <SchemaPill variant="outline" x={228.74} y={278.9} w={408.52} h={73.7} label="Design tokens" />
+        <SchemaPill variant="outline" x={228.74} y={401.1} w={408.52} h={73.7} label="UI library" />
+        <SchemaArrow points={[[433, 270], [433, 239]]} />
+        <SchemaArrow points={[[433, 392], [433, 361]]} />
+        <SchemaPill x={127.5} y={622.5} w={185.9} h={67.7} label="iOS" />
+        <SchemaPill x={339.6} y={622.5} w={185.9} h={67.7} label="Android" />
+        <SchemaPill x={551.8} y={622.5} w={185.9} h={67.7} label="Desktop" />
+        <SchemaArrow points={[[239, 615], [239, 568], [408, 568], [408, 522]]} />
+        <SchemaArrow points={[[433, 615], [433, 521]]} />
+        <SchemaArrow points={[[627, 615], [627, 568], [458, 568], [458, 522]]} />
+        <SchemaList x={813} y={152} title="Wire Design System" items={['Wire Colors', 'Wire Fonts', 'Wire Icons', 'Wire specific components']} />
+        <SchemaList x={813} y={567} title="Native Design System" items={['Native components', 'Native user flows', 'Accessibility']} />
+      </Schema>
+      <Fragment slot="text">
+        <p>On Android and iOS, Wire follows each platform’s native patterns, like Apple’s Liquid Glass or Material’s floating action button, so the app feels native on every device.</p>
+        <p>Shared iconography, colors and other foundations add the product’s personality and make the app recognizable.</p>
+      </Fragment>
+    </Diagram>
     <div class="grid-12 measure-media">
-      <Mock size="half" align="fit" stage="var(--bg-raised)" devices={[{ device: 'ios', src: navIos, alt: 'Main navigation on iOS' }]} />
-      <Mock size="half" align="fit" stage="var(--bg-raised)" devices={[{ device: 'android', src: navAndroid, alt: 'Main navigation on Android' }]} />
+      <Mock size="half" align="fit" stage="var(--bg-secondary)" devices={[{ device: 'ios', src: navIos, alt: 'Main navigation on iOS' }]} />
+      <Mock size="half" align="fit" stage="var(--bg-secondary)" devices={[{ device: 'android', src: navAndroid, alt: 'Main navigation on Android' }]} />
     </div>
   </Fragment>
 </StorySection>
@@ -147,7 +149,7 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
       <h3 class="t-subheading" id="prototyping">Prototyping</h3>
       <p>A Claude design system has the main views defined, so that PMs and designers can use it to prototype and test quickly.</p>
     </div>
-    <Mock size="media" align="cut-bottom" zoom={1.05} stage="var(--bg-card)" devices={[{ device: 'desktop', src: claudeDesign, alt: 'The design system set up in Claude, showing the conversation details view with the group details panel' }]} />
+    <Mock size="media" align="cut-bottom" zoom={1.05} stage="var(--fill)" devices={[{ device: 'desktop', src: claudeDesign, alt: 'The design system set up in Claude, showing the conversation details view with the group details panel' }]} />
     <Video src={siteUrl('/videos/design-system/prototype-login.mp4')} title="Prototype of the login flow" loop />
     <Video src={siteUrl('/videos/design-system/prototype-connect.mp4')} title="Prototype of the connect flow" loop />
   </Fragment>
