@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import Img from '../components/Img.astro';
+import brokenHeart from '../assets/emoji-broken-heart.png';
+import { highlight, url } from '../lib/site';
+---
+
+<Base title="Page not found" description="This page does not exist." noindex context="standard">
+  <section class="lost">
+    <div class="container">
+      <div class="measure-text row">
+        <div class="stack" style="--stack-gap: var(--space-2)">
+          <h1 class="t-title" set:html={highlight('*404*')} />
+          <p class="t-subheading subline">This page got lost.</p>
+          <div class="prose">
+            <p>It was moved, or it never existed. But what is real, anyway?</p>
+            <p><a class="link" href={url('/')}>Back to the home page</a></p>
+          </div>
+        </div>
+        <Img class="emoji" src={brokenHeart} alt="" sizes="120px" loading="eager" />
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Centre the content vertically between header and footer. */
+  :global(main) { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-top: var(--header-h); }
+  :global(.site-footer.site-footer.site-footer) { margin-top: 0; } /* beats the footer's own scoped rule */
+  .lost { padding-block: var(--space-6); }
+  .subline { color: var(--text-strong); font-weight: 400; }
+  /* phones: the emoji sits below the text; from 768 px to the right of it */
+  .row { display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-7); }
+  /* the size of the emoji on the home stage */
+  .row :global(.emoji) { flex: none; width: 7rem; height: auto; transform: rotate(8deg); filter: drop-shadow(0 8px 14px rgb(0 0 0 / 0.2)); }
+  @media (min-width: 768px) {
+    .row { flex-direction: row; align-items: center; justify-content: space-between; gap: var(--space-5); }
+    .row :global(.emoji) { width: 8.5rem; }
+  }
+</style>

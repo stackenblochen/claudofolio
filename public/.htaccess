@@ -1,2 +1,3 @@
-# Apache only (ignored on GitHub Pages). No folder listings.
+# Apache only (ignored on GitHub Pages). No folder listings, custom 404 page.
 Options -Indexes
+ErrorDocument 404 /portfolio/404.html

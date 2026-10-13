@@ -3,7 +3,7 @@
  * Home stage: doodles, screenshots and emoji that pop up on their own next to the headline, never over it. Every 2.5-4.5 s a new picture lands on top at a
  * random spot, tilt and size inside the box; the newest is the hero (bigger), the older ones sink back (smaller and fainter) and the oldest fades out, so at most 3 are visible at once.
  * The box is as high as the text block and the pictures cluster in its middle, overlapping each other.
- * Nothing depends on the pointer, except that no new picture spawns while the mouse is over the box. From 992 px the box sits to the right of the text,
+ * Nothing depends on the pointer (spawning does not pause on hover). From 992 px the box sits to the right of the text,
  * below that under it. Pictures come from src/assets/doodles/ (already optimised WebP, max 640 px); they are drawn from a shuffled bag, so none repeats
  * until all have been shown. Decorative only (aria-hidden). With reduced motion a static arrangement of three is shown.
  * Single-colour pictures follow the theme: black ones turn white in dark mode, white ones black in light mode (BLACK / WHITE), and the salmon marks are
@@ -35,7 +35,7 @@ const items = Object.entries(files).map(([path, mod]) => {
 <div class="doodles" data-doodles data-items={JSON.stringify(items)} aria-hidden="true"></div>
 
 <style>
-  /* under the text; from 992 px beside it, a fixed-width box right next to the text (HomeHero centres the group). The box itself takes the pointer (to pause spawning), the pictures do not. */
+  /* under the text; from 992 px beside it, a fixed-width box right next to the text (HomeHero centres the group). Neither the box nor the pictures react to the pointer. */
   .doodles { --doodle-shadow: 0.2; position: relative; width: 100%; height: 15rem; flex: none; user-select: none; }
   @media (min-width: 768px) { .doodles { height: 18rem; } }
   @media (min-width: 992px) { .doodles { flex: none; width: clamp(13rem, 22vw, 18rem); height: auto; align-self: stretch; } }
@@ -99,7 +99,7 @@ const items = Object.entries(files).map(([path, mod]) => {
     let z = 1;
     let last: { x: number; y: number }[] = [];
     const live: HTMLImageElement[] = []; // newest last
-    let timer = 0, visible = true, hovering = false;
+    let timer = 0, visible = true;
     const starts: number[] = [];
 
     const draw = (): Item => {
@@ -185,7 +185,7 @@ const items = Object.entries(files).map(([path, mod]) => {
     };
 
     const step = () => {
-      if (!visible || document.hidden || hovering) return; // paused: off screen, hidden tab, or the mouse is over the doodles
+      if (!visible || document.hidden) return; // paused: off screen or hidden tab
       add(draw());
       trim();
     };
@@ -204,14 +204,9 @@ const items = Object.entries(files).map(([path, mod]) => {
     starts.push(window.setTimeout(schedule, 150 + MAX * 380));
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
     io.observe(box);
-    const onEnter = () => { hovering = true; };
-    const onLeave = () => { hovering = false; };
-    box.addEventListener('pointerenter', onEnter);
-    box.addEventListener('pointerleave', onLeave);
 
     stop = () => {
       starts.forEach(clearTimeout); window.clearTimeout(timer); io.disconnect();
-      box.removeEventListener('pointerenter', onEnter); box.removeEventListener('pointerleave', onLeave);
       box.replaceChildren(); stop = undefined;
     };
   }

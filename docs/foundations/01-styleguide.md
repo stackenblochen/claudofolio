@@ -226,7 +226,7 @@ No information is available on hover only.
 | Effect | Spec |
 |---|---|
 | Section reveal | `.reveal`: scale 0.98 + 12 px rise + opacity, 700 ms `--ease-out`, on scroll-in (JS adds `.js` to `<html>`) |
-| Home doodle stack | Pictures pop up on their own every 2.5–4.5 s (max 3 visible, never over the headline); spawning pauses while the pointer is over them |
+| Home doodle stack | Pictures pop up on their own every 2.5–4.5 s (max 3 visible, never over the headline); nothing reacts to the pointer |
 | Teaser hover | See 8 (the former colour-split ripple is switched off, code kept in `src/lib/teaser-fx.ts`) |
 | Page and loading | Fade, loading bar |
 
