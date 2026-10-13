@@ -37,6 +37,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | I13 | Media row (media side by side) | `MediaRow` | Case studies |
 | I14 | Quote (the vision statement) | `Quote` | Design vision |
 | I15 | Principles (numbered columns) | `Principles` | Design vision |
+| I16 | Experience list (icon, title, text) | `ExperienceList` | About me |
 | **L — Collections** | | | |
 | L1 | Project teasers | `ProjectGrid`, `ProjectCard` | Home |
 | L2 | Other projects | `ProjectGrid` with `exclude` | Case studies |
@@ -200,3 +201,6 @@ Square photo at half the text measure (4 of 8 columns on wide desktops), radius 
 | Interactive embeds | Below 992 px replaced by poster + note; the text stays |
 | Home stage | Doodles move under the text below 992 px |
 | Mobile parity | All text is visible at every breakpoint; only media may be swapped |
+
+### I16 Experience list
+`ExperienceList`: `items` (`icon`, `title`, `text`) at the text measure, no box: two columns from 768 px, one below. `icon` is a file name under `@tabler/icons/outline` (without `.svg`), shown 24 px in `--text-default` (as in the labels); the title is `.t-body` in the strong colour at the emphasis weight, the text `.t-body`. Used on the About page under the "Experience" section title.

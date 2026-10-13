@@ -5,19 +5,24 @@ interface Props {
   id?: string;
   /** Em-dash above the heading, as on chapters and the outcome. */
   dash?: boolean;
+  /** Chapter look as in the case studies: accent "—" (as the StorySection number) and the chapter gap above. */
+  chapter?: boolean;
 }
-const { level = 2, id, dash = false } = Astro.props;
+const { level = 2, id, dash = false, chapter = false } = Astro.props;
 const Tag = `h${level}` as 'h2' | 'h3';
 ---
 
-<div class="container section-title">
+<div class:list={['container section-title', { chapter }]}>
   <div class="measure-text">
-    {dash && <span class="dash t-heading" aria-hidden="true">—</span>}
+    {chapter
+      ? <span class="t-number" aria-hidden="true">—</span>
+      : dash && <span class="dash t-heading" aria-hidden="true">—</span>}
     <Tag class="t-heading" id={id}><slot /></Tag>
   </div>
 </div>
 
 <style>
   .section-title { padding-top: var(--space-8); }
+  .section-title.chapter { padding-top: var(--chapter-gap); }
   .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
 </style>

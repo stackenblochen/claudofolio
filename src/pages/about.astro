@@ -5,26 +5,45 @@ import SectionTitle from '../components/SectionTitle.astro';
 import CareerEntry from '../components/CareerEntry.astro';
 import Timeline from '../components/Timeline.astro';
 import Portrait from '../components/Portrait.astro';
+import ExperienceList from '../components/ExperienceList.astro';
 import ContactBlock from '../components/ContactBlock.astro';
 import portrait from '../assets/portrait.webp';
 import wireLogo from '../assets/wire-logo-white.svg';
 import freshEnergyLogo from '../assets/freshenergy-logo.svg';
 import seereneLogo from '../assets/seerene-logo.svg';
+
+const experience = [
+  { icon: 'shield-lock', title: 'Complex, regulated domains', text: '10+ years designing for technically demanding products: end-to-end encrypted messaging and VoIP, security and privacy, software analytics and data visualization.' },
+  { icon: 'building-skyscraper', title: 'Enterprise and B2B SaaS', text: 'Designing for organisations as well as individuals: admins, compliance requirements, procurement criteria and public-sector tenders, alongside the daily end user.' },
+  { icon: 'route', title: 'End-to-end ownership', text: 'Taking problems from research and framing through interaction design to shipped UI detail, across native iOS and Android apps and responsive web applications.' },
+  { icon: 'components', title: 'Design systems at scale', text: 'Building, modernizing and governing multiplatform design systems: shared token architecture, component libraries, accessibility (WCAG 2.2, BITV 2.0) and documentation for people and AI tooling.' },
+  { icon: 'telescope', title: 'Design vision and direction', text: 'Setting design direction beyond the roadmap and using it to align product, engineering and leadership.' },
+  { icon: 'users-group', title: 'Team building and leadership', text: 'Growing design teams from a single designer, establishing design process and standards, and mentoring designers while staying hands-on.' },
+  { icon: 'user-search', title: 'Research-led decisions', text: 'Working with UX researchers, or running research and synthesizing the insights myself, to turn findings into product direction.' },
+  { icon: 'code', title: 'Prototyping in code', text: 'Building interactive, AI-assisted prototypes to test and validate complex behaviour early and give engineering a precise target.' },
+];
 ---
 
 <Base
   title="About me"
   current="About me"
+  context="standard"
   description="Wolfgang Lattermann is a product designer with a background in communications design. He owns the full process, from research to shipped detail."
 >
   <PageHeader eyebrow="About me" title="Making complex things *simple*, with an eye on what they could become.">
     <p>Hi, I'm Wolfgang. With a background in communications design and years of agency work, I bring a strong eye for visual detail to every product I work on.</p>
-    <p>I own the full process, from research to shipped detail, and I'm happiest hands-on in the UI while also setting the direction for where a product goes next.</p>
+    <p>I own the full process from research to shipped detail, and I'm at my best when I can do both: design hands-on and set the vision for where the product goes next.</p>
   </PageHeader>
 
   <Portrait src={portrait} alt="Portrait of Wolfgang, looking to the side, in front of a blue background, wearing a mustard-yellow sweater" />
 
-  <SectionTitle id="career">Career</SectionTitle>
+  <SectionTitle id="experience" chapter>Experience</SectionTitle>
+
+  <div class="experience">
+    <ExperienceList items={experience} />
+  </div>
+
+  <SectionTitle id="career" chapter>Career</SectionTitle>
 
   <Timeline>
     <CareerEntry company="Wire" role="Lead Product Designer" dates="Jan 2021 – Nov 2026" logo={wireLogo} logoHeight={34}>
@@ -46,9 +65,11 @@ import seereneLogo from '../assets/seerene-logo.svg';
     </CareerEntry>
   </Timeline>
 
-  <SectionTitle id="education">Education</SectionTitle>
+  <SectionTitle id="education" chapter>Education</SectionTitle>
 
   <Timeline>
+    <CareerEntry company="IDEO U" role="Insight for Innovations (certificate)" dates="May 2021" />
+
     <CareerEntry company="University of Applied Arts Wiesbaden" role="Diploma, Communications Design" dates="2002 – 2006" />
 
     <CareerEntry company="Internships in visual design" dates="2004 – 2005">
@@ -66,3 +87,7 @@ import seereneLogo from '../assets/seerene-logo.svg';
     <p>Placeholder text. I'm open to conversations about product design, design systems and design vision work. Get in touch, or have a look at my CV.</p>
   </ContactBlock>
 </Base>
+
+<style>
+  .experience { padding-top: var(--space-6); }
+</style>

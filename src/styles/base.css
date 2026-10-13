@@ -166,12 +166,12 @@ a { color: var(--text-strong); }
 .section { padding-block: var(--section-y); }
 .section--raised { background: var(--bg-secondary); }
 .section--black { background: var(--bg-primary); }
-.section--pure { /* sections that hold the case study teasers: the standard context (white / black base, gray cards) */
+.section--pure, html[data-context='standard'] { /* the standard context (white / black base, gray cards): the teaser sections, or a whole page via <Base context="standard"> */
   --bg-primary: light-dark(var(--color-white), var(--color-black));
   --bg-secondary: light-dark(var(--gray-75), var(--gray-900));
   --bg-tertiary: light-dark(var(--color-white), var(--gray-800));
-  background: var(--bg-primary);
 }
+.section--pure { background: var(--bg-primary); }
 .stack { display: flex; flex-direction: column; gap: var(--stack-gap, var(--space-4)); }
 .chapter-flow { display: flex; flex-direction: column; gap: var(--chapter-gap); }
 

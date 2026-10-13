@@ -1,0 +1,47 @@
+---
+/**
+ * Experience list at the text measure (no box): two columns from 768 px (one below) of items,
+ * each an icon (Tabler outline, default text colour like the labels), a title in the strong colour and a short description.
+ * Icons are file names under @tabler/icons/outline (without .svg); they are decorative.
+ */
+const icons = import.meta.glob('/node_modules/@tabler/icons/icons/outline/*.svg', { query: '?raw', import: 'default', eager: true }) as Record<string, string>;
+
+interface Item { icon: string; title: string; text: string }
+interface Props { items: Item[] }
+const { items } = Astro.props;
+
+const svg = (name: string) =>
+  (icons[`/node_modules/@tabler/icons/icons/outline/${name}.svg`] ?? '')
+    .replace(/\s(width|height|class)="[^"]*"/g, '')
+    .replace('<svg', '<svg aria-hidden="true" focusable="false"');
+---
+
+<div class="container">
+  <div class="measure-text reveal">
+    <ul class="items" role="list">
+      {items.map((it) => (
+        <li class="item">
+          <span class="icon" set:html={svg(it.icon)} />
+          <div class="copy">
+            <h3 class="t-body title">{it.title}</h3>
+            <p class="t-body text">{it.text}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</div>
+
+<style>
+  .items { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-6); }
+  .item { display: grid; grid-template-columns: auto minmax(0, 1fr); column-gap: var(--space-4); align-items: start; }
+  .icon { display: block; color: var(--text-default); padding-top: 2px; }
+  .icon :global(svg) { display: block; width: 24px; height: 24px; stroke-width: 1.5; }
+  .title { color: var(--text-strong); font-weight: var(--weight-emphasis); letter-spacing: var(--ls-emphasis); }
+  .text { margin-top: var(--space-2); }
+
+  @media (min-width: 768px) {
+    .items { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: var(--space-6); row-gap: var(--space-7); }
+    .item { column-gap: var(--space-4); }
+  }
+</style>

@@ -20,7 +20,7 @@ const rows = [
 <section class="contact" aria-labelledby="contact-title">
   <div class="container">
     <div class="measure-text reveal">
-      <span class="dash t-heading" aria-hidden="true">—</span>
+      <span class="t-number" aria-hidden="true">—</span>
       <h2 class="t-heading" id="contact-title">{title}</h2>
       {Astro.slots.has('default') && <div class="body prose"><slot /></div>}
       <dl class="rows">
@@ -36,9 +36,8 @@ const rows = [
 </section>
 
 <style>
-  .contact { padding-block: var(--space-6) var(--space-7); }
-  .dash { display: block; color: var(--text-strong); line-height: 1; margin-bottom: var(--space-2); }
-  .body { margin-top: var(--space-3); }
+  .contact { padding-block: var(--chapter-gap) var(--space-7); }
+  .body { margin-top: var(--space-6); }
   .rows { margin: var(--space-6) 0 0; display: grid; gap: var(--space-4); }
   .row { display: grid; gap: var(--space-1); }
   dd { margin: 0; overflow-wrap: anywhere; }

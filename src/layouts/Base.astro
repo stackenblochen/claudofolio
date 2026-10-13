@@ -21,6 +21,8 @@ interface Props {
   noindex?: boolean;
   /** Label of the active nav item. */
   current?: string;
+  /** Background context: grouped (default, gray base, white cards) or standard (white / black base, gray cards). */
+  context?: 'grouped' | 'standard';
 }
 // Page transition: old page fades out, then the new page fades in (keyframes in base.css).
 const pageFade = {
@@ -33,7 +35,7 @@ const pageFade = {
     new: { name: 'pt-fade-in', duration: '0.3s', delay: '0.2s', easing: 'ease-out', fillMode: 'backwards' },
   },
 };
-const { title, description = SITE.description, ogImage, noindex: noindexProp = false, current } = Astro.props;
+const { title, description = SITE.description, ogImage, noindex: noindexProp = false, current, context = 'grouped' } = Astro.props;
 // Everything except the production release (SITE_TARGET=production, hallo-wl.de) is a staging copy: keep it out of search engines and AI training.
 const noindex = noindexProp || process.env.SITE_TARGET !== 'production';
 const fullTitle = title ? `${title} — ${SITE.name}` : SITE.name;
@@ -49,7 +51,7 @@ const fontFace = editorial
 ---
 
 <!doctype html>
-<html lang="en" transition:animate={pageFade}>
+<html lang="en" data-context={context === 'standard' ? 'standard' : undefined} transition:animate={pageFade}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
