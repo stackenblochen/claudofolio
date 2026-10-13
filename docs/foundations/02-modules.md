@@ -24,9 +24,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | T10 | Story section | `StorySection` | Case studies |
 | T8 | Career entry | `CareerEntry` inside `Timeline` | About |
 | **I — Media** | | | |
-| I1 | Wide figure | `Figure` | Case studies |
-| I2 | Figure pair | `FigurePair` | Case studies |
-| I3 | Screen stack | `ScreenStack` | Case studies |
+| I1 | Figure (single image, stack or pair) | `Figure` | Case studies |
 | I4 | Before → after | `Comparison` | Case studies |
 | I5 | Image + text row | `ImageText` | Case studies |
 | I6 | Video | `Video` | Case studies |
@@ -35,6 +33,10 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | I9 | Device mock | `Mock` | see `04-mocks.md` |
 | I10 | Diagram (stage for schemas, charts, maps) | `Diagram` + `Schema` + parts, `PositioningMap`, `SpectrumStrips` | see `05-schemas.md` |
 | I11 | Screen gallery | `ScreenGallery` | Case studies (optional) |
+| I12 | Media text (subheadline + text above media) | `MediaText` | Case studies |
+| I13 | Media row (media side by side) | `MediaRow` | Case studies |
+| I14 | Quote (the vision statement) | `Quote` | Design vision |
+| I15 | Principles (numbered columns) | `Principles` | Design vision |
 | **L — Collections** | | | |
 | L1 | Project teasers | `ProjectGrid`, `ProjectCard` | Home |
 | L2 | Other projects | `ProjectGrid` with `exclude` | Case studies |
@@ -116,14 +118,21 @@ A timeline item: bullet on a vertical line, optional logo (own height per logo, 
 
 Shared rules: radius 16 (diagrams, squares, video, embeds; 12 below 768 px) or 12 (UI screenshots); border where the image edge would dissolve into the dark background; shadow on screenshots. All media sit inside the grid padding.
 
-### I1 Wide figure
-`Figure`: a single image with optional caption and natural height, for screenshots, diagrams and boards alike. Radius 12, border (`border`: both themes, one mode only, or none), shadow. `size`: `wide` = media measure (default), `text` = text measure, `full` = 12 cols. `kind="appshot"` is for transparent PNG app shots (outline instead of border and shadow).
+### I1 Figure
+`Figure`: one or more images with an optional caption (`.t-caption`, ≤ 8 words) and natural height, for screenshots, diagrams, boards and documents alike. `src` + `alt` for one image, or `images` for several.
+- **`layout`:** `stack` (default) puts the images one under the other with one caption; `pair` puts two side by side (5 + 5 columns from 768 px, stacked below).
+- **`kind`:** `screenshot` (default) = radius 12, border and shadow; `image` = radius 16, plain (photos, documents, boards); `appshot` = transparent PNG app shots (outline instead of border and shadow).
+- **`border`:** `true` (default for screenshots) = both themes, `"dark-mode"` / `"light-mode"` = only in that mode, `false` = none (default for images).
+- **`size`:** `wide` = media measure (default), `text` = text measure, `full` = 12 cols.
 
-### I2 Figure pair
-Two square images, 5 + 5 columns from 768 px, stacked below. Radius 16.
+### I14 Quote
+`Quote`: one big statement in `.t-quote` (30 → 56 px, Geist bold) on a card (`--bg-secondary`, radius 16, generous padding) on the media measure, with an optional small label (`.t-label`) above. `*word*` becomes an Editorial New highlight like in titles; `\n` starts a new line. For the design vision statement; use it once per page.
 
-### I3 Screen stack
-One or two UI screenshots stacked, then one caption (`.t-caption`, ≤ 8 words). Radius 12, border (`border`: both themes, one mode only, or none), shadow.
+### I15 Principles
+`Principles`: a short numbered list (`items`: `title`, `text`) as cards (`--bg-secondary`, radius 16), three columns from 768 px, stacked below. Each card has the number in a label, the title in `.t-body` in the strong colour at the emphasis weight (like the `ImageText` titles) and one sentence. Follows a `MediaText` that introduces it (20 px below), after a `Quote`.
+
+### I13 Media row
+`MediaRow`: puts media side by side on the media measure: two `Mock`s of size `half` or `pair`, three of size `third`. Stacked on phones. Replaces hand-built `div.grid-12` rows.
 
 ### I4 Then → now
 Two cards (`--fill`, radius 16) with the red hand-drawn arrow (`arrow-red-down.svg`) overlapping both. No text inside the cards; the sides only get accessible names. Each side is a slot (`before`, `after`), typically `<Mock size="cover" layout="set" shadow="soft">`, which fills the whole card; set the card background with the mock's `stage` (`var(--fill)` for then, a gradient for now). A plain image works too (`before`, `after` props).
@@ -139,6 +148,9 @@ Insights, principles, any short finding with an illustration. Lives in the text 
 
 ### I8 Annotations
 `Stamp` (confidential, see the styleguide) and `Arrow` (the salmon hand-drawn arrow, default `arrow-red-down.svg`, decorative). Both overlap neighbouring blocks with negative margins inside the component only, reduced by half below 768 px.
+
+### I12 Media text
+`MediaText`: an optional `h3` `.t-subheading` with a short text, in the media slot, introducing the media that follows (the text measure, 12 px between heading and text). Starts a new group: see the rhythm rules in `03-page-rules.md`. A `Diagram` with a `title` is the same block with a chart attached.
 
 ### I9 Mock and I10 Diagram
 Device frames, and one frame for every schema, chart or map. Rules and options in `04-mocks.md` and `05-schemas.md`.

@@ -137,12 +137,13 @@ Named `<intensity>-<tonality>`: intensity `soft` | `calm` | `active`, tonality `
 
 ### 5.2 Roles
 
-Seven roles, applied with a class. The semantic level (`h1`, `h2` …) and the look are decoupled: one `h1` per page, `h2` for sections, `h3` for sub-headings, and the look comes from the class.
+Eight roles, applied with a class. The semantic level (`h1`, `h2` …) and the look are decoupled: one `h1` per page, `h2` for sections, `h3` for sub-headings, and the look comes from the class.
 
 | Class | Size (mobile → desktop) | Line height | Weight (dark / light) | Letter spacing (dark / light) | Role |
 |---|---|---|---|---|---|
 | `.t-display` | 50 → 120 px | 56 → 108 px | 600 / 700 | 0 / −0.011em | Reserved display style |
 | `.t-title` | 36 → 80 px | 46 → 100 px | 700 / 800 | −0.0025em / −0.0135em | H1: page titles, case titles, the home stage headline |
+| `.t-quote` | 30 → 56 px | 38 → 68 px | 700 / 800 | −0.0025em / −0.0135em | The design vision statement (`Quote`); highlights in Editorial New |
 | `.t-heading` | 26 → 34 px | 32 → 44 px | 700 | 0 | Section titles, the home subline, company names |
 | `.t-subheading` | 18 → 24 px | 26 → 32 px | 700 | 0 | Sub-headings, card titles, roles, intro paragraphs (About, Overview) |
 | `.t-body` | 16 → 19 px | 25.6 → 28.5 px | 300 / 400 | 0 / −0.007em | Paragraphs, lists, meta values, main navigation |

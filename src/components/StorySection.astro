@@ -53,4 +53,6 @@ const beats = [
   /* titles of the insight rows (ImageText) match the block labels */
   .media :global(.image-text h3) { font-weight: var(--weight-emphasis); }
   .media { display: flex; flex-direction: column; gap: var(--space-4); }
+  /* a new group in the media slot (a MediaText, or a Diagram with a headline) gets extra space above it: 100 px in total */
+  .media > :global(.group:not(:first-child)) { margin-top: var(--space-8); }
 </style>

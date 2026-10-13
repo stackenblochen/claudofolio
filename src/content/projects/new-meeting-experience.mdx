@@ -71,10 +71,10 @@ import gridPoster from '../../assets/projects/meetings/meetings-grid-poster.png'
 
   <Fragment slot="media">
     <Mock size="media" align="cut-right" stage="calm-blue" devices={[{ device: 'desktop', bar: false, src: adhoc, alt: 'Dialog for setting up an ad-hoc meeting: title, guest access, meeting link and an optional password, shown over the running meeting' }]} caption="Setting up an ad-hoc meeting" />
-    <div class="grid-12 measure-media">
+    <MediaRow>
       <Mock size="pair" theme="dark" devices={[{ device: 'desktop', bar: false, src: guest1, alt: 'Join as guest page with camera preview, name field and Join as Guest button' }]} caption="Join as guest in the browser" />
       <Mock size="pair" theme="dark" devices={[{ device: 'desktop', bar: false, src: guest2, alt: 'Guest view of the running meeting after joining, with a grid of video tiles' }]} caption="Meeting with 6 participants" />
-    </div>
+    </MediaRow>
   </Fragment>
 </StorySection>
 
@@ -84,7 +84,7 @@ import gridPoster from '../../assets/projects/meetings/meetings-grid-poster.png'
   <p slot="outcome">Users handle the core functionality (scheduling, joining, accepting or declining, and getting an overview) directly within the app. A Wire meeting plugin for Outlook and Gmail is planned as the next milestone.</p>
 
   <Fragment slot="media">
-    <ScreenStack
+    <Figure
       images={[{ src: schedule1, alt: 'My Meetings list of upcoming meetings' }]}
       caption="My Meetings"
     />

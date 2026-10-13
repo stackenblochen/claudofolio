@@ -1,38 +1,55 @@
 ---
 /**
- * I1 Wide figure: single image (diagram, screenshot) with optional caption, natural height.
+ * I1 Figure: one or more images with an optional caption. Covers single images (screenshots, diagrams, boards), stacked screens and pairs.
+ *
+ *   <Figure src={shot} alt="…" caption="…" />                                                   one image
+ *   <Figure images={[{ src: a, alt: '…' }, { src: b, alt: '…' }]} caption="…" />               stacked, one caption
+ *   <Figure layout="pair" kind="image" images={[{ src: a, alt: '…' }, { src: b, alt: '…' }]} />   two side by side (stacked below 768 px)
+ *
  * size: "wide" = 10 cols (media measure), "text" = text measure, "full" = 12 cols.
- * kind: "screenshot" (default) = radius 12 + border + shadow, "appshot" = transparent PNG outline.
+ * kind: "screenshot" (default) = radius 12 + border + shadow, "image" = radius 16, plain (photos, documents, boards), "appshot" = transparent PNG outline.
  * border: true (default for screenshots) = border in both themes, "dark-mode" / "light-mode" = only in that mode (a dark image that bleeds into
- * the dark page), false = none.
+ * the dark page), false = none (default for images).
  */
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
 
+type Item = { src: ImageMetadata | string; alt: string };
 interface Props {
-  src: ImageMetadata | string;
-  alt: string;
+  src?: ImageMetadata | string;
+  alt?: string;
+  images?: Item[];
+  layout?: 'stack' | 'pair';
   caption?: string;
   size?: 'wide' | 'text' | 'full';
-  kind?: 'screenshot' | 'appshot';
+  kind?: 'screenshot' | 'image' | 'appshot';
   border?: boolean | 'dark-mode' | 'light-mode';
   loading?: 'lazy' | 'eager';
 }
-const { src, alt, caption, size = 'wide', kind = 'screenshot', border = true, loading } = Astro.props;
+const { src, alt = '', images, layout = 'stack', caption, size = 'wide', kind = 'screenshot', border, loading } = Astro.props;
+const items: Item[] = images ?? (src ? [{ src, alt }] : []);
 const measure = { wide: 'measure-media', text: 'measure-text', full: 'measure-wide' }[size];
-const borderClass = border === true ? 'media-border' : border ? `media-border--${border}` : '';
-const imgClass = {
-  screenshot: `media-m ${borderClass} media-shadow`,
-  appshot: 'app-shot',
-}[kind];
+const b = border ?? kind === 'screenshot';
+const borderClass = b === true ? 'media-border' : b ? `media-border--${b}` : '';
+const imgClass = { screenshot: `media-m ${borderClass} media-shadow`, image: `media-l ${borderClass}`, appshot: 'app-shot' }[kind];
+const sizes = layout === 'pair' ? '(min-width: 768px) 600px, 100vw' : undefined;
 ---
 
 <figure class={`${measure} reveal`}>
-  <Img src={src} alt={alt} class={imgClass} loading={loading} />
+  {layout === 'pair' ? (
+    <div class="grid-12">
+      {items.map((i) => <div class="span-6"><Img src={i.src} alt={i.alt} class={imgClass} sizes={sizes} loading={loading} /></div>)}
+    </div>
+  ) : (
+    <div class="shots">
+      {items.map((i) => <Img src={i.src} alt={i.alt} class={imgClass} loading={loading} />)}
+    </div>
+  )}
   {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
 </figure>
 
 <style>
   figure { display: flex; flex-direction: column; gap: var(--space-3); }
+  .shots { display: flex; flex-direction: column; gap: var(--space-5); }
   img, :global(img) { width: 100%; }
 </style>

@@ -1,0 +1,20 @@
+---
+/**
+ * I12 Media text: an optional subheadline (`h3`, `.t-subheading`) with a short text, in the media slot of a `StorySection`, introducing the media
+ * that follows. Same text measure, heading-to-text gap and group break as the head of a `Diagram`.
+ *
+ *   <MediaText title="Documentation" id="documentation">I documented the system in a DESIGN.md file …</MediaText>
+ */
+interface Props { title?: string; id?: string }
+const { title, id } = Astro.props;
+---
+
+<div class="group head measure-text reveal">
+  {title && <h3 class="t-subheading" id={id}>{title}</h3>}
+  <div class="prose"><slot /></div>
+</div>
+
+<style>
+  .head { display: flex; flex-direction: column; gap: var(--space-3); }
+  .head h3 { color: var(--text-strong); }
+</style>

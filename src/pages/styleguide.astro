@@ -11,8 +11,9 @@ import CareerEntry from '../components/CareerEntry.astro';
 import Timeline from '../components/Timeline.astro';
 import CaseHero from '../components/CaseHero.astro';
 import Figure from '../components/Figure.astro';
-import FigurePair from '../components/FigurePair.astro';
-import ScreenStack from '../components/ScreenStack.astro';
+import MediaRow from '../components/MediaRow.astro';
+import Quote from '../components/Quote.astro';
+import Principles from '../components/Principles.astro';
 import Comparison from '../components/Comparison.astro';
 import ImageText from '../components/ImageText.astro';
 import Embed from '../components/Embed.astro';
@@ -105,6 +106,7 @@ const gradients = gradientPairs.map(([a, b]) => {
 const roles = [
   ['t-display', 'Display', 'Reserved display style'],
   ['t-title', 'Title', 'H1: page, case and home titles (Geist bold; highlighted words in Editorial New italic)'],
+  ['t-quote', 'Quote', 'The design vision statement (Geist bold; highlighted words in Editorial New italic)'],
   ['t-heading', 'Heading', 'Lead statements, section and chapter titles, statement, home subline'],
   ['t-subheading', 'Subheading', 'Sub-chapters, card titles'],
   ['t-body', 'Body', 'Paragraphs, lists, meta values, main navigation'],
@@ -309,8 +311,10 @@ const cards: CardData[] = [
   <div class="gap"></div>
   <div class="container chapter-flow">
     <Figure src={diagram} alt="Placeholder wide figure" caption="Figure (I1): radius 12, border, shadow, natural height" />
-    <FigurePair a={{ src: square, alt: 'Placeholder A' }} b={{ src: square, alt: 'Placeholder B' }} caption="FigurePair (I2)" />
-    <ScreenStack images={[{ src: screen, alt: 'Placeholder screen 1' }, { src: screen, alt: 'Placeholder screen 2' }]} caption="ScreenStack (I3)" />
+    <Figure layout="pair" kind="image" images={[{ src: square, alt: 'Placeholder A' }, { src: square, alt: 'Placeholder B' }]} caption="Figure (I1), layout pair, kind image" />
+    <Figure images={[{ src: screen, alt: 'Placeholder screen 1' }, { src: screen, alt: 'Placeholder screen 2' }]} caption="Figure (I1), two screens stacked" />
+    <Quote text={'Serious security made simple for everyone who depends on it.\n*Intuitive*, *modern*, and *personal* by design.'} />
+    <Principles items={[{ title: 'Principle one', text: 'Principles (I15): a title and one sentence each.' }, { title: 'Principle two', text: 'Three columns from 768 px, stacked below.' }, { title: 'Principle three', text: 'Cards with the number in a label.' }]} />
     <Comparison>
       <Fragment slot="before">
         <Mock size="cover" layout="set" shadow="soft" stage="var(--fill)" devices={[{ device: 'desktop', bar: false, src: mockDesktop, alt: 'Placeholder: the product then, on desktop' }, { device: 'ios', src: mockIos, alt: 'Placeholder: the product then, on a phone' }]} />
@@ -333,36 +337,36 @@ const cards: CardData[] = [
   <div class="gap"></div>
   <div class="container chapter-flow">
     <Mock size="media" stage="dusk" devices={[{ device: 'desktop', src: mockDesktop, alt: 'Meetings list in the desktop app' }]} caption="Mock (I9): desktop, solid bar, stage dusk" />
-    <div class="grid-12 measure-media">
+    <MediaRow>
       <Mock size="half" align="cut-right" stage="calm-blue" devices={[{ device: 'desktop', fill: 'transparent', src: mockChat, alt: 'Conversation in the desktop app' }]} caption="Desktop, transparent bar, cut right" />
       <Mock size="half" align="cut-right" theme="dark" stage="calm-blue" devices={[{ device: 'desktop', fill: 'transparent', controls: 'mono', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="Desktop, transparent bar, mono controls, dark" />
-    </div>
+    </MediaRow>
     <Mock size="media" stage="meadow" devices={[{ device: 'browser', bar: 'https://app.wire.com', tab: 'Wire', src: mockWeb, alt: 'Schedule a meeting in the web app' }]} caption="Browser, Chrome" />
     <Mock size="media" theme="dark" stage="night" devices={[{ device: 'browser', browser: 'safari', bar: 'https://app.wire.com', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="Browser, Safari, dark" />
-    <div class="grid-12 measure-media">
+    <MediaRow>
       <Mock size="pair" theme="dark" devices={[{ device: 'desktop', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="Pair: two windows side by side, no stage" />
       <Mock size="pair" theme="dark" devices={[{ device: 'desktop', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="The window fills its half" />
-    </div>
-    <div class="grid-12 measure-media">
+    </MediaRow>
+    <MediaRow>
       <Mock size="third" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="iOS" />
       <Mock size="third" stage="soft-salmon" devices={[{ device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }]} caption="Android" />
       <Mock size="third" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Same size in every stage" />
-    </div>
-    <div class="grid-12 measure-media">
+    </MediaRow>
+    <MediaRow>
       <Mock size="third" align="fit" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Fit: as big as possible" />
       <Mock size="third" align="fit" stage="soft-salmon" devices={[{ device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }]} caption="Fit" />
       <Mock size="third" align="fit" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Fit" />
-    </div>
-    <div class="grid-12 measure-media">
+    </MediaRow>
+    <MediaRow>
       <Mock size="third" align="cut-bottom" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Cut at the bottom" />
       <Mock size="third" align="cut-bottom" stage="soft-salmon" devices={[{ device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }]} caption="Cut at the bottom" />
       <Mock size="third" align="cut-bottom" stage="soft-salmon" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Cut at the bottom" />
-    </div>
-    <div class="grid-12 measure-media">
+    </MediaRow>
+    <MediaRow>
       <Mock size="third" stage="soft-salmon" shadow="none" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Shadow: none" />
       <Mock size="third" stage="soft-salmon" shadow="soft" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Shadow: soft" />
       <Mock size="third" stage="soft-salmon" shadow="heavy" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Shadow: heavy (default)" />
-    </div>
+    </MediaRow>
     <Mock size="cover" layout="set" stage="sundown" devices={[{ device: 'browser', bar: 'https://app.wire.com', src: mockWeb, alt: 'Schedule a meeting in the web app' }, { device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Set: browser and phone" />
     <Mock size="media" layout="row" stage="calm-violet" devices={[{ device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }, { device: 'android', src: mockAndroid, alt: 'Conversation list on Android' }, { device: 'ios', src: mockIos, alt: 'Conversation list on iOS' }]} caption="Row of three phones" />
     <Mock size="media" theme="dark" devices={[{ device: 'desktop', src: mockDesktopDark, alt: 'Schedule a meeting, dark' }]} caption="No stage: a dark window gets the 1px outline" />

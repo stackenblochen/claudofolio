@@ -54,12 +54,12 @@ import android from '../../assets/placeholders/mocks/android.png';
 </StorySection>
 
 <StorySection number="02" title="Aligning expectations" id="expectations">
-  <p slot="problem">The CTO asked for a "modern" look, but design had no clear idea what he meant exactly, and much of the discussion was about features.</p>
+  <p slot="problem">The CTO asked for a 'modern look', but design had no clear idea what he meant exactly, and much of the discussion was about features.</p>
   <p slot="decision">In 2 workshops, we aligned our expectations and brought leadership clear proposals instead of open questions.</p>
-  <p slot="outcome">We aligned on what to expect from the vision: how to place the vision in relation to our competitos, and what "modern" means to us.</p>
+  <p slot="outcome">We aligned on what to expect from the vision: how to place the vision in relation to our competitors, and what 'modern' means to us. We also identified a 'feature track' and a 'UI track' and assigned topics accordingly.</p>
 
   <Fragment slot="media">
-    <Diagram title="Competitor analysis" caption="Competitor analysis, as presented to the stakeholders">
+    <Diagram title="Competitor analysis">
       <PositioningMap
         alt="Positioning map of messengers by user expertise (specialist to intuitive) and security posture (consumer to enterprise). Wire moves from today's position toward the easy and enterprise-grade quadrant, where no other messenger sits."
         yAxis={['Enterprise', 'Security posture', 'Consumer']}
@@ -80,7 +80,7 @@ import android from '../../assets/placeholders/mocks/android.png';
         move={{ from: 'Wire today', to: 'Wire vision' }}
       />
     </Diagram>
-    <Diagram title="What 'modern' means'" caption="What “modern” means">
+    <Diagram title="What 'modern' means'">
       <p slot="intro">To pin down what we mean by 'modern', I took the four aspects stakeholders kept focusing on and gave each a scale. We placed the competitors and Wire's vision on them, so everyone worked from the same picture.</p>
       <SpectrumStrips
         alt="Four spectra on which Wire and seven competitors were placed: tone and personality from formal to personal, interaction design from standardized to custom, visual presence from neutral to expressive, and brand presence from subtle to strong."
@@ -100,10 +100,20 @@ import android from '../../assets/placeholders/mocks/android.png';
 </StorySection>
 
 <StorySection number="03" title="Vision and principles" id="principles">
-  I wrote a vision statement and tied it to the new product vision, "highest security for people who depend on it". Features like a global search, a new navigation and the most critical flows became part of it, but a vision needs balance. Look and feel and onboarding shape a product's personality more directly than features do.
+  I wrote the design vision statement and tied it to the new product vision, "highest security for people who depend on it". It is the north star for designers and AI agents working on the product.
 
   <Fragment slot="media">
-    <Figure src={diagram} alt="TODO: how the design vision connects to the product vision" caption="Placeholder: vision statement and product vision" />
+    <Quote
+      text={'Serious security made simple for everyone who depends on it.\n*Intuitive*, *modern*, and *personal* by design.'}
+    />
+    <MediaText>
+      <p>The principles are the more detailed directive: they say how to apply the vision when working on design solutions.</p>
+    </MediaText>
+    <Principles items={[
+      { title: 'Make security feel effortless', text: 'Translate hard security concepts into an intuitive experience, so users don’t have to think about what’s underneath.' },
+      { title: 'Stay modern', text: 'A contemporary look that makes the product feel alive and evolving.' },
+      { title: 'Make people feel at home', text: 'Let users shape their space with small visual touches, so Wire feels personal (consumer-like experience).' },
+    ]} />
   </Fragment>
 </StorySection>
 

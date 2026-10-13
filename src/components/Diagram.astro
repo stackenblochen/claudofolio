@@ -26,7 +26,7 @@ const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-m
 const hasHead = !!title || Astro.slots.has('intro');
 ---
 
-<div class="diagram" data-size={size}>
+<div class:list={['diagram', { group: hasHead }]} data-size={size}>
   {hasHead && (
     <div class="head measure-text reveal">
       {title && <h3 class="t-subheading">{title}</h3>}
@@ -42,9 +42,7 @@ const hasHead = !!title || Astro.slots.has('intro');
 
 <style>
   .diagram { display: flex; flex-direction: column; gap: var(--space-4); min-width: 0; }
-  /* extra space between stacked diagrams, on top of the media slot gap */
-  .diagram + .diagram { margin-top: var(--space-8); }
-  .head { display: flex; flex-direction: column; gap: var(--space-2); }
+  .head { display: flex; flex-direction: column; gap: var(--space-3); }
   .head h3 { color: var(--text-strong); }
   .fig { container: diagram / inline-size; display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; margin-block: 0; }
   .fig:not(.measure-media):not(.measure-wide) { margin-inline: 0; }

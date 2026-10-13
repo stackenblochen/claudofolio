@@ -87,7 +87,7 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
 <StorySection number="03" title="Multiplatform" id="multiplatform">
   Each client builds on its native system (SwiftUI on iOS, Material 2/3 on Android, a React-based UI kit on desktop), which brings platform conventions and the accessibility baseline.
 
-  The additional set of custom tokens and components add the brand and product tonality on top.
+  On top of that, a set of custom tokens and components, together with shared iconography and colors, adds the product’s tonality and personality and makes the app recognizable.
 
   <Fragment slot="media">
     <Diagram size="media" fixed>
@@ -107,15 +107,14 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
         <SchemaList x={813} y={152} title="Wire Design System" items={['Wire Colors', 'Wire Fonts', 'Wire Icons', 'Wire specific components']} />
         <SchemaList x={813} y={567} title="Native Design System" items={['Native components', 'Native user flows', 'Accessibility']} />
       </Schema>
-      <Fragment slot="text">
-        <p>On Android and iOS, Wire follows each platform’s native patterns, like Apple’s Liquid Glass or Material’s floating action button, so the app feels native on every device.</p>
-        <p>Shared iconography, colors and other foundations add the product’s personality and make the app recognizable.</p>
-      </Fragment>
     </Diagram>
-    <div class="grid-12 measure-media">
+    <MediaText title="Mobile" id="mobile">
+      <p>On Android and iOS, Wire follows each platform’s native patterns, like Apple’s Liquid Glass or Material’s floating action button, so the app feels native on every device.</p>
+    </MediaText>
+    <MediaRow>
       <Mock size="half" align="fit" stage="var(--bg-secondary)" devices={[{ device: 'ios', src: navIos, alt: 'Main navigation on iOS' }]} />
       <Mock size="half" align="fit" stage="var(--bg-secondary)" devices={[{ device: 'android', src: navAndroid, alt: 'Main navigation on Android' }]} />
-    </div>
+    </MediaRow>
   </Fragment>
 </StorySection>
 
@@ -127,28 +126,26 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
   I specified how designers annotate their flows so that engineers can more easily add screen reader labels and keyboard order.
 
   <Fragment slot="media">
-    <FigurePair
-      a={{ src: colorContrast, alt: 'Old and new palette colors with their WCAG AA result: three of the old colors fail, all new colors pass' }}
-      b={{ src: a11yDark, alt: 'An Add people dialog annotated for accessibility, with a Close dialog label on the close button and the avatars marked as decorative' }}
-    />
+    <Figure layout="pair" kind="image" images={[
+      { src: colorContrast, alt: 'Old and new palette colors with their WCAG AA result: three of the old colors fail, all new colors pass' },
+      { src: a11yDark, alt: 'An Add people dialog annotated for accessibility, with a Close dialog label on the close button and the avatars marked as decorative' },
+    ]} />
   </Fragment>
 </StorySection>
 
 <StorySection number="05" title="AI-ready" id="ai-ready">
   <Fragment slot="media">
-    <div class="measure-text prose reveal">
-      <h3 class="t-subheading" id="documentation">Documentation</h3>
+    <MediaText title="Documentation" id="documentation">
       <p>I documented the system in a DESIGN.md file that covers tokens, typography, contrast rules and accessibility details, amongst other fundamentals. This can be used by anyone to build prototypes, as well as engineers to implement a final design solution based on the same foundations.</p>
-    </div>
-    <FigurePair
-      a={{ src: designmd, alt: 'The DESIGN.md file, opening with the product context and rules for token IDs' }}
-      b={{ src: bubbleSpec, alt: 'Component documentation for the chat bubble, shown next to the component in Figma' }}
-    />
+    </MediaText>
+    <Figure layout="pair" kind="image" images={[
+      { src: designmd, alt: 'The DESIGN.md file, opening with the product context and rules for token IDs' },
+      { src: bubbleSpec, alt: 'Component documentation for the chat bubble, shown next to the component in Figma' },
+    ]} />
 
-    <div class="measure-text prose reveal">
-      <h3 class="t-subheading" id="prototyping">Prototyping</h3>
+    <MediaText title="Prototyping" id="prototyping">
       <p>A Claude design system has the main views defined, so that PMs and designers can use it to prototype and test quickly.</p>
-    </div>
+    </MediaText>
     <Mock size="media" align="cut-bottom" zoom={1.05} stage="var(--fill)" devices={[{ device: 'desktop', src: claudeDesign, alt: 'The design system set up in Claude, showing the conversation details view with the group details panel' }]} />
     <Video src={siteUrl('/videos/design-system/prototype-login.mp4')} title="Prototype of the login flow" loop />
     <Video src={siteUrl('/videos/design-system/prototype-connect.mp4')} title="Prototype of the connect flow" loop />

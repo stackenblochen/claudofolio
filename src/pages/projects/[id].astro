@@ -5,8 +5,6 @@ import { getProjects } from '../../lib/projects';
 import StorySection from '../../components/StorySection.astro';
 import ScreenGallery from '../../components/ScreenGallery.astro';
 import Figure from '../../components/Figure.astro';
-import FigurePair from '../../components/FigurePair.astro';
-import ScreenStack from '../../components/ScreenStack.astro';
 import Comparison from '../../components/Comparison.astro';
 import ImageText from '../../components/ImageText.astro';
 import Video from '../../components/Video.astro';
@@ -15,6 +13,10 @@ import Arrow from '../../components/Arrow.astro';
 import Mock from '../../components/Mock.astro';
 import Schema from '../../components/Schema.astro';
 import Diagram from '../../components/Diagram.astro';
+import MediaText from '../../components/MediaText.astro';
+import MediaRow from '../../components/MediaRow.astro';
+import Quote from '../../components/Quote.astro';
+import Principles from '../../components/Principles.astro';
 import SchemaGroup from '../../components/schema/SchemaGroup.astro';
 import SchemaPill from '../../components/schema/SchemaPill.astro';
 import SchemaArrow from '../../components/schema/SchemaArrow.astro';
@@ -31,7 +33,7 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 
 // Available in every case-study MDX without imports.
-const components = { StorySection, ScreenGallery, Figure, FigurePair, ScreenStack, Comparison, ImageText, Video, Embed, Arrow, Mock, Diagram, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips };
+const components = { StorySection, ScreenGallery, Figure, Comparison, ImageText, Video, Embed, Arrow, Mock, Diagram, MediaText, MediaRow, Quote, Principles, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips };
 ---
 
 <CaseStudy project={project}>

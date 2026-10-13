@@ -1,0 +1,28 @@
+---
+/**
+ * I15 Principles: a short numbered list of principles, each a title and a sentence, as cards (`--bg-secondary`) in columns (three from 768 px,
+ * stacked below), the number in a label. Follows a `MediaText` or a `Quote` in the media slot of a `StorySection`.
+ *
+ *   <Principles items={[{ title: 'Stay modern', text: 'A contemporary look …' }, …]} />
+ */
+interface Props { items: { title: string; text: string }[] }
+const { items } = Astro.props;
+---
+
+<ol class="principles measure-media reveal">
+  {items.map((item, i) => (
+    <li>
+      <span class="t-label n" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+      <h3 class="t-body">{item.title}</h3>
+      <p class="prose">{item.text}</p>
+    </li>
+  ))}
+</ol>
+
+<style>
+  .principles { list-style: none; margin-block: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: var(--space-4) var(--gutter); }
+  li { display: flex; flex-direction: column; gap: var(--space-2); background: var(--bg-secondary); border-radius: var(--radius-l); padding: var(--space-5); }
+  .n { color: var(--text-default); }
+  h3 { color: var(--text-strong); font-weight: var(--weight-emphasis); } /* the same title style as the insight rows (ImageText) */
+  @media (min-width: 768px) { .principles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+</style>

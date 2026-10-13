@@ -79,6 +79,8 @@
   --text-heading-lh: clamp(2rem, 1.5rem + 1.6vw, 2.75rem);
   --text-heading-weight: 700;
   --text-heading-ls: 0;
+  --text-quote-size: clamp(1.875rem, 1.1rem + 3vw, 3.5rem); /* 30 → 56 px: the design vision statement; weight and tracking as the title */
+  --text-quote-lh: clamp(2.375rem, 1.5rem + 3.4vw, 4.25rem);
   --text-subheading-size: clamp(1.125rem, 0.9545rem + 0.7273vw, 1.5rem);
   --text-subheading-lh: clamp(1.625rem, 1.455rem + 0.7273vw, 2rem);
   --text-subheading-weight: 700;

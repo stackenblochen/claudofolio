@@ -45,12 +45,13 @@ button { font: inherit; color: inherit; }
  * Six roles. Semantic level (h1/h2/…) and visual role (.t-*) are decoupled.
  *   .t-display     Home hero only
  *   .t-title       H1 page titles (Geist bold, highlights in Editorial New)
+ *   .t-quote       The design vision statement (Geist bold, highlights in Editorial New)
  *   .t-heading     Section titles, the home subline, company names
  *   .t-subheading  Sub-headings, card titles, roles, intro paragraphs
  *   .t-body        Paragraphs, lists, meta values, main navigation
  *   .t-label       Eyebrows, meta labels, dates, footer (always weight 300)
  * Modifiers: .t-upper (uppercase), .t-serif (Editorial face inside a Display line). */
-.t-display, .t-title, .t-heading, .t-subheading {
+.t-display, .t-title, .t-quote, .t-heading, .t-subheading {
   color: var(--text-strong);
   text-wrap: balance;
 }
@@ -61,6 +62,11 @@ button { font: inherit; color: inherit; }
 .t-title {
   font-family: var(--font-sans);
   font-size: var(--text-title-size); line-height: var(--text-title-lh);
+  font-weight: var(--text-title-weight); letter-spacing: var(--text-title-ls);
+}
+.t-quote {
+  font-family: var(--font-sans);
+  font-size: var(--text-quote-size); line-height: var(--text-quote-lh);
   font-weight: var(--text-title-weight); letter-spacing: var(--text-title-ls);
 }
 .t-heading {
@@ -88,7 +94,7 @@ button { font: inherit; color: inherit; }
 .t-number { display: block; font-family: var(--font-sans); font-style: normal; font-weight: var(--text-body-weight); letter-spacing: var(--text-body-ls); font-size: 1.5rem; line-height: 1; color: var(--accent-primary); margin-bottom: var(--space-2); }
 @media (min-width: 992px) { .t-number { font-size: 2rem; } }
 /* Highlighted words inside a title (`*word*` in the text) switch to the Editorial face. */
-.t-title em { font-family: var(--font-serif); font-style: italic; font-weight: 800; color: var(--accent-primary); }
+.t-title em, .t-quote em { font-family: var(--font-serif); font-style: italic; font-weight: 800; color: var(--accent-primary); }
 .t-upper { text-transform: uppercase; letter-spacing: 0.06em; }
 .t-serif { font-family: var(--font-serif); font-weight: 800; letter-spacing: var(--text-title-ls); }
 .t-strong { color: var(--text-strong); }

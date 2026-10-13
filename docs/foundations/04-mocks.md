@@ -12,10 +12,10 @@ One system for showing websites, apps and UI elements in a device frame. Module 
 
 ```astro
 <Mock size="full" stage="dusk" devices={[{ device: 'desktop', src: shot, alt: 'Meetings list' }]} />
-<div class="grid-12">
+<MediaRow>
   <Mock size="half" align="cut-right" stage="calm-blue" devices={[{ device: 'desktop', fill: 'transparent', src: shot, alt: '…' }]} />
   <Mock size="half" align="cut-bottom" stage="calm-blue" devices={[{ device: 'ios', src: phone, alt: '…' }]} />
-</div>
+</MediaRow>
 ```
 
 `stage` takes a gradient name from `src/lib/gradients.ts` (`dusk`, `calm-blue`, `active-salmon` …) and then follows the theme, or any CSS background. Without `stage` the mock is transparent. `full`, `cover` and `media` stand on their own; `half`, `pair` and `third` go inside a `.grid-12` row. Everything inside scales with the stage width.

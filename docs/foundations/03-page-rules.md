@@ -80,7 +80,7 @@ Length guide: **900–1,500 words**, **6–12 visuals**, readable in 5–7 minut
 Section title vocabulary (keep it short and concrete): *Then and now · Shared effort · Multiplatform · Accessibility · AI-ready · Key user insights · From X to Y · Design solution · Outcome · Learnings*.
 
 ### 3.2 Case study, variant: Design vision (next planned)
-Same frame, with these sections suggested: **Where we were** (Comparison: today) → **Principles** (3 × ImageText or a numbered list) → **The vision** (Figure wide + ScreenStack of key screens) → **How it travels** (how it was shared: workshops, prototype, embed) → **What it changed** → Learnings (the Outcome follows the sections). Mark speculative screens clearly as "Vision, not shipped" in captions.
+Same frame, with these sections suggested: **Where we were** (Comparison: today) → **Vision and principles** (a `Quote` with the vision statement, then `Principles`) → **The vision** (Figure wide + a stacked Figure of key screens) → **How it travels** (how it was shared: workshops, prototype, embed) → **What it changed** → Learnings (the Outcome follows the sections). Mark speculative screens clearly as "Vision, not shipped" in captions.
 
 ### 3.3 Home
 
@@ -149,7 +149,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 - **Grid:** fixed 12 columns. The grid width is fixed per breakpoint: xl 1170 (col 70, gutter 30), lg 896 (col 60, gutter 16), md 656 (col 40, gutter 16), full width below 768. Outer padding around the grid: 30 px (≥ 768) / 20 px (< 768). No floating widths inside a breakpoint.
 - **Text measure:** 8 cols (xl) → 9 (lg, md) → 12 (sm, xs). Never set body copy wider than 8 cols on desktop. Hero has its own rules.
 - **Media measure:** 10 cols (xl, lg, md) → 12 (sm, xs). Embeds and grids use 12. All measures sit inside the grid padding.
-- **Vertical rhythm:** `--chapter-gap` (80 → 160 px fluid) between sections; `--space-4` (20 px) between modules inside a section; `--space-3` (12 px) between a heading and its body.
+- **Vertical rhythm:** `--chapter-gap` (80 → 160 px fluid) between sections; `--space-4` (20 px) between modules inside a section; `--space-3` (12 px) between a heading and its body. In a story section's media slot a new group (`MediaText`, or a `Diagram` with a headline) gets `--space-8` (80 px) extra above it, 100 px in total; the first item has none.
 - **Hero:** `--hero-top` (60 → 160 px) above the H1.
 - **Section backgrounds:** `--bg-primary` by default (grouped context: gray base, white cards via `--bg-secondary`). `--bg-secondary` for raised sections, mock, schema and chart stages. `.section--pure` (standard context: white or black base, gray cards) only for the sections that hold the teasers (Outcome and Other projects, Home grid), applied consistently on all pages.
 - **Overlaps** (stamp, arrow) use CSS `translate`/negative margins inside the component only, and are reduced by 50 % below 768 px.
