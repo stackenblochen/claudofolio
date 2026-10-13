@@ -56,6 +56,7 @@ const projects = defineCollection({
       outcomeNumber: z.string().optional(), // number shown above the Outcome heading, e.g. "06" (the one after the last StorySection)
       order: z.number(), // grid position
       draft: z.boolean().default(false),
+      stagingOnly: z.boolean().default(false), // built for the GitHub Pages preview and local dev, left out of the production release (hallo-wl.de)
     }),
 });
 

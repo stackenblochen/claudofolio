@@ -1,0 +1,4 @@
+# Apache only: keep these files out of search results.
+<IfModule mod_headers.c>
+  Header set X-Robots-Tag "noindex, noarchive"
+</IfModule>

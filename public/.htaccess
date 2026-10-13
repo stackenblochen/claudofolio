@@ -1,0 +1,2 @@
+# Apache only (ignored on GitHub Pages). No folder listings.
+Options -Indexes

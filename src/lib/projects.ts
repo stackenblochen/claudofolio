@@ -17,9 +17,12 @@ export interface CardData {
   thumb?: ProjectEntry['data']['thumb'];
 }
 
+/** Projects marked `stagingOnly` are left out of the production release (SITE_TARGET=production). */
+const inRelease = (p: ProjectEntry) => !(process.env.SITE_TARGET === 'production' && p.data.stagingOnly);
+
 /** All published projects by `order`, optionally without the current one. Unlisted ones (iterations) only with `includeUnlisted` (page routes). */
 export async function getProjects(opts: { exclude?: string; limit?: number; includeUnlisted?: boolean } = {}): Promise<ProjectEntry[]> {
-  const all = await getCollection('projects', ({ data }) => !data.draft && (opts.includeUnlisted || !data.unlisted));
+  const all = await getCollection('projects', (p) => inRelease(p) && !p.data.draft && (opts.includeUnlisted || !p.data.unlisted));
   return all
     .filter((p) => p.id !== opts.exclude)
     .sort((a, b) => a.data.order - b.data.order)
@@ -37,7 +40,7 @@ export function isComingSoon(p: ProjectEntry): boolean {
 
 /** Teasers for Home: published projects plus "coming soon" drafts, together by `order`. */
 export async function getTeasers(): Promise<CardData[]> {
-  const all = await getCollection('projects', (p) => isComingSoon(p) || (!p.data.draft && !p.data.unlisted));
+  const all = await getCollection('projects', (p) => inRelease(p) && (isComingSoon(p) || (!p.data.draft && !p.data.unlisted)));
   return all.sort((a, b) => a.data.order - b.data.order).map((p) => ({ ...toCard(p), ...(p.data.draft && { href: undefined, comingSoon: true }) }));
 }
 
