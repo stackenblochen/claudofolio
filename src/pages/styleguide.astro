@@ -65,8 +65,8 @@ const colors: (string | [string[], string, string, string, string, string])[] = 
   [['--border-light-mode'], 'A border in light mode only: light media that would bleed into the light page', 'transparent', 'none', '--gray-200', '#e0e1e8'],
   [['--text-default'], 'Body text', '--gray-400', '#9a9aab', '--gray-500', '#6a6b7c'],
   [['--text-strong'], 'Headings, labels, emphasis', '--gray-50', '#fafafc', '--gray-950', '#0d0d12'],
-  [['--accent-positive'], 'Positive marks', '--color-green', '#00ff32', '--color-green-700', '#008a21'],
-  [['--accent-primary', '--accent-link'], 'Links, focus ring, nav underline, timeline dot, errors, negative marks', '--color-salmon', '#fa8072', '--color-salmon-600', '#e8553d'],
+  [['--accent-positive'], 'Positive marks', '--color-green', '#00ff32', '--color-green-700', '#007a1d'],
+  [['--accent-primary', '--accent-link'], 'Links, focus ring, nav underline, timeline dot, errors, negative marks', '--color-salmon', '#fa8072', '--color-salmon-600', '#d03a24'],
   [['--selection-bg'], 'Text selection', '--color-salmon', '#fa8072', '--color-salmon', '#fa8072'],
 ];
 const bg = (v: string) => (v.startsWith('--') ? `var(${v})` : v);
@@ -88,9 +88,9 @@ const ramp = [
 // The accent colours: [name, token, hex, use]
 const accents = [
   ['Salmon', '--color-salmon', '#fa8072', 'Brand accent in dark mode, text selection'],
-  ['Salmon 600', '--color-salmon-600', '#e8553d', 'Brand accent in light mode (darker, for contrast)'],
+  ['Salmon 600', '--color-salmon-600', '#d03a24', 'Brand accent in light mode (darker, for contrast)'],
   ['Green', '--color-green', '#00ff32', 'Positive marks in dark mode'],
-  ['Green 700', '--color-green-700', '#008a21', 'Positive marks in light mode (darker, for contrast)'],
+  ['Green 700', '--color-green-700', '#007a1d', 'Positive marks in light mode (darker, for contrast)'],
 ];
 // Background gradients: the hue pairs of the former reveal effect (lib/pen.ts), shown as fixed swatches in both themes.
 const hue = Object.fromEntries(GRADIENT_HUES);

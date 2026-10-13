@@ -129,7 +129,7 @@ Shared rules: radius 16 (diagrams, squares, video, embeds; 12 below 768 px) or 1
 `Quote`: one big statement in `.t-quote` (30 → 56 px, Geist bold) on a card (`--bg-secondary`, radius 16, generous padding) on the media measure, with an optional small label (`.t-label`) above. `*word*` becomes an Editorial New highlight like in titles; `\n` starts a new line. For the design vision statement; use it once per page.
 
 ### I15 Principles
-`Principles`: a short numbered list (`items`: `title`, `text`) as cards (`--bg-secondary`, radius 16), three columns from 768 px, stacked below. Each card has the number in a label, the title in `.t-body` in the strong colour at the emphasis weight (like the `ImageText` titles) and one sentence. Follows a `MediaText` that introduces it (20 px below), after a `Quote`.
+`Principles`: a short numbered list (`items`: `title`, `text`) as cards (`--bg-secondary`, radius 16), three columns from 992 px (laptop), one full-width card per row below. Each card has the number in a label, the title in `.t-body` in the strong colour at the emphasis weight (like the `ImageText` titles) and one sentence in the strong colour. Follows a `MediaText` that introduces it (20 px below), after a `Quote`.
 
 ### I13 Media row
 `MediaRow`: puts media side by side on the media measure: two `Mock`s of size `half` or `pair`, three of size `third`. Stacked on phones. Replaces hand-built `div.grid-12` rows.

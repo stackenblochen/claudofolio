@@ -9,7 +9,7 @@
    * (teaser sections) and as the light card colour of the grouped context (bg.secondary). Contrast of the two default-text steps:
    *   400 (#9a9aab, dark text): 7.0:1 on 950, 6.4:1 on 900, 5.4:1 on 800, 4.4:1 on 700 (do not use on bg.card)
    *   500 (#6a6b7c, light text): 5.0:1 on 50, 4.8:1 on 75 (page), 4.5:1 on 100, 4.0:1 on 200 (do not use on bg.card)
-   * Green 4.1:1 and salmon 3.3:1 (graphical use) on the light page (#f5f5f7). */
+   * Light-mode green 5.1:1 and salmon 4.5:1 on the light page (#f5f5f7), both pass for small text. */
   --gray-950: #0d0d12; /* dark page; strong text in light mode */
   --gray-900: #18181e; /* dark raised */
   --gray-800: #26272c; /* dark surface (a panel on a raised stage) */
@@ -27,8 +27,8 @@
   --color-green: #00ff32;
   --color-salmon: #fa8072;
   /* light-mode counterparts */
-  --color-green-700: #008a21;
-  --color-salmon-600: #e8553d;
+  --color-green-700: #007a1d;
+  --color-salmon-600: #d03a24;
 
   /* Colour — semantic: light-dark(light, dark). The theme is set by color-scheme (see below). */
   /* Backgrounds: three levels, like iOS. primary is the base, secondary a card on it, tertiary something inside that card.

@@ -25,3 +25,4 @@ pnpm-debug.log*
 
 # local original/source assets (not part of the site)
 design-source/
+release

@@ -91,7 +91,7 @@ One cool (blue-violet) gray ramp, used by both themes, plus three signal colours
 | `gray-75` | `#f5f5f7` | Light page; light card on a white base |
 | `gray-50` | `#fafafc` | Strong text in dark mode |
 
-White and black appear only as the base of the standard context (the teaser sections) and as the light card colour of the grouped context. Signal colours: salmon `#fa8072` (`#e8553d` in light mode), green `#00ff32` (`#008a21` in light mode). Selection is salmon with black text in both themes.
+White and black appear only as the base of the standard context (the teaser sections) and as the light card colour of the grouped context. Signal colours: salmon `#fa8072` (`#d03a24` in light mode), green `#00ff32` (`#007a1d` in light mode). Selection is salmon with black text in both themes.
 
 ### 4.2 Semantic roles
 
@@ -119,7 +119,7 @@ Other roles (the same in every context):
 | `--overlay-menu` | gray-100 | gray-900 | Mobile menu background (solid, not transparent) |
 | `--overlay-thumb` | black 35 % | black 50 % | Reserved for thumbnail overlays |
 
-**Contrast.** Default text (400) on dark is 7.0:1 on primary, 6.4:1 on secondary, 5.4:1 on tertiary and 4.4:1 on fill. Default text (500) on light is 4.8:1 on the page (primary), about 5.3:1 on a white card and 4.0:1 on fill. So: do not set default text on `--fill` below 18 px, and keep strong text for anything on a fill. Salmon on the light page is 3.3:1 (graphic or large text only); light-mode green is 4.1:1 (below 4.5:1 for small text).
+**Contrast.** Default text (400) on dark is 7.0:1 on primary, 6.4:1 on secondary, 5.4:1 on tertiary and 4.4:1 on fill. Default text (500) on light is 4.8:1 on the page (primary), about 5.3:1 on a white card and 4.0:1 on fill. So: do not set default text on `--fill` below 18 px, and keep strong text for anything on a fill. Light-mode salmon (`#d03a24`) is 4.5:1 on the light page and light-mode green (`#007a1d`) is 5.1:1, so both pass for small text.
 
 ### 4.3 Gradients
 

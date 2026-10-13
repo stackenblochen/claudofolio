@@ -33,7 +33,9 @@ const pageFade = {
     new: { name: 'pt-fade-in', duration: '0.3s', delay: '0.2s', easing: 'ease-out', fillMode: 'backwards' },
   },
 };
-const { title, description = SITE.description, ogImage, noindex = false, current } = Astro.props;
+const { title, description = SITE.description, ogImage, noindex: noindexProp = false, current } = Astro.props;
+// Everything except the production release (SITE_TARGET=production, hallo-wl.de) is a staging copy: keep it out of search engines and AI training.
+const noindex = noindexProp || process.env.SITE_TARGET !== 'production';
 const fullTitle = title ? `${title} — ${SITE.name}` : SITE.name;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
@@ -61,7 +63,8 @@ const fontFace = editorial
     <link rel="icon" href={url('/favicon.ico')} sizes="32x32" />
     <link rel="icon" type="image/png" sizes="64x64" href={url('/favicon-light.png')} media="(prefers-color-scheme: light)" />
     <link rel="icon" type="image/png" sizes="64x64" href={url('/favicon-dark.png')} media="(prefers-color-scheme: dark)" />
-    {noindex && <meta name="robots" content="noindex" />}
+    {noindex && <meta name="robots" content="noindex, nofollow, noarchive, noimageai, noai" />}
+    {noindex && <meta name="googlebot" content="noindex, nofollow" />}
     <meta property="og:type" content="website" />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />

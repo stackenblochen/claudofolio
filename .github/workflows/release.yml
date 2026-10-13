@@ -1,0 +1,29 @@
+name: Release build for hallo-wl.de
+
+# Manual only: run this from the Actions tab when a milestone is ready.
+# It builds the site for hallo-wl.de/portfolio/ plus a forwarding index.html and attaches it as a downloadable zip.
+# Upload the contents of that zip to the web root of hallo-wl.de.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npm run build:release
+        env:
+          SITE_TARGET: production
+          CASE_STUDY_PASSWORD: ${{ secrets.CASE_STUDY_PASSWORD }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: hallo-wl-de-release
+          path: release
