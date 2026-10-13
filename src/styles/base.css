@@ -173,7 +173,9 @@ a { color: var(--text-strong); }
 .media-l { border-radius: var(--radius-l); }
 .media-m { border-radius: var(--radius-m); }
 @media (max-width: 767px) { .media-l { border-radius: var(--radius-m); } }
-.media-hairline { border: var(--border-hairline); }
+.media-border { border: 1px solid var(--border); } /* media either has this border or none; for one mode only use the two below */
+.media-border--dark-mode { border: 1px solid var(--border-dark-mode); } /* dark content that would bleed into the dark page */
+.media-border--light-mode { border: 1px solid var(--border-light-mode); } /* light content that would bleed into the light page */
 .media-shadow { box-shadow: var(--shadow-screenshot); }
 .app-shot { filter: var(--filter-appshot); }
 

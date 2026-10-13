@@ -47,33 +47,49 @@ import { GRADIENT_HUES, gradientFromHues } from '../lib/pen';
 import { INTENSITIES, INTENSITY_NOTES, TONALITIES, TONALITY_IDS, GRADIENTS, MOODS, gradientById } from '../lib/gradients';
 
 // [role, dark palette var, dark hex, light palette var, light hex]
-const colors: [string[], string, string, string, string, string][] = [
+const colors: (string | [string[], string, string, string, string, string])[] = [
   // [semantic tokens, use, dark palette var, dark hex, light palette var, light hex]
-  [['--bg-primary'], 'Base: the page (grouped context), white / black in the standard context (teaser sections)', '--gray-950', '#0d0d12', '--gray-75', '#f5f5f7'],
-  [['--bg-secondary', '--border-secondary'], 'A card on the base: white in grouped, gray in standard (outline in light mode)', '--gray-900', '#18181e', '--color-white', '#ffffff'],
+  'Backgrounds · grouped (default for pages: gray base, white cards)',
+  [['--bg-primary'], 'The base: the page', '--gray-950', '#0d0d12', '--gray-75', '#f5f5f7'],
+  [['--bg-secondary'], 'A card on the base', '--gray-900', '#18181e', '--color-white', '#ffffff'],
   [['--bg-tertiary'], 'Inside a card: schema groups and pills', '--gray-800', '#26272c', '--gray-75', '#f5f5f7'],
-  [['--fill', '--border-subtle'], 'Card fill, hairlines and borders', '--gray-700', '#34373d', '--gray-200', '#e0e1e8'],
-  [['--border-strong'], 'Lines on a surface', '--gray-700', '#34373d', '--gray-300', '#c6c7d2'],
+  'Backgrounds · standard (inside .section--pure, the teaser sections: white / black base, gray cards)',
+  [['--bg-primary'], 'The base: the section', '--color-black', '#000000', '--color-white', '#ffffff'],
+  [['--bg-secondary'], 'A card on the base: the teaser cards', '--gray-900', '#18181e', '--gray-75', '#f5f5f7'],
+  [['--bg-tertiary'], 'Inside a card', '--gray-800', '#26272c', '--color-white', '#ffffff'],
+  'Controls, borders, text and accents (the same in both contexts)',
+  [['--fill'], 'Small controls: hover pills, labels, theme switch', '--gray-700', '#34373d', '--gray-200', '#e0e1e8'],
+  [['--border'], 'Every border and line: media, cards, chart and schema lines', '--gray-700', '#34373d', '--gray-200', '#e0e1e8'],
+  [['--border-dark-mode'], 'A border in dark mode only: dark media that would bleed into the dark page', '--gray-700', '#34373d', 'transparent', 'none'],
+  [['--border-light-mode'], 'A border in light mode only: light media that would bleed into the light page', 'transparent', 'none', '--gray-200', '#e0e1e8'],
   [['--text-default'], 'Body text', '--gray-400', '#9a9aab', '--gray-500', '#6a6b7c'],
   [['--text-strong'], 'Headings, labels, emphasis', '--gray-50', '#fafafc', '--gray-950', '#0d0d12'],
   [['--accent-positive'], 'Positive marks', '--color-green', '#00ff32', '--color-green-700', '#008a21'],
   [['--accent-primary', '--accent-link'], 'Links, focus ring, nav underline, timeline dot, errors, negative marks', '--color-salmon', '#fa8072', '--color-salmon-600', '#e8553d'],
   [['--selection-bg'], 'Text selection', '--color-salmon', '#fa8072', '--color-salmon', '#fa8072'],
 ];
+const bg = (v: string) => (v.startsWith('--') ? `var(${v})` : v);
 // The gray ramp: [step, hex, use]
 const ramp = [
   ['950', '#0d0d12', 'Dark page · strong text in light mode'],
-  ['900', '#18181e', 'Dark raised'],
-  ['800', '#26272c', 'Dark surface (panel on a raised stage)'],
-  ['700', '#34373d', 'Dark card and borders'],
+  ['900', '#18181e', 'Dark secondary (card on the page)'],
+  ['800', '#26272c', 'Dark tertiary (inside a card)'],
+  ['700', '#34373d', 'Dark fill and borders'],
   ['600', '#4d505a', 'Spare'],
   ['500', '#6a6b7c', 'Light default text'],
   ['400', '#9a9aab', 'Dark default text'],
-  ['300', '#c6c7d2', 'Light lines on a surface'],
-  ['200', '#e0e1e8', 'Light surface, card, borders'],
-  ['100', '#eeeef3', 'Light raised'],
-  ['75', '#f5f5f7', 'Light page · light card on a white base'],
+  ['300', '#c6c7d2', 'Spare'],
+  ['200', '#e0e1e8', 'Light fill and borders'],
+  ['100', '#eeeef3', 'Light mobile menu'],
+  ['75', '#f5f5f7', 'Light page and tertiary · card on a white base'],
   ['50', '#fafafc', 'Strong text in dark mode'],
+];
+// The accent colours: [name, token, hex, use]
+const accents = [
+  ['Salmon', '--color-salmon', '#fa8072', 'Brand accent in dark mode, text selection'],
+  ['Salmon 600', '--color-salmon-600', '#e8553d', 'Brand accent in light mode (darker, for contrast)'],
+  ['Green', '--color-green', '#00ff32', 'Positive marks in dark mode'],
+  ['Green 700', '--color-green-700', '#008a21', 'Positive marks in light mode (darker, for contrast)'],
 ];
 // Background gradients: the hue pairs of the former reveal effect (lib/pen.ts), shown as fixed swatches in both themes.
 const hue = Object.fromEntries(GRADIENT_HUES);
@@ -123,20 +139,35 @@ const cards: CardData[] = [
       ))}
     </div>
     <div class="measure-text">
+      <h3 class="t-subheading ghead">Accent colours</h3>
+      <p class="t-label intro-note">Salmon is the brand accent, green marks positive values. Each has a dark-mode step and a darker light-mode step so it keeps its contrast on the light page.</p>
+    </div>
+    <div class="measure-media ramp ramp--accent">
+      {accents.map(([name, token, hex, use]) => (
+        <figure class="rstep">
+          <span class="rchip" style={`background:var(${token})`}></span>
+          <figcaption class="t-label"><span class="gname">{name}</span><code>{hex}</code><span>{use}</span></figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="measure-text">
       <h3 class="t-subheading ghead">Semantic roles</h3>
       <p class="t-label intro-note">Semantic roles with their dark and light values. Components use only the roles (<code>var(--bg-primary)</code> …), never the raw palette. Switch the theme in the nav to see the live result.</p>
     </div>
     <div class="measure-media">
-      <div class="colors">
-      <div class="crow chead t-label"><span>Token</span><span>Dark</span><span>Light</span></div>
-      {colors.map(([tokens, use, dv, dh, lv, lh]) => (
-        <div class="crow">
-          <span class="ctoken">{tokens.map((t) => <code class="t-label">{t}</code>)}<span class="t-label cuse">{use}</span></span>
-          <span class="cell"><span class="chip" style={`background:var(${dv})`}></span><span class="chex"><code class="hex t-label">{dh}</code><code class="t-label cvar">{dv}</code></span></span>
-          <span class="cell"><span class="chip" style={`background:var(${lv})`}></span><span class="chex"><code class="hex t-label">{lh}</code><code class="t-label cvar">{lv}</code></span></span>
-        </div>
-      ))}
-    </div>
+      <div class="colors" role="table" aria-label="Semantic colour roles">
+        <div class="crow chead t-label" role="row"><span role="columnheader">Token</span><span role="columnheader" class="cuse-h">Use</span><span role="columnheader">Dark</span><span role="columnheader">Light</span></div>
+        {colors.map((row) => typeof row === 'string' ? (
+          <div class="cgroup t-label" role="row"><span role="cell">{row}</span></div>
+        ) : (
+          <div class="crow" role="row">
+            <span class="ctoken" role="cell">{row[0].map((t) => <code class="t-label">{t}</code>)}</span>
+            <span class="t-label cuse" role="cell">{row[1]}</span>
+            <span class="cell" role="cell"><span class="chip" style={`background:${bg(row[2])}`}></span><span class="chex"><code class="hex t-label">{row[3]}</code><code class="cvar t-label">{row[2]}</code></span></span>
+            <span class="cell" role="cell"><span class="chip" style={`background:${bg(row[4])}`}></span><span class="chex"><code class="hex t-label">{row[5]}</code><code class="cvar t-label">{row[4]}</code></span></span>
+          </div>
+        ))}
+      </div>
     </div>
   </div>
 
@@ -222,9 +253,9 @@ const cards: CardData[] = [
 
   <SectionTitle id="shape">Shape &amp; elevation</SectionTitle>
   <div class="container"><div class="measure-media shapes">
-    <div class="shape media-m media-hairline"><span class="t-label">radius-m 12 · hairline</span></div>
-    <div class="shape media-l media-hairline"><span class="t-label">radius-l 16 · hairline</span></div>
-    <div class="shape media-m media-hairline media-shadow"><span class="t-label">screenshot shadow</span></div>
+    <div class="shape media-m media-border"><span class="t-label">radius-m 12 · border</span></div>
+    <div class="shape media-l media-border"><span class="t-label">radius-l 16 · border</span></div>
+    <div class="shape media-m media-border media-shadow"><span class="t-label">screenshot shadow</span></div>
   </div></div>
 
   <SectionTitle id="grid-demo">Grid</SectionTitle>
@@ -277,7 +308,7 @@ const cards: CardData[] = [
   <SectionTitle id="media">Media modules</SectionTitle>
   <div class="gap"></div>
   <div class="container chapter-flow">
-    <Figure src={diagram} alt="Placeholder wide figure" caption="Figure (I1): radius 12, hairline, shadow, natural height" />
+    <Figure src={diagram} alt="Placeholder wide figure" caption="Figure (I1): radius 12, border, shadow, natural height" />
     <FigurePair a={{ src: square, alt: 'Placeholder A' }} b={{ src: square, alt: 'Placeholder B' }} caption="FigurePair (I2)" />
     <ScreenStack images={[{ src: screen, alt: 'Placeholder screen 1' }, { src: screen, alt: 'Placeholder screen 2' }]} caption="ScreenStack (I3)" />
     <Comparison>
@@ -382,23 +413,32 @@ const cards: CardData[] = [
   .bars { display: flex; flex-direction: column; gap: var(--space-2); }
   .bar-row { background: var(--fill); padding: var(--space-2) var(--space-3); color: var(--text-strong); border-radius: 4px; }
   .matrix { border-collapse: collapse; }
-  .matrix th, .matrix td { text-align: left; padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: var(--border-hairline); }
+  .matrix th, .matrix td { text-align: left; padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--border); }
   .matrix th { color: var(--text-default); font-weight: 400; }
   .intro-note { padding-top: var(--space-5); }
-  .colors { display: grid; gap: var(--space-3); padding-top: var(--space-5); }
-  .crow { display: grid; grid-template-columns: 1.3fr 1fr 1fr; gap: var(--space-4); align-items: center; }
-  .chead { color: var(--text-default); }
-  .cell { display: flex; align-items: center; gap: var(--space-3); }
+  /* semantic roles: a real grid, one ruled row per role, columns aligned */
+  .colors { padding-top: var(--space-5); }
+  .crow { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr) minmax(0, 1.05fr) minmax(0, 1.05fr); column-gap: var(--space-4); align-items: center; padding-block: var(--space-3); border-bottom: 1px solid var(--border); }
+  .chead { color: var(--text-default); padding-block: var(--space-2); }
+  .cgroup { color: var(--text-strong); padding-top: var(--space-6); padding-bottom: var(--space-2); border-bottom: 1px solid var(--border); }
+  .cell { display: flex; align-items: center; gap: var(--space-3); min-width: 0; }
   .hex { text-transform: uppercase; }
-  .ctoken, .chex { display: flex; flex-direction: column; gap: 2px; }
+  .ctoken, .chex { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .ctoken code, .chex code { overflow-wrap: anywhere; }
   .ctoken code { color: var(--text-strong); }
   .cuse, .cvar { color: var(--text-default); }
-  .chip { width: 44px; height: 44px; flex: none; border-radius: var(--radius-m); border: 1px solid var(--border-subtle); }
-  @media (max-width: 767px) { .crow { grid-template-columns: 1fr 1fr; } .crow > :first-child { grid-column: 1 / -1; } .chead { display: none; } }
+  .chip { width: 32px; height: 32px; flex: none; border-radius: var(--radius-m); border: 1px solid var(--border); }
+  @media (max-width: 767px) {
+    .crow { grid-template-columns: 1fr 1fr; row-gap: var(--space-2); }
+    .crow > :nth-child(1), .crow > :nth-child(2) { grid-column: 1 / -1; }
+    .chead { display: none; }
+  }
   .ramp { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); padding-block: var(--space-5); }
   @media (min-width: 768px) { .ramp { grid-template-columns: repeat(6, minmax(0, 1fr)); } }
   .rstep { margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
-  .rchip { height: 72px; border-radius: var(--radius-m); border: 1px solid var(--border-subtle); display: block; }
+  .ramp--accent { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 768px) { .ramp--accent { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .rchip { height: 72px; border-radius: var(--radius-m); border: 1px solid var(--border); display: block; }
   .rstep figcaption { color: var(--text-default); display: flex; flex-direction: column; gap: 2px; }
   .rstep .gname { color: var(--text-strong); }
   .rstep code { text-transform: uppercase; }
@@ -431,7 +471,7 @@ const cards: CardData[] = [
   .annotations :global(.demo-stamp) { width: 220px; }
   .annotations :global(.demo-arrow) { width: 70px; }
   .annotations :global(.demo-arrow-right) { width: 110px; }
-  code { color: var(--text-strong); }
+  code { color: var(--text-strong); font-size: calc(1em - 1px); }
 </style>
 
 <script>

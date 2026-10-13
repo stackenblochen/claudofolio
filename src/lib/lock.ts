@@ -3,11 +3,14 @@ import { pbkdf2Sync, randomBytes, createCipheriv } from 'node:crypto';
 /** Must match the decryption in components/Protected.astro. */
 export const PBKDF2_ITERATIONS = 250_000;
 
-/** Build-time password for protected case studies. Set CASE_STUDY_PASSWORD (a GitHub Actions secret in CI). */
+/**
+ * Build-time password for protected case studies. Set CASE_STUDY_PASSWORD (a GitHub Actions secret in CI).
+ * `astro dev` always uses the test password "dev" (whatever .env says), so pages can be tested locally; a build never does.
+ */
 export function getCasePassword(): string {
+  if (import.meta.env.DEV) return 'dev';
   const pw = process.env.CASE_STUDY_PASSWORD ?? import.meta.env.CASE_STUDY_PASSWORD;
   if (pw) return pw;
-  if (import.meta.env.DEV) return 'dev';
   // Fail closed: without a secret nobody can unlock the page.
   console.warn('[lock] CASE_STUDY_PASSWORD is not set: protected case studies are locked for everyone.');
   return randomBytes(24).toString('hex');

@@ -38,13 +38,13 @@ const arrowSrc = arrow ? (typeof arrow === 'string' ? arrow : arrow.src) : undef
   style={[height && `--embed-h:${height}px`, arrowRight && `--arrow-right:${arrowRight}`, arrowTop && `--arrow-top:${arrowTop}`, arrowWidth && `--arrow-w:${arrowWidth}`].filter(Boolean).join(';') || undefined}>
   <div class:list={['stage', 'live', stage && `gradient gradient--${stage}`]}>
     <div class="frame">
-      <iframe class:list={[stage ? 'media-m' : 'media-l media-hairline']} src={src} title={title} loading="lazy"></iframe>
+      <iframe class:list={[stage ? 'media-m' : 'media-l media-border']} src={src} title={title} loading="lazy"></iframe>
       {arrowSrc && <Arrow src={arrowSrc} class="annot" />}
     </div>
   </div>
   <div class="poster">
     <div class:list={['stage', stage && `gradient gradient--${stage}`]}>
-      <Img src={poster} alt={posterAlt} class={stage ? undefined : 'media-l media-hairline'} />
+      <Img src={poster} alt={posterAlt} class={stage ? undefined : 'media-l media-border'} />
     </div>
     <p class="t-caption caption">{note}</p>
   </div>

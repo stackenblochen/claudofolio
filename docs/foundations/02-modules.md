@@ -105,7 +105,7 @@ Props `number` ("01", then "02" …), `title`, `id`. "— 01" in `.t-number` (Ge
 Section number (`outcomeNumber` in the frontmatter, "— 06": the one after the last StorySection, same `.t-number` style as the section numbers), heading, numbered list (01, 02, 03) on a full-bleed `--bg-primary` section, with less space above (0.5 × `--section-y`) than below (1.5 ×). Prop `items` (strings) or `<li>` children. The list numbers are salmon (`--accent-primary`). Exactly three points; each starts with the result and at least one has a number or concrete artefact.
 
 ### I11 Screen gallery
-Optional, after the story sections. `title`, `intro`, `note` (uppercase), `items` (`src`, `alt`, `title`, `category`, `wide`). Cards two per row from 768 px (one on phones); `wide: true` takes the full row. Images like `Figure` (radius 12, hairline, shadow).
+Optional, after the story sections. `title`, `intro`, `note` (uppercase), `items` (`src`, `alt`, `title`, `category`, `wide`). Cards two per row from 768 px (one on phones); `wide: true` takes the full row. Images like `Figure` (radius 12, border, shadow).
 
 ### T8 Career entry
 A timeline item: bullet on a vertical line, optional logo (own height per logo, decorative), company and role (both `.t-subheading`, strong colour), dates (`.t-label`, default colour), body. Use inside `<Timeline>`, which provides the grid container.
@@ -114,16 +114,16 @@ A timeline item: bullet on a vertical line, optional logo (own height per logo, 
 
 ## I — Media
 
-Shared rules: radius 16 (diagrams, squares, video, embeds; 12 below 768 px) or 12 (UI screenshots); hairline where the image edge would dissolve into the dark background; shadow on screenshots. All media sit inside the grid padding.
+Shared rules: radius 16 (diagrams, squares, video, embeds; 12 below 768 px) or 12 (UI screenshots); border where the image edge would dissolve into the dark background; shadow on screenshots. All media sit inside the grid padding.
 
 ### I1 Wide figure
-`Figure`: a single image with optional caption and natural height, for screenshots, diagrams and boards alike. Radius 12, hairline, shadow. `size`: `wide` = media measure (default), `text` = text measure, `full` = 12 cols. `kind="appshot"` is for transparent PNG app shots (outline instead of hairline and shadow).
+`Figure`: a single image with optional caption and natural height, for screenshots, diagrams and boards alike. Radius 12, border (`border`: both themes, one mode only, or none), shadow. `size`: `wide` = media measure (default), `text` = text measure, `full` = 12 cols. `kind="appshot"` is for transparent PNG app shots (outline instead of border and shadow).
 
 ### I2 Figure pair
 Two square images, 5 + 5 columns from 768 px, stacked below. Radius 16.
 
 ### I3 Screen stack
-One or two UI screenshots stacked, then one caption (`.t-caption`, ≤ 8 words). Radius 12, hairline, shadow.
+One or two UI screenshots stacked, then one caption (`.t-caption`, ≤ 8 words). Radius 12, border (`border`: both themes, one mode only, or none), shadow.
 
 ### I4 Then → now
 Two cards (`--fill`, radius 16) with the red hand-drawn arrow (`arrow-red-down.svg`) overlapping both. No text inside the cards; the sides only get accessible names. Each side is a slot (`before`, `after`), typically `<Mock size="cover" layout="set" shadow="soft">`, which fills the whole card; set the card background with the mock's `stage` (`var(--fill)` for then, a gradient for now). A plain image works too (`before`, `after` props).
@@ -132,7 +132,7 @@ Two cards (`--fill`, radius 16) with the red hand-drawn arrow (`arrow-red-down.s
 Insights, principles, any short finding with an illustration. Lives in the text measure: illustration across 3 columns, title (strong colour, not bold) and text across the rest, top aligned. Stacks below 768 px (image about 60 % wide). Repeat for 3 items.
 
 ### I6 Video
-`Video`: MP4 (H.264) plus optional WebM, with a poster. Muted, `playsinline`, no autoplay unless it is a short loop (≤ 30 s, ≤ 8 MB). Radius 16, hairline.
+`Video`: MP4 (H.264) plus optional WebM, with a poster. Muted, `playsinline`, no autoplay unless it is a short loop (≤ 30 s, ≤ 8 MB). Radius 16, border.
 
 ### I7 Interactive embed
 `Embed`: an iframe to a self-contained demo in `public/demos/<slug>/`, 12 cols, fixed height, radius 16, lazy, with a `title`. **The text is always visible.** **Tablet and mobile (below 992 px) always show a placeholder instead of the iframe:** the `poster` image (required) with `note` as its caption (default "Interactive demo, best viewed on desktop."). **Desktop and laptop** show the live demo, with an optional `caption` below it; that caption is hidden on tablet and mobile, where the note replaces it.
@@ -152,7 +152,7 @@ Device frames, and one frame for every schema, chart or map. Rules and options i
 
 `ProjectCard`: a full media-width panel. From 1230 px two equal columns, 340 px high: text left (labels on top, then title, summary of at most three lines (about 90 characters), and a "Show case study →" text link; 40 px padding on top), cover right. From 992 px the title shrinks with its column (18–24 px) so it stays on one line wherever it fits. 992–1229 px: 5/7 columns, 340 px, summary cut to three lines. 768–991 px: no summary, height follows the cover. Below 768 px the labels and title sit on top of the cover, 20 px padding, no summary. Sections holding teasers use `.section--pure`.
 
-From 992 px with a fine hovering pointer (and no reduced motion) the card grows by 5 % and gets a hairline border and a shadow while hovered; the border also shows on keyboard focus. The whole panel is the link. On touch, below 992 px and with reduced motion the teaser stays plain. The former colour-split ripple on hover is switched off; its code is kept in `src/lib/teaser-fx.ts` (see the note at its top to re-enable it).
+From 992 px with a fine hovering pointer (and no reduced motion) the card grows by 5 % and gets a border and a shadow while hovered; the border also shows on keyboard focus. The whole panel is the link. On touch, below 992 px and with reduced motion the teaser stays plain. The former colour-split ripple on hover is switched off; its code is kept in `src/lib/teaser-fx.ts` (see the note at its top to re-enable it).
 
 ### L3 Expertise label
 `Label`: a small pill with a Tabler icon and an expertise name ("Product Design", "Design Systems", "Design Vision", "Research", "Prototyping"). A project carries one to three (frontmatter `labels`), shown under the title on its teaser and on top of the H1 in the case hero (`LabelList` renders the row). Text is a step below the body size (14 px, 15 px from 992), weight 400 in `--text-strong`, on `--fill`, radius `--radius-pill`; the icon is an outline Tabler icon (MIT) in `--accent-primary`. Names live in `src/lib/label-names.ts`, icons in `src/lib/labels.ts` (`@tabler/icons`, file names under `outline/`, browse https://tabler.io/icons). To add an expertise: add the name to the first file and its icon to the second; the content schema picks it up.
@@ -171,7 +171,7 @@ Dash, heading, short invitation (slot), then email / LinkedIn / CV rows. Values 
 Square photo at half the text measure (4 of 8 columns on wide desktops), radius 16.
 
 ### O3 Password gate
-`Protected` wraps a case study. With `enabled`, the slot is rendered at build time and encrypted (AES-GCM, key from PBKDF2); the page ships only the ciphertext and a form, and the browser decrypts after the right password (remembered for the tab). The password comes from `CASE_STUDY_PASSWORD` at build time (`src/lib/lock.ts`). Image and demo files remain reachable by URL; only page content is encrypted.
+`Protected` wraps a case study. With `enabled`, the slot is rendered at build time and encrypted (AES-GCM, key from PBKDF2); the page ships only the ciphertext and a form, and the browser decrypts after the right password (remembered for the tab). The password comes from `CASE_STUDY_PASSWORD` at build time (`src/lib/lock.ts`); `astro dev` always uses the test password `dev`, a build never does. Image and demo files remain reachable by URL; only page content is encrypted.
 
 ---
 

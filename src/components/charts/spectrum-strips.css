@@ -4,7 +4,7 @@
 .strips {
   --st-text: var(--text-default);
   --st-strong: var(--text-strong);
-  --st-line: var(--border-strong);
+  --st-line: var(--border);
   --st-accent: var(--accent-positive);
 
   margin-block: 0;
@@ -63,7 +63,7 @@
   .strips__end--high { text-align: right; }
 }
 
-/* the track: a hairline; height leaves room for the deepest stack */
+/* the track: a 1 px line; height leaves room for the deepest stack */
 .strips__track {
   grid-area: track;
   position: relative;

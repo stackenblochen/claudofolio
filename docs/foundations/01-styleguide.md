@@ -85,7 +85,7 @@ One cool (blue-violet) gray ramp, used by both themes, plus three signal colours
 | `gray-600` | `#4d505a` | |
 | `gray-500` | `#6a6b7c` | Light-mode default text |
 | `gray-400` | `#9a9aab` | Dark-mode default text |
-| `gray-300` | `#c6c7d2` | Light lines on a surface |
+| `gray-300` | `#c6c7d2` | Spare |
 | `gray-200` | `#e0e1e8` | Light surface, card, borders |
 | `gray-100` | `#eeeef3` | Light mobile menu |
 | `gray-75` | `#f5f5f7` | Light page; light card on a white base |
@@ -95,18 +95,23 @@ White and black appear only as the base of the standard context (the teaser sect
 
 ### 4.2 Semantic roles
 
-**Backgrounds follow iOS.** Three levels (primary, secondary, tertiary) in two contexts. *Grouped* is the default: a gray base with white cards. *Standard* (`.section--pure`, the sections that hold the teasers) is a white / black base with gray cards. Components only use the level tokens; the context decides the colour.
+**Backgrounds follow iOS.** Two contexts, each with primary, secondary and tertiary variants that convey a hierarchy: the base, a card on it, and something inside that card. The grouped context is the default for pages (a gray base with white cards). The standard context (`.section--pure`, the sections that hold the teasers) is a white / black base with gray cards. Components only use the three level tokens (`--bg-primary` …); the context decides the colour, so the same component looks right in both.
+
+| Role | Grouped (default) | Standard (`.section--pure`) | Use |
+|---|---|---|---|
+| `--bg-primary` light / dark | gray-75 / gray-950 | white / black | The base: page or section background |
+| `--bg-secondary` light / dark | white / gray-900 | gray-75 / gray-900 | A card on the base: teaser cards, raised sections, stages, charts |
+| `--bg-tertiary` light / dark | gray-75 / gray-800 | white / gray-800 | Inside a card: schema groups and pills |
+
+Other roles (the same in every context):
 
 | Role | Light | Dark | Use |
 |---|---|---|---|
-| `--bg-primary` | gray-75 (white in standard) | gray-950 (black in standard) | The base: page background |
-| `--bg-secondary` | white (gray-75 in standard) | gray-900 | A card on the base: raised sections, teaser cards, stages, charts. `--border-secondary` (gray-200, none in dark) outlines it |
-| `--bg-tertiary` | gray-75 (white in standard) | gray-800 | Inside a card: schema groups and pills |
 | `--fill` | gray-200 | gray-700 | Small controls: hover pills, labels, theme switch, comparison cards |
 | `--text-default` | gray-500 | gray-400 | Body, nav, captions, meta labels |
 | `--text-strong` | gray-950 | gray-50 | Headings, leads, emphasis, links |
-| `--border-subtle` | gray-200 | gray-700 | Hairlines around screenshots and cards |
-| `--border-strong` | gray-300 | gray-700 | Lines on a surface (schema pills) |
+| `--border` | gray-200 | gray-700 | Every border and line, always 1 px: screenshots, media, cards, chart and schema lines |
+| `--border-dark-mode` / `--border-light-mode` | transparent / gray-200 | gray-700 / transparent | A border in one mode only. Media either has a border (`.media-border`), has none, or has one only in the mode where it would otherwise bleed into the page (`.media-border--dark-mode` for a dark image, `--light-mode` for a light one) |
 | `--accent-primary` | salmon-600 | salmon | Brand accent: link underlines, focus ring, nav underline, timeline dot, arrows, errors, negative marks, highlighted words |
 | `--accent-positive` | green-700 | green | Positive marks (the "Solution" bullet) |
 | `--accent-link` | = `--accent-primary` | | |
@@ -185,7 +190,6 @@ Section backgrounds: `.section--raised`, `.section--black` (page background), `.
 | `--radius-l` | 16 px | Diagrams, image pairs, video, cards, embeds, stages (`.media-l`; 12 px below 768 px) |
 | `--radius-xl` | 24 px | Large panels |
 | `--radius-pill` | 999 px | Labels (expertise pills) |
-| `--border-hairline` | 1 px `--border-subtle` | Screenshots, cards, video (`.media-hairline`) |
 | `--shadow-screenshot` | 0 0 40 px, black 14 % light / 50 % dark | Screenshots and mocks (`.media-shadow`) |
 | `--shadow-elevated` | 0 24 px 48 px −12 px, black 22 % light / 70 % dark | A card lifted on hover (project teaser) |
 | `--filter-appshot` | One soft drop shadow (the 1 px outline is baked into the image) | Cutout covers and transparent PNG app shots (`.app-shot`) |
@@ -199,7 +203,7 @@ Doodles in the home stack use their own light drop shadow (`--doodle-shadow` in 
 | Body and prose link | `--text-strong`, 2 px salmon underline, offset 4 px | |
 | Nav item (desktop) | Pill with a blurred translucent background (`--bg-glass`, `backdrop-filter: blur(16px)`), `--text-strong` | `--fill`; the current page looks the same |
 | Footer link | `--text-default`, no underline | `--text-strong` with a 2 px salmon underline |
-| Project teaser | the whole panel is the link | grows 5 %, hairline border and a lifted shadow (`--shadow-elevated`) (pointer devices from 992 px, not with reduced motion) |
+| Project teaser | the whole panel is the link | grows 5 %, border and a lifted shadow (`--shadow-elevated`) (pointer devices from 992 px, not with reduced motion) |
 | Focus | 2 px `--accent-primary` outline, 4 px offset (`:focus-visible`) on every interactive element | |
 | Selection | salmon background, black text | |
 

@@ -17,7 +17,7 @@
   --gray-600: #4d505a;
   --gray-500: #6a6b7c; /* light default text */
   --gray-400: #9a9aab; /* dark default text */
-  --gray-300: #c6c7d2; /* light lines on a surface */
+  --gray-300: #c6c7d2; /* spare */
   --gray-200: #e0e1e8; /* light surface, card, borders */
   --gray-100: #eeeef3; /* light mobile menu */
   --gray-75: #f5f5f7; /* light page (bg.primary); light card on a white base (bg.secondary in the standard context) */
@@ -32,16 +32,19 @@
 
   /* Colour — semantic: light-dark(light, dark). The theme is set by color-scheme (see below). */
   /* Backgrounds: three levels, like iOS. primary is the base, secondary a card on it, tertiary something inside that card.
-   * Two contexts: grouped (default; gray base, white cards) and standard (.section--pure in base.css; white / black base, gray cards). */
+   * Two contexts, as in iOS: grouped (default for pages; gray base, white cards) and standard (.section--pure in base.css, the teaser sections; white / black base, gray cards). */
   --bg-primary: light-dark(var(--gray-75), var(--gray-950));
   --bg-secondary: light-dark(var(--color-white), var(--gray-900));
   --bg-tertiary: light-dark(var(--gray-75), var(--gray-800));
   --fill: light-dark(var(--gray-200), var(--gray-700)); /* small controls: hover pills, labels, switch, comparison cards */
   --text-default: light-dark(var(--gray-500), var(--gray-400));
   --text-strong: light-dark(var(--gray-950), var(--gray-50));
-  --border-subtle: light-dark(var(--gray-200), var(--gray-700));
-  --border-secondary: light-dark(var(--gray-200), transparent); /* 1px outline around a secondary card (charts, schemas): light mode only */
-  --border-strong: light-dark(var(--gray-300), var(--gray-700)); /* lines on a surface (schema pills) */
+  /* Borders: 1 px everywhere, gray-200 in light mode and gray-700 in dark mode (--border). Media has this border or none, or a border in one
+   * mode only, when its content would bleed into the page there: --border-dark-mode for a dark image on the dark page, --border-light-mode
+   * for a light one on the light page. */
+  --border: light-dark(var(--gray-200), var(--gray-700));
+  --border-dark-mode: light-dark(transparent, var(--gray-700));
+  --border-light-mode: light-dark(var(--gray-200), transparent);
   --accent-positive: light-dark(var(--color-green-700), var(--color-green));
   --accent-primary: light-dark(var(--color-salmon-600), var(--color-salmon)); /* the brand accent: link underlines, focus rings, nav underline, timeline dot, errors, negative marks */
   --accent-link: var(--accent-primary);
@@ -123,7 +126,6 @@
   --radius-l: 16px;
   --radius-xl: 24px;
   --radius-pill: 999px; /* labels */
-  --border-hairline: 1px solid var(--border-subtle);
   --shadow-screenshot: 0 0 40px 0 light-dark(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.5));
   --shadow-elevated: 0 24px 48px -12px light-dark(rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.7)); /* a raised card: offset downwards so it looks lifted off the page */
   --filter-appshot: drop-shadow(0 4px 40px light-dark(#0000001f, #0000005c)); /* cutout screenshots (.app-shot): the outline is baked into the image, this is only the soft shadow */

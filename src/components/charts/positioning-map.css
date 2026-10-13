@@ -5,8 +5,8 @@
 .pmap {
   --pm-text: var(--text-default);
   --pm-strong: var(--text-strong);
-  --pm-line: var(--border-subtle);
-  --pm-mid: var(--border-strong);
+  --pm-line: var(--border);
+  --pm-mid: var(--border);
   --pm-accent: var(--accent-positive);
   --pm-tint: 12%; /* highlight quadrant: accent tint */
 

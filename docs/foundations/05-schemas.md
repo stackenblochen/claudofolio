@@ -9,7 +9,7 @@ Module ID **I10**, component `Diagram`. Every schema, chart or map that is neith
 | Scales | `SpectrumStrips` (`src/components/charts/`) | one track per attribute, every product as a marker |
 
 ```astro
-<Diagram title="Competitor analysis" caption="…" size="media" outline>
+<Diagram title="Competitor analysis" caption="…" size="media" border="light-mode">
   <p slot="intro">Text above the drawing.</p>
   <PositioningMap alt="…" … />
   <Fragment slot="text"><p>Longer text below the drawing.</p></Fragment>
@@ -24,7 +24,7 @@ Module ID **I10**, component `Diagram`. Every schema, chart or map that is neith
 | `caption` | one line under the stage |
 | `text` slot | longer text under the stage (text measure) |
 | `fixed` | the stage takes the aspect ratio of its size (media 3:2, cover 16:10, half 1:1, third 3:4) and the drawing fills it; use for `Schema`. Without it the stage hugs the drawing with padding |
-| `outline` | a 1 px outline in light mode (`--border-secondary`), none in dark mode |
+| `border` | a 1 px edge on the stage: `true` = both themes, `"dark-mode"` / `"light-mode"` = only in that mode, none by default |
 
 Diagrams stacked one after the other get extra space between them. Drawings scale with the stage width (container `diagram`, reference width 995 px).
 
@@ -58,9 +58,9 @@ Coordinates come straight from the Figma frame (top-left of each box). To draw a
 
 | Use | Token |
 |---|---|
-| Stage | `--bg-secondary` (the `Diagram` stage), optional 1 px `--border-secondary` outline in light mode |
+| Stage | `--bg-secondary` (the `Diagram` stage), optional 1 px `border` |
 | Group and filled pill | `--schema-surface` = `--bg-tertiary` (`--gray-800` / `--gray-75`) |
-| Outline | `--border-strong` (`--gray-700` / `--gray-300`) |
+| Outline | `--border` (`--gray-700` / `--gray-200`) |
 | Text | `--text-strong`; list items `--text-default` |
 | Arrows | `--accent-primary` |
 

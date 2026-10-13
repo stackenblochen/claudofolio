@@ -131,7 +131,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 | Project cover (card + hero) | PNG/JPG source → AVIF/WebP | 2560 × 1600 | 16:10 | Device mockups on transparent or dark bg |
 | Hero backdrop | JPG | 2560 wide | free | Dimmed 50 %, no text |
 | Wide diagram | live SVG (`Schema`) or PNG | 2560 wide | ~16:9 to 5:2 | Theme-aware; a PNG needs its own surface |
-| UI screenshot | PNG | 2880 × 1920 | 3:2 | radius 12, hairline, shadow |
+| UI screenshot | PNG | 2880 × 1920 | 3:2 | radius 12, border, shadow |
 | Square pair | PNG | 1800 × 1800 | 1:1 | radius 16 |
 | Insight illustration | PNG/SVG | 948 × 678 | ~7:5 | |
 | Video | MP4 (H.264) + poster | 1920 wide | as captured | muted, playsinline, ≤ 30 s, ≤ 8 MB |

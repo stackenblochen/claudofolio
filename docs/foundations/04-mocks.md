@@ -72,16 +72,16 @@ Tuning variables on `.mock` (never override outline or radius per mock; the shad
 
 ## Outline, shadow, radius (same on every mock)
 
-The same values as the site's other screenshots (`--shadow-screenshot`, `--border-hairline`, `--radius-m`), so a mock looks like the screenshots already on the pages:
+The same values as the site's other screenshots (`--shadow-screenshot`, `--border`, `--radius-m`), so a mock looks like the screenshots already on the pages:
 
 | Part | Value | Token |
 |---|---|---|
-| Outline | 1px `#34373d`, only on a dark window that has no stage behind it, so it does not dissolve into a dark page. Light windows and every mock on a stage have none. While the site is in light mode a dark window without a stage gets `--border-subtle` (`#e0e1e8`) instead of the dark outline. The stage must be passed as `stage` (or `--mock-stage` in the export spec) for the mock to know it is there | `--mock-outline` |
+| Outline | 1px `--border-dark-mode` (`#34373d`), only on a dark window that has no stage behind it, so it does not dissolve into a dark page. Light windows and every mock on a stage have none. While the site is in light mode a dark window without a stage gets `--border` (`#e0e1e8`) instead of the dark outline. The stage must be passed as `stage` (or `--mock-stage` in the export spec) for the mock to know it is there | `--mock-outline` |
 | Shadow | `0 0 40px rgba(0,0,0,.5)` | `--mock-shadow` = `--shadow-screenshot` |
 | Radius, mocks | 12px on desktop, browser, frameless and UI element, at every size and zoom | `--mock-radius` = `--radius-m` |
 | Radius, stage | 16px, the image area the mock sits in, so the corners nest | `--mock-stage-radius` = `--radius-l` |
 
-Windows keep the site's 12px radius instead of the template's corner, so they match the other screenshots on the page. Phones have no hairline outline, because the frame image has its own rim; their shadow is the same shadow as a drop shadow that follows the phone's outline (`--mock-shadow-phone`). A frameless mock lets its outline and shadow fall outside the stage; the PNG export adds 60px of transparent margin for it.
+Windows keep the site's 12px radius instead of the template's corner, so they match the other screenshots on the page. Phones have no extra outline, because the frame image has its own rim; their shadow is the same shadow as a drop shadow that follows the phone's outline (`--mock-shadow-phone`). A frameless mock lets its outline and shadow fall outside the stage; the PNG export adds 60px of transparent margin for it.
 
 ## Screenshot edges
 
@@ -98,4 +98,4 @@ The frame clips the screenshot, so the screenshot must not bring its own edge:
 - Crop the screenshot's own title bar or browser chrome, so every window shares one bar.
 - Use Android screenshots in the Android frame; an iOS status bar under the notch looks wrong.
 - Outline and shadow come from the template. Never bake a shadow, border or rounded corners into the screenshot.
-- PNG export (not in this repo; `mocks/render.mjs` in the Claude project): `node render.mjs spec.json out/`. Mocks render at their site width (full/cover 1230, media 1020, half 600, third 390) and are scaled 2× (half and third 3×), so radius and hairline match the site. Override with `scale`.
+- PNG export (not in this repo; `mocks/render.mjs` in the Claude project): `node render.mjs spec.json out/`. Mocks render at their site width (full/cover 1230, media 1020, half 600, third 390) and are scaled 2× (half and third 3×), so radius and border match the site. Override with `scale`.

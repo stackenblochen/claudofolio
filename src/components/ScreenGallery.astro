@@ -1,7 +1,7 @@
 ---
 /**
  * I11 Screen gallery: heading, intro and an optional uppercase note, then screens as cards on the media measure, each with title and category underneath.
- * Items are 2 per row from 768 px (1 on phones); `wide: true` lets an item take the full row. Images: radius 12, hairline, shadow (like Figure).
+ * Items are 2 per row from 768 px (1 on phones); `wide: true` lets an item take the full row. Images: radius 12, border, shadow (like Figure).
  */
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
@@ -27,7 +27,7 @@ const { title = 'Selected screens', intro, note, items } = Astro.props;
         {items.map((i) => (
           <li class={`item reveal${i.wide ? ' wide' : ''}`}>
             <figure>
-              <Img src={i.src} alt={i.alt} class="media-m media-hairline media-shadow" />
+              <Img src={i.src} alt={i.alt} class="media-m media-border media-shadow" />
               <figcaption>
                 <span class="t-body name">{i.title}</span>
                 {i.category && <span class="t-body cat">{i.category}</span>}

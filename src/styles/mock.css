@@ -82,9 +82,9 @@
 }
 /* the stage is announced with data-stage (set by Mock.astro and render.mjs whenever a stage is given) */
 .mock[data-theme="dark"]:not([data-stage]),
-:root:not([data-theme="light"]) .mock[data-theme="auto"]:not([data-stage]) { --mock-outline: var(--gray-700, #34373d); }
+:root:not([data-theme="light"]) .mock[data-theme="auto"]:not([data-stage]) { --mock-outline: var(--border-dark-mode); }
 /* on the light page a dark window gets the subtle light border instead of the dark outline */
-:root[data-theme="light"] .mock[data-theme="dark"]:not([data-stage]) { --mock-outline: var(--border-subtle); }
+:root[data-theme="light"] .mock[data-theme="dark"]:not([data-stage]) { --mock-outline: var(--border); }
 .mock__img--dark { display: none; }
 .mock[data-theme="dark"] .mock__img--light,
 :root:not([data-theme="light"]) .mock[data-theme="auto"] .mock__img--light { display: none; }

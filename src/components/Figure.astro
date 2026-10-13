@@ -2,7 +2,9 @@
 /**
  * I1 Wide figure: single image (diagram, screenshot) with optional caption, natural height.
  * size: "wide" = 10 cols (media measure), "text" = text measure, "full" = 12 cols.
- * kind: "screenshot" (default) = radius 12 + hairline + shadow, "appshot" = transparent PNG outline.
+ * kind: "screenshot" (default) = radius 12 + border + shadow, "appshot" = transparent PNG outline.
+ * border: true (default for screenshots) = border in both themes, "dark-mode" / "light-mode" = only in that mode (a dark image that bleeds into
+ * the dark page), false = none.
  */
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
@@ -13,12 +15,14 @@ interface Props {
   caption?: string;
   size?: 'wide' | 'text' | 'full';
   kind?: 'screenshot' | 'appshot';
+  border?: boolean | 'dark-mode' | 'light-mode';
   loading?: 'lazy' | 'eager';
 }
-const { src, alt, caption, size = 'wide', kind = 'screenshot', loading } = Astro.props;
+const { src, alt, caption, size = 'wide', kind = 'screenshot', border = true, loading } = Astro.props;
 const measure = { wide: 'measure-media', text: 'measure-text', full: 'measure-wide' }[size];
+const borderClass = border === true ? 'media-border' : border ? `media-border--${border}` : '';
 const imgClass = {
-  screenshot: 'media-m media-hairline media-shadow',
+  screenshot: `media-m ${borderClass} media-shadow`,
   appshot: 'app-shot',
 }[kind];
 ---
