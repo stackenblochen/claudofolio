@@ -33,10 +33,17 @@ import feelsLikeHome from '../../assets/projects/design-vision/feels-like-home.w
 import securityRight from '../../assets/projects/design-vision/security-right.webp';
 import skippedTools from '../../assets/projects/design-vision/skipped-tools.webp';
 import diagram from '../../assets/placeholders/diagram.svg';
-import desktopLight from '../../assets/placeholders/mocks/desktop-light.png';
-import desktopDark from '../../assets/placeholders/mocks/desktop-dark.png';
-import ios from '../../assets/placeholders/mocks/ios.png';
-import android from '../../assets/placeholders/mocks/android.png';
+import desktopOnboarding from '../../assets/projects/design-vision/desktop-onboarding.webp';
+import desktopBlue from '../../assets/projects/design-vision/desktop-blue.webp';
+import desktopGradient from '../../assets/projects/design-vision/desktop-gradient.webp';
+import desktopFilter from '../../assets/projects/design-vision/desktop-filter.webp';
+import desktopDark from '../../assets/projects/design-vision/desktop-dark.webp';
+import iosBlue from '../../assets/projects/design-vision/ios-blue.webp';
+import iosGradient from '../../assets/projects/design-vision/ios-gradient.webp';
+import iosFilter from '../../assets/projects/design-vision/ios-filter.webp';
+import desktopSearch from '../../assets/projects/design-vision/desktop-search.webp';
+import iosSearch from '../../assets/projects/design-vision/ios-search.webp';
+import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
 
 <StorySection number="01" title="Key insights" id="insights">
   These insights shaped the starting point of the vision. I gathered them from internal and external interviews, sector research, competitor analysis and a survey among our users.
@@ -124,13 +131,36 @@ import android from '../../assets/placeholders/mocks/android.png';
   I built a web prototype with AI support, based on shadcn, and then applied the idea to iOS and Android, where it worked just as well. The vision builds on a unified multiplatform design system that all three platforms share, which I cover in <a href={siteUrl('/projects/managing-a-multiplatform-design-system/')}>a separate case study</a>.
 
   <Fragment slot="media">
-    <Mock size="cover" layout="set" shadow="soft" stage="dusk" devices={[
-      { device: 'desktop', bar: false, src: desktopLight, alt: 'TODO: desktop prototype with the personality layer, calm tonality' },
-      { device: 'ios', cutout: 'none', src: ios, alt: 'TODO: iOS app with the personality layer' },
+    <Mock size="cover" width="media" align="center" shadow="soft" stage="meadow" devices={[
+      { device: 'desktop', src: desktopOnboarding, alt: 'The onboarding of the desktop app: a black panel with the Wire logo and the line "Collaborate without Compromise" next to a white page that asks to turn on the backup' },
     ]} />
-    <Mock size="cover" layout="set" shadow="soft" stage="night" devices={[
-      { device: 'desktop', bar: false, src: desktopDark, alt: 'TODO: desktop prototype with the personality layer, active tonality' },
-      { device: 'android', src: android, alt: 'TODO: Android app with the personality layer' },
+    <Mock size="cover" width="media" layout="set" shadow="soft" stage="day" devices={[
+      { device: 'desktop', src: desktopBlue, alt: 'The desktop app in the Wire branded tonality: a white frame, blue accents and a light conversation with a voice message and a video' },
+      { device: 'ios', src: iosBlue, alt: 'The iOS app in the Wire branded tonality: a conversation with blue message bubbles' },
+    ]} />
+    <Mock size="cover" width="media" layout="set" shadow="soft" stage="dusk" devices={[
+      { device: 'desktop', src: desktopGradient, alt: 'The desktop app in a calm tonality: a violet-to-blue gradient frame around a light conversation' },
+      { device: 'ios', src: iosGradient, alt: 'The iOS app in a calm tonality: a gradient header above the conversation list' },
+    ]} />
+    <MediaRow>
+      <Mock size="half" align="cut-right" zoom={2.3} shadow="soft" stage="calm-blue" devices={[
+        { device: 'desktop', src: desktopFilter, alt: 'The desktop conversation list with the filter dialog open: group by, filter by unread or favorites, and sort by activity or alphabetical' },
+      ]} />
+      <Mock size="half" align="cut-bottom" shadow="soft" stage="calm-blue" devices={[
+        { device: 'ios', src: iosFilter, alt: 'The iOS conversation list with the same filter dialog open: group by and sort by' },
+      ]} />
+    </MediaRow>
+    <MediaRow>
+      <Mock size="half" shadow="soft" stage="active-violet" devices={[
+        { device: 'none', src: desktopSearch, alt: 'The desktop search dialog with the query "do": results grouped into people, files and messages, with filters for favorites, channels, groups, people, files and messages' },
+      ]} />
+      <Mock size="half" align="cut-bottom" shadow="soft" stage="active-violet" devices={[
+        { device: 'ios', src: iosSearch, alt: 'The iOS search with the query "do": filters for all, conversations and favorites, then people, files and messages as results above the keyboard' },
+      ]} />
+    </MediaRow>
+    <Mock size="cover" width="media" layout="set" theme="dark" shadow="soft" stage="active-salmon" devices={[
+      { device: 'desktop', src: desktopDark, alt: 'The desktop app in a minimal dark tonality: black frame, white accents' },
+      { device: 'ios', src: iosDark, alt: 'The iOS app in a minimal dark tonality: black frame and a violet add button' },
     ]} />
   </Fragment>
 </StorySection>

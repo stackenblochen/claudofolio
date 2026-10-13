@@ -62,6 +62,7 @@ Measured values:
 | `layout="row"` | 2 or 3 phones in `devices` | Phones side by side, centred or `cut-bottom` / `cut-top`. Three need `full`, `media` or `cover`; two also fit `half` |
 | `srcDark` | image | Second screenshot that swaps in on dark |
 | `cutout="none"` | | iOS only: frame without the island, when the screenshot already contains it. The Android notch is part of the frame |
+| `width` | `wide` · `media` | Page width: `wide` = 12 cols (default of `full` and `cover`), `media` = the 10 col media measure |
 | `shadow` | `heavy` (default) · `soft` · `none` | Shadow under the devices. Heavy = the site's screenshot shadow (`--shadow-screenshot`), soft = a lighter, tighter one, none = no shadow (the outline stays) |
 | `zoom` | number, e.g. `1.1` | Cut alignments only: how much the window is enlarged (default 1.7) |
 | `ratio`, `focus` | e.g. `16 / 10`, `top right` | Crop the screenshot to a ratio and choose which part stays visible |
@@ -90,7 +91,7 @@ The frame clips the screenshot, so the screenshot must not bring its own edge:
 - **`prep-shot.mjs`** trims transparent margins and baked-in shadows, fills rounded corners that were exported as transparent with the nearest edge colour, and flattens to opaque. It lives with the PNG exporter in the Claude project (`mocks/prep-shot.mjs`); run it once on a file before adding it to `src/assets/projects/<slug>/`: `node prep-shot.mjs in.png out.png`.
 - **Baked-in bezel or border** (a screenshot taken from a device mock-up): crop it away first, or use `--inset N`.
 - **Phones:** the screenshot sits under the frame, a few px larger than the screen opening, so its corners never need rounding.
-- The image also overscans the frame by 1px per side, and the seam colour behind it is the outline colour, so a partly transparent edge pixel never shows as a light line.
+- Phones, frameless mocks and browser windows overscan the frame by 1px per side (the seam colour behind it is the outline colour), so a partly transparent edge pixel never shows as a light line. Desktop windows do not overscan: the screenshot is shown to its last pixel, so its own thin edge or border stays visible.
 
 ## Rules
 - Screenshots are exported without device frame and without background, at 2× or more. iOS 9:19.5, Android 9:18.5; other ratios are cropped to fill.

@@ -131,8 +131,8 @@
   aspect-ratio: var(--mock-ratio);
   background: var(--mock-outline);   /* any sub-pixel seam at the edge takes the outline colour */
 }
-/* The image overscans its frame by 1px per side, so anti-aliased or baked-in edge pixels of the
- * screenshot are always clipped away. Windows take the image's own ratio. */
+/* The image overscans its frame by 1px per side (phones, frameless, browser), so anti-aliased or baked-in edge pixels of the
+ * screenshot are always clipped away. Desktop windows have no overscan. Windows take the image's own ratio. */
 .mock__img {
   display: block;
   margin: -1px;
@@ -142,6 +142,8 @@
   object-fit: cover;
   object-position: var(--mock-focus, top left);
 }
+/* Desktop windows show the screenshot to its last pixel (no overscan): screenshots bring their own thin edge or border */
+.mock__device[data-device="desktop"] .mock__img { margin: 0; width: 100%; }
 /* fixed-ratio screens (phones, frameless, or a ratio/focus crop) fill the box instead */
 .mock__device[data-device="ios"] .mock__img,
 .mock__device[data-device="android"] .mock__img,
@@ -155,6 +157,9 @@
   border-radius: var(--mock-radius);
   overflow: hidden;
 }
+/* The bar and the screenshot meet at a fractional pixel, where both edges are anti-aliased and the stage would show
+ * through as a thin line. The bar colour behind the window closes that seam. */
+.mock__device[data-device="desktop"] { background: var(--mock-d-bar); }
 .mock[data-align^="cut"] .mock__device[data-device="desktop"],
 .mock[data-align^="cut"] .mock__device[data-device="browser"] {
   --w: calc(var(--mock-desktop-w) * var(--mock-zoom));
@@ -321,3 +326,7 @@
   overflow: hidden;
 }
 .mock__device[data-device="none"] .mock__screen { height: 100%; }
+/* With a stage the screenshot is the stage's content: the stage clips it (so the rounded corners are the stage's own),
+ * and the device has no radius, outline or shadow of its own, so no stage colour shows through at the corners or edges. */
+.mock[data-stage]:has(> .mock__device[data-device="none"]) { overflow: hidden; border-radius: var(--mock-stage-radius); }
+.mock[data-stage] > .mock__device[data-device="none"] { border-radius: 0; box-shadow: none; }

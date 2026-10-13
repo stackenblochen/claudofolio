@@ -40,10 +40,12 @@ interface Props {
   shadow?: 'none' | 'soft' | 'heavy';
   /** Cut alignments: how much the window is enlarged (default 1.7 from mock.css). */
   zoom?: number;
+  /** Width on the page: `wide` = 12 cols (default for full and cover), `media` = the 10 col media measure. Overrides the default of the size. */
+  width?: 'wide' | 'media';
   devices: Device[];
   caption?: string;
 }
-const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, zoom, shadow = 'heavy', devices, caption } = Astro.props;
+const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, zoom, shadow = 'heavy', width, devices, caption } = Astro.props;
 
 // a gradient name resolves to the site's gradient tokens, so the stage follows the theme
 const gradientId = stage && (MOODS.find((m) => m.name === stage)?.id ?? GRADIENTS.find((g) => g.id === stage)?.id);
@@ -64,7 +66,7 @@ const items = await Promise.all(
 );
 const widths = [480, 768, 1200, 1600, 2400];
 const sizes = { full: '(min-width: 1230px) 1170px, 100vw', cover: '(min-width: 1230px) 1170px, 100vw', media: '(min-width: 1230px) 970px, 100vw', half: '(min-width: 768px) 900px, 100vw', pair: '(min-width: 768px) 900px, 100vw', third: '(min-width: 768px) 500px, 100vw' }[size];
-const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-media', half: undefined, pair: undefined, third: undefined }[size];
+const measure = width ? `measure-${width}` : { full: 'measure-wide', cover: 'measure-wide', media: 'measure-media', half: undefined, pair: undefined, third: undefined }[size];
 ---
 
 <figure class:list={['mock-fig', measure, 'reveal']} data-size={size}>
