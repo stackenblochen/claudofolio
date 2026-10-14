@@ -3,7 +3,6 @@ title: A design *vision* for a secure messenger
 shortTitle: Design vision
 summary: "How a secure messenger could look and feel next: a personality layer and one design system."
 labels: [Design Vision]
-tags: [Vision, Enterprise, Prototyping]
 cover: ../../assets/projects/design-vision/cover.webp
 coverAlt: The desktop onboarding of a secure messenger with the iOS app in front of it
 coverOutline: light
@@ -56,21 +55,21 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
     <ImageText image={feelsLikeHome} ratio="2000 / 1704" alt="A relaxed woman smiling and looking away from the laptop on her lap, in a cosy, warmly lit café-style workspace" title="Feels like home">
       Customers want an app that gets work done, but also feels familiar and welcoming.
     </ImageText>
-    <ImageText image={securityRight}  alt="Abstract illustration: a glowing sphere with flowing blue, orange and yellow gradients on a dark background" title="Security done right">
-      Security should be strict, but never threatening. Admins and regular users alike should understand the implications of their choices without being security experts. 
+    <ImageText image={securityRight} alt="Abstract illustration: a glowing sphere with flowing blue, orange and yellow gradients on a dark background" title="Security done right">
+      Security should be strict, but never threatening. Admins and regular users alike should understand the implications of their choices without being security experts.
     </ImageText>
   </Fragment>
 </StorySection>
 
 <StorySection number="02" title="Aligning expectations" id="expectations">
-  <p slot="problem">The CTO asked for a 'modern look', but design had no clear idea what he meant exactly, and much of the discussion was about features.</p>
-  <p slot="decision">In 2 workshops, we aligned our expectations and brought leadership clear proposals instead of open questions.</p>
-  <p slot="outcome">We aligned on what to expect from the vision: how to place the vision in relation to our competitors, and what 'modern' means to us. We also identified a 'feature track' and a 'UI track' and assigned topics accordingly.</p>
+  <p slot="problem">The CTO asked for a 'modern look', but design had no clear idea what was meant exactly, and much of the discussion was about features.</p>
+  <p slot="decision">In two workshops, we aligned our expectations and brought leadership clear proposals instead of open questions.</p>
+  <p slot="outcome">We aligned on where the vision sits relative to our competitors and what 'modern' means to us. We also identified a 'feature track' and a 'UI track' and assigned topics accordingly.</p>
 
   <Fragment slot="media">
     <Diagram title="Competitor analysis">
       <PositioningMap
-        alt="Positioning map of messengers by user expertise (specialist to intuitive) and security posture (consumer to enterprise). Wire moves from today's position toward the easy and enterprise-grade quadrant, where no other messenger sits."
+        alt="Positioning map of messengers by user expertise and security posture, showing Wire moving from today's position toward easy and enterprise-grade."
         yAxis={['Enterprise', 'Security posture', 'Consumer']}
         xAxis={['Specialist', 'User expertise', 'Intuitive']}
         quadrants={{ tl: 'Specialist and enterprise-grade', tr: 'Easy and enterprise-grade', bl: 'Specialist and consumer-grade', br: 'Easy and consumer-grade' }}
@@ -92,16 +91,16 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
     <Diagram title="What 'modern' means">
       <p slot="intro">To pin down what we mean by 'modern', I took the four aspects stakeholders kept focusing on and gave each a scale. We placed the competitors and Wire's vision on them, so everyone worked from the same picture.</p>
       <SpectrumStrips
-        alt="Four spectra on which Wire and seven competitors were placed: tone and personality from formal to personal, interaction design from standardized to custom, visual presence from neutral to expressive, and brand presence from subtle to strong."
+        alt="Four spectra (tone, interaction design, visual presence, brand presence) on which Wire's vision and seven competitors were placed."
         rows={[
           { title: 'Tone and personality', low: 'Formal, serious', high: 'Personal', items: [
-            { name: 'Wickr', value: 0 }, { name: 'Teams', value: 12 }, { name: 'Element', value: 28 }, { name: 'G Meet', value: 16 }, { name: 'Wire', value: 75, accent: true }, { name: 'Slack', value: 82.5 }, { name: 'Signal', value: 90.0 }, { name: 'WhatsApp', value: 100 } ] },
+            { name: 'Wickr', value: 0 }, { name: 'Teams', value: 12 }, { name: 'Element', value: 28 }, { name: 'Google Meet', value: 16 }, { name: 'Wire vision', value: 75, accent: true }, { name: 'Slack', value: 82.5 }, { name: 'Signal', value: 90.0 }, { name: 'WhatsApp', value: 100 } ] },
           { title: 'Interaction design', low: 'Standardized', high: 'Custom', items: [
-            { name: 'Signal', value: 0 }, { name: 'WhatsApp', value: 5 }, { name: 'Wire', value: 10, accent: true }, { name: 'Teams', value: 25 }, { name: 'G Meet', value: 36.2 }, { name: 'Slack', value: 46.9 }, { name: 'Element', value: 60 }, { name: 'Wickr', value: 70 } ] },
+            { name: 'Signal', value: 0 }, { name: 'WhatsApp', value: 5 }, { name: 'Wire vision', value: 10, accent: true }, { name: 'Teams', value: 25 }, { name: 'Google Meet', value: 36.2 }, { name: 'Slack', value: 46.9 }, { name: 'Element', value: 60 }, { name: 'Wickr', value: 70 } ] },
           { title: 'Visual presence', low: 'Neutral', high: 'Expressive', items: [
-            { name: 'Wickr', value: 0 }, { name: 'Element', value: 13.9 }, { name: 'G Meet', value: 21.3 }, { name: 'WhatsApp', value: 30 }, { name: 'Signal', value: 32.5 }, { name: 'Wire', value: 65, accent: true }, { name: 'Slack', value: 100 } ] },
+            { name: 'Wickr', value: 0 }, { name: 'Element', value: 13.9 }, { name: 'Teams', value: 17.5 }, { name: 'Google Meet', value: 21.3 }, { name: 'WhatsApp', value: 30 }, { name: 'Signal', value: 32.5 }, { name: 'Wire vision', value: 65, accent: true }, { name: 'Slack', value: 100 } ] },
           { title: 'Brand presence', low: 'Subtle', high: 'Strong', items: [
-            { name: 'Wickr', value: 0 }, { name: 'Signal', value: 15.4 }, { name: 'Wire', value: 25, accent: true }, { name: 'Element', value: 33.2 }, { name: 'WhatsApp', value: 68 }, { name: 'Teams', value: 78 }, { name: 'G Meet', value: 86 }, { name: 'Slack', value: 100 } ] },
+            { name: 'Wickr', value: 0 }, { name: 'Signal', value: 15.4 }, { name: 'Wire vision', value: 25, accent: true }, { name: 'Element', value: 33.2 }, { name: 'WhatsApp', value: 68 }, { name: 'Teams', value: 78 }, { name: 'Google Meet', value: 86 }, { name: 'Slack', value: 100 } ] },
         ]}
       />
     </Diagram>
@@ -109,44 +108,44 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
 </StorySection>
 
 <StorySection number="03" title="Writing it all down" id="principles">
-  The design vision is the north star for anyone designing for the product. I tied it to the product vision as it was defined in a leaders workshop just recently.
+  The design vision is the north star for anyone designing for the product. I tied it to the product vision as it was defined in a recent leadership workshop.
 
   <Fragment slot="media">
     <Quote
       text={'Serious security made simple for everyone who depends on it.\n*Intuitive*, *modern*, and *personal* by design.'}
     />
     <MediaText title="Principles">
-      <p>The principles are the more detailed directive: they say how to apply the vision when working on design solutions.</p>
+      <p>The principles add detail: they say how to apply the vision when working on design solutions.</p>
     </MediaText>
     <Principles items={[
       { title: 'Make security feel effortless', text: 'Translate hard security concepts into an intuitive experience, so users don’t have to think about what’s underneath.' },
       { title: 'Stay modern', text: 'A contemporary look that makes the product feel alive and evolving.' },
-      { title: 'Make people feel at home', text: 'Let users shape their space with small visual touches, so Wire feels personal (consumer-like experience).' },
+      { title: 'Make people feel at home', text: 'Let users shape their space with small visual touches, so Wire feels personal, more like a consumer app than an enterprise tool.' },
     ]} />
   </Fragment>
 </StorySection>
 
 <StorySection number="04" title="Design solution" id="design-solution">
-  The core idea is a more consistent UI built on a unified design system, the foundation of which already existed (see <a href={siteUrl('/projects/managing-a-multiplatform-design-system/')}>this</a> case study). Native iOS and Material patterns for core flows, plus shadcn as a strong base, lift the visual layer a lot, and the existing color tokens make this an easy first step. On top of that, a background layer lets people personalize the app, with the layout adapted accordingly, especially on desktop. Feature-wise, the most requested improvements were global search and better ways to organize and filter conversations.
+  The core idea is a more consistent UI built on a unified design system, the foundation of which already existed (see <a href={siteUrl('/projects/managing-a-multiplatform-design-system/')}>this</a> case study). Native iOS and Material patterns for core flows and shadcn as a base for desktop give the visual layer a clear lift, and the existing color tokens make this an easy first step. On top of that, a background layer lets people personalize the app, with the layout adapted accordingly, especially on desktop. Feature-wise, the most requested improvements were global search and better ways to organize and filter conversations.
 
   <Fragment slot="media">
     <MediaText title="Onboarding">
-      <p>A new onboarding flow lets people make the app their own from the first minute, and guides them through several security relevant setup steps, in an easy digestable way.</p>
+      <p>A new onboarding flow lets people make the app their own from the first minute and guides them through several security-relevant setup steps in an easily digestible way.</p>
     </MediaText>
     <Mock size="cover" width="media" align="center" shadow="soft" stage="calm-gray:bloom" devices={[
-      { device: 'desktop', src: desktopPersonalize, alt: 'The "Make it yours" step of the onboarding: a small preview of the app and choices for theme, accent colour and background' },
+      { device: 'desktop', src: desktopPersonalize, alt: 'The "Make it yours" step of the onboarding: a small preview of the app and choices for theme, accent color and background' },
     ]} />
     <Mock size="cover" width="media" align="center" shadow="soft" stage="calm-gray:halo" devices={[
       { device: 'desktop', src: desktopOnboarding, alt: 'The onboarding of the desktop app: a black panel with the Wire logo and the line "Collaborate without Compromise" next to a white page that asks to turn on the backup' },
     ]} />
     <MediaText title="Personalization layer">
-      <p>The same app in three tonalities: Wire branded, calm and a minimal dark one. Only the frame around the UI changes, the interface itself stays the same.</p>
+      <p>The same app in three tonalities: calm, Wire-branded and a minimal dark one. Only the frame around the UI changes, the interface itself stays the same.</p>
     </MediaText>
     <Mock size="cover" width="media" layout="set" shadow="soft" stage="slate" devices={[
       { device: 'desktop', src: desktopGradient, alt: 'The desktop app in a calm tonality: a violet-to-blue gradient frame around a light conversation' },
       { device: 'ios', src: iosGradient, alt: 'The iOS app in a calm tonality: a violet-to-rose gradient header above a light conversation list' },
     ]} />
-     <Mock size="cover" width="media" layout="set" shadow="soft" stage="calm-gray:orb" devices={[
+    <Mock size="cover" width="media" layout="set" shadow="soft" stage="calm-gray:orb" devices={[
       { device: 'desktop', src: desktopBlue, alt: 'The desktop app in the Wire branded tonality: a white frame, blue accents and a light conversation with a voice message and a video' },
       { device: 'ios', src: iosBlue, alt: 'The iOS app in the Wire branded tonality: a conversation with blue message bubbles' },
     ]} />
@@ -173,20 +172,20 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
         { device: 'desktop', src: desktopFilter, alt: 'The desktop conversation list with the filter dialog open: group by, filter by unread or favorites, and sort by activity or alphabetical' },
       ]} />
       <Mock size="half" align="cut-bottom" shadow="soft" stage="calm-blue:horizon" devices={[
-        { device: 'ios', src: iosFilter, alt: 'The iOS conversation list with the same filter dialog open: group by and sort by' },
+        { device: 'ios', src: iosFilter, alt: 'The iOS conversation list with the same filter dialog open: group by, filter by and sort by' },
       ]} />
     </MediaRow>
   </Fragment>
 </StorySection>
 
 <StorySection number="05" title="Getting it built" id="implementation">
-  I laid out several ways to implement the vision, from a full rewrite to a step-by-step approach alongside feature work. A deep dive with engineers settled the picture: iOS already had a rewrite planned, Android could adopt the new design system easily, and the legacy-ridden web app would need a full rewrite.
+  I laid out several ways to implement the vision, from a full rewrite to a step-by-step approach alongside feature work. A deep dive with engineers settled the picture: iOS already had a rewrite planned, Android could adopt the new design system easily, and the legacy desktop app would need a full rewrite.
 
-  I presented the vision during an all-hands meeting to the company, which kicked off an internal testing and feedback phase, and planned to collect feedback from selected customers as a next step.
+  I presented the vision during an all-hands meeting to the company, which kicked off an internal testing and feedback phase, with feedback from selected customers planned next.
 
   <Fragment slot="media">
     <ImageGrid items={[
-      { src: slideTitle, alt: 'Title slide of the presentation: "Wire Design Team, Design Vision 2026" on black, with colourful lines on the right' },
+      { src: slideTitle, alt: 'Title slide of the presentation: "Wire Design Team, Design Vision 2026" on black, with colorful lines on the right' },
       { src: slideWhat, alt: 'Slide "What is a Design Vision?": a picture of where we are headed, room to explore, something worth building' },
       { src: slideWhy, alt: 'Slide "Why now?": patterns drifted, user expectations, custom UI, and now is the best time with the Kalium rewrite incoming' },
       { src: slideHow, alt: 'Slide "How?": a multiplatform design system, Wire Design System 2.0 with shared foundations, plus iOS, Android and web or desktop specifics' },
@@ -197,7 +196,7 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
 </StorySection>
 
 <StorySection number="06" title="Outcome" id="outcome" closing>
-  1. The design and product team agreed on what "modern" means for Wire, which gave the vision a shared direction.
+  1. Design, product and leadership agreed on what 'modern' means for Wire, which gave the vision a shared direction.
   2. The personality layer showed how Wire can stay calm and focused and still carry a brand, on all three platforms. Early tests inside the company were positive.
-  3. The vision made the case for a desktop rewrite concrete. AI support has made it much more realistic.
+  3. The vision made the case for a desktop rewrite concrete. With AI-assisted development, that rewrite now looks achievable within the team's capacity.
 </StorySection>
