@@ -3,15 +3,18 @@
  * T10 Story section: numbered chapter with the same three beats every time: The problem, The decision, The outcome.
  * Text sits on the centred text measure (8 / 9 cols): "— 01" (`.t-number`: Geist, accent) over an h2 `.t-heading`, then the three blocks
  * (labels in `.t-body`, strong colour, emphasis weight, text in the default colour, no dividers). Media in the `media` slot runs on the media measure underneath.
- * Without any of those three slots, the default slot is shown as plain text instead (for sections that don't fit the pattern).
+ * Without any of those three slots, the default slot is shown as plain text instead (for sections that don't fit the pattern). An ordered list there
+ * (markdown `1. …`) gets the numbered look "01, 02, 03" in the accent colour, e.g. for the Outcome (use `closing` on that last section).
  * Slots: problem, decision, outcome (optional), default, media. Use plain `<p slot="…">` elements.
  */
 interface Props {
   number: string;
   title: string;
   id?: string;
+  /** The closing section (the Outcome): less space above and more below, so it reads as the end of the story. Use on the last section. */
+  closing?: boolean;
 }
-const { number, title, id } = Astro.props;
+const { number, title, id, closing = false } = Astro.props;
 const hasMedia = Astro.slots.has('media');
 const beats = [
   { slot: 'problem', label: 'The problem' },
@@ -20,7 +23,7 @@ const beats = [
 ].filter((b) => Astro.slots.has(b.slot));
 ---
 
-<section class="story" aria-labelledby={id}>
+<section class="story" aria-labelledby={id} data-closing={closing ? "" : undefined}>
   <div class="container">
     <div class="inner">
       <div class="text measure-text reveal">
@@ -46,6 +49,13 @@ const beats = [
 <style>
   .inner { display: grid; grid-template-columns: 1fr; gap: var(--space-6); }
   .plain { margin-top: var(--space-6); }
+  /* ordered list in a plain section: numbers 01, 02, 03 in the accent colour */
+  .plain :global(ol) { padding-left: 0; list-style: none; counter-reset: story-list; display: grid; gap: var(--space-4); }
+  .plain :global(ol > li) { counter-increment: story-list; color: var(--text-strong); display: grid; grid-template-columns: 2.5em 1fr; margin: 0; }
+  .plain :global(ol > li)::before { content: counter(story-list, decimal-leading-zero); color: var(--accent-primary); }
+  /* closing section: less space above (the chapter before it already ends with a gap), more below; the list sits closer to the heading */
+  .story[data-closing] { margin-top: calc(var(--section-y) * 0.5); margin-bottom: calc(var(--section-y) * 1.5 - var(--chapter-gap)); }
+  .story[data-closing] .plain { margin-top: var(--space-5); }
   .beats { margin-top: var(--space-6); display: flex; flex-direction: column; }
   .beat { display: flex; flex-direction: column; gap: var(--space-2); padding-block: var(--space-4); }
   .beat:first-child { padding-top: 0; }

@@ -6,7 +6,6 @@ import SectionTitle from '../components/SectionTitle.astro';
 import Overview from '../components/Overview.astro';
 import StorySection from '../components/StorySection.astro';
 import ScreenGallery from '../components/ScreenGallery.astro';
-import Outcome from '../components/Outcome.astro';
 import CareerEntry from '../components/CareerEntry.astro';
 import Timeline from '../components/Timeline.astro';
 import CaseHero from '../components/CaseHero.astro';
@@ -45,7 +44,7 @@ import mockIos from '../assets/placeholders/mocks/ios.png';
 import mockAndroid from '../assets/placeholders/mocks/android.png';
 import type { CardData } from '../lib/projects';
 import { GRADIENT_HUES, gradientFromHues } from '../lib/pen';
-import { INTENSITIES, INTENSITY_NOTES, TONALITIES, TONALITY_IDS, GRADIENTS, MOODS, gradientById } from '../lib/gradients';
+import { INTENSITIES, INTENSITY_NOTES, TONALITIES, TONALITY_IDS, GRADIENTS, MOODS, SHAPES, SHAPE_IDS, gradientById } from '../lib/gradients';
 
 // [role, dark palette var, dark hex, light palette var, light hex]
 const colors: (string | [string[], string, string, string, string, string])[] = [
@@ -176,7 +175,7 @@ const cards: CardData[] = [
   <SectionTitle id="gradients">Background gradients</SectionTitle>
   <div class="container">
     <div class="measure-text">
-      <p class="t-label intro-note">A gradient is named <code>&lt;intensity&gt;-&lt;tonality&gt;</code>, for example <code>soft-yellow</code> or <code>active-blue</code>. <strong>Intensity</strong> says how loud it is (soft, calm, active), <strong>tonality</strong> says which colour family dominates (yellow, salmon, violet, blue, green). So "an active gradient with blue tonality" is <code>active-blue</code>, and "a soft gradient with a yellowish tonality" is <code>soft-yellow</code>. Moods are short names for a few curated picks. Everything follows the theme: switch it in the nav to see dark and light. The definition lives in <code>src/lib/gradients.ts</code>; use <code>class="gradient gradient--active-blue"</code> (or the mood) in markup, or the tokens <code>--gradient-active-blue-top</code> / <code>-bottom</code> in CSS.</p>
+      <p class="t-label intro-note">A gradient is named <code>&lt;intensity&gt;-&lt;tonality&gt;</code>, for example <code>soft-yellow</code> or <code>active-blue</code>. <strong>Intensity</strong> says how loud it is (soft, calm, active), <strong>tonality</strong> says which colour family dominates (yellow, salmon, violet, blue, green, gray). So "an active gradient with blue tonality" is <code>active-blue</code>, and "a soft gradient with a yellowish tonality" is <code>soft-yellow</code>. Moods are short names for a few curated picks. Everything follows the theme: switch it in the nav to see dark and light. The definition lives in <code>src/lib/gradients.ts</code>; use <code>class="gradient gradient--active-blue"</code> (or the mood) in markup, or the tokens <code>--gradient-active-blue-top</code> / <code>-bottom</code> in CSS.</p>
     </div>
 
     <div class="measure-text"><h3 class="t-subheading ghead">Moods</h3></div>
@@ -208,6 +207,20 @@ const cards: CardData[] = [
           })}
         </div>
       </>
+    ))}
+
+    <div class="measure-text">
+      <h3 class="t-subheading ghead">Shapes <span class="t-label gnote">Not linear: off-centre circles and ovals over the same two colours. The lighter colour glows in the centre, the darker one is the far edge. Add the shape class on top, <code>class="gradient gradient--calm-gray gradient--orb"</code>, or in a mock <code>stage="calm-gray:orb"</code>.</span></h3>
+    </div>
+    {SHAPE_IDS.map((shape) => (
+      <div class="gradients gmatrix gshapes measure-media">
+        {['active-violet', 'calm-salmon', 'calm-gray'].map((id) => (
+          <figure class="gswatch">
+            <div class={`gfield gradient gradient--${id}`} style={`background: ${SHAPES[shape].css('var(--g-top)', 'var(--g-bottom)')}`}><span class="t-subheading">{SHAPES[shape].label}</span></div>
+            <figcaption class="t-label"><span class="gname">{id}:{shape}</span><span>{SHAPES[shape].note}</span></figcaption>
+          </figure>
+        ))}
+      </div>
     ))}
 
     <div class="measure-text"><h3 class="t-subheading ghead">Home stage default</h3></div>
@@ -304,7 +317,13 @@ const cards: CardData[] = [
       <p>A second entry shows how the line connects the bullets.</p>
     </CareerEntry>
   </Timeline>
-  <Outcome number="03" items={['Outcome (T7) starts with the result, then the cause.', 'A second point, ideally with a number.', 'A third point.']} />
+  <StorySection number="03" title="Outcome" closing>
+    <ol>
+      <li>The Outcome is a closing StorySection with an ordered list.</li>
+      <li>It starts with the result, then the cause, ideally with a number.</li>
+      <li>Usually three points, but any number works.</li>
+    </ol>
+  </StorySection>
 
   <!-- ===== Media modules ===== -->
   <SectionTitle id="media">Media modules</SectionTitle>
@@ -454,7 +473,8 @@ const cards: CardData[] = [
   .ghead { margin-top: var(--space-7); display: flex; flex-wrap: wrap; align-items: baseline; gap: var(--space-2) var(--space-4); }
   .gnote { color: var(--text-default); }
   .gmatrix { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
-  @media (min-width: 768px) { .gmatrix { grid-template-columns: repeat(5, minmax(0, 1fr)); } }
+  @media (min-width: 768px) { .gmatrix { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  @media (min-width: 992px) { .gmatrix { grid-template-columns: repeat(6, minmax(0, 1fr)); } .gshapes { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
   .gmatrix .gswatch code { font-size: 0.72rem; overflow-wrap: anywhere; }
   .gmoods { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
   .gpool { margin-top: var(--space-7); }

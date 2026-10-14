@@ -44,9 +44,9 @@ Dark editorial portfolio. The rules live in `docs/foundations/` (read `03-page-r
   and other projects from frontmatter; the MDX body holds numbered `StorySection`s only (the one case-study layout).
 - **Case studies:** copy `src/content/projects/_template.mdx` to `<slug>.mdx`. The schema is in `src/content.config.ts`.
   StorySection, Figure & co. are available in MDX without imports (see `src/pages/projects/[id].astro`).
-- **Gradients:** named `<intensity>-<tonality>`: intensity `soft` | `calm` | `active`, tonality `yellow` | `salmon` | `violet` | `blue` | `green`
-  (15 gradients), plus moods `morning` (soft-yellow), `day` (soft-blue), `meadow` (calm-green), `dusk` (calm-violet), `sundown` (active-salmon),
-  `night` (active-blue). "Add an active gradient with blue tonality" = `class="gradient gradient--active-blue"`; tokens are
+- **Gradients:** named `<intensity>-<tonality>`: intensity `soft` | `calm` | `active`, tonality `yellow` | `salmon` | `violet` | `blue` | `green` | `gray`
+  (18 gradients; `gray` is cool and barely tinted), plus moods `morning` (soft-yellow), `day` (soft-blue), `meadow` (calm-green), `dusk` (calm-violet), `sundown` (active-salmon),
+  `night` (active-blue), `fog` (soft-gray), `slate` (calm-gray), `graphite` (active-gray). Shapes beyond linear (off-centre circles and ovals): add `gradient--orb`, `--bloom`, `--horizon` or `--halo` on top of a gradient class, or `stage="dusk:orb"` in a mock. "Add an active gradient with blue tonality" = `class="gradient gradient--active-blue"`; tokens are
   `--gradient-active-blue-top` / `-bottom`. All are theme aware; text on top uses `--text-strong`. Source of truth and recipes:
   `src/lib/gradients.ts` (CSS is injected by `Base.astro`); live reference: `/styleguide#gradients`. The home stage keeps its own
   `--gradient-hero-*` tokens; `src/lib/pen.ts` holds the random hue pool of the home effect.

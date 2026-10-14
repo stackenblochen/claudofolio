@@ -19,7 +19,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | H4 | Page header (eyebrow, title, intro) | `PageHeader` | About, Styleguide |
 | **T — Text** | | | |
 | T3 | Section title | `SectionTitle` | Home, About |
-| T7 | Outcome | `Outcome` | Case studies |
+| T7 | Outcome (closing story section) | `StorySection` with `closing` | Case studies |
 | T9 | Overview | `Overview` | Case studies |
 | T10 | Story section | `StorySection` | Case studies |
 | T8 | Career entry | `CareerEntry` inside `Timeline` | About |
@@ -38,6 +38,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | I14 | Quote (the vision statement) | `Quote` | Design vision |
 | I15 | Principles (numbered columns) | `Principles` | Design vision |
 | I16 | Experience list (icon, title, text) | `ExperienceList` | About me |
+| I17 | Image grid (equal images, 3 columns) | `ImageGrid` | Case studies |
 | **L — Collections** | | | |
 | L1 | Project teasers | `ProjectGrid`, `ProjectCard` | Home |
 | L2 | Other projects | `ProjectGrid` with `exclude` | Case studies |
@@ -96,7 +97,7 @@ Eyebrow (`.t-label`), H1 (`.t-title`, text measure) and optional intro paragraph
 `.t-heading` title with a dash marker ("Selected work", "Career"). Semantic level configurable.
 
 ### Case study structure (T9, T10, T7, I11)
-Every case study uses one layout, `layouts/CaseStudy.astro`. Order: hero (`CaseHero`: labels, title, cover) → `Overview` → numbered `StorySection`s (the MDX body) → optional `ScreenGallery` (MDX) → `Outcome` → other projects. Overview and Outcome come from the frontmatter; the sections are written in the MDX. No full-width dividers: the space between sections is `--chapter-gap`. `unlisted: true` keeps a case study off Home and out of "Other projects" while its URL still works. Media (screenshots, mocks, schemas, embeds) is different for every case study and always goes in a section's `media` slot.
+Every case study uses one layout, `layouts/CaseStudy.astro`. Order: hero (`CaseHero`: labels, title, cover) → `Overview` → numbered `StorySection`s (the MDX body) → optional `ScreenGallery` (MDX) → other projects. Hero and Overview come from the frontmatter; the sections, the Outcome included, are written in the MDX. No full-width dividers: the space between sections is `--chapter-gap`. `unlisted: true` keeps a case study off Home and out of "Other projects" while its URL still works. Media (screenshots, mocks, schemas, embeds) is different for every case study and always goes in a section's `media` slot.
 
 ### T9 Overview
 From `lead` and the meta, stacked on the centred text measure (8 / 9 cols): h2 "Project overview", the lead paragraphs in the same style as the About page intro (`.t-subheading` at weight 400, strong colour, `text-wrap: pretty`), then role, team and timeline as a row (only with at least three of role, team, timeline, platforms). Props: `title`, `sentences`, `meta`; the default slot takes custom paragraphs.
@@ -105,7 +106,7 @@ From `lead` and the meta, stacked on the centred text measure (8 / 9 cols): h2 "
 Props `number` ("01", then "02" …), `title`, `id`. "— 01" in `.t-number` (Geist, body weight, 32 px on desktop, `--accent-primary`), then an h2 in `.t-heading`, then up to three beats: The problem, The decision, The outcome (slots `problem`, `decision`, `outcome`; labels in `.t-body`, sentence case, strong colour, emphasis weight; text in the default colour; no dividers). All on the centred text measure (8 / 9 cols). A section that does not fit the three beats uses the default slot instead, which renders plain paragraphs. Media goes in the `media` slot and runs on the media measure below the text. Subheadings inside a section are plain markup: a `div.measure-text.prose` with an `h3.t-subheading`.
 
 ### T7 Outcome
-Section number (`outcomeNumber` in the frontmatter, "— 06": the one after the last StorySection, same `.t-number` style as the section numbers), heading, numbered list (01, 02, 03) on a full-bleed `--bg-primary` section, with less space above (0.5 × `--section-y`) than below (1.5 ×). Prop `items` (strings) or `<li>` children. The list numbers are salmon (`--accent-primary`). Exactly three points; each starts with the result and at least one has a number or concrete artefact.
+A normal `StorySection` at the end of the MDX with `closing` (title "Outcome", `number` = the one after the last section) and an ordered list (markdown `1. …`) as its content. `closing` gives less space above (0.5 × `--section-y`) than below (1.5 ×). An ordered list in a section without the three beats is shown as 01, 02, 03 with salmon numbers (`--accent-primary`). Usually three points, any number works; each starts with the result and at least one has a number or concrete artefact.
 
 ### I11 Screen gallery
 Optional, after the story sections. `title`, `intro`, `note` (uppercase), `items` (`src`, `alt`, `title`, `category`, `wide`). Cards two per row from 768 px (one on phones); `wide: true` takes the full row. Images like `Figure` (radius 12, border, shadow).
@@ -204,3 +205,6 @@ Square photo at half the text measure (4 of 8 columns on wide desktops), radius 
 
 ### I16 Experience list
 `ExperienceList`: `items` (`icon`, `title`, `text`) at the text measure, no box: two columns from 768 px, one below. `icon` is a file name under `@tabler/icons/outline` (without `.svg`), shown 24 px in `--text-default` (as in the labels); the title is `.t-body` in the strong colour at the emphasis weight, the text `.t-body`. Used on the About page under the "Experience" section title.
+
+### I17 Image grid
+`ImageGrid`: `items` (`src`, `alt`) as images of the same ratio on the media measure, 3 columns from 768 px (`columns` 2–4), 2 below. Screenshot look (radius 12, border, shadow), no captions. Starts a new group like `MediaText` (extra space above when it follows other media).

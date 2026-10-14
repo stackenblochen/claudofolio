@@ -1,13 +1,12 @@
 ---
 /**
- * Case-study layout: hero → overview (with role, team, timeline) → [MDX: numbered StorySections, optional ScreenGallery] → outcome → other projects.
- * Hero, Overview and Outcome come from the frontmatter (title, labels, lead, role/team/timeline, outcome, outcomeNumber); the MDX body holds the numbered sections.
+ * Case-study layout: hero → overview (with role, team, timeline) → [MDX: numbered StorySections, the last one the Outcome (`closing`), optional ScreenGallery] → other projects.
+ * Hero and Overview come from the frontmatter (title, labels, lead, role/team/timeline); the MDX body holds the numbered sections, the Outcome included.
  */
 import Base from './Base.astro';
 import Protected from '../components/Protected.astro';
 import CaseHero from '../components/CaseHero.astro';
 import Overview from '../components/Overview.astro';
-import Outcome from '../components/Outcome.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
 import { getProjects, toCard, type ProjectEntry } from '../lib/projects';
 import { plain } from '../lib/site';
@@ -40,7 +39,6 @@ const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard
     />
     <Overview sentences={d.lead} meta={meta.length >= 3 ? meta : []} />
     <div class="stories"><slot /></div>
-    <Outcome items={d.outcome} number={d.outcomeNumber} />
     {others.length > 0 && (
       <section class="others section section--pure" aria-labelledby="others-title">
         <div class="container">

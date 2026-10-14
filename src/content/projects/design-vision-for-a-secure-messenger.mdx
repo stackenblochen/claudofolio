@@ -17,13 +17,8 @@ year: 2026
 lead:
   - The design team at Wire had years of good ideas and explorations, and a foundation ready for its next chapter.
   - With a new CTO on board, I defined a global design vision and gave the scattered discussions common ground.
-outcome:
-  - The design and product team agreed on what "modern" means for Wire, which gave the vision a shared direction.
-  - The personality layer showed how Wire can stay calm and focused and still carry a brand, on all three platforms. Early tests inside the company were positive.
-  - The vision made the case for a desktop rewrite concrete. The decision was still open when I left, but AI support has made it much more realistic.
 order: 4
 stagingOnly: true
-outcomeNumber: "07"
 draft: false
 unlisted: false # reachable by URL only (password protected), no card
 ---
@@ -32,7 +27,13 @@ import { url as siteUrl } from '../../lib/site';
 import feelsLikeHome from '../../assets/projects/design-vision/feels-like-home.webp';
 import securityRight from '../../assets/projects/design-vision/security-right.webp';
 import skippedTools from '../../assets/projects/design-vision/skipped-tools.webp';
-import diagram from '../../assets/placeholders/diagram.svg';
+import slideTitle from '../../assets/projects/design-vision/slide-title.webp';
+import slideWhat from '../../assets/projects/design-vision/slide-what.webp';
+import slideWhy from '../../assets/projects/design-vision/slide-why.webp';
+import slideHow from '../../assets/projects/design-vision/slide-how.webp';
+import slideLook from '../../assets/projects/design-vision/slide-look.webp';
+import slideNext from '../../assets/projects/design-vision/slide-next.webp';
+import desktopPersonalize from '../../assets/projects/design-vision/desktop-personalize.webp';
 import desktopOnboarding from '../../assets/projects/design-vision/desktop-onboarding.webp';
 import desktopBlue from '../../assets/projects/design-vision/desktop-blue.webp';
 import desktopGradient from '../../assets/projects/design-vision/desktop-gradient.webp';
@@ -88,7 +89,7 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
         move={{ from: 'Wire today', to: 'Wire vision' }}
       />
     </Diagram>
-    <Diagram title="What 'modern' means'">
+    <Diagram title="What 'modern' means">
       <p slot="intro">To pin down what we mean by 'modern', I took the four aspects stakeholders kept focusing on and gave each a scale. We placed the competitors and Wire's vision on them, so everyone worked from the same picture.</p>
       <SpectrumStrips
         alt="Four spectra on which Wire and seven competitors were placed: tone and personality from formal to personal, interaction design from standardized to custom, visual presence from neutral to expressive, and brand presence from subtle to strong."
@@ -107,14 +108,14 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
   </Fragment>
 </StorySection>
 
-<StorySection number="03" title="Vision and principles" id="principles">
-  I wrote the design vision statement and tied it to product vision as it was defined in a leaders workshop ("highest security for people who depend on it"). The design vision is the north star for anyone designing for the product.
+<StorySection number="03" title="Writing it all down" id="principles">
+  The design vision is the north star for anyone designing for the product. I tied it to the product vision as it was defined in a leaders workshop just recently.
 
   <Fragment slot="media">
     <Quote
       text={'Serious security made simple for everyone who depends on it.\n*Intuitive*, *modern*, and *personal* by design.'}
     />
-    <MediaText>
+    <MediaText title="Principles">
       <p>The principles are the more detailed directive: they say how to apply the vision when working on design solutions.</p>
     </MediaText>
     <Principles items={[
@@ -125,54 +126,78 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
   </Fragment>
 </StorySection>
 
-<StorySection number="04" title="A personality layer" id="personality">
-  The central idea is a minimal frame around the app, a layer the UI sits on. It carries the personality and can project any tonality, such as Wire branded, calm or playful, and fits the accent color theming we already had. The UI itself stays minimal and focused, so the personality never gets in the way of productivity. Users can customize it to make the app their own.
-
-  I built a web prototype with AI support, based on shadcn, and then applied the idea to iOS and Android, where it worked just as well. The vision builds on a unified multiplatform design system that all three platforms share, which I cover in <a href={siteUrl('/projects/managing-a-multiplatform-design-system/')}>a separate case study</a>.
+<StorySection number="04" title="Design solution" id="design-solution">
+  The core idea is a more consistent UI built on a unified design system, the foundation of which already existed (see <a href={siteUrl('/projects/managing-a-multiplatform-design-system/')}>this</a> case study). Native iOS and Material patterns for core flows, plus shadcn as a strong base, lift the visual layer a lot, and the existing color tokens make this an easy first step. On top of that, a background layer lets people personalize the app, with the layout adapted accordingly, especially on desktop. Feature-wise, the most requested improvements were global search and better ways to organize and filter conversations.
 
   <Fragment slot="media">
-    <Mock size="cover" width="media" align="center" shadow="soft" stage="meadow" devices={[
+    <MediaText title="Onboarding">
+      <p>A new onboarding flow lets people make the app their own from the first minute, and guides them through several security relevant setup steps, in an easy digestable way.</p>
+    </MediaText>
+    <Mock size="cover" width="media" align="center" shadow="soft" stage="calm-gray:bloom" devices={[
+      { device: 'desktop', src: desktopPersonalize, alt: 'The "Make it yours" step of the onboarding: a small preview of the app and choices for theme, accent colour and background' },
+    ]} />
+    <Mock size="cover" width="media" align="center" shadow="soft" stage="calm-gray:halo" devices={[
       { device: 'desktop', src: desktopOnboarding, alt: 'The onboarding of the desktop app: a black panel with the Wire logo and the line "Collaborate without Compromise" next to a white page that asks to turn on the backup' },
     ]} />
-    <Mock size="cover" width="media" layout="set" shadow="soft" stage="day" devices={[
+    <MediaText title="Personalization layer">
+      <p>The same app in three tonalities: Wire branded, calm and a minimal dark one. Only the frame around the UI changes, the interface itself stays the same.</p>
+    </MediaText>
+    <Mock size="cover" width="media" layout="set" shadow="soft" stage="slate" devices={[
+      { device: 'desktop', src: desktopGradient, alt: 'The desktop app in a calm tonality: a violet-to-blue gradient frame around a light conversation' },
+      { device: 'ios', src: iosGradient, alt: 'The iOS app in a calm tonality: a violet-to-rose gradient header above a light conversation list' },
+    ]} />
+     <Mock size="cover" width="media" layout="set" shadow="soft" stage="calm-gray:orb" devices={[
       { device: 'desktop', src: desktopBlue, alt: 'The desktop app in the Wire branded tonality: a white frame, blue accents and a light conversation with a voice message and a video' },
       { device: 'ios', src: iosBlue, alt: 'The iOS app in the Wire branded tonality: a conversation with blue message bubbles' },
     ]} />
-    <Mock size="cover" width="media" layout="set" shadow="soft" stage="dusk" devices={[
-      { device: 'desktop', src: desktopGradient, alt: 'The desktop app in a calm tonality: a violet-to-blue gradient frame around a light conversation' },
-      { device: 'ios', src: iosGradient, alt: 'The iOS app in a calm tonality: a gradient header above the conversation list' },
+    <Mock size="cover" width="media" layout="set" theme="dark" shadow="soft" stage="calm-gray:halo" devices={[
+      { device: 'desktop', src: desktopDark, alt: 'The desktop app in a dark tonality: a purple frame, purple accents and a dark conversation' },
+      { device: 'ios', src: iosDark, alt: 'The iOS app in a dark tonality: a purple gradient header above a dark conversation list' },
     ]} />
-    <MediaRow>
-      <Mock size="half" align="cut-right" zoom={2.3} shadow="soft" stage="calm-blue" devices={[
-        { device: 'desktop', src: desktopFilter, alt: 'The desktop conversation list with the filter dialog open: group by, filter by unread or favorites, and sort by activity or alphabetical' },
-      ]} />
-      <Mock size="half" align="cut-bottom" shadow="soft" stage="calm-blue" devices={[
-        { device: 'ios', src: iosFilter, alt: 'The iOS conversation list with the same filter dialog open: group by and sort by' },
-      ]} />
-    </MediaRow>
+    <MediaText title="Global search">
+      <p>Search opens as a dialog over the app and finds people, files and messages at once, with filters to narrow the results. On iOS it sits above the keyboard.</p>
+    </MediaText>
     <MediaRow>
       <Mock size="half" shadow="soft" stage="active-violet" devices={[
         { device: 'none', src: desktopSearch, alt: 'The desktop search dialog with the query "do": results grouped into people, files and messages, with filters for favorites, channels, groups, people, files and messages' },
       ]} />
-      <Mock size="half" align="cut-bottom" shadow="soft" stage="active-violet" devices={[
+      <Mock size="half" align="cut-bottom" shadow="soft" stage="calm-blue:halo" devices={[
         { device: 'ios', src: iosSearch, alt: 'The iOS search with the query "do": filters for all, conversations and favorites, then people, files and messages as results above the keyboard' },
       ]} />
     </MediaRow>
-    <Mock size="cover" width="media" layout="set" theme="dark" shadow="soft" stage="active-salmon" devices={[
-      { device: 'desktop', src: desktopDark, alt: 'The desktop app in a minimal dark tonality: black frame, white accents' },
-      { device: 'ios', src: iosDark, alt: 'The iOS app in a minimal dark tonality: black frame and a violet add button' },
-    ]} />
+    <MediaText title="Conversation filters">
+      <p>One menu to group, filter and sort the conversation list: by conversation type or folders, by unread or favorites, by activity or alphabetically. Desktop and iOS share the same options.</p>
+    </MediaText>
+    <MediaRow>
+      <Mock size="half" align="cut-right" zoom={2.3} shadow="soft" stage="calm-blue:orb" devices={[
+        { device: 'desktop', src: desktopFilter, alt: 'The desktop conversation list with the filter dialog open: group by, filter by unread or favorites, and sort by activity or alphabetical' },
+      ]} />
+      <Mock size="half" align="cut-bottom" shadow="soft" stage="calm-blue:horizon" devices={[
+        { device: 'ios', src: iosFilter, alt: 'The iOS conversation list with the same filter dialog open: group by and sort by' },
+      ]} />
+    </MediaRow>
   </Fragment>
 </StorySection>
 
 <StorySection number="05" title="Getting it built" id="implementation">
-  I laid out several ways to implement the vision, from a full rewrite to a step-by-step approach alongside feature work. A deep dive with engineers settled the picture: iOS already had a rewrite planned, Android could adopt the new design system easily, and the legacy-ridden web app would need a full rewrite. That decision was still open when I left.
+  I laid out several ways to implement the vision, from a full rewrite to a step-by-step approach alongside feature work. A deep dive with engineers settled the picture: iOS already had a rewrite planned, Android could adopt the new design system easily, and the legacy-ridden web app would need a full rewrite.
+
+  I presented the vision during an all-hands meeting to the company, which kicked off an internal testing and feedback phase, and planned to collect feedback from selected customers as a next step.
 
   <Fragment slot="media">
-    <Figure src={diagram} alt="TODO: implementation options per platform" caption="Placeholder: rewrite or step by step, per platform" />
+    <ImageGrid items={[
+      { src: slideTitle, alt: 'Title slide of the presentation: "Wire Design Team, Design Vision 2026" on black, with colourful lines on the right' },
+      { src: slideWhat, alt: 'Slide "What is a Design Vision?": a picture of where we are headed, room to explore, something worth building' },
+      { src: slideWhy, alt: 'Slide "Why now?": patterns drifted, user expectations, custom UI, and now is the best time with the Kalium rewrite incoming' },
+      { src: slideHow, alt: 'Slide "How?": a multiplatform design system, Wire Design System 2.0 with shared foundations, plus iOS, Android and web or desktop specifics' },
+      { src: slideLook, alt: 'Slide "New look and feel": the new iOS, Android and desktop designs in light and dark, each linked to a prototype' },
+      { src: slideNext, alt: 'Slide "Let\'s build it, together!": next steps are the planning phase with engineers and product, and feedback on the prototypes' },
+    ]} />
   </Fragment>
 </StorySection>
 
-<StorySection number="06" title="Learnings" id="learnings">
-  I presented the vision at an all-hands meeting after good feedback from early tests. The biggest lesson: define the details with the team, and bring leadership decisions, not open questions.
+<StorySection number="06" title="Outcome" id="outcome" closing>
+  1. The design and product team agreed on what "modern" means for Wire, which gave the vision a shared direction.
+  2. The personality layer showed how Wire can stay calm and focused and still carry a brand, on all three platforms. Early tests inside the company were positive.
+  3. The vision made the case for a desktop rewrite concrete. AI support has made it much more realistic.
 </StorySection>

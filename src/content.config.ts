@@ -6,7 +6,7 @@ import { LABEL_NAMES } from './lib/label-names';
 /**
  * One MDX file per case study in src/content/projects/.
  * Files starting with "_" are ignored (see _template.mdx).
- * The CaseStudy layout renders hero (title, labels), overview (lead + role, team, timeline), outcome and other projects
+ * The CaseStudy layout renders hero (title, labels), overview (lead + role, team, timeline) and other projects
  * from this frontmatter; the MDX body holds only the numbered StorySections.
  */
 const projects = defineCollection({
@@ -51,9 +51,7 @@ const projects = defineCollection({
       year: z.number(),
       platforms: z.array(z.string()).optional(), // e.g. ['iOS', 'Android', 'Web']
       lead: z.array(z.string()).min(1).max(3), // 1–3 sentences, rendered in the Overview
-      outcome: z.array(z.string()).length(3), // exactly 3 points
       unlisted: z.boolean().default(false), // reachable by URL, but not on Home or in "Other projects" (for iterations or drafts you only share by link)
-      outcomeNumber: z.string().optional(), // number shown above the Outcome heading, e.g. "06" (the one after the last StorySection)
       order: z.number(), // grid position
       draft: z.boolean().default(false),
       stagingOnly: z.boolean().default(false), // built for the GitHub Pages preview and local dev, left out of the production release (hallo-wl.de)

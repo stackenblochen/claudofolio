@@ -123,7 +123,7 @@ Other roles (the same in every context):
 
 ### 4.3 Gradients
 
-Named `<intensity>-<tonality>`: intensity `soft` | `calm` | `active`, tonality `yellow` | `salmon` | `violet` | `blue` | `green` (15 gradients), plus moods `morning` (soft-yellow), `day` (soft-blue), `meadow` (calm-green), `dusk` (calm-violet), `sundown` (active-salmon), `night` (active-blue). Use `class="gradient gradient--active-blue"`; tokens are `--gradient-active-blue-top` / `-bottom`. All are theme aware; text on top uses `--text-strong`. Source and recipes: `src/lib/gradients.ts`. The home stage keeps its own `--gradient-hero-*` tokens; `src/lib/pen.ts` holds the random hue pool of the home effect.
+Named `<intensity>-<tonality>`: intensity `soft` | `calm` | `active`, tonality `yellow` | `salmon` | `violet` | `blue` | `green` | `gray` (18 gradients; gray is cool and barely tinted), plus moods `morning` (soft-yellow), `day` (soft-blue), `meadow` (calm-green), `dusk` (calm-violet), `sundown` (active-salmon), `night` (active-blue), `fog` (soft-gray), `slate` (calm-gray), `graphite` (active-gray). Shapes beyond linear, off-centre circles and ovals over the same two colours (the lighter one glows in the centre): `gradient--orb`, `--bloom`, `--horizon`, `--halo` on top of a gradient class, or `stage="dusk:orb"` in a mock. Use `class="gradient gradient--active-blue"`; tokens are `--gradient-active-blue-top` / `-bottom`. All are theme aware; text on top uses `--text-strong`. Source and recipes: `src/lib/gradients.ts`. The home stage keeps its own `--gradient-hero-*` tokens; `src/lib/pen.ts` holds the random hue pool of the home effect.
 
 ## 5. Typography
 
@@ -179,7 +179,7 @@ H1 titles are Geist Bold; selected words switch to Editorial New Ultrabold Itali
 | `--space-9` | 120 | |
 | `--space-10` | 160 | |
 
-Fluid section tokens: `--section-y` (48 → 96 px), `--chapter-gap` (80 → 160 px, between sections and from the last section to the Outcome; its own value, not tied to `--section-y`), `--hero-top` (60 → 160 px above the H1). Sections use `.section` (vertical padding `--section-y`); chapters sit in `.chapter-flow`. Spacing between modules comes from the parent layout, not from margins on each module.
+Fluid section tokens: `--section-y` (48 → 96 px), `--chapter-gap` (80 → 160 px, between sections and from the last section to the Outcome (which is the last section); its own value, not tied to `--section-y`), `--hero-top` (60 → 160 px above the H1). Sections use `.section` (vertical padding `--section-y`); chapters sit in `.chapter-flow`. Spacing between modules comes from the parent layout, not from margins on each module.
 
 Section backgrounds: `.section--raised`, `.section--black` (page background), `.section--pure` (teaser sections).
 
@@ -234,7 +234,7 @@ Everything respects `prefers-reduced-motion`: no reveal, no teaser hover zoom, a
 
 ## 11. Graphic devices
 
-- **Section number "— 01":** on its own line above every section heading (and the Outcome heading, "— 06"), Geist (`.t-number`: the body weight, 300 in dark and 400 in light mode; 24 px, 32 px from 992 px) in the accent colour, rendered by the component from the `number` prop (never typed into content). Other headings (Home, About) keep a plain em-dash marker.
+- **Section number "— 01":** on its own line above every section heading (the Outcome included, "— 06"), Geist (`.t-number`: the body weight, 300 in dark and 400 in light mode; 24 px, 32 px from 992 px) in the accent colour, rendered by the component from the `number` prop (never typed into content). Other headings (Home, About) keep a plain em-dash marker.
 - **Confidential stamp** (`Stamp`): always as delivered (white disc, black artwork), light and dark. Overlaps the hero image's bottom-right corner; decorative parts get `aria-hidden`, the stamp itself an accessible name.
 - **Hand-drawn arrow** (`Arrow`): salmon, connects before/after or points to an embed. Decorative.
 - **Challenge / Solution marks:** ● in `--accent-primary`, ► in `--accent-positive`, label in strong text.

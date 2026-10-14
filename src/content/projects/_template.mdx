@@ -21,11 +21,6 @@ platforms: [iOS, Android, Web]
 lead: # shown in the Overview, 1–3 sentences
   - Situation.
   - Why it mattered and what I did.
-outcome: # exactly three points, result first, then cause
-  - Result first, then cause.
-  - Result first, then cause.
-  - Result first, then cause.
-outcomeNumber: "02" # the number after the last StorySection
 order: 1
 draft: true
 ---
@@ -40,4 +35,11 @@ import diagram from '../../assets/placeholders/diagram.svg';
   <Fragment slot="media">
     <Figure src={diagram} alt="What the image shows and why it matters" caption="Short caption" />
   </Fragment>
+</StorySection>
+
+{/* Closing section: an ordered list, result first, then cause (usually three points). Number = the one after the last section. */}
+<StorySection number="02" title="Outcome" id="outcome" closing>
+  1. Result first, then cause.
+  2. Result first, then cause.
+  3. Result first, then cause.
 </StorySection>

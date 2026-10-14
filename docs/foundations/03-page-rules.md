@@ -25,7 +25,7 @@ src/
   components/            # one file per module ID in 02-modules.md; schema/ holds the Schema parts
   layouts/
     Base.astro           # <html>, fonts, tokens, header, footer, page transition
-    CaseStudy.astro      # hero + overview + numbered story sections (slot) + outcome + other projects
+    CaseStudy.astro      # hero + overview + numbered story sections (slot, the Outcome as the last one) + other projects
   pages/                 # index, about, styleguide, projects/[id]
   lib/                   # site.ts (SITE, url(), highlight()), projects.ts, gradients.ts, prism.ts, lock.ts …
   styles/                # tokens.css, base.css, mock.css, frames/
@@ -43,10 +43,10 @@ The schema is `src/content.config.ts` (Zod); it is the single source of truth fo
 - **Titles and teaser:** `title` (H1, sentence case, ≤ 70 chars, `*word*` marks an Editorial highlight), `shortTitle` (card and `<title>`), `summary` (≤ 160, but aim for about 90 characters: the wide card shows three lines), `labels` (1–3 expertise pills, see L3 in `02-modules.md`), `tags`, `cover` + `coverAlt`, optional `thumb` (teaser as a `Mock`).
 - **Hero:** `heroVariant` (`mockup` | `backdrop`), `heroBackground`, `confidential` (stamp), `protected` (password gate).
 - **Meta:** `company`, `role`, `team`, `timeline`, `year`, `platforms`. The meta row shows only with at least three of role, team, timeline, platforms.
-- **Story:** `lead` (1–3 sentences), `outcome` (exactly 3 points).
+- **Story:** `lead` (1–3 sentences). The outcome is the last `StorySection` in the MDX, see below.
 - **Housekeeping:** `order` (grid position), `draft`. A draft with a title, summary and label shows (thumb mock or cover, else the placeholder) on Home as a non-clickable "Coming soon" teaser; any other draft stays hidden.
 
-The layout renders hero, overview, outcome and other projects from the frontmatter; the MDX body holds the numbered StorySections only.
+The layout renders hero, overview and other projects from the frontmatter; the MDX body holds the numbered StorySections, the Outcome (`closing`) as the last one.
 
 ### 2.2 Global rules for components
 - Components take **content as props or slots**, never style overrides. No `style=` attributes in MDX.
@@ -70,7 +70,7 @@ Required (★) and optional (○) blocks, in this order:
 | ○4 | Insights | `StorySection` + 3× `ImageText` in its media | Source of the insights in one sentence, then 3 insights (title ≤ 4 words + 1–2 sentences) |
 | ○5 | Interactive demo | `Embed` in a section's media | Always with a `poster` placeholder and a `note` for tablet and mobile (< 992 px); an optional `caption` for desktop and laptop |
 | ○6 | Screen gallery | `ScreenGallery` (MDX, after the sections) | More screens as cards, each with title and category |
-| ★7 | Outcome | `Outcome` (from `outcome`, `outcomeNumber`) | Exactly 3 points, each starting with the result. ≥ 1 number or concrete artefact |
+| ★7 | Outcome | last `StorySection` with `closing` and an ordered list | Usually 3 points, each starting with the result. ≥ 1 number or concrete artefact |
 | ★8 | Other projects | `ProjectGrid exclude=current` | Up to 2 cards |
 
 The media is different for every case study: pick the module that fits what each section shows (mock, figure, schema, embed, video, before/after).
@@ -115,7 +115,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 - **Sentence case** everywhere (titles, headings, buttons). No Title Case.
 - **Overview sentences:** each ≤ 25 words, one idea per sentence, no jargon in the first one.
 - **Paragraphs:** ≤ 4 sentences. One message per paragraph.
-- **Outcome items:** start with the effect, then the cause ("Qualifies Wire for public-sector tenders by meeting WCAG and BITV").
+- **Outcome points:** start with the effect, then the cause ("Qualifies Wire for public-sector tenders by meeting WCAG and BITV").
 - **Numbers:** use real numbers wherever possible (team size, timeline, tokens, components, contrast fixes, adoption, launch date).
 - **Confidential work:** describe it at the level of patterns and decisions, blur or mark sensitive data, and keep the stamp.
 - **Spelling:** run a spell-check before publishing.
@@ -184,8 +184,8 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 ## 9. Definition of done: new case study
 
 - [ ] Frontmatter complete (schema validates), `draft: false`
-- [ ] Hero, Overview, ≥ 2 numbered sections, Outcome (with `outcomeNumber`), Other projects present
-- [ ] Outcome has 3 points, ≥ 1 concrete number or artefact
+- [ ] Hero, Overview, ≥ 2 numbered sections, Outcome (a closing `StorySection`), Other projects present
+- [ ] Outcome has a few points, ≥ 1 concrete number or artefact
 - [ ] All text visible at 375 px; demo has a fallback
 - [ ] All images have alt text and the correct ratio/size; covers 16:10
 - [ ] Sentence case; spell-checked; heading levels correct
@@ -210,7 +210,7 @@ Insights (optional) — 3 findings + source
 Key reframe / decision (optional)
 Sections — 4–8 titles, each with the problem, the decision, the outcome + the visuals I have
 Constraints & trade-offs (optional) — challenge → how I handled it
-Outcome — 3 results (numbers if any)
+Outcome — a few results (numbers if any)
 Learning — what I'd do differently / what's next
 Assets — list of files with a 1-line description each
 ```
