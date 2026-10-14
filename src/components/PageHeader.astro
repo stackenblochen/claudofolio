@@ -19,7 +19,7 @@ const { title } = Astro.props;
 <style>
   /* the title starts one label line plus one stack gap lower than the header height and 60 px, the position it had when an eyebrow sat above it */
   .page-header { padding-top: calc(var(--header-h) + var(--space-7) + var(--text-label-lh) + var(--space-6)); padding-bottom: var(--space-7); }
-  .intro { --stack-gap: var(--space-4); color: var(--text-strong); font-weight: 400; }
+  .intro { --stack-gap: var(--space-4); color: var(--text-strong); font-family: var(--font-sans); word-spacing: normal; font-weight: 400; }
   /* Running text: fill the measure instead of balancing lines (balance is for short headings). */
   .intro :global(p) { font: inherit; text-wrap: pretty; }
 </style>

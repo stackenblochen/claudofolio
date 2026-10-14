@@ -56,6 +56,7 @@ const Tag = card.comingSoon ? 'div' : 'a';
   .teaser:has(:focus-visible)::after { border-color: var(--border); }
   .link-block { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-4); text-decoration: none; color: inherit; }
   .copy { display: flex; flex-direction: column; gap: var(--space-2); } /* tight on mobile and tablet */
+  .copy h3 { font-family: var(--font-sans); word-spacing: normal; font-weight: var(--weight-emphasis); letter-spacing: var(--ls-emphasis); } /* teaser titles stay Geist */
   .sum { color: var(--text-default); }
   .sum { display: none; } /* the summary only shows from 992 px, below that the teaser stays compact */
   .soon { display: inline-block; width: fit-content; padding: var(--space-1) var(--space-3); border: 1px solid var(--border); border-color: var(--border); border-radius: var(--radius-pill); color: var(--text-strong); }

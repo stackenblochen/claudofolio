@@ -59,9 +59,9 @@ const beats = [
   .beats { margin-top: var(--space-6); display: flex; flex-direction: column; }
   .beat { display: flex; flex-direction: column; gap: var(--space-2); padding-block: var(--space-4); }
   .beat:first-child { padding-top: 0; }
-  .label { color: var(--text-strong); font-weight: var(--weight-emphasis); }
+  .label { color: var(--text-strong); font-weight: var(--text-body-weight); }
   /* titles of the insight rows (ImageText) match the block labels */
-  .media :global(.image-text h3) { font-weight: var(--weight-emphasis); }
+  .media :global(.image-text h3) { font-weight: var(--text-body-weight); }
   .media { display: flex; flex-direction: column; gap: var(--space-4); }
   /* a new group in the media slot (a MediaText, or a Diagram with a headline) gets extra space above it: 100 px in total */
   .media > :global(.group:not(:first-child)) { margin-top: var(--space-8); }

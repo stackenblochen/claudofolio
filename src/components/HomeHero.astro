@@ -14,7 +14,7 @@ import DoodleStack from './DoodleStack.astro';
       <div class="group">
         <div class="text">
           <h1 class="intro t-title"><slot name="intro" /></h1>
-          {Astro.slots.has('subline') && <p class="subline t-heading"><slot name="subline" /></p>}
+          {Astro.slots.has('subline') && <p class="subline t-subheading"><slot name="subline" /></p>}
         </div>
         <DoodleStack />
       </div>
@@ -35,12 +35,13 @@ import DoodleStack from './DoodleStack.astro';
   }
   .group { display: flex; flex-direction: column; gap: var(--space-5); align-items: flex-start; width: 100%; }
   .text { position: relative; z-index: 3; display: flex; flex-direction: column; gap: var(--space-6); }
+  .intro { text-wrap: pretty; } /* fill the text width instead of balancing short lines */
+  /* below 1230 px: fixed font-size steps (line height 1.19), no fluid scaling; from 1230 px the .t-title size applies */
+  @media (max-width: 1229px) { .intro { font-size: 2rem; line-height: 1.19; } }
+  @media (min-width: 768px) and (max-width: 1229px) { .intro { font-size: 2.5rem; } }
+  @media (min-width: 992px) and (max-width: 1229px) { .intro { font-size: 3rem; } }
   .intro :global(em) { color: var(--accent-primary); }
-  .subline { font-weight: 400; text-wrap: pretty; }
-  .intro { font-size: 2rem; line-height: 1.19; /* fixed steps, no fluid scaling */ }
-  @media (min-width: 768px) {
-    .intro { font-size: 2.5rem; }
-  }
+  .subline { font-family: var(--font-sans); word-spacing: normal; font-weight: 400; text-wrap: pretty; }
   @media (min-width: 992px) {
     .stage {
       flex-direction: row; align-items: center; justify-content: center; padding-top: 0;
@@ -49,10 +50,6 @@ import DoodleStack from './DoodleStack.astro';
     /* text and doodles form one group, centred in the stage (and so on the screen), a small gap apart; the doodles are as high as the text block, no higher or lower */
     .group { flex-direction: row; align-items: stretch; gap: var(--space-5); width: auto; }
     .text { flex: 0 1 auto; }
-    .intro { font-size: 3rem; }
-  }
-  @media (min-width: 1230px) {
-    .intro { font-size: 3.5rem; }
   }
   /* line breaks as designed on larger screens; the text reflows freely below 768 px */
   .intro :global(.br-md), .subline :global(.br-md) { display: none; }

@@ -35,7 +35,7 @@ const { title = 'Project overview', sentences, meta = [] } = Astro.props;
 
 <style>
   .overview { padding-block: var(--section-y) 0; }
-  .copy { margin-top: var(--space-6); color: var(--text-strong); font-weight: 400; }
+  .copy { margin-top: var(--space-6); color: var(--text-strong); font-family: var(--font-sans); word-spacing: normal; font-weight: 400; }
   /* paragraphs (also the ones from the slot) take the container's style, like the intro in PageHeader */
   .copy :global(p) { font: inherit; text-wrap: pretty; }
   .meta { margin: var(--space-6) 0 0; display: grid; grid-template-columns: 1fr; gap: var(--space-4); }

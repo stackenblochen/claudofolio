@@ -48,6 +48,8 @@ const fontFace = editorial
   ? `@font-face{font-family:'Editorial New';font-weight:800;font-style:normal;font-display:swap;src:url('${url('/fonts/EditorialNew-Ultrabold.woff2')}') format('woff2')}`
     + (editorialItalic ? `@font-face{font-family:'Editorial New';font-weight:800;font-style:italic;font-display:swap;src:url('${url('/fonts/EditorialNew-UltraboldItalic.woff2')}') format('woff2')}` : '')
   : '';
+// Clash Display Bold (Fontshare, free licence) — trial for the home stage headline.
+const clash = `@font-face{font-family:'Clash Display';font-weight:700;font-style:normal;font-display:swap;size-adjust:108%;src:url('${url('/fonts/ClashDisplay-Bold.woff2')}') format('woff2')}`;
 ---
 
 <!doctype html>
@@ -75,6 +77,7 @@ const fontFace = editorial
     <meta property="og:image:height" content={ogImage ? undefined : '630'} />
     <meta name="twitter:card" content="summary_large_image" />
     {fontFace && <style set:html={fontFace} />}
+    <style set:html={clash} />
     <style is:global set:html={gradientCss()} /> <!-- gradient tokens + .gradient classes, see src/lib/gradients.ts -->
     <script is:inline>
       // Runs before first paint: .js flag + theme. Dark is the default; "light" is the only stored value.
