@@ -14,6 +14,10 @@ export interface CardData {
   comingSoon?: boolean;
   cover: ImageMetadata;
   coverAlt: string;
+  /** Full-bleed cover (fills the image area) instead of a cut-out with transparent parts. */
+  coverFill?: boolean;
+  /** Which mode shows the thumb's thin outline (the mode where the cover would bleed into the card). Default 'dark'. */
+  coverOutline?: 'dark' | 'light';
   thumb?: ProjectEntry['data']['thumb'];
 }
 
@@ -52,6 +56,8 @@ export function toCard(p: ProjectEntry): CardData {
     href: url(`/projects/${p.id}/`),
     cover: p.data.cover,
     coverAlt: p.data.coverAlt,
+    coverFill: p.data.coverFill,
+    coverOutline: p.data.coverOutline,
     thumb: p.data.thumb,
   };
 }

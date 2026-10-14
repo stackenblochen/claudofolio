@@ -7,6 +7,7 @@ import Base from './Base.astro';
 import Protected from '../components/Protected.astro';
 import CaseHero from '../components/CaseHero.astro';
 import Overview from '../components/Overview.astro';
+import SectionTitle from '../components/SectionTitle.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
 import { getProjects, toCard, type ProjectEntry } from '../lib/projects';
 import { plain } from '../lib/site';
@@ -41,10 +42,8 @@ const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard
     <div class="stories"><slot /></div>
     {others.length > 0 && (
       <section class="others section section--pure" aria-labelledby="others-title">
-        <div class="container">
-          <div class="measure-text"><h2 class="t-heading" id="others-title">Other projects</h2></div>
-          <div class="grid-wrap"><ProjectGrid items={others} gap="tight" /></div>
-        </div>
+        <SectionTitle id="others-title" chapter>Other projects</SectionTitle>
+        <div class="container grid-wrap"><ProjectGrid items={others} /></div>
       </section>
     )}
   </Protected>
@@ -54,5 +53,6 @@ const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard
   .stories { display: flex; flex-direction: column; }
   .stories :global(> section) { padding-block: var(--chapter-gap) 0; }
   .stories { padding-bottom: var(--chapter-gap); }
+  .others { padding-top: 0; }
   .grid-wrap { margin-top: var(--space-6); }
 </style>

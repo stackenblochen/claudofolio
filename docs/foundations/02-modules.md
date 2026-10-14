@@ -16,7 +16,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | H1 | Home stage (headline, subline, doodle stack) | `HomeHero`, `DoodleStack` | Home |
 | H2 | Case hero, backdrop | `CaseHero variant="backdrop"` | Case studies |
 | H3 | Case hero, mockup | `CaseHero variant="mockup"` | Case studies |
-| H4 | Page header (eyebrow, title, intro) | `PageHeader` | About, Styleguide |
+| H4 | Page header (title, intro) | `PageHeader` | About, Styleguide |
 | **T — Text** | | | |
 | T3 | Section title | `SectionTitle` | Home, About |
 | T7 | Outcome (closing story section) | `StorySection` with `closing` | Case studies |
@@ -87,14 +87,14 @@ H1 on the full grid width, then the cover image on the media measure (radius 12)
 `CaseHero` props: `title` (sentence case, ≤ 8 words, `*word*` highlight markup), `labels` (the project's expertise labels, shown centred as an eyebrow on top of the H1), `variant: 'mockup' | 'backdrop'`, `image`, `imageAlt`, `background`, `confidential`. Padding above the H1 is `--hero-top`.
 
 ### H4 Page header
-Eyebrow (`.t-label`), H1 (`.t-title`, text measure) and optional intro paragraphs in the default slot: `.t-subheading` at weight 400, strong colour, text-wrap `pretty`. Props: `eyebrow`, `title` (`*word*` highlight markup).
+H1 (`.t-title`, text measure) and optional intro paragraphs in the default slot: `.t-subheading` at weight 400, strong colour, text-wrap `pretty`. Props: `eyebrow`, `title` (`*word*` highlight markup).
 
 ---
 
 ## T — Text modules
 
 ### T3 Section title
-`.t-heading` title with a dash marker ("Selected work", "Career"). Semantic level configurable.
+`.t-heading` title with the salmon dash above it (`.t-number`, like the section numbers in the case studies) and the chapter gap above (`chapter`, used by every section title on Home and About: "Selected work", "Experience", "Career", "Education"; the Contact block matches). Without `chapter` (the styleguide) there is no dash and less space above. Semantic level configurable.
 
 ### Case study structure (T9, T10, T7, I11)
 Every case study uses one layout, `layouts/CaseStudy.astro`. Order: hero (`CaseHero`: labels, title, cover) → `Overview` → numbered `StorySection`s (the MDX body) → optional `ScreenGallery` (MDX) → other projects. Hero and Overview come from the frontmatter; the sections, the Outcome included, are written in the MDX. No full-width dividers: the space between sections is `--chapter-gap`. `unlisted: true` keeps a case study off Home and out of "Other projects" while its URL still works. Media (screenshots, mocks, schemas, embeds) is different for every case study and always goes in a section's `media` slot.
@@ -162,9 +162,9 @@ Device frames, and one frame for every schema, chart or map. Rules and options i
 ## L — Collections
 
 ### L1 Project teasers
-`ProjectGrid` renders one `ProjectCard` per row: 12 cols on mobile, 10 up to 1229 px, 9 from 1230 px. Gap `wide` on Home (60 px from 992, 30 tablet, 20 mobile). Feed it from `getProjects()` → `toCard()`.
+`ProjectGrid` renders one `ProjectCard` per row: 12 cols on mobile, 10 up to 1229 px, 9 from 1230 px. The gap between the cards is the same on Home and under "Other projects" (30 px from 992, 20 tablet, 12 mobile; one rule in `ProjectGrid.astro`). Feed it from `getProjects()` → `toCard()`.
 
-`ProjectCard`: a full media-width panel. From 1230 px two equal columns, 340 px high: text left (labels on top, then title, summary of at most three lines (about 90 characters), and a "Show case study →" text link; 40 px padding on top), cover right. From 992 px the title shrinks with its column (18–24 px) so it stays on one line wherever it fits. 992–1229 px: 5/7 columns, 340 px, summary cut to three lines. 768–991 px: no summary, height follows the cover. Below 768 px the labels and title sit on top of the cover, 20 px padding, no summary. Sections holding teasers use `.section--pure`.
+`ProjectCard`: a full media-width panel. From 1230 px two equal columns, 260 px high: text left (labels on top, then title, summary of at most three lines (about 90 characters); the whole panel is the link, with no separate text link; 40 px padding above and below), cover right in a 16:10 area that is as high as the column allows (30 px padding) and centred horizontally. A cut-out cover (transparent background, e.g. a window with a phone) sits whole inside it, with the screenshot shadow and a 1 px outline in one mode only, following the shape of the content, not the image edges. The outline shows in dark mode (a dark motif); `coverOutline: light` in the frontmatter shows it in light mode instead (a light motif, as on the design vision card). A full-bleed cover (`coverFill: true` in the frontmatter) fills the area with 4 px rounded corners (`--radius-xs`) and a dark-mode outline only. Sizes to change: the `--teaser-h`, `--teaser-copy-top`, `--teaser-copy-bottom` and `--teaser-thumb-pad` variables at the top of `ProjectCard.astro`; the gap between cards is in `ProjectGrid.astro`. From 992 px the title shrinks with its column (18–24 px) so it stays on one line wherever it fits. 992–1229 px: 5/7 columns, 280 px (30 px padding all round), summary cut to three lines. 768–991 px: no summary, height follows the cover. Below 768 px the labels and title sit on top of the cover, 20 px padding, no summary. Sections holding teasers use `.section--pure`.
 
 From 992 px with a fine hovering pointer (and no reduced motion) the card grows by 5 % and gets a border and a shadow while hovered; the border also shows on keyboard focus. The whole panel is the link. On touch, below 992 px and with reduced motion the teaser stays plain. The former colour-split ripple on hover is switched off; its code is kept in `src/lib/teaser-fx.ts` (see the note at its top to re-enable it).
 
@@ -204,7 +204,7 @@ Square photo at half the text measure (4 of 8 columns on wide desktops), radius 
 | Mobile parity | All text is visible at every breakpoint; only media may be swapped |
 
 ### I16 Experience list
-`ExperienceList`: `items` (`icon`, `title`, `text`) at the text measure, no box: two columns from 768 px, one below. `icon` is a file name under `@tabler/icons/outline` (without `.svg`), shown 24 px in `--text-default` (as in the labels); the title is `.t-body` in the strong colour at the emphasis weight, the text `.t-body`. Used on the About page under the "Experience" section title.
+`ExperienceList`: `items` (`icon`, `title`, `text`) at the text measure, no box: two columns from 768 px, one below. `icon` is a file name under `@tabler/icons/outline` (without `.svg`), shown 24 px in `--accent-primary` (salmon, like the label icons); the title is `.t-body` in the strong colour at the emphasis weight, the text `.t-body`. Used on the About page under the "Experience" section title.
 
 ### I17 Image grid
 `ImageGrid`: `items` (`src`, `alt`) on the media measure, 3 columns from 768 px (`columns` 2–4), 2 below. Images of the same ratio use the screenshot look (radius 12, border, shadow); with `ratio` (e.g. `"3 / 2"`, or the ratio of the images so they fill it) each image is fitted into a tile of that ratio (`--bg-secondary`, 1 px outline drawn outside the tile, radius 12), so mixed ratios and transparent images line up like a gallery. An item can set `bg: 'white'` to sit on plain white in both themes (illustrations drawn for a white page). No captions. Starts a new group like `MediaText` (extra space above when it follows other media).

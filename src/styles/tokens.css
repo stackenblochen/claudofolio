@@ -47,7 +47,7 @@
   --border-light-mode: light-dark(var(--gray-200), transparent);
   --accent-positive: light-dark(var(--color-green-700), var(--color-green));
   --accent-primary: light-dark(var(--color-salmon-600), var(--color-salmon)); /* the brand accent: link underlines, focus rings, nav underline, timeline dot, errors, negative marks */
-  --accent-link: var(--accent-primary);
+  --accent-link: var(--accent-primary); /* the underline of a hovered link */
   --selection-bg: var(--color-salmon); /* black text on it reads in both themes */
   /* hero panel gradient: strong colour, used once on the home intro */
   --gradient-hero-top: light-dark(#bdb6f5, #4936dc);
@@ -124,9 +124,10 @@
   --col-step: calc((var(--grid-outer) - 2 * var(--page-margin) + var(--gutter)) / 12); /* one column plus one gutter (from 768 px) */
 
   /* Shape & elevation */
+  --radius-xs: 4px; /* the full-bleed cover of a project teaser, small marks, the focus ring */
+  --radius-s: 8px;
   --radius-m: 12px;
   --radius-l: 16px;
-  --radius-xl: 24px;
   --radius-pill: 999px; /* labels */
   --shadow-screenshot: 0 0 40px 0 light-dark(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.5));
   --shadow-elevated: 0 24px 48px -12px light-dark(rgba(0, 0, 0, 0.22), rgba(0, 0, 0, 0.7)); /* a raised card: offset downwards so it looks lifted off the page */

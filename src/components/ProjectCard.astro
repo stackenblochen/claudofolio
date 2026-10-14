@@ -27,12 +27,10 @@ const Tag = card.comingSoon ? 'div' : 'a';
       <LabelList labels={card.labels} />
       <h3 class="t-subheading">{card.title}</h3>
       {card.summary && <p class="sum t-label">{card.summary}</p>}
-      {card.comingSoon
-        ? <span class="soon t-label">Coming soon</span>
-        : <span class="more t-body">Show case study</span>}
+      {card.comingSoon && <span class="soon t-label">Coming soon</span>}
     </div>
     <div class="stage">
-    <div class:list={['thumb', 'media-l', !card.thumb && 'thumb--img']} data-teaser-thumb>
+    <div class:list={['thumb', !card.thumb && (card.coverFill ? 'thumb--fill media-xs' : 'thumb--shape'), card.coverOutline === 'light' && 'thumb--outline-light']} data-teaser-thumb>
       {card.thumb
         ? <Mock size="cover" stage={card.thumb.stage} theme={card.thumb.theme} layout={card.thumb.layout} phone={card.thumb.phone}
             devices={card.thumb.devices.map((d) => ({ ...d, bar: d.bar ? undefined : false }))} />
@@ -43,6 +41,14 @@ const Tag = card.comingSoon ? 'div' : 'a';
 </article>
 
 <style>
+  /* ===== Sizes you can change here =====
+     --teaser-h: height of the card (from 992 px)
+     --teaser-copy-top / --teaser-copy-bottom: space above and below the text
+     --teaser-thumb-pad: space around the thumb
+     The gap between the cards is set in ProjectGrid.astro (the same on Home and under "Other projects"). */
+  .teaser { --teaser-h: 320px; --teaser-copy-top: var(--space-5); --teaser-copy-bottom: var(--space-6); --teaser-thumb-pad: var(--space-6); }
+  @media (min-width: 1230px) { .teaser { --teaser-h: 320px; --teaser-copy-top: var(--space-6); --teaser-copy-bottom: var(--space-7); } }
+
   .teaser { position: relative; background: var(--bg-secondary); border-radius: var(--radius-l); overflow: hidden; }
   /* border, only shown on hover (and keyboard focus). Drawn as an overlay, so it adds no size and shifts nothing (the text keeps
      lining up with the section headline). */
@@ -52,14 +58,20 @@ const Tag = card.comingSoon ? 'div' : 'a';
   .copy { display: flex; flex-direction: column; gap: var(--space-2); } /* tight on mobile and tablet */
   .sum { color: var(--text-default); }
   .sum { display: none; } /* the summary only shows from 992 px, below that the teaser stays compact */
-  /* text link under the description (the whole panel is the link, so this is its visible label); shown with the summary, from 992 px */
-  .more { display: none; width: fit-content; color: var(--text-strong); text-decoration: underline; text-decoration-color: var(--accent-primary); text-decoration-thickness: 2px; text-underline-offset: 4px; }
   .soon { display: inline-block; width: fit-content; padding: var(--space-1) var(--space-3); border: 1px solid var(--border); border-color: var(--border); border-radius: var(--radius-pill); color: var(--text-strong); }
   .teaser--soon .stage { opacity: 0.6; }
-  .more .arrow { display: inline-block; transition: transform 300ms var(--ease-out); }
   .stage { display: grid; place-items: center; }
-  .thumb { position: relative; width: 100%; }
-  .thumb--img :global(img) { display: block; width: 100%; height: auto; }
+  .thumb { position: relative; width: 100%; --thumb-outline: var(--border-dark-mode); } /* the outline shows in dark mode; `coverOutline: light` in the frontmatter swaps it to light mode */
+  .thumb--outline-light { --thumb-outline: var(--border-light-mode); }
+  .thumb :global(img) { display: block; width: 100%; height: auto; }
+  /* cut-out cover (transparent background, e.g. a window with a phone): the screenshot shadow and a 1 px outline in one mode only follow the shape of
+     the image content, not the edges of the image (the same look as a Mock; a Mock thumb brings its own) */
+  .thumb--shape :global(img) {
+    filter: drop-shadow(1px 0 0 var(--thumb-outline)) drop-shadow(-1px 0 0 var(--thumb-outline)) drop-shadow(0 1px 0 var(--thumb-outline)) drop-shadow(0 -1px 0 var(--thumb-outline))
+      drop-shadow(0 0 20px light-dark(rgba(0, 0, 0, 0.14), rgba(0, 0, 0, 0.5)));
+  }
+  /* full-bleed cover (`coverFill`): fills the image area with rounded corners and, in dark mode only, a 1 px outline */
+  .thumb--fill { overflow: hidden; box-shadow: 0 0 0 1px var(--thumb-outline); }
 
   /* 768–991: text left, cover right and wider (7 of 12 parts). Height follows the cover, whose padding is the same on all sides. */
   @media (min-width: 768px) {
@@ -71,21 +83,25 @@ const Tag = card.comingSoon ? 'div' : 'a';
 
   @media (min-width: 992px) {
     .copy { gap: var(--space-4); container-type: inline-size; }
-    .more { display: inline-block; }
     /* the title shrinks (down to 18 px) with the text column, so it stays on one line wherever it fits; a longer title still wraps */
     .copy h3 { font-size: clamp(1.125rem, 7cqi, 1.5rem); }
   }
 
-  /* 992–1229: with the summary; cover column one column wider than half (7 of 12), fixed 340 px, summary clamped to three lines */
+  /* 992–1229: with the summary; cover column one column wider than half (7 of 12), fixed 280 px (the narrow text column can wrap the title and the labels), summary clamped to three lines.
+     The thumb is a 16:10 area that fills the height of its column and is centred horizontally; a cut-out cover sits whole inside it, a full-bleed cover fills it. */
   @media (min-width: 992px) {
-    .link-block { grid-template-rows: 340px; }
-    .copy { padding: var(--space-5); padding-left: calc(var(--col-step) / 2); }
+    .link-block { grid-template-rows: var(--teaser-h); }
+    .copy { padding: var(--teaser-copy-top) var(--space-5) var(--teaser-copy-bottom); padding-left: calc(var(--col-step) / 2); }
+    .stage { display: flex; justify-content: center; align-items: center; padding: var(--teaser-thumb-pad); }
+    .thumb { width: auto; height: 100%; max-width: 100%; aspect-ratio: 16 / 10; }
+    .thumb--shape :global(img) { height: 100%; object-fit: contain; }
+    .thumb--fill :global(img) { height: 100%; object-fit: cover; }
     .sum { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; } /* three lines, then an ellipsis */
   }
-  /* from 1230 px: two equal columns, fixed 340 px high (text column about 325 px, tallest cover about 335 px) */
+  /* from 1230 px: two equal columns (the height and paddings are the variables at the top) */
   @media (min-width: 1230px) {
-    .link-block { grid-template-columns: 1fr 1fr; grid-template-rows: 340px; }
-    .copy { padding: var(--space-6) var(--space-7) var(--space-7); padding-left: calc(var(--col-step) / 2); }
+    .link-block { grid-template-columns: 1fr 1fr; }
+    .copy { padding: var(--teaser-copy-top) var(--space-7) var(--teaser-copy-bottom); padding-left: calc(var(--col-step) / 2); }
     .sum { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; } /* three lines at most, then an ellipsis */
   }
 
@@ -95,7 +111,6 @@ const Tag = card.comingSoon ? 'div' : 'a';
     .teaser { transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 450ms ease; }
     .teaser:not(.teaser--soon):hover { transform: scale(1.05); box-shadow: var(--shadow-elevated); }
     .teaser:not(.teaser--soon):hover::after { border-color: light-dark(var(--color-white), var(--border)); } /* white on hover in light mode */
-    .teaser:not(.teaser--soon):hover .arrow { transform: translateX(4px); }
   }
 </style>
 

@@ -1,17 +1,15 @@
 ---
-/** H4 Page header: eyebrow, H1 (Editorial, 8 cols), optional intro paragraphs (slot) in heading-l. */
+/** H4 Page header: H1 (Editorial, 8 cols), optional intro paragraphs (slot) in heading-l. */
 interface Props {
-  eyebrow?: string;
   title: string;
 }
 import { highlight } from '../lib/site';
-const { eyebrow, title } = Astro.props;
+const { title } = Astro.props;
 ---
 
 <header class="page-header">
   <div class="container">
     <div class="measure-text stack" style="--stack-gap: var(--space-6)">
-      {eyebrow && <p class="t-label eyebrow">{eyebrow}</p>}
       <h1 class="t-title" set:html={highlight(title)} />
       {Astro.slots.has('default') && <div class="intro stack t-subheading"><slot /></div>}
     </div>
@@ -19,8 +17,8 @@ const { eyebrow, title } = Astro.props;
 </header>
 
 <style>
-  .page-header { padding-top: calc(var(--header-h) + var(--space-7)); padding-bottom: var(--space-7); }
-  .eyebrow { color: var(--text-default); }
+  /* the title starts one label line plus one stack gap lower than the header height and 60 px, the position it had when an eyebrow sat above it */
+  .page-header { padding-top: calc(var(--header-h) + var(--space-7) + var(--text-label-lh) + var(--space-6)); padding-bottom: var(--space-7); }
   .intro { --stack-gap: var(--space-4); color: var(--text-strong); font-weight: 400; }
   /* Running text: fill the measure instead of balancing lines (balance is for short headings). */
   .intro :global(p) { font: inherit; text-wrap: pretty; }

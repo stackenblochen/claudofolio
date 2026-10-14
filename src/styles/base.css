@@ -109,17 +109,32 @@ button { font: inherit; color: inherit; }
 .prose strong, .prose b { color: var(--text-strong); font-weight: var(--weight-emphasis); letter-spacing: var(--ls-emphasis); }
 .prose ul, .prose ol { padding-left: 1.4em; }
 .prose li { margin: var(--space-2) 0; }
-.prose a, a.link {
-  color: var(--text-strong);
+/* ---------- Links ----------
+ * Text link (.link, and every <a> inside .prose): strong text with a 1 px underline in the same colour.
+ * Hovered and pressed: the underline becomes salmon and 2 px.
+ * Quiet link (.link--quiet, the footer): default text colour with a 1 px underline in that colour.
+ * Hovered and pressed: strong text and a 2 px salmon underline.
+ * Links that leave the page (http…, mailto:, PDF downloads) end with a small arrow. Nav pills and the whole-panel teaser are their own patterns (SiteHeader, ProjectCard). */
+.prose a, a.link, a.link--quiet {
   text-decoration: underline;
-  text-decoration-color: var(--accent-primary);
-  text-decoration-thickness: 2px;
+  text-decoration-color: currentColor;
+  text-decoration-thickness: 1px;
   text-underline-offset: 4px;
+  transition: color 150ms ease, text-decoration-color 150ms ease, text-decoration-thickness 150ms ease;
+}
+.prose a, a.link { color: var(--text-strong); }
+a.link--quiet { color: var(--text-default); }
+.prose a:is(:hover, :active), a.link:is(:hover, :active), a.link--quiet:is(:hover, :active) { text-decoration-color: var(--accent-link); text-decoration-thickness: 2px; }
+a.link--quiet:is(:hover, :active) { color: var(--text-strong); }
+:is(.prose a, a.link, a.link--quiet):is([href^='http'], [href^='mailto:'], [href$='.pdf'])::after {
+  content: ''; display: inline-block; width: 0.75em; height: 0.75em; margin-left: 0.2em; background: currentColor;
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 7l-10 10'/%3E%3Cpath d='M8 7h9v9'/%3E%3C/svg%3E") center / contain no-repeat;
+  mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M17 7l-10 10'/%3E%3Cpath d='M8 7h9v9'/%3E%3C/svg%3E") center / contain no-repeat;
 }
 
 /* ---------- Links, focus ---------- */
 a { color: var(--text-strong); }
-:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; border-radius: 2px; }
+:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; border-radius: var(--radius-xs); }
 
 /* ---------- Layout ----------
  * Fixed 12-column grid (see tokens.css): the grid has a fixed width per breakpoint with the
@@ -177,6 +192,8 @@ a { color: var(--text-strong); }
 
 /* ---------- Media ---------- */
 .media-l { border-radius: var(--radius-l); }
+.media-xs { border-radius: var(--radius-xs); }
+.media-s { border-radius: var(--radius-s); }
 .media-m { border-radius: var(--radius-m); }
 @media (max-width: 767px) { .media-l { border-radius: var(--radius-m); } }
 .media-border { border: 1px solid var(--border); } /* media either has this border or none; for one mode only use the two below */

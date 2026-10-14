@@ -162,7 +162,7 @@ H1 titles are Geist Bold; selected words switch to Editorial New Ultrabold Itali
 
 ### 5.4 Running text
 
-`.prose` sets paragraph rhythm for text inside modules: `1.5em` between blocks, lists indented `1.4em` with `--space-2` between items, `strong` in the strong colour, links with a 2 px salmon underline (`text-underline-offset: 4px`). Numbered lists use `decimal-leading-zero` (01, 02, 03).
+`.prose` sets paragraph rhythm for text inside modules: `1.5em` between blocks, lists indented `1.4em` with `--space-2` between items, `strong` in the strong colour, links as text links (section 8). Numbered lists use `decimal-leading-zero` (01, 02, 03).
 
 ## 6. Spacing
 
@@ -187,24 +187,28 @@ Section backgrounds: `.section--raised`, `.section--black` (page background), `.
 
 | Token | Value | Use |
 |---|---|---|
+| `--radius-xs` | 4 px | The full-bleed cover of a project teaser (`.media-xs`), small marks (chart highlights), the focus ring |
+| `--radius-s` | 8 px | Small media (`.media-s`); not used yet |
 | `--radius-m` | 12 px | UI screenshots, mock windows, hero mockup (`.media-m`) |
 | `--radius-l` | 16 px | Diagrams, image pairs, video, cards, embeds, stages (`.media-l`; 12 px below 768 px) |
-| `--radius-xl` | 24 px | Large panels |
 | `--radius-pill` | 999 px | Labels (expertise pills) |
 | `--shadow-screenshot` | 0 0 40 px, black 14 % light / 50 % dark | Screenshots and mocks (`.media-shadow`) |
 | `--shadow-elevated` | 0 24 px 48 px −12 px, black 22 % light / 70 % dark | A card lifted on hover (project teaser) |
 | `--filter-appshot` | One soft drop shadow (the 1 px outline is baked into the image) | Cutout covers and transparent PNG app shots (`.app-shot`) |
 
-Doodles in the home stack use their own light drop shadow (`--doodle-shadow` in `DoodleStack`). Do not add other radii.
+**Nested corners:** when the padding between two shapes is smaller than the outer radius, the inner shape takes the outer radius minus the padding, rounded to a token (the mocks: a 16 px stage holding 12 px windows). When the padding is at least the outer radius, the corners are too far apart to relate and any token works (the 4 px cover thumb inside a 16 px teaser with 30 px padding). Only the tokens above are used; no hard-coded radii. Doodles in the home stack use their own light drop shadow (`--doodle-shadow` in `DoodleStack`).
 
 ## 8. Links and interaction
 
-| Element | Default | Hover / active |
+Two kinds of link (plus nav and teaser), defined once in `base.css` (token `--accent-link` for the hovered underline):
+
+| Element | Default | Hover / pressed |
 |---|---|---|
-| Body and prose link | `--text-strong`, 2 px salmon underline, offset 4 px | |
+| Text link (`.link`; every `<a>` inside `.prose`) | `--text-strong` with a 1 px underline in the same colour, offset 4 px | the underline becomes salmon and 2 px |
+| Quiet link (`.link--quiet`, the footer) | `--text-default` with a 1 px underline in that colour | `--text-strong` and a 2 px salmon underline |
+| Link that leaves the page (`href` starting with `http` or `mailto:`, or ending in `.pdf`; on both kinds) | as above, followed by a small arrow (↗) | as above |
 | Nav item (desktop) | Pill with a blurred translucent background (`--bg-glass`, `backdrop-filter: blur(16px)`), `--text-strong` | `--fill`; the current page looks the same |
-| Footer link | `--text-default`, no underline | `--text-strong` with a 2 px salmon underline |
-| Project teaser | the whole panel is the link | grows 5 %, border and a lifted shadow (`--shadow-elevated`) (pointer devices from 992 px, not with reduced motion) |
+| Project teaser | the whole panel is the link | grows 5 %, border and a lifted shadow (`--shadow-elevated`) (pointer devices from 992 px, not with reduced motion) | |
 | Focus | 2 px `--accent-primary` outline, 4 px offset (`:focus-visible`) on every interactive element | |
 | Selection | salmon background, black text | |
 

@@ -16,12 +16,12 @@ const projects = await getTeasers();
 
 
   <section class="work section section--pure" aria-labelledby="work">
-    <SectionTitle id="work" dash>Selected work</SectionTitle>
+    <SectionTitle id="work" chapter>Selected work</SectionTitle>
     <div class="container grid-wrap"><ProjectGrid items={projects} /></div>
   </section>
 </Base>
 
 <style>
   .work { padding-top: 0; scroll-margin-top: var(--header-h); }
-  .grid-wrap { margin-top: var(--space-7); }
+  .grid-wrap { margin-top: var(--space-6); }
 </style>

@@ -120,7 +120,7 @@ const cards: CardData[] = [
 ---
 
 <Base title="Styleguide" noindex description="Design system reference">
-  <PageHeader eyebrow="Design system" title="Styleguide">
+  <PageHeader title="Styleguide">
     <p>Tokens and modules of this site. New pages use only what is on this page. The written rules are in <code>docs/foundations/</code>.</p>
   </PageHeader>
 
@@ -268,9 +268,17 @@ const cards: CardData[] = [
 
   <SectionTitle id="shape">Shape &amp; elevation</SectionTitle>
   <div class="container"><div class="measure-media shapes">
+    <div class="shape media-xs media-border"><span class="t-label">radius-xs 4 · border</span></div>
+    <div class="shape media-s media-border"><span class="t-label">radius-s 8 · border</span></div>
     <div class="shape media-m media-border"><span class="t-label">radius-m 12 · border</span></div>
     <div class="shape media-l media-border"><span class="t-label">radius-l 16 · border</span></div>
     <div class="shape media-m media-border media-shadow"><span class="t-label">screenshot shadow</span></div>
+  </div></div>
+
+  <SectionTitle id="link-demo">Links</SectionTitle>
+  <div class="container"><div class="measure-text prose">
+    <p>A <a href="#link-demo">text link</a> is in the strong text colour with a thin underline in the same colour; hover it for a thicker salmon underline. An <a href="https://example.com">external link</a>, an <a href="mailto:hello@example.com">email link</a> and a <a href="/cv.pdf">PDF download</a> end with an arrow. Contact and 404 use the same style as stand-alone links (<code>class="link"</code>).</p>
+    <p class="t-label">Quiet links, as in the footer (default text colour; hover for strong text and a salmon underline): <a class="link--quiet" href="#link-demo">Imprint</a> <a class="link--quiet" href="https://example.com">LinkedIn</a></p>
   </div></div>
 
   <SectionTitle id="grid-demo">Grid</SectionTitle>
@@ -434,7 +442,7 @@ const cards: CardData[] = [
   .col { grid-column: span 1 !important; height: 64px; background: color-mix(in srgb, var(--accent-primary) 18%, transparent); border-inline: 1px solid color-mix(in srgb, var(--accent-primary) 50%, transparent);
     display: grid; place-items: center; color: var(--accent-primary); font-size: var(--text-label-size); }
   .bars { display: flex; flex-direction: column; gap: var(--space-2); }
-  .bar-row { background: var(--fill); padding: var(--space-2) var(--space-3); color: var(--text-strong); border-radius: 4px; }
+  .bar-row { background: var(--fill); padding: var(--space-2) var(--space-3); color: var(--text-strong); border-radius: var(--radius-xs); }
   .matrix { border-collapse: collapse; }
   .matrix th, .matrix td { text-align: left; padding: var(--space-2) var(--space-3) var(--space-2) 0; border-bottom: 1px solid var(--border); }
   .matrix th { color: var(--text-default); font-weight: 400; }

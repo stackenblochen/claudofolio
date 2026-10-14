@@ -75,7 +75,7 @@
 
 .pmap__hl {
   position: absolute;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
   background: color-mix(in srgb, var(--pm-accent) var(--pm-tint), transparent);
 }
 .pmap__hl[data-q="tr"] { inset: 0 0 50% 50%; }

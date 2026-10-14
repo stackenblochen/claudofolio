@@ -96,7 +96,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 
 | # | Block | Module |
 |---|---|---|
-| ★1 | Page header | `PageHeader`: eyebrow "About me", positioning H1 (Editorial), 2 intro paragraphs |
+| ★1 | Page header | `PageHeader`: positioning H1 (Editorial), 2 intro paragraphs |
 | ○2 | Portrait | `Figure` (4–5 cols next to the intro on md+) |
 | ○3 | What I do | 3× `ImageText` without images, or a short list: end-to-end, systems, vision |
 | ★4 | Career | `SectionTitle` + `CareerEntry` per role (newest first) |
@@ -119,7 +119,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 - **Numbers:** use real numbers wherever possible (team size, timeline, tokens, components, contrast fixes, adoption, launch date).
 - **Confidential work:** describe it at the level of patterns and decisions, blur or mark sensitive data, and keep the stamp.
 - **Spelling:** run a spell-check before publishing.
-- **Labels:** eyebrows are one word ("Background"). Meta labels are "Role", "Team", "Timeline", "Platforms".
+- **Labels:** Meta labels are "Role", "Team", "Timeline", "Platforms".
 - **Section number:** "— 01" appears above every section heading (rendered by the component from the `number` prop).
 
 ---
