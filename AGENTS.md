@@ -8,6 +8,34 @@ astro dev --background
 
 Manage the background server with `astro dev stop`, `astro dev status`, and `astro dev logs`.
 
+## Publishing (staging and hallo-wl.de)
+
+Two targets, one codebase (`astro.config.mjs` switches on `SITE_TARGET`):
+
+- **Staging = GitHub Pages**, `https://stackenblochen.github.io/claudofolio/`. Every push to `main` deploys it (`.github/workflows/deploy.yml`). Base `/claudofolio`, `noindex, nofollow, noai` on every page. "Commit and push" means this.
+- **Live = hallo-wl.de**, served from `/portfolio/` (a forwarding `index.html` in the web root sends `hallo-wl.de` there). Built into the git-ignored folder `release/`; the user uploads it by hand (FTP/SFTP). You cannot upload.
+
+**"Release it" / "rebuild the release" = rebuild `release/`** from the current working tree:
+
+```
+cd /Users/wolfganglattermann/Documents/Astro/Claudofolio
+set -a; . ./.env; set +a          # CASE_STUDY_PASSWORD; without it the protected case studies are locked for everyone
+rm -rf release && npm run build:release
+find release public -name .DS_Store -delete
+```
+
+Then check the output (7+ pages, no errors; `release/portfolio/projects/` lists the case studies that should be live), restart the dev server (`astro dev stop; astro dev --background`, a build disturbs its cache), and tell the user the upload steps. Mention uncommitted changes and ask whether to commit and push; do not push unasked.
+
+What the release contains and leaves out:
+- `release/index.html` (from `tools/release-index.html`) forwards to `/portfolio/`; the site is in `release/portfolio/` (base `/portfolio`, canonical `https://hallo-wl.de`).
+- Left out: case studies with `draft: true` (everywhere) or `stagingOnly: true` (release only), and `/styleguide/` (deleted by the `build:release` script). No `noindex` tags (the live site is indexable).
+- `public/.htaccess` (`Options -Indexes`, `ErrorDocument 404 /portfolio/404.html`) plus `public/demos/.htaccess` and `public/videos/.htaccess` (`X-Robots-Tag: noindex`) end up in `release/portfolio/`; dotfiles must be uploaded.
+- Protected case studies are encrypted in the page (AES-GCM, key from `CASE_STUDY_PASSWORD` at build time); no server setup, needs HTTPS. Their images and demo files stay reachable by direct URL.
+
+Upload steps for the user: on the server rename the old top-level `index.html` (for example to `index-old.html`, once), upload the contents of `release/` into the web root without deleting anything else, include the `.htaccess` files, then open hallo-wl.de, a protected case study and a nonexistent address under `/portfolio/` (custom 404). Alternative: the manual GitHub Action "Release build for hallo-wl.de" (`.github/workflows/release.yml`) builds the same folder as a downloadable artifact, using the repository secret `CASE_STUDY_PASSWORD`.
+
+Dev notes: the dev password for protected pages is `dev`. After changing `src/content.config.ts` or case-study frontmatter that the dev server does not pick up, delete `.astro/data-store.json` and `node_modules/.astro` and restart it.
+
 ## Documentation
 
 Full documentation: https://docs.astro.build
