@@ -1,25 +1,36 @@
 ---
 /**
- * I17 Image grid: images of the same ratio in a grid on the media measure, 3 columns from 768 px, 2 below (every image is shown, none is cut).
- * Images use the screenshot look (radius 12, border, shadow, like Figure). No captions; the alt text carries the content.
+ * I17 Image grid: images in a grid on the media measure, 3 columns from 768 px, 2 below (every image is shown, none is cut).
+ * Same-ratio images use the screenshot look (radius 12, border, shadow, like Figure). With `ratio` every image sits in a tile of that ratio
+ * (`--bg-secondary`, outline, radius 12), scaled to fit and centred (an image within 2 % of the tile ratio fills it), so images of different ratios, or with a transparent background, line up as a gallery.
+ * An item can set `bg: 'white'` to sit on plain white in both themes. No captions; the alt text carries the content.
  *
  *   <ImageGrid items={[{ src: a, alt: '…' }, { src: b, alt: '…' }]} />
+ *   <ImageGrid ratio="3 / 2" items={[…]} />
  */
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
 
 interface Props {
-  items: { src: ImageMetadata | string; alt: string }[];
+  /** `bg: 'white'` puts the image on plain white in both themes (for illustrations drawn for a white page). */
+  items: { src: ImageMetadata | string; alt: string; bg?: 'white' }[];
   /** Columns from 768 px. Default 3. */
   columns?: 2 | 3 | 4;
+  /** Tile ratio, e.g. "3 / 2": every image is fitted into a tile of this ratio. Without it the images keep their own (same) ratio. */
+  ratio?: string;
 }
-const { items, columns = 3 } = Astro.props;
+const { items, columns = 3, ratio } = Astro.props;
+// An image whose ratio is within 2 % of the tile fills it (cover: resized copies are rounded to whole pixels, which would leave a hairline of the tile colour); any other image is fitted whole.
+const [rw, rh] = ratio ? ratio.split('/').map((n) => parseFloat(n)) : [0, 0];
+const fills = (src: ImageMetadata | string) => typeof src !== 'string' && !!ratio && Math.abs(src.width / src.height / (rw / rh) - 1) < 0.02;
 ---
 
 <div class="measure-media group">
-  <ul class="grid reveal" style={`--cols:${columns}`} role="list">
+  <ul class:list={['grid', 'reveal', { tiles: !!ratio }]} style={`--cols:${columns}${ratio ? `;--ratio:${ratio}` : ''}`} role="list">
     {items.map((i) => (
-      <li><Img src={i.src} alt={i.alt} class="media-m media-border media-shadow" sizes="(min-width: 768px) 400px, 50vw" /></li>
+      <li class:list={{ tile: !!ratio, 'media-m': !!ratio, white: i.bg === 'white', fill: fills(i.src) }}>
+        <Img src={i.src} alt={i.alt} class={ratio ? undefined : 'media-m media-border media-shadow'} sizes="(min-width: 768px) 400px, 50vw" />
+      </li>
     ))}
   </ul>
 </div>
@@ -27,6 +38,11 @@ const { items, columns = 3 } = Astro.props;
 <style>
   .grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); }
   .grid :global(img) { display: block; width: 100%; height: auto; }
+  /* the outline is a shadow outside the box (not a border), so the tile is exactly the ratio and an image of that ratio fills it without a sliver of the tile colour */
+  .tile { aspect-ratio: var(--ratio); background: var(--bg-secondary); overflow: hidden; box-shadow: 0 0 0 1px var(--border); }
+  .tile.white { background: var(--color-white); }
+  .tile :global(img) { height: 100%; object-fit: contain; }
+  .tile.fill :global(img) { object-fit: cover; }
   @media (min-width: 768px) {
     .grid { grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); gap: var(--space-5); }
   }

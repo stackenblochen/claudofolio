@@ -32,6 +32,10 @@ import guest2 from '../../assets/projects/meetings/meetings-join-as-guest-03.png
 import schedule1 from '../../assets/projects/meetings/schedule-02-1440-1.png';
 import scheduleModal from '../../assets/projects/meetings/meetings-schedule-modal.png';
 import gridPoster from '../../assets/projects/meetings/meetings-grid-poster.png';
+import marketing1 from '../../assets/projects/meetings/marketing-01.webp';
+import marketing2 from '../../assets/projects/meetings/marketing-02.webp';
+import marketing3 from '../../assets/projects/meetings/marketing-03.webp';
+import marketing4 from '../../assets/projects/meetings/marketing-04.webp';
 
 <StorySection number="01" title="Key user insights" id="insights">
   I extracted insights from stakeholder and peer interviews (Sales, Customer Success, Product and others), segment research and qualitative user interviews.
@@ -97,7 +101,20 @@ import gridPoster from '../../assets/projects/meetings/meetings-grid-poster.png'
   </Fragment>
 </StorySection>
 
-<StorySection number="06" title="Outcome" id="outcome" closing>
+<StorySection number="06" title="Marketing material" id="marketing">
+  Alongside the product work, I created visuals for the marketing campaigns around calling and meetings: illustrations and UI crops that show the new features in use.
+
+  <Fragment slot="media">
+    <ImageGrid columns={2} ratio="2000 / 1313" items={[
+      { src: marketing1, bg: 'white', alt: 'Marketing illustration: two video call tiles and a Wire presentation slide, with microphone and camera buttons' },
+      { src: marketing2, alt: 'Marketing visual: a call with four participants in a desktop window on a teal background' },
+      { src: marketing3, alt: 'Marketing visual: a call window with a "SCRIBE is active" badge on a violet background' },
+      { src: marketing4, alt: 'Marketing visual: the Wire Scribe dialog over a call, with options to save the transcript, a summary and action items' },
+    ]} />
+  </Fragment>
+</StorySection>
+
+<StorySection number="07" title="Outcome" id="outcome" closing>
   1. The team and I surfaced valuable insights and key areas for improvement.
   2. A beta phase gathered feedback from a broader range of users and customers, which now shapes the roadmap.
   3. The first milestone launches publicly in November 2026.
