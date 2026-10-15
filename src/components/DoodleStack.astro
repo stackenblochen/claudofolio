@@ -201,10 +201,16 @@ const items = Object.entries(files).map(([path, mod]) => {
       restack();
     };
 
+    // The old picture starts fading the moment the new one lands, so the new one must already be loaded and decoded, or the stage is empty for a moment
+    const ready = (it: Item) => new Promise<void>((done) => {
+      const im = new Image();
+      im.src = it.src;
+      im.decode().then(() => done(), () => done());
+    });
     const step = () => {
       if (!visible || document.hidden) return; // paused: off screen or hidden tab
-      add(draw());
-      trim();
+      const it = draw();
+      ready(it).then(() => { add(it); trim(); });
     };
     const schedule = () => {
       timer = window.setTimeout(() => { step(); schedule(); }, rand(...EVERY));
@@ -217,6 +223,7 @@ const items = Object.entries(files).map(([path, mod]) => {
     }
 
     // the first ones land in quick succession, then the regular rhythm
+    items.forEach((it) => { new Image().src = it.src; }); // warm the cache so later pictures are ready when their turn comes
     for (let i = 0; i < MAX; i++) starts.push(window.setTimeout(() => add(draw()), 150 + i * 380));
     starts.push(window.setTimeout(schedule, 150 + MAX * 380));
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
