@@ -17,7 +17,7 @@ export interface CardData {
   /** Full-bleed cover (fills the image area) instead of a cut-out with transparent parts. */
   coverFill?: boolean;
   /** Which mode shows the thumb's thin outline (the mode where the cover would bleed into the card). Default 'dark'. */
-  coverOutline?: 'dark' | 'light';
+  coverOutline?: 'dark' | 'light' | 'none';
   thumb?: ProjectEntry['data']['thumb'];
 }
 

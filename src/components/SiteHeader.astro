@@ -3,10 +3,13 @@
 import { NAV, SITE, url } from '../lib/site';
 import logoSvg from '../assets/wolfgang-logo.svg?raw';
 import wlMark from '../assets/doodles/wl.webp';
+import bubbleSvg from '../../public/favicon.svg?raw';
 import ThemeSwitch from './ThemeSwitch.astro';
 
-// Logo trial: 'w' = a W in Telma Black, 'wl' = the "wl" shape (a mask in the text colour), 'wordmark' = the "wolfgang" wordmark.
-const logoStyle: 'w' | 'wl' | 'wordmark' = 'w';
+// Logo trial: 'bubble' = the W in the bubble shape of the favicon (vector), 'w' = a W in Telma Black, 'wl' = the "wl" shape (a mask), 'wordmark' = the "wolfgang" wordmark.
+const logoStyle: 'bubble' | 'w' | 'wl' | 'wordmark' = 'w';
+// The favicon's vector, inline, in the text colour and cropped to the shape (its viewBox has empty space above and below).
+const bubble = bubbleSvg.replace(/<style>[\s\S]*?<\/style>/, '').replace('<svg ', '<svg aria-hidden="true" focusable="false" ').replace(/viewBox="[^"]*"/, 'viewBox="0 0 705 444"').replace('<path ', '<path fill="currentColor" ');
 // Inline so it can follow currentColor; decorative, the link carries the accessible name.
 const logo = logoSvg.replace(/fill="white"/g, 'fill="currentColor"').replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
 
@@ -25,7 +28,9 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
 
 <header class="site-header" data-site-header>
   <div class="container bar">
-    {logoStyle === 'w'
+    {logoStyle === 'bubble'
+      ? <a class="logo logo--bubble" href={url('/')} aria-label={`${SITE.name}, home`} set:html={bubble} />
+      : logoStyle === 'w'
       ? <a class="logo logo--w" href={url('/')} aria-label={`${SITE.name}, home`}><span aria-hidden="true">W</span></a>
       : logoStyle === 'wl'
         ? <a class="logo logo--mark" href={url('/')} aria-label={`${SITE.name}, home`}><span class="mark" style={`--mark:url(${wlMark.src})`}></span></a>
@@ -72,6 +77,9 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
   /* the wl shape: a mask in the text colour, a little smaller than the wordmark */
   .logo--mark { width: 46px; }
   @media (min-width: 768px) { .logo--mark { width: 56px; } }
+  /* the bubble W (the favicon's vector) in the text colour */
+  .logo--bubble { width: 50px; }
+  @media (min-width: 768px) { .logo--bubble { width: 62px; } }
   /* the W: Telma Black in the text colour */
   .logo--w { width: auto; font-family: var(--font-highlight); font-weight: 900; font-size: 2.5rem; line-height: 1; letter-spacing: 0; text-decoration: none; }
   @media (min-width: 768px) { .logo--w { font-size: 3rem; } }

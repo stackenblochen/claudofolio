@@ -30,7 +30,7 @@ const Tag = card.comingSoon ? 'div' : 'a';
       {card.comingSoon && <span class="soon t-label">Coming soon</span>}
     </div>
     <div class="stage">
-    <div class:list={['thumb', !card.thumb && (card.coverFill ? 'thumb--fill media-xs' : 'thumb--shape'), card.coverOutline === 'light' && 'thumb--outline-light']} data-teaser-thumb>
+    <div class:list={['thumb', !card.thumb && (card.coverFill ? 'thumb--fill media-xs' : 'thumb--shape'), card.coverOutline === 'light' && 'thumb--outline-light', card.coverOutline === 'none' && 'thumb--outline-none']} data-teaser-thumb>
       {card.thumb
         ? <Mock size="cover" stage={card.thumb.stage} theme={card.thumb.theme} layout={card.thumb.layout} phone={card.thumb.phone}
             devices={card.thumb.devices.map((d) => ({ ...d, bar: d.bar ? undefined : false }))} />
@@ -64,6 +64,8 @@ const Tag = card.comingSoon ? 'div' : 'a';
   .stage { display: grid; place-items: center; }
   .thumb { position: relative; width: 100%; --thumb-outline: var(--border-dark-mode); } /* the outline shows in dark mode; `coverOutline: light` in the frontmatter swaps it to light mode */
   .thumb--outline-light { --thumb-outline: var(--border-light-mode); }
+  .thumb--outline-none { --thumb-outline: transparent; }
+  .thumb--shape.thumb--outline-none :global(img) { filter: none; } /* no outline and no shadow either */
   .thumb :global(img) { display: block; width: 100%; height: auto; }
   /* cut-out cover (transparent background, e.g. a window with a phone): the screenshot shadow and a 1 px outline in one mode only follow the shape of
      the image content, not the edges of the image (the same look as a Mock; a Mock thumb brings its own) */
