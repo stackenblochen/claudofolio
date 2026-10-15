@@ -61,12 +61,12 @@
   --filter-logo: none; /* white logo SVGs are inverted in light mode */
 
   /* Font families */
-  --font-serif: 'Editorial New', 'Times New Roman', serif;
+  --font-highlight: 'Telma', Georgia, 'Times New Roman', serif; /* the highlighted words in titles and the W logo */
   --font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, 'Liberation Mono', monospace;
   --lh-headline: 1.25; /* Clash Display leading: line height = 1.4 × font size, for display, title, heading, subheading */
   --ws-headline: 0.14em; /* extra space between words in Clash Display section headlines (heading, subheading) */
   --ws-title: 0.06em; /* the same for the big stage titles (display, title) */
-  --font-headline: 'Clash Display', var(--font-sans); /* display, title, heading, subheading: Semibold (600); the highlighted words are Editorial New Italic (--font-serif) */
+  --font-headline: 'Clash Display', var(--font-sans); /* display, title, heading, subheading: Semibold (600); the highlighted words are Telma (--font-highlight) */
   --font-sans: 'Geist Variable', 'Geist', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   /* Type scale (fluid) */

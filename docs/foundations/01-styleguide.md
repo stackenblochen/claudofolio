@@ -132,7 +132,7 @@ Named `<intensity>-<tonality>`: intensity `soft` | `calm` | `active`, tonality `
 | Role | Family | Notes |
 |---|---|---|
 | Everything | **Geist** (variable woff2, weights 300–800) | `--font-sans` |
-| Highlighted words in titles | **Editorial New Ultrabold** and **Ultrabold Italic** (woff2, weight 800) | `--font-serif`. Licensed font: declared in `Base.astro` only when the file exists in `public/fonts/` |
+| Highlighted words in titles | **Telma Bold** (woff2, weight 700, Fontshare, free licence) | `--font-highlight`; declared in `Base.astro`, files in `public/fonts/` |
 | Mono labels (schemas) | system mono stack | `--font-mono` |
 
 ### 5.2 Roles
@@ -143,21 +143,21 @@ Eight roles, applied with a class. The semantic level (`h1`, `h2` …) and the l
 |---|---|---|---|---|---|
 | `.t-display` | 50 → 120 px | 56 → 108 px | 600 / 700 | 0 / −0.011em | Reserved display style |
 | `.t-title` | 36 → 80 px | 46 → 100 px | 700 / 800 | −0.0025em / −0.0135em | H1: page titles, case titles, the home stage headline |
-| `.t-quote` | 30 → 56 px | 38 → 68 px | 700 / 800 | −0.0025em / −0.0135em | The design vision statement (`Quote`); highlights in Editorial New |
+| `.t-quote` | 30 → 56 px | 38 → 68 px | 700 / 800 | −0.0025em / −0.0135em | The design vision statement (`Quote`); highlights only coloured salmon |
 | `.t-heading` | 26 → 34 px | 32 → 44 px | 700 | 0 | Section titles, the home subline, company names |
 | `.t-subheading` | 18 → 24 px | 26 → 32 px | 700 | 0 | Sub-headings, card titles, roles, intro paragraphs (About, Overview) |
 | `.t-body` | 16 → 19 px | 25.6 → 28.5 px | 300 / 400 | 0 / −0.007em | Paragraphs, lists, meta values, main navigation |
 | `.t-label` | 15 → 18 px | 24 → 26 px | 300 | 0 | Eyebrows, meta labels, dates, footer |
 | `.t-caption` | = label | = label | 300, italic | | Image captions, `--text-default` |
 
-All sizes are fluid (`clamp()`), so every step shrinks monotonically as the viewport narrows. Modifiers: `.t-upper` (uppercase, +0.06em) and `.t-serif` (Editorial face inside a line). Text colour: headings and strong text use `--text-strong`; body, nav and captions use `--text-default`. Bold inside text uses `--weight-emphasis` (600 dark / 700 light) and `--text-strong`.
+All sizes are fluid (`clamp()`), so every step shrinks monotonically as the viewport narrows. Modifier: `.t-upper` (uppercase, +0.06em). Text colour: headings and strong text use `--text-strong`; body, nav and captions use `--text-default`. Bold inside text uses `--weight-emphasis` (600 dark / 700 light) and `--text-strong`.
 
 ### 5.3 Title with highlighted words
 
-H1 titles are Geist Bold; selected words switch to Editorial New Ultrabold Italic. In `PageHeader` and `CaseHero` the title text takes `*word*` markup (`highlight()` in `src/lib/site.ts`), which renders `<em>`; `.t-title em` sets the Editorial face and the salmon `--accent-primary`. Titles in frontmatter may contain the markup; `plain()` strips it for `<title>`, labels and props that expect plain text. On the home stage the name is a plain `<em>`, styled the same way.
+H1 titles are Clash Display; selected words switch to Telma Bold. In `PageHeader` and `CaseHero` the title text takes `*word*` markup (`highlight()` in `src/lib/site.ts`), which renders `<em>`; `.t-title em` sets the Telma face and the salmon `--accent-primary`. Titles in frontmatter may contain the markup; `plain()` strips it for `<title>`, labels and props that expect plain text. On the home stage the name is a plain `<em>`, styled the same way.
 
 - Highlight one word, two at most. Never a whole line.
-- Editorial only ships weight 800, so highlights are always that weight.
+- Highlights are Telma Bold (700) in both themes; Telma ends at Black (900) and is enlarged by 10 % (`size-adjust`) to match Clash Display.
 - Dark and light weights/spacing of the surrounding Geist follow 5.2.
 
 ### 5.4 Running text

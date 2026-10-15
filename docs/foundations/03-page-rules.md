@@ -31,7 +31,7 @@ src/
   styles/                # tokens.css, base.css, mock.css, frames/
   assets/                # images processed by astro:assets (AVIF/WebP, srcset); projects/<slug>/, doodles/
 public/
-  fonts/                 # Geist variable + Editorial New woff2 (see fonts/README.md)
+  fonts/                 # Geist variable, Clash Display and Telma woff2 (see fonts/README.md)
   demos/<slug>/          # self-contained interactive HTML demos (iframes)
   cv/, videos/, favicons
 ```
@@ -40,7 +40,7 @@ public/
 
 The schema is `src/content.config.ts` (Zod); it is the single source of truth for frontmatter, so it is not repeated here. The fields in short:
 
-- **Titles and teaser:** `title` (H1, sentence case, ≤ 70 chars, `*word*` marks an Editorial highlight), `shortTitle` (card and `<title>`), `summary` (≤ 160, but aim for about 90 characters: the wide card shows three lines), `labels` (1–3 expertise pills, see L3 in `02-modules.md`), `tags`, `cover` + `coverAlt`, optional `thumb` (teaser as a `Mock`).
+- **Titles and teaser:** `title` (H1, sentence case, ≤ 70 chars, `*word*` marks a Telma highlight), `shortTitle` (card and `<title>`), `summary` (≤ 160, but aim for about 90 characters: the wide card shows three lines), `labels` (1–3 expertise pills, see L3 in `02-modules.md`), `tags`, `cover` + `coverAlt`, optional `thumb` (teaser as a `Mock`).
 - **Hero:** `heroVariant` (`mockup` | `backdrop`), `heroBackground`, `confidential` (stamp), `protected` (password gate).
 - **Meta:** `company`, `role`, `team`, `timeline`, `year`, `platforms`. The meta row shows only with at least three of role, team, timeline, platforms.
 - **Story:** `lead` (1–3 sentences). The outcome is the last `StorySection` in the MDX, see below.
@@ -96,7 +96,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 
 | # | Block | Module |
 |---|---|---|
-| ★1 | Page header | `PageHeader`: positioning H1 (Editorial), 2 intro paragraphs |
+| ★1 | Page header | `PageHeader`: positioning H1, 2 intro paragraphs |
 | ○2 | Portrait | `Figure` (4–5 cols next to the intro on md+) |
 | ○3 | What I do | 3× `ImageText` without images, or a short list: end-to-end, systems, vision |
 | ★4 | Career | `SectionTitle` + `CareerEntry` per role (newest first) |

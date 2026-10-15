@@ -21,7 +21,7 @@ export function url(path = ''): string {
   return `${base}${path.startsWith('/') ? path : `/${path}`}`;
 }
 
-/** Headline markup: `*word*` becomes an Editorial New highlight (<em>) inside a Geist title. Input is escaped first. */
+/** Headline markup: `*word*` becomes a highlight (<em>, Telma in salmon) inside a Clash Display title. Input is escaped first. */
 export function highlight(text: string): string {
   const esc = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   return esc.replace(/\*([^*]+)\*/g, '<em>$1</em>');

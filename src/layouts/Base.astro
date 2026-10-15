@@ -1,6 +1,5 @@
 ---
 /** Base layout: <html>, fonts, tokens, SEO, header, footer. Every page uses this. */
-import { existsSync } from 'node:fs';
 import '@fontsource-variable/geist';
 import '../styles/tokens.css';
 import '../styles/base.css';
@@ -41,16 +40,7 @@ const noindex = noindexProp || process.env.SITE_TARGET !== 'production';
 const fullTitle = title ? `${title} — ${SITE.name}` : SITE.name;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
-// Editorial New is a licensed font: only declare it once the woff2 exists in public/fonts/.
-const editorial = existsSync('public/fonts/EditorialNew-Ultrabold.woff2');
-const editorialItalic = existsSync('public/fonts/EditorialNew-UltraboldItalic.woff2');
-const fontFace = (editorial
-  ? `@font-face{font-family:'Editorial New';font-weight:800;font-style:normal;font-display:swap;src:url('${url('/fonts/EditorialNew-Ultrabold.woff2')}') format('woff2')}`
-    + (editorialItalic ? `@font-face{font-family:'Editorial New';font-weight:800;font-style:italic;font-display:swap;src:url('${url('/fonts/EditorialNew-UltraboldItalic.woff2')}') format('woff2')}` : '')
-  : '')
-  + (existsSync('public/fonts/EditorialNew-Italic.woff2') ? `@font-face{font-family:'Editorial New';font-weight:400;font-style:italic;font-display:swap;src:url('${url('/fonts/EditorialNew-Italic.woff2')}') format('woff2')}` : '')
-  + (existsSync('public/fonts/EditorialNew-UltralightItalic.woff2') ? `@font-face{font-family:'Editorial New';font-weight:200;font-style:italic;font-display:swap;src:url('${url('/fonts/EditorialNew-UltralightItalic.woff2')}') format('woff2')}` : '');
-// Telma Bold (700, upright; Fontshare, free licence; size-adjust 110% so it matches the Clash Display headline): the face of the highlighted words (current trial; Medium 500 and Light 300 stay declared, Editorial New is the fallback).
+// Telma Bold (700, upright; Fontshare, free licence; size-adjust 110% so it matches the Clash Display headline): the face of the highlighted words.
 const telma = [['900','Black'],['700','Bold'],['500','Medium'],['300','Light']].map(([n, l]) => `@font-face{font-family:'Telma';font-weight:${n};font-style:normal;font-display:swap;size-adjust:110%;src:url('${url(`/fonts/Telma-${l}.woff2`)}') format('woff2')}`).join('');
 // Clash Display Semibold (600, headlines); Regular (400), Fontshare, free licence; Medium (500) and Bold (700) stay declared for a quick switch.
 const clash = ['400:Regular','500:Medium','600:Semibold','700:Bold'].map((w) => { const [n, l] = w.split(':'); return `@font-face{font-family:'Clash Display';font-weight:${n};font-style:normal;font-display:swap;size-adjust:108%;src:url('${url(`/fonts/ClashDisplay-${l}.woff2`)}') format('woff2')}`; }).join('');
@@ -80,7 +70,6 @@ const clash = ['400:Regular','500:Medium','600:Semibold','700:Bold'].map((w) => 
     <meta property="og:image:width" content={ogImage ? undefined : '1200'} />
     <meta property="og:image:height" content={ogImage ? undefined : '630'} />
     <meta name="twitter:card" content="summary_large_image" />
-    {fontFace && <style set:html={fontFace} />}
     <style set:html={telma} />
     <style set:html={clash} />
     <style is:global set:html={gradientCss()} /> <!-- gradient tokens + .gradient classes, see src/lib/gradients.ts -->
