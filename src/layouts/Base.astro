@@ -37,6 +37,9 @@ const pageFade = {
 const { title, description = SITE.description, ogImage, noindex: noindexProp = false, current, context = 'grouped' } = Astro.props;
 // Everything except the production release (SITE_TARGET=production, hallo-wl.de) is a staging copy: keep it out of search engines and AI training.
 const noindex = noindexProp || process.env.SITE_TARGET !== 'production';
+// Umami analytics (cookieless): only in the production release and only when UMAMI_WEBSITE_ID is set at build time. It follows ClientRouter navigations by itself.
+const umamiId = process.env.SITE_TARGET === 'production' ? process.env.UMAMI_WEBSITE_ID : undefined;
+const umamiSrc = process.env.UMAMI_SCRIPT_URL || 'https://cloud.umami.is/script.js';
 const fullTitle = title ? `${title} — ${SITE.name}` : SITE.name;
 const canonical = new URL(Astro.url.pathname, Astro.site);
 
@@ -91,6 +94,7 @@ const clash = ['400:Regular','500:Medium','600:Semibold','700:Bold'].map((w) => 
       })();
     </script>
     <ClientRouter />
+    {umamiId && <script is:inline defer src={umamiSrc} data-website-id={umamiId} data-do-not-track="true"></script>}
   </head>
   <body>
     <LoadingBar />
