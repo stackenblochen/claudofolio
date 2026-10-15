@@ -21,6 +21,8 @@ const projects = defineCollection({
       cover: image(), // 16:10 card + hero mockup
       coverAlt: z.string(),
       coverOutline: z.enum(['dark', 'light']).default('dark'), // teaser thumb: the mode that shows the thin outline, the one where the cover would bleed into the card ('dark' for a dark motif, 'light' for a light one)
+      teaserImage: image().optional(), // the image on the project card and in link previews, when it differs from the cover (the cover stays the hero image)
+      teaserAlt: z.string().optional(),
       coverFill: z.boolean().default(false), // the cover is a full-bleed image (no transparent background): the teaser shows it filling its image area, rounded, with a dark-mode outline. Default: a cut-out whose shadow and outline follow its shape
       // optional: show the teaser thumb as a Mock (device frames on a stage) instead of the plain cover, see components/Mock.astro
       thumb: z

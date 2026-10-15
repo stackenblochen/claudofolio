@@ -23,7 +23,7 @@ const { items } = Astro.props;
   .principles { list-style: none; margin-block: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: var(--space-4) var(--gutter); }
   li { display: flex; flex-direction: column; gap: var(--space-2); background: var(--bg-secondary); border-radius: var(--radius-l); padding: var(--space-5); }
   .n { color: var(--text-default); }
-  p { color: var(--text-strong); } /* the sentence in the strong colour, like the title */
+  p { color: var(--text-default); } /* the sentence in the regular text colour; the title is strong */
   h3 { color: var(--text-strong); font-weight: var(--text-body-weight); } /* the same title style as the insight rows (ImageText) */
   @media (min-width: 992px) { .principles { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 </style>

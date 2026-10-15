@@ -5,7 +5,7 @@
  * A gradient is named  <intensity>-<tonality>,  e.g. "soft-yellow" or "active-blue":
  *   intensity: soft (quiet, almost neutral) · calm (muted, the original look) · active (saturated, fresh)
  *   tonality:  the dominant hue family: yellow · salmon · violet · blue · green · gray (cool, barely tinted)
- * Moods are short names for a few curated picks (morning, day, sundown, dusk, night, meadow, fog, slate, graphite).
+ * Moods are short names for a few curated picks (morning, day, sundown, dusk, night, meadow, fog, slate, graphite, haze).
  * Shapes: the default is linear (top to bottom). Radial shapes (orb, bloom, horizon, halo) use the same two colours as
  * off-centre circles and ovals: the lighter colour (the bottom stop of the linear gradient) glows in the centre, the top stop is the far edge.
  *
@@ -48,6 +48,7 @@ export const MOODS: { name: string; id: string; note: string }[] = [
   { name: 'fog', id: 'soft-gray', note: 'Pale cool gray. A neutral, quiet backdrop.' },
   { name: 'slate', id: 'calm-gray', note: 'Mid cool gray. Neutral, with some weight.' },
   { name: 'graphite', id: 'active-gray', note: 'The strongest gray. Dark and dense.' },
+  { name: 'haze', id: 'faint-gray', note: 'Dark: just above the card colour, light enough for dark mocks. Light: the same pale gray as fog.' },
 ];
 
 /**
@@ -122,6 +123,11 @@ export interface GradientDef {
   light: [string, string];
 }
 
+/**
+ * Gradients with fixed values, outside the intensity × tonality matrix. `faint-gray` (mood "haze"): in dark mode a gradient that starts just above
+ * the card colour (--bg-secondary, gray-900) and rises to the dark border colour (gray-700), light enough for dark mocks to stand out; in light mode the same pale cool gray as `soft-gray` (fog).
+ */
+const FIXED: GradientDef[] = [];
 export const GRADIENTS: GradientDef[] = INTENSITIES.flatMap((intensity) =>
   TONALITY_IDS.map((tonality) => {
     const { top, bottom, sat, darkL } = TONALITIES[tonality];
@@ -135,15 +141,25 @@ export const GRADIENTS: GradientDef[] = INTENSITIES.flatMap((intensity) =>
   }),
 );
 
-export const gradientById = (id: string) => GRADIENTS.find((g) => g.id === id)!;
+FIXED.push({
+  id: 'faint-gray',
+  intensity: 'soft',
+  tonality: 'gray',
+  dark: ['#222329', '#34373d'],
+  light: GRADIENTS.find((g) => g.id === 'soft-gray')!.light,
+});
+
+/** Every gradient: the matrix plus the fixed ones. */
+export const ALL_GRADIENTS: GradientDef[] = [...GRADIENTS, ...FIXED];
+export const gradientById = (id: string) => ALL_GRADIENTS.find((g) => g.id === id)!;
 
 /** CSS for all gradients: custom properties (theme aware) and the classes .gradient, .gradient--<id>, .gradient--<mood>. */
 export function gradientCss(): string {
-  const vars = GRADIENTS.map(
+  const vars = ALL_GRADIENTS.map(
     (g) =>
       `--gradient-${g.id}-top:light-dark(${g.light[0]},${g.dark[0]});--gradient-${g.id}-bottom:light-dark(${g.light[1]},${g.dark[1]});`,
   ).join('');
-  const classes = GRADIENTS.map(
+  const classes = ALL_GRADIENTS.map(
     (g) => `.gradient--${g.id}{--g-top:var(--gradient-${g.id}-top);--g-bottom:var(--gradient-${g.id}-bottom)}`,
   ).join('');
   const moods = MOODS.map(

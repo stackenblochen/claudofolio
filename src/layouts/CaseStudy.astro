@@ -27,7 +27,7 @@ const meta = [
 const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard);
 ---
 
-<Base title={d.shortTitle} description={d.summary} ogImage={d.cover.src}>
+<Base title={d.shortTitle} description={d.summary} ogImage={(d.teaserImage ?? d.cover).src}>
   <Protected enabled={d.protected} title={plain(d.title)}>
     <CaseHero
       title={d.title}

@@ -2,8 +2,11 @@
 /** G1/G2 Site header: wordmark left, text menu right, overlay menu below 768 px. */
 import { NAV, SITE, url } from '../lib/site';
 import logoSvg from '../assets/wolfgang-logo.svg?raw';
+import wlMark from '../assets/doodles/wl.webp';
 import ThemeSwitch from './ThemeSwitch.astro';
 
+// Logo trial: 'w' = a W in Telma Black, 'wl' = the "wl" shape (a mask in the text colour), 'wordmark' = the "wolfgang" wordmark.
+const logoStyle: 'w' | 'wl' | 'wordmark' = 'w';
 // Inline so it can follow currentColor; decorative, the link carries the accessible name.
 const logo = logoSvg.replace(/fill="white"/g, 'fill="currentColor"').replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
 
@@ -22,7 +25,11 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
 
 <header class="site-header" data-site-header>
   <div class="container bar">
-    <a class="logo" href={url('/')} aria-label={`${SITE.name}, home`} set:html={logo} />
+    {logoStyle === 'w'
+      ? <a class="logo logo--w" href={url('/')} aria-label={`${SITE.name}, home`}><span aria-hidden="true">W</span></a>
+      : logoStyle === 'wl'
+        ? <a class="logo logo--mark" href={url('/')} aria-label={`${SITE.name}, home`}><span class="mark" style={`--mark:url(${wlMark.src})`}></span></a>
+        : <a class="logo" href={url('/')} aria-label={`${SITE.name}, home`} set:html={logo} />}
 
     <div class="right">
       <nav class="menu" aria-label="Main">
@@ -62,6 +69,13 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
   .logo { display: block; width: 100px; color: var(--text-strong); line-height: 0; }
   .logo :global(svg) { width: 100%; height: auto; }
   @media (min-width: 768px) { .logo { width: 140px; } }
+  /* the wl shape: a mask in the text colour, a little smaller than the wordmark */
+  .logo--mark { width: 46px; }
+  @media (min-width: 768px) { .logo--mark { width: 56px; } }
+  /* the W: Telma Black in the text colour */
+  .logo--w { width: auto; font-family: 'Telma', var(--font-serif); font-weight: 900; font-size: 2.5rem; line-height: 1; letter-spacing: 0; text-decoration: none; }
+  @media (min-width: 768px) { .logo--w { font-size: 3rem; } }
+  .mark { display: block; width: 100%; aspect-ratio: 640 / 409; background: currentColor; -webkit-mask: var(--mark) center / contain no-repeat; mask: var(--mark) center / contain no-repeat; }
   .right { display: none; align-items: center; gap: var(--space-2); }
   .menu ul { display: flex; gap: var(--space-2); padding: 0; margin: 0; list-style: none; }
   /* nav items are pills with a blurred, translucent background, so they stay readable over the hero */

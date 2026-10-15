@@ -58,17 +58,17 @@ button { font: inherit; color: inherit; }
 .t-display {
   font-family: var(--font-headline); word-spacing: var(--ws-title);
   font-size: var(--text-display-size); line-height: var(--text-display-lh);
-  font-weight: 700; letter-spacing: var(--text-display-ls);
+  font-weight: var(--text-display-weight); letter-spacing: var(--text-display-ls);
 }
 .t-title {
   font-family: var(--font-headline); word-spacing: var(--ws-title);
   font-size: var(--text-title-size); line-height: var(--text-title-lh);
-  font-weight: 700; letter-spacing: var(--text-title-ls);
+  font-weight: var(--text-title-weight); letter-spacing: var(--text-title-ls);
 }
 .t-quote {
   font-family: var(--font-sans);
   font-size: var(--text-quote-size); line-height: var(--text-quote-lh);
-  font-weight: var(--text-title-weight); letter-spacing: var(--text-title-ls);
+  font-weight: var(--text-quote-weight); letter-spacing: var(--text-title-ls);
 }
 .t-heading {
   font-family: var(--font-headline); word-spacing: var(--ws-headline);
@@ -96,8 +96,10 @@ button { font: inherit; color: inherit; }
 /* Section numbers ("— 01" above story section and outcome headings): Geist at the body weight (300 dark / 400 light), 24 px, 32 px from 992 px, in the accent colour. */
 .t-number { display: block; font-family: var(--font-sans); font-style: normal; font-weight: var(--text-body-weight); letter-spacing: var(--text-body-ls); font-size: 1.5rem; line-height: 1; color: var(--accent-primary); margin-bottom: var(--space-2); }
 @media (min-width: 992px) { .t-number { font-size: 2rem; } }
-/* Highlighted words inside a title (`*word*` in the text) switch to the Editorial face. */
-.t-title em, .t-quote em { font-family: var(--font-serif); font-style: italic; font-weight: 800; color: var(--accent-primary); }
+/* Highlighted words inside a title (`*word*` in the text): Telma Bold (700) in salmon (current trial; Telma Medium and Light and Editorial New stay declared). */
+.t-title em { font-family: 'Telma', var(--font-serif); font-style: normal; font-weight: 700; color: var(--accent-primary); }
+/* In the quote the highlighted words are only coloured: same face, style and weight as the rest of the statement. */
+.t-quote em { font-style: normal; color: var(--accent-primary); }
 .t-upper { text-transform: uppercase; letter-spacing: 0.06em; }
 .t-serif { font-family: var(--font-serif); font-weight: 800; letter-spacing: var(--text-title-ls); }
 .t-strong { color: var(--text-strong); }
