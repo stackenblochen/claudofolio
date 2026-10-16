@@ -43,7 +43,7 @@ Measured values:
 | Controls, colour | `#ed6a5e` `#f5bf4f` `#62c554`, each with a 1 px darker ring | same |
 | Controls, mono | solid bar: white with a 3 px `#dce0e3` ring · transparent bar: filled `#c8cbd0` | `#344054` |
 | Chrome | strip `#dfe1e5`, tab and toolbar `#ffffff`, pill `#f1f3f4`, icons `#606367` | strip and pill `#202124`, tab and toolbar `#35363a`, icons `#f1f3f4` |
-| Safari | bar and field `#ffffff`, field border `#bfbfbf` | bar `#191c1f`, field `#303335` |
+| Safari | bar and field `#ffffff`, field border `#dce0e3`, radius 16 of 2400 | bar `#191c1f`, field `#303335` |
 
 ## Options
 

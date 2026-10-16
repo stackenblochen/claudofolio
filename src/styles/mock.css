@@ -27,7 +27,7 @@
   --mock-b-strip: #dfe1e5; --mock-b-bar: #ffffff; --mock-b-line: #b6b6b6; --mock-b-pill: #f1f3f4;
   --mock-b-icon: #606367; --mock-b-dim: #babcbe; --mock-b-title: #3c4043; --mock-b-url: #202124; --mock-b-proto: #767676;
   /* Safari */
-  --mock-s-bar: #ffffff; --mock-s-field: #ffffff; --mock-s-field-line: #bfbfbf;
+  --mock-s-bar: #ffffff; --mock-s-field: #ffffff; --mock-s-field-line: #dce0e3;
   --mock-s-text: #1b1b1b; --mock-s-lock: #9e9e9e; --mock-s-icon: #797979;
 
   /* the same outline, shadow and radii on every mock, in both themes (values from tokens.css) */

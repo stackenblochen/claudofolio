@@ -71,7 +71,7 @@ Required (★) and optional (○) blocks, in this order:
 | ○5 | Interactive demo | `Embed` in a section's media | Always with a `poster` placeholder and a `note` for tablet and mobile (< 992 px); an optional `caption` for desktop and laptop |
 | ○6 | Screen gallery | `ScreenGallery` (MDX, after the sections) | More screens as cards, each with title and category |
 | ★7 | Outcome | last `StorySection` with `closing` and an ordered list | Usually 3 points, each starting with the result. ≥ 1 number or concrete artefact |
-| ★8 | Other projects | `ProjectGrid exclude=current` | Up to 2 cards |
+| ★8 | Other projects | `ProjectGrid exclude=current` | All other published projects |
 
 The media is different for every case study: pick the module that fits what each section shows (mock, figure, schema, embed, video, before/after).
 

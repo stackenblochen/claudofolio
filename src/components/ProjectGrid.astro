@@ -1,7 +1,7 @@
 ---
 /**
  * L1/L2 Project teaser list (one teaser per row: 12 columns on mobile, 10 up to 1229 px, 9 from 1230 px). The gap between the teasers is the same on Home and under "Other projects" (30 px from 992 px, 20 px tablet, 12 px mobile).
- * Feed it from getProjects() → toCard(); for "other projects" pass { exclude: current.id, limit: 2 }.
+ * Feed it from getProjects() → toCard(); for "other projects" pass { exclude: current.id }.
  */
 import type { CardData } from '../lib/projects';
 import ProjectCard from './ProjectCard.astro';

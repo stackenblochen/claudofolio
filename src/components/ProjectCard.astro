@@ -98,6 +98,7 @@ const Tag = card.comingSoon ? 'div' : 'a';
     .stage { display: flex; justify-content: center; align-items: center; padding: var(--teaser-thumb-pad); }
     .thumb { width: auto; height: 100%; max-width: 100%; aspect-ratio: 16 / 10; }
     .thumb--shape :global(img) { height: 100%; object-fit: contain; }
+    .thumb--fill { aspect-ratio: 16 / 9; } /* a full-bleed cover keeps the format it was uploaded in (16:9, no 16:10 crop) */
     .thumb--fill :global(img) { height: 100%; object-fit: cover; }
     .sum { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; } /* three lines, then an ellipsis */
   }

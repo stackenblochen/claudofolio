@@ -24,7 +24,7 @@ const meta = [
   { label: 'Timeline', value: d.timeline },
   { label: 'Platforms', value: d.platforms?.join(', ') },
 ].filter((i): i is { label: string; value: string } => !!i.value);
-const others = (await getProjects({ exclude: project.id, limit: 2 })).map(toCard);
+const others = (await getProjects({ exclude: project.id })).map(toCard);
 ---
 
 <Base title={d.shortTitle} description={d.summary} ogImage={(d.teaserImage ?? d.cover).src}>

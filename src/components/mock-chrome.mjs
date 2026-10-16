@@ -40,7 +40,7 @@ function safari({ url = '' }) {
   return bar('safari', 104, `
 <rect class="sf-bar" width="2400" height="104"/>
 ${controls(52, 52, false)}
-<rect class="sf-field" x="685" y="25" width="1030" height="54" rx="9"/>
+<rect class="sf-field" x="685" y="25" width="1030" height="54" rx="15"/>
 <path class="sf-stroke" d="M1698 54a10.3 10.3 0 1 1-10.3-10.3h5.6m-5.6-5.4l6.2 5.4-6.2 5.4"/>`,
   `<span class="sf-url"><svg class="sf-lock" viewBox="0 0 16 23"><rect y="10" width="16" height="13" rx="2.5"/><path d="M3.5 11V7a4.5 4.5 0 0 1 9 0v4" fill="none" stroke-width="2.4"/></svg><span>${esc(hostOf(url))}</span></span>`);
 }

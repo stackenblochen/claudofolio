@@ -56,7 +56,7 @@ export function toCard(p: ProjectEntry): CardData {
     href: url(`/projects/${p.id}/`),
     cover: p.data.teaserImage ?? p.data.cover,
     coverAlt: p.data.teaserAlt ?? p.data.coverAlt,
-    coverFill: p.data.coverFill,
+    coverFill: p.data.teaserImage ? p.data.teaserFill : p.data.coverFill,
     coverOutline: p.data.coverOutline,
     thumb: p.data.thumb,
   };
