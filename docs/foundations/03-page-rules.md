@@ -44,7 +44,7 @@ The schema is `src/content.config.ts` (Zod); it is the single source of truth fo
 - **Hero:** `heroVariant` (`mockup` | `backdrop`), `heroBackground`, `confidential` (stamp), `protected` (password gate).
 - **Meta:** `company`, `role`, `team`, `timeline`, `year`, `platforms`. The meta row shows only with at least three of role, team, timeline, platforms.
 - **Story:** `lead` (1–3 sentences). The outcome is the last `StorySection` in the MDX, see below.
-- **Housekeeping:** `order` (grid position), `draft`. A draft with a title, summary and label shows (thumb mock or cover, else the placeholder) on Home as a non-clickable "Coming soon" teaser; any other draft stays hidden.
+- **Housekeeping:** `order` (grid position), `status`: `hidden` (not built anywhere), `local` (dev server only), `staging` (local dev and GitHub Pages only) or `live` (also in the hallo-wl.de release, default).
 
 The layout renders hero, overview and other projects from the frontmatter; the MDX body holds the numbered StorySections, the Outcome (`closing`) as the last one.
 
@@ -87,7 +87,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 | # | Block | Module | Rules |
 |---|---|---|---|
 | ★1 | Stage | `HomeHero` (+ `DoodleStack`) | Title-style headline ≤ 12 words: who + what + where, name highlighted. One subline. Doodle stack (pops up on its own, max 3 at a time) |
-| ★3 | Selected work | `SectionTitle` + `ProjectGrid` | All non-draft projects by `order`. Card: cover, shortTitle, labels, summary |
+| ★3 | Selected work | `SectionTitle` + `ProjectGrid` | All projects of the build by `order`. Card: cover, shortTitle, labels, summary |
 | ○4 | Demos / experiments | `ProjectGrid` (variant `compact`) | Links to standalone interactive demos |
 | ○5 | Contact CTA | `ContactBlock` | Email, LinkedIn, CV (PDF) |
 | ★6 | Footer | `SiteFooter` | |
@@ -183,7 +183,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 
 ## 9. Definition of done: new case study
 
-- [ ] Frontmatter complete (schema validates), `draft: false`
+- [ ] Frontmatter complete (schema validates), `status: live`
 - [ ] Hero, Overview, ≥ 2 numbered sections, Outcome (a closing `StorySection`), Other projects present
 - [ ] Outcome has a few points, ≥ 1 concrete number or artefact
 - [ ] All text visible at 375 px; demo has a fallback

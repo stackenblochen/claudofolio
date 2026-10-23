@@ -9,9 +9,7 @@ export interface CardData {
   title: string;
   labels: string[];
   summary?: string;
-  /** Missing for "coming soon" cards, which are not clickable. */
-  href?: string;
-  comingSoon?: boolean;
+  href: string;
   cover: ImageMetadata;
   coverAlt: string;
   /** Full-bleed cover (fills the image area) instead of a cut-out with transparent parts. */
@@ -21,31 +19,24 @@ export interface CardData {
   thumb?: ProjectEntry['data']['thumb'];
 }
 
-/** Projects marked `stagingOnly` are left out of the production release (SITE_TARGET=production). */
-const inRelease = (p: ProjectEntry) => !(process.env.SITE_TARGET === 'production' && p.data.stagingOnly);
+/** `hidden` projects are never built; `local` ones only exist in the dev server; `staging` ones are left out of the production release (SITE_TARGET=production). */
+const inRelease = (p: ProjectEntry) =>
+  p.data.status === 'live' ||
+  (p.data.status === 'local' && import.meta.env.DEV) ||
+  (p.data.status === 'staging' && process.env.SITE_TARGET !== 'production');
 
-/** All published projects by `order`, optionally without the current one. Unlisted ones (iterations) only with `includeUnlisted` (page routes). */
-export async function getProjects(opts: { exclude?: string; limit?: number; includeUnlisted?: boolean } = {}): Promise<ProjectEntry[]> {
-  const all = await getCollection('projects', (p) => inRelease(p) && !p.data.draft && (opts.includeUnlisted || !p.data.unlisted));
+/** All projects of this build by `order`, optionally without the current one. */
+export async function getProjects(opts: { exclude?: string; limit?: number } = {}): Promise<ProjectEntry[]> {
+  const all = await getCollection('projects', inRelease);
   return all
     .filter((p) => p.id !== opts.exclude)
     .sort((a, b) => a.data.order - b.data.order)
     .slice(0, opts.limit);
 }
 
-/**
- * A draft is shown as "coming soon" (teaser with a tag, not clickable, no page) once it has a title, a description and a label
- * (the thumb mock or cover shows, the template placeholder if none is set). Any other draft stays hidden.
- */
-export function isComingSoon(p: ProjectEntry): boolean {
-  const d = p.data;
-  return d.draft && !d.unlisted && !!d.shortTitle.trim() && !!d.summary.trim() && d.labels.length > 0;
-}
-
-/** Teasers for Home: published projects plus "coming soon" drafts, together by `order`. */
+/** Teasers for Home: all published, listed projects by `order`. */
 export async function getTeasers(): Promise<CardData[]> {
-  const all = await getCollection('projects', (p) => inRelease(p) && (isComingSoon(p) || (!p.data.draft && !p.data.unlisted)));
-  return all.sort((a, b) => a.data.order - b.data.order).map((p) => ({ ...toCard(p), ...(p.data.draft && { href: undefined, comingSoon: true }) }));
+  return (await getProjects()).map(toCard);
 }
 
 export function toCard(p: ProjectEntry): CardData {

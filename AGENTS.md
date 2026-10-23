@@ -28,7 +28,7 @@ Then check the output (7+ pages, no errors; `release/portfolio/projects/` lists 
 
 What the release contains and leaves out:
 - `release/index.html` (from `tools/release-index.html`) forwards to `/portfolio/`; the site is in `release/portfolio/` (base `/portfolio`, canonical `https://hallo-wl.de`).
-- Left out: case studies with `draft: true` (everywhere) or `stagingOnly: true` (release only), and `/styleguide/` (deleted by the `build:release` script). No `noindex` tags (the live site is indexable).
+- Left out: case studies with `status: hidden` (not built anywhere), `status: local` (dev server only, not on GitHub Pages either) or `status: staging` (local and GitHub Pages only); `live` is the default and appears everywhere, and `/styleguide/` (deleted by the `build:release` script). No `noindex` tags (the live site is indexable).
 - `public/.htaccess` (`Options -Indexes`, `ErrorDocument 404 /portfolio/404.html`) plus `public/demos/.htaccess` and `public/videos/.htaccess` (`X-Robots-Tag: noindex`) end up in `release/portfolio/`; dotfiles must be uploaded.
 - Protected case studies are encrypted in the page (AES-GCM, key from `CASE_STUDY_PASSWORD` at build time); no server setup, needs HTTPS. Their images and demo files stay reachable by direct URL.
 

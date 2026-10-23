@@ -56,10 +56,8 @@ const projects = defineCollection({
       year: z.number(),
       platforms: z.array(z.string()).optional(), // e.g. ['iOS', 'Android', 'Web']
       lead: z.array(z.string()).min(1).max(3), // 1–3 sentences, rendered in the Overview
-      unlisted: z.boolean().default(false), // reachable by URL, but not on Home or in "Other projects" (for iterations or drafts you only share by link)
       order: z.number(), // grid position
-      draft: z.boolean().default(false),
-      stagingOnly: z.boolean().default(false), // built for the GitHub Pages preview and local dev, left out of the production release (hallo-wl.de)
+      status: z.enum(['hidden', 'local', 'staging', 'live']).default('live'), // hidden: not built anywhere · local: dev server only (not on GitHub Pages or in the release) · staging: local dev and GitHub Pages only · live: also in the hallo-wl.de release
     }),
 });
 
