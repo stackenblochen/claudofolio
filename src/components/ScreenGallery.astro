@@ -11,8 +11,10 @@ interface Props {
   intro?: string;
   note?: string;
   items: { src: ImageMetadata | string; alt: string; title: string; category?: string; wide?: boolean }[];
+  /** Opens every screen in the gallery (I18); its title is the caption there. */
+  gallery?: boolean;
 }
-const { title = 'Selected screens', intro, note, items } = Astro.props;
+const { title = 'Selected screens', intro, note, items, gallery = false } = Astro.props;
 ---
 
 <section class="gallery" aria-labelledby="gallery-title">
@@ -27,7 +29,7 @@ const { title = 'Selected screens', intro, note, items } = Astro.props;
         {items.map((i) => (
           <li class={`item reveal${i.wide ? ' wide' : ''}`}>
             <figure>
-              <Img src={i.src} alt={i.alt} class="media-m media-border media-shadow" />
+              <Img src={i.src} alt={i.alt} class="media-m media-border media-shadow" gallery={gallery} caption={i.title} />
               <figcaption>
                 <span class="t-body name">{i.title}</span>
                 {i.category && <span class="t-body cat">{i.category}</span>}

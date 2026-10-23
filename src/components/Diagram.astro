@@ -12,6 +12,7 @@
  *
  * `fixed`: the stage gets the aspect ratio of its size (media 3:2, cover 16:10, half 1:1, third 3:4) and the drawing fills it (Schema).
  * Without it the stage hugs the drawing with padding. `border`: a 1 px edge (true = both themes, "dark-mode" / "light-mode" = only in that mode).
+ * `gallery`: the drawing opens in the gallery (I18).
  * Drawings scale with the figure width (container `diagram`, query units), reference width 995 px.
  */
 interface Props {
@@ -20,8 +21,10 @@ interface Props {
   caption?: string;
   fixed?: boolean;
   border?: boolean | 'dark-mode' | 'light-mode';
+  /** Opens the drawing in the gallery (I18): a live copy at 1600 px wide, zoomable, with the caption (else the title) below it. */
+  gallery?: boolean;
 }
-const { size = 'media', title, caption, fixed = false, border } = Astro.props;
+const { size = 'media', title, caption, fixed = false, border, gallery = false } = Astro.props;
 const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-media', half: undefined, third: undefined }[size];
 const hasHead = !!title || Astro.slots.has('intro');
 ---
@@ -34,7 +37,9 @@ const hasHead = !!title || Astro.slots.has('intro');
     </div>
   )}
   <figure class:list={['fig', measure, 'reveal']}>
-    <div class="stage" data-size={size} data-fixed={fixed || undefined} data-border={border === true ? 'both' : border || undefined}><slot /></div>
+    <div class="stage" data-size={size} data-fixed={fixed || undefined} data-border={border === true ? 'both' : border || undefined}
+      data-gallery={gallery ? 'diagram' : undefined} data-gallery-node={gallery ? '' : undefined} data-caption={gallery ? caption || title || undefined : undefined}
+      role={gallery ? 'button' : undefined} tabindex={gallery ? 0 : undefined} aria-label={gallery ? `Open in gallery: ${title || caption || 'diagram'}` : undefined}><slot /></div>
     {caption && <figcaption class="t-caption caption">{caption}</figcaption>}
   </figure>
   {Astro.slots.has('text') && <div class="text measure-text prose reveal"><slot name="text" /></div>}
@@ -52,6 +57,8 @@ const hasHead = !!title || Astro.slots.has('intro');
     padding: clamp(16px, 3.5cqi, 36px);
     min-width: 0;
   }
+  .stage[data-gallery] { cursor: zoom-in; }
+  .stage[data-gallery]:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 4px; }
   /* drawn inside the edge, so it adds no size */
   .stage[data-border='both'] { box-shadow: inset 0 0 0 1px var(--border); }
   .stage[data-border='dark-mode'] { box-shadow: inset 0 0 0 1px var(--border-dark-mode); }

@@ -27,6 +27,7 @@ type Device = {
   cutout?: 'none';                  // ios: frame without the dynamic island, for screenshots that already contain it
   ratio?: string;                   // crop the screen, e.g. '16 / 10'
   focus?: string;                   // object-position of the crop, e.g. 'top right'
+  gallery?: boolean;                // overrides the mock's `gallery` for this screen: false keeps it out of the gallery (e.g. the phone of a set), true opens it even if the mock has no `gallery`
 };
 interface Props {
   size?: 'full' | 'media' | 'cover' | 'half' | 'pair' | 'third';
@@ -44,8 +45,10 @@ interface Props {
   width?: 'wide' | 'media';
   devices: Device[];
   caption?: string;
+  /** Opens the screenshots in the gallery (I18), without the device frame; the caption shows below them there. Each screen of a `set` is its own gallery image; a device's own `gallery` overrides this per screen. */
+  gallery?: boolean;
 }
-const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, zoom, shadow = 'heavy', width, devices, caption } = Astro.props;
+const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, zoom, shadow = 'heavy', width, devices, caption, gallery = false } = Astro.props;
 
 // a gradient name resolves to the site's gradient tokens, so the stage follows the theme; "dusk:orb" adds a shape (see SHAPES in src/lib/gradients.ts)
 const [stageName, stageShape] = stage && /^[a-z-]+(:[a-z]+)?$/.test(stage) ? stage.split(':') : [stage];
@@ -60,7 +63,9 @@ const items = await Promise.all(
     const [a, b] = glass ? await Promise.all([shot(d.src), shot(d.srcDark)]) : [];
     const style = [d.ratio && `--mock-ratio:${d.ratio}`, d.focus && `--mock-focus:${d.focus}`, a && `--mock-shot:url(${a})`, b && `--mock-shot-dark:url(${b})`]
       .filter(Boolean).join(';') || undefined;
-    return { d, style };
+    // the gallery shows the screenshot itself in full resolution (the dark one if there is one: the gallery is dark only)
+    const g = (d.gallery ?? gallery) ? { src: (await getImage({ src: d.srcDark ?? d.src, width: Math.min((d.srcDark ?? d.src).width, 3200), format: 'webp', quality: 85 })).src, w: (d.srcDark ?? d.src).width, h: (d.srcDark ?? d.src).height } : undefined;
+    return { d, style, g };
   }),
 );
 const widths = [480, 768, 1200, 1600, 2400];
@@ -71,8 +76,10 @@ const measure = width ? `measure-${width}` : { full: 'measure-wide', cover: 'mea
 <figure class:list={['mock-fig', measure, 'reveal']} data-size={size}>
   <div class="mock" data-size={size} data-align={align} data-theme={theme} data-layout={layout} data-phone={phone} data-shadow={shadow}
     data-stage={stageCss ? '' : undefined} style={[stageCss && `--mock-stage:${stageCss}`, zoom && `--mock-zoom:${zoom}`].filter(Boolean).join(';') || undefined}>
-    {items.map(({ d, style }) => (
-      <div class="mock__device" data-device={d.device} data-fill={d.device === 'desktop' ? d.fill : undefined} data-cutout={d.cutout} data-crop={d.ratio ? '' : undefined} style={style}>
+    {items.map(({ d, style, g }) => (
+      <div class="mock__device" data-device={d.device} data-fill={d.device === 'desktop' ? d.fill : undefined} data-cutout={d.cutout} data-crop={d.ratio ? '' : undefined} style={style}
+        data-gallery={g?.src} data-w={g?.w} data-h={g?.h} data-caption={g ? caption || undefined : undefined} data-alt={g ? d.alt : undefined}
+        role={g ? 'button' : undefined} tabindex={g ? 0 : undefined} aria-label={g ? `Open image in gallery: ${d.alt}` : undefined}>
         {d.device === 'browser' && <Fragment set:html={browserChrome({ browser: d.browser, url: d.bar || '', tab: d.tab })} />}
         {d.device === 'desktop' && d.bar !== false && <Fragment set:html={desktopBar({ controls: d.controls })} />}
         <div class="mock__screen">
@@ -86,6 +93,8 @@ const measure = width ? `measure-${width}` : { full: 'measure-wide', cover: 'mea
 </figure>
 
 <style>
+  .mock-fig :global(.mock__device[data-gallery]) { cursor: zoom-in; }
+  .mock-fig :global(.mock__device[data-gallery]:focus-visible) { outline: 2px solid var(--accent-primary); outline-offset: 4px; }
   .mock-fig { display: flex; flex-direction: column; gap: var(--space-3); min-width: 0; margin-block: 0; }
   .mock-fig:not(.measure-media):not(.measure-wide) { margin-inline: 0; }
   /* half and third sit in a MediaRow (.grid-12) */

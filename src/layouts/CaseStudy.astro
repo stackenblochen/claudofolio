@@ -9,6 +9,7 @@ import CaseHero from '../components/CaseHero.astro';
 import Overview from '../components/Overview.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
+import Gallery from '../components/Gallery.astro';
 import { getProjects, toCard, type ProjectEntry } from '../lib/projects';
 import { plain } from '../lib/site';
 
@@ -47,6 +48,7 @@ const others = (await getProjects({ exclude: project.id })).map(toCard);
       </section>
     )}
   </Protected>
+  <Gallery />
 </Base>
 
 <style>
@@ -56,3 +58,7 @@ const others = (await getProjects({ exclude: project.id })).map(toCard);
   .others { padding-top: 0; }
   .grid-wrap { margin-top: var(--space-6); }
 </style>
+
+<script>
+  import '../lib/embed-fullscreen';
+</script>

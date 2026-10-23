@@ -50,7 +50,7 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
   These insights shaped the starting point of the vision. I gathered them from internal and external interviews, sector research, competitor analysis and a survey among our users.
 
   <Fragment slot="media">
-    <ImageText image={skippedTools} border="dark-mode" alt="Chart from Wire's State of Secure Collaboration 2026 on why official tools get skipped: 47% urgent situation or faster alternative needed, 37% external partner doesn't use official tools, 30% official tools too complex" title="Ease beats security">
+    <ImageText gallery image={skippedTools} border="dark-mode" alt="Chart from Wire's State of Secure Collaboration 2026 on why official tools get skipped: 47% urgent situation or faster alternative needed, 37% external partner doesn't use official tools, 30% official tools too complex" title="Ease beats security">
       People gravitate to the easiest, most frictionless tools, even when those have severe security and privacy issues. For enterprises, that is a high risk.
     </ImageText>
     <ImageText image={feelsLikeHome} ratio="2000 / 1704" alt="A relaxed woman smiling and looking away from the laptop on her lap, in a cosy, warmly lit café-style workspace" title="Feels like home">
@@ -68,7 +68,7 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
   <p slot="outcome">We aligned on where the vision sits relative to our competitors and what 'modern' means to us. We also identified a 'feature track' and a 'UI track' and assigned topics accordingly.</p>
 
   <Fragment slot="media">
-    <Diagram title="Competitor analysis">
+    <Diagram gallery title="Competitor analysis">
       <PositioningMap
         alt="Positioning map of messengers by user expertise and security posture, showing Wire moving from today's position toward easy and enterprise-grade."
         yAxis={['Enterprise', 'Security posture', 'Consumer']}
@@ -89,7 +89,7 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
         move={{ from: 'Wire today', to: 'Wire vision' }}
       />
     </Diagram>
-    <Diagram title="What 'modern' means">
+    <Diagram gallery title="What 'modern' means">
       <p slot="intro">To pin down what we mean by 'modern', I took the four aspects stakeholders kept focusing on and gave each a scale. We placed the competitors and Wire's vision on them, so everyone worked from the same picture.</p>
       <SpectrumStrips
         alt="Four spectra (tone, interaction design, visual presence, brand presence) on which Wire's vision and seven competitors were placed."
@@ -133,24 +133,24 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
     <MediaText title="Onboarding">
       <p>A new onboarding flow lets people make the app their own from the first minute and guides them through several security-relevant setup steps in an easily digestible way.</p>
     </MediaText>
-    <Mock size="cover" width="media" align="center" shadow="soft" stage="fog:orb" devices={[
+    <Mock gallery size="cover" width="media" align="center" shadow="soft" stage="fog:orb" devices={[
       { device: 'desktop', src: desktopPersonalize, alt: 'The "Make it yours" step of the onboarding: a small preview of the app and choices for theme, accent color and background' },
     ]} />
-    <Mock size="cover" width="media" align="center" shadow="soft" stage="fog:halo" devices={[
+    <Mock gallery size="cover" width="media" align="center" shadow="soft" stage="fog:halo" devices={[
       { device: 'desktop', src: desktopOnboarding, alt: 'The onboarding of the desktop app: a black panel with the Wire logo and the line "Collaborate without Compromise" next to a white page that asks to turn on the backup' },
     ]} />
     <MediaText title="Personalization layer">
       <p>The same app in three tonalities: calm, Wire-branded and a minimal dark one. Only the frame around the UI changes, the interface itself stays the same.</p>
     </MediaText>
-    <Mock size="cover" width="media" layout="set" shadow="soft" stage="fog:horizon" devices={[
+    <Mock gallery size="cover" width="media" layout="set" shadow="soft" stage="fog:horizon" devices={[
       { device: 'desktop', src: desktopGradient, alt: 'The desktop app in a calm tonality: a violet-to-blue gradient frame around a light conversation' },
       { device: 'ios', src: iosGradient, alt: 'The iOS app in a calm tonality: a violet-to-rose gradient header above a light conversation list' },
     ]} />
-    <Mock size="cover" width="media" layout="set" shadow="soft" stage="fog:halo" devices={[
+    <Mock gallery size="cover" width="media" layout="set" shadow="soft" stage="fog:halo" devices={[
       { device: 'desktop', src: desktopBlue, alt: 'The desktop app in the Wire branded tonality: a white frame, blue accents and a light conversation with a voice message and a video' },
       { device: 'ios', src: iosBlue, alt: 'The iOS app in the Wire branded tonality: a conversation with blue message bubbles' },
     ]} />
-    <Mock size="cover" width="media" layout="set" theme="dark" shadow="soft" stage="fog:orb" devices={[
+    <Mock gallery size="cover" width="media" layout="set" theme="dark" shadow="soft" stage="fog:orb" devices={[
       { device: 'desktop', src: desktopDark, alt: 'The desktop app in a dark tonality: a purple frame, purple accents and a dark conversation' },
       { device: 'ios', src: iosDark, alt: 'The iOS app in a dark tonality: a purple gradient header above a dark conversation list' },
     ]} />
@@ -158,10 +158,10 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
       <p>Search opens as a dialog over the app and finds people, files and messages at once, with filters to narrow the results. On iOS it sits above the keyboard.</p>
     </MediaText>
     <MediaRow>
-      <Mock size="half" shadow="soft" stage="active-violet" devices={[
+      <Mock gallery size="half" shadow="soft" stage="active-violet" devices={[
         { device: 'none', src: desktopSearch, alt: 'The desktop search dialog with the query "do": results grouped into people, files and messages, with filters for favorites, channels, groups, people, files and messages' },
       ]} />
-      <Mock size="half" align="cut-bottom" shadow="soft" stage="calm-blue:halo" devices={[
+      <Mock gallery size="half" align="cut-bottom" shadow="soft" stage="calm-blue:halo" devices={[
         { device: 'ios', src: iosSearch, alt: 'The iOS search with the query "do": filters for all, conversations and favorites, then people, files and messages as results above the keyboard' },
       ]} />
     </MediaRow>
@@ -169,10 +169,10 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
       <p>One menu to group, filter and sort the conversation list: by conversation type or folders, by unread or favorites, by activity or alphabetically. Desktop and iOS share the same options.</p>
     </MediaText>
     <MediaRow>
-      <Mock size="half" align="cut-right" zoom={2.3} shadow="soft" stage="calm-blue:orb" devices={[
+      <Mock gallery size="half" align="cut-right" zoom={2.3} shadow="soft" stage="calm-blue:orb" devices={[
         { device: 'desktop', src: desktopFilter, alt: 'The desktop conversation list with the filter dialog open: group by, filter by unread or favorites, and sort by activity or alphabetical' },
       ]} />
-      <Mock size="half" align="cut-bottom" shadow="soft" stage="calm-blue:horizon" devices={[
+      <Mock gallery size="half" align="cut-bottom" shadow="soft" stage="calm-blue:horizon" devices={[
         { device: 'ios', src: iosFilter, alt: 'The iOS conversation list with the same filter dialog open: group by, filter by and sort by' },
       ]} />
     </MediaRow>
@@ -185,7 +185,7 @@ import iosDark from '../../assets/projects/design-vision/ios-dark.webp';
   I presented the vision during an all-hands meeting to the company, which kicked off an internal testing and feedback phase, with feedback from selected customers planned next.
 
   <Fragment slot="media">
-    <ImageGrid items={[
+    <ImageGrid gallery items={[
       { src: slideTitle, alt: 'Title slide of the presentation: "Wire Design Team, Design Vision 2026" on black, with colorful lines on the right' },
       { src: slideWhat, alt: 'Slide "What is a Design Vision?": a picture of where we are headed, room to explore, something worth building' },
       { src: slideWhy, alt: 'Slide "Why now?": patterns drifted, user expectations, custom UI, and now is the best time with the Kalium rewrite incoming' },

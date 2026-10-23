@@ -16,12 +16,14 @@ interface Props {
   ratio?: string;
   /** A white-only line drawing on a transparent background: sits on the secondary background and turns dark in light mode (like the white logos). */
   mono?: boolean;
+  /** Opens the image in the gallery (I18); the title is its caption. */
+  gallery?: boolean;
 }
-const { image, alt = '', title, border, ratio, mono = false } = Astro.props;
+const { image, alt = '', title, border, ratio, mono = false, gallery = false } = Astro.props;
 ---
 
 <div class="image-text measure-text reveal">
-  <div class="art media-l" data-mono={mono || undefined} data-border={border === true ? 'both' : border || undefined} style={ratio && `--art-ratio: ${ratio}`}><Img src={image} alt={alt} sizes="(min-width: 768px) 480px, 60vw" /></div>
+  <div class="art media-l" data-mono={mono || undefined} data-border={border === true ? 'both' : border || undefined} style={ratio && `--art-ratio: ${ratio}`}><Img src={image} alt={alt} sizes="(min-width: 768px) 480px, 60vw" gallery={gallery} caption={title} /></div>
   <div class="copy">
     <h3 class="t-body">{title}</h3>
     <div class="prose"><slot /></div>

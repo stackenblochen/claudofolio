@@ -10,6 +10,7 @@
  * kind: "screenshot" (default) = radius 12 + border + shadow, "image" = radius 16, plain (photos, documents, boards), "appshot" = transparent PNG outline.
  * border: true (default for screenshots) = border in both themes, "dark-mode" / "light-mode" = only in that mode (a dark image that bleeds into
  * the dark page), false = none (default for images).
+ * gallery: opens the image(s) in the gallery (I18), with the caption below; the images of all gallery-enabled figures can be browsed.
  */
 import type { ImageMetadata } from 'astro';
 import Img from './Img.astro';
@@ -25,8 +26,9 @@ interface Props {
   kind?: 'screenshot' | 'image' | 'appshot';
   border?: boolean | 'dark-mode' | 'light-mode';
   loading?: 'lazy' | 'eager';
+  gallery?: boolean;
 }
-const { src, alt = '', images, layout = 'stack', caption, size = 'wide', kind = 'screenshot', border, loading } = Astro.props;
+const { src, alt = '', images, layout = 'stack', caption, size = 'wide', kind = 'screenshot', border, loading, gallery = false } = Astro.props;
 const items: Item[] = images ?? (src ? [{ src, alt }] : []);
 const measure = { wide: 'measure-media', text: 'measure-text', full: 'measure-wide' }[size];
 const b = border ?? kind === 'screenshot';
@@ -38,11 +40,11 @@ const sizes = layout === 'pair' ? '(min-width: 768px) 600px, 100vw' : undefined;
 <figure class={`${measure} reveal`}>
   {layout === 'pair' ? (
     <div class="grid-12">
-      {items.map((i) => <div class="span-6"><Img src={i.src} alt={i.alt} class={imgClass} sizes={sizes} loading={loading} /></div>)}
+      {items.map((i) => <div class="span-6"><Img src={i.src} alt={i.alt} class={imgClass} sizes={sizes} loading={loading} gallery={gallery} caption={caption} /></div>)}
     </div>
   ) : (
     <div class="shots">
-      {items.map((i) => <Img src={i.src} alt={i.alt} class={imgClass} loading={loading} />)}
+      {items.map((i) => <Img src={i.src} alt={i.alt} class={imgClass} loading={loading} gallery={gallery} caption={caption} />)}
     </div>
   )}
   {caption && <figcaption class="t-caption caption">{caption}</figcaption>}

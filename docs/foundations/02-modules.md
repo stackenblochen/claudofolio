@@ -39,6 +39,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | I15 | Principles (numbered columns) | `Principles` | Design vision |
 | I16 | Experience list (icon, title, text) | `ExperienceList` | About me |
 | I17 | Image grid (equal images, 3 columns) | `ImageGrid` | Case studies |
+| I18 | Gallery (lightbox: zoom, browse, caption) | `Gallery` + `gallery` on images | Case studies |
 | **L — Collections** | | | |
 | L1 | Project teasers | `ProjectGrid`, `ProjectCard` | Home |
 | L2 | Other projects | `ProjectGrid` with `exclude` | Case studies |
@@ -146,7 +147,7 @@ Insights, principles, any short finding with an illustration. Lives in the text 
 `Video`: MP4 (H.264) plus optional WebM, with a poster. Muted, `playsinline`, no autoplay unless it is a short loop (≤ 30 s, ≤ 8 MB). Radius 16, border.
 
 ### I7 Interactive embed
-`Embed`: an iframe to a self-contained demo in `public/demos/<slug>/`, 12 cols, fixed height, radius 16, lazy, with a `title`. **The text is always visible.** **Tablet and mobile (below 992 px) always show a placeholder instead of the iframe:** the `poster` image (required) with `note` as its caption (default "Interactive demo, best viewed on desktop."). **Desktop and laptop** show the live demo, with an optional `caption` below it; that caption is hidden on tablet and mobile, where the note replaces it.
+`Embed`: an iframe to a self-contained demo in `public/demos/<slug>/`, 12 cols, fixed height, radius 16, lazy, with a `title`. **The text is always visible.** **Tablet and mobile (below 992 px) always show a placeholder instead of the iframe:** the `poster` image (required) with `note` as its caption (default "Interactive demo, best viewed on desktop."). **Desktop and laptop** show the live demo with a "Fullscreen" button under it (Fullscreen API on the demo box, Esc or the same button exits; hidden where fullscreen is unavailable) and an optional `caption` below it; that caption is hidden on tablet and mobile, where the note replaces it.
 
 ### I8 Annotations
 `Stamp` (confidential, see the styleguide) and `Arrow` (the salmon hand-drawn arrow, default `arrow-red-down.svg`, decorative). Both overlap neighbouring blocks with negative margins inside the component only, reduced by half below 768 px.
@@ -208,3 +209,10 @@ Square photo at half the text measure (4 of 8 columns on wide desktops), radius 
 
 ### I17 Image grid
 `ImageGrid`: `items` (`src`, `alt`) on the media measure, 3 columns from 768 px (`columns` 2–4), 2 below. Images of the same ratio use the screenshot look (radius 12, border, shadow); with `ratio` (e.g. `"3 / 2"`, or the ratio of the images so they fill it) each image is fitted into a tile of that ratio (`--bg-secondary`, 1 px outline drawn outside the tile, radius 12), so mixed ratios and transparent images line up like a gallery. An item can set `bg: 'white'` to sit on plain white in both themes (illustrations drawn for a white page). No captions. Starts a new group like `MediaText` (extra space above when it follows other media).
+
+### I18 Gallery
+The lightbox for case-study images; `Gallery` sits once in the `CaseStudy` layout and has no props. Switch it on per image with `gallery` on `Figure` (the `caption` shows in the gallery too), `ImageGrid` (all items; an item's `caption`), `Mock` (the screenshot opens without its device frame), `Diagram` (the live drawing opens as a copy 1600 px wide, so it stays sharp when zoomed; the caption, else the title, is its caption), `ImageText` (the title is the caption) and `ScreenGallery` (the title is the caption). A gallery image is a button; clicking it opens the full-resolution image (up to 3200 px wide, from the original) uncropped on a dark background, with the caption small below it. Dark mode only, whatever the site theme.
+
+- **Zoom:** from fit to screen (never above 100 %) up to 100 % (the image's own pixels). Buttons, `+` `-` `0`, wheel or pinch at the pointer; a click or tap on the image toggles fit / 100 %; drag to pan when zoomed (the hand cursor only shows where the image can be dragged).
+- **Browse:** all gallery images of the page in page order: arrow buttons, ← →, swipe at fit size. The counter shows the position. The close button or Esc closes it; clicking the image or the space around it does not.
+- Icons are Tabler (`@tabler/icons/outline`). Works inside password-protected case studies (the trigger list is read when it opens).

@@ -1,0 +1,359 @@
+---
+/**
+ * I18 Gallery: the lightbox for case-study images. Place once in the case-study layout; it has no props.
+ * Any `Img` with `gallery` (set through `gallery` on Figure, ImageGrid, ImageText, ScreenGallery, Mock) opens here: the whole image on a dark
+ * background, uncropped, with its caption small below it. Zoom from "fit to screen" up to 100 % (the image's own pixels), pan by dragging,
+ * browse through all gallery images of the page (arrows, buttons, swipe). Dark mode only (`color-scheme: dark`), whatever the site theme.
+ * Keys: ← → browse, + − zoom, 0 fit, Esc close. A click on the image toggles fit / 100 %; only the close button closes with the pointer.
+ * The trigger list is read when the gallery opens, so it also works for protected case studies (their content is inserted after unlocking).
+ */
+import close from '@tabler/icons/outline/x.svg?raw';
+import prev from '@tabler/icons/outline/chevron-left.svg?raw';
+import next from '@tabler/icons/outline/chevron-right.svg?raw';
+import zoomIn from '@tabler/icons/outline/zoom-in.svg?raw';
+import zoomOut from '@tabler/icons/outline/zoom-out.svg?raw';
+
+const icon = (svg: string) => svg.replace('<svg', '<svg aria-hidden="true" focusable="false"');
+---
+
+<div class="lb" data-lightbox hidden role="dialog" aria-modal="true" aria-label="Image gallery">
+  <div class="top">
+    <div class="pager">
+      <span class="count t-label" data-lb-count aria-live="polite"></span>
+      <button type="button" class="btn" data-lb-prev aria-label="Previous image" set:html={icon(prev)} />
+      <button type="button" class="btn" data-lb-next aria-label="Next image" set:html={icon(next)} />
+    </div>
+    <div class="tools">
+      <button type="button" class="btn" data-lb-zoom-out aria-label="Zoom out" set:html={icon(zoomOut)} />
+      <button type="button" class="btn" data-lb-zoom-in aria-label="Zoom in" set:html={icon(zoomIn)} />
+      <button type="button" class="btn" data-lb-close aria-label="Close gallery" set:html={icon(close)} />
+    </div>
+  </div>
+  <div class="stage" data-lb-stage>
+    <img class="pic" data-lb-img data-lb-pic alt="" draggable="false" />
+    <div class="pic node" data-lb-node data-lb-pic hidden></div>
+  </div>
+  <p class="caption-bar t-caption" data-lb-caption></p>
+</div>
+
+<style>
+  .lb {
+    color-scheme: dark; /* dark only: the semantic tokens below resolve to their dark values */
+    position: fixed; inset: 0; z-index: 10000;
+    display: grid; grid-template-rows: auto minmax(0, 1fr) auto;
+    background: var(--bg-primary);
+    color: var(--text-strong);
+    overscroll-behavior: contain;
+  }
+  .lb[hidden] { display: none; }
+  .top { display: flex; align-items: center; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-4); }
+  .pager { display: flex; align-items: center; gap: var(--space-1); }
+  .count { margin-right: var(--space-2); color: var(--text-default); font-variant-numeric: tabular-nums; }
+  .tools { display: flex; align-items: center; gap: var(--space-1); margin-left: auto; }
+  .btn {
+    display: inline-flex; align-items: center; justify-content: center; border: 0; cursor: pointer;
+    background: transparent; color: var(--text-strong); border-radius: var(--radius-pill);
+    transition: background 150ms ease, opacity 150ms ease;
+  }
+  .btn { width: 40px; height: 40px; }
+  .btn:hover { background: var(--fill); }
+  .btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
+  .btn:disabled { opacity: 0.3; cursor: default; background: transparent; }
+  .lb button :global(svg) { width: 24px; height: 24px; }
+  .stage { position: relative; overflow: hidden; touch-action: none; cursor: default; }
+  /* the picture is positioned by the script (transform) at its own pixel size; no radius, border or background, so it shows exactly as it is */
+  .pic { position: absolute; left: 0; top: 0; max-width: none; transform-origin: 0 0; user-select: none; -webkit-user-drag: none; opacity: 0; transition: opacity 150ms ease; }
+  .pic.is-ready { opacity: 1; }
+  /* a live diagram (Diagram with `gallery`) is cloned in here at a fixed width of 1600 px, so its text and lines stay sharp at any zoom; the container makes its query units work */
+  .node { container: diagram / inline-size; }
+  .node[hidden] { display: none; }
+  .node :global(*) { pointer-events: none; user-select: none; }
+  .stage.can-zoom-in { cursor: zoom-in; }
+  .stage.can-zoom-out { cursor: zoom-out; }
+  .stage.can-pan { cursor: grab; } /* the hand only shows where the image can actually be dragged */
+  .stage.is-panning { cursor: grabbing; }
+  .btn[hidden] { display: none; }
+  .caption-bar { min-height: 3.25rem; margin: 0; padding: var(--space-2) var(--space-5) var(--space-4); text-align: center; color: var(--text-default); max-width: 60rem; margin-inline: auto; }
+  @media (prefers-reduced-motion: reduce) { .pic, .btn { transition: none; } }
+</style>
+
+<script>
+  type Item = { full: string; w: number; h: number; caption: string; alt: string; el: HTMLElement; node: boolean };
+  const NODE_W = 1600;
+
+  const w = window as unknown as { __gallery?: boolean };
+  if (!w.__gallery) {
+    w.__gallery = true;
+
+    const PAD = 24;
+    const q = <T extends HTMLElement>(sel: string) => document.querySelector<T>(sel);
+    let lb: HTMLElement | null = null;
+    let items: Item[] = [];
+    let idx = 0;
+    let opener: HTMLElement | null = null;
+    let nat = { w: 0, h: 0 };
+    let fit = 1;
+    let scale = 1;
+    let x = 0;
+    let y = 0;
+    let atFit = true;
+
+    const el = {
+      get stage() { return q('[data-lb-stage]')!; },
+      get img() { return q<HTMLImageElement>('[data-lb-img]')!; },
+      get node() { return q<HTMLElement>('[data-lb-node]')!; },
+      get caption() { return q('[data-lb-caption]')!; },
+      get count() { return q('[data-lb-count]')!; },
+      get prev() { return q<HTMLButtonElement>('[data-lb-prev]')!; },
+      get next() { return q<HTMLButtonElement>('[data-lb-next]')!; },
+      get zin() { return q<HTMLButtonElement>('[data-lb-zoom-in]')!; },
+      get zout() { return q<HTMLButtonElement>('[data-lb-zoom-out]')!; },
+    };
+
+    const collect = () =>
+      [...document.querySelectorAll<HTMLElement>('[data-gallery]:not([data-lightbox] *)')].map((e) => ({
+        el: e,
+        node: e.dataset.galleryNode !== undefined,
+        full: e.dataset.gallery || '',
+        w: Number(e.dataset.w) || 0,
+        h: Number(e.dataset.h) || 0,
+        caption: e.dataset.caption || '',
+        alt: e.dataset.alt || '',
+      }));
+
+    let showsNode = false;
+    const pic = () => (showsNode ? el.node : el.img);
+
+    function apply() {
+      pic().style.transform = `translate(${x}px, ${y}px) scale(${scale})`;
+      el.zin.disabled = scale >= 1 - 1e-3;
+      el.zout.disabled = scale <= fit + 1e-3;
+      const canPan = !atFit && (nat.w * scale > el.stage.clientWidth || nat.h * scale > el.stage.clientHeight);
+      el.stage.classList.toggle('can-pan', canPan);
+      el.stage.classList.toggle('can-zoom-in', atFit && fit < 1);
+      el.stage.classList.toggle('can-zoom-out', !atFit && !canPan);
+    }
+
+    function clamp() {
+      const sw = el.stage.clientWidth;
+      const sh = el.stage.clientHeight;
+      const iw = nat.w * scale;
+      const ih = nat.h * scale;
+      x = iw <= sw ? (sw - iw) / 2 : Math.min(0, Math.max(sw - iw, x));
+      y = ih <= sh ? (sh - ih) / 2 : Math.min(0, Math.max(sh - ih, y));
+    }
+
+    function computeFit() {
+      const sw = el.stage.clientWidth - PAD * 2;
+      const sh = el.stage.clientHeight - PAD * 2;
+      fit = nat.w && nat.h && sw > 0 && sh > 0 ? Math.min(sw / nat.w, sh / nat.h, 1) : 1;
+    }
+
+    function setScale(s: number, cx?: number, cy?: number) {
+      const sw = el.stage.clientWidth;
+      const sh = el.stage.clientHeight;
+      const px = cx ?? sw / 2;
+      const py = cy ?? sh / 2;
+      const next = Math.min(1, Math.max(fit, s));
+      x = px - ((px - x) * next) / scale;
+      y = py - ((py - y) * next) / scale;
+      scale = next;
+      atFit = Math.abs(scale - fit) < 1e-3;
+      if (atFit) scale = fit;
+      clamp();
+      apply();
+    }
+
+    function resetFit() {
+      computeFit();
+      scale = fit;
+      atFit = true;
+      clamp();
+      apply();
+    }
+
+    function show(i: number) {
+      idx = i;
+      const it = items[i];
+      const img = el.img;
+      const node = el.node;
+      img.classList.remove('is-ready');
+      node.classList.remove('is-ready');
+      showsNode = it.node;
+      img.hidden = it.node;
+      node.hidden = !it.node;
+      el.caption.textContent = it.caption;
+      el.count.textContent = items.length > 1 ? `${i + 1} / ${items.length}` : '';
+      el.prev.hidden = el.next.hidden = items.length < 2;
+      el.prev.disabled = i === 0;
+      el.next.disabled = i === items.length - 1;
+      if (it.node) {
+        // clone the live drawing (without the gallery attributes, so it is not picked up as an image itself)
+        const copy = it.el.cloneNode(true) as HTMLElement;
+        for (const a of ['data-gallery', 'data-gallery-node', 'data-caption', 'role', 'tabindex', 'aria-label']) copy.removeAttribute(a);
+        node.replaceChildren(copy);
+        node.style.width = `${NODE_W}px`;
+        node.style.height = 'auto';
+        nat = { w: NODE_W, h: node.offsetHeight };
+        node.style.height = `${nat.h}px`;
+        resetFit();
+        node.classList.add('is-ready');
+      } else {
+        img.alt = it.alt;
+        nat = { w: it.w, h: it.h };
+        const done = () => {
+          if (idx !== i) return;
+          if (!nat.w) nat = { w: img.naturalWidth, h: img.naturalHeight };
+          img.style.width = `${nat.w}px`;
+          img.style.height = `${nat.h}px`;
+          resetFit();
+          img.classList.add('is-ready');
+        };
+        img.onload = done;
+        img.src = it.full;
+        if (img.complete && img.naturalWidth) done();
+      }
+      for (const n of [items[i - 1], items[i + 1]]) if (n && !n.node) new Image().src = n.full;
+    }
+
+    function open(trigger: HTMLElement) {
+      lb = q('[data-lightbox]');
+      if (!lb) return;
+      items = collect();
+      const i = items.findIndex((it) => it.el === trigger);
+      if (i < 0) return;
+      opener = trigger;
+      lb.hidden = false;
+      document.documentElement.style.overflow = 'hidden';
+      show(i);
+      q<HTMLButtonElement>('[data-lb-close]')?.focus();
+    }
+
+    function close() {
+      if (!lb || lb.hidden) return;
+      lb.hidden = true;
+      document.documentElement.style.overflow = '';
+      el.img.removeAttribute('src');
+      el.node.replaceChildren();
+      opener?.focus({ preventScroll: true });
+    }
+
+    const go = (d: number) => {
+      const n = idx + d;
+      if (n >= 0 && n < items.length) show(n);
+    };
+    const toggleLevel = (cx?: number, cy?: number) => (atFit && fit < 1 ? setScale(1, cx, cy) : resetFit());
+    const isOpen = () => !!lb && !lb.hidden;
+
+    document.addEventListener('click', (e) => {
+      const t = e.target as Element;
+      const trigger = t.closest<HTMLElement>('[data-gallery]');
+      if (trigger) { e.preventDefault(); open(trigger); return; }
+      if (!isOpen()) return;
+      if (t.closest('[data-lb-close]')) close();
+      else if (t.closest('[data-lb-prev]')) go(-1);
+      else if (t.closest('[data-lb-next]')) go(1);
+      else if (t.closest('[data-lb-zoom-in]')) setScale(scale * 1.5);
+      else if (t.closest('[data-lb-zoom-out]')) setScale(scale / 1.5);
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (!isOpen()) {
+        // gallery images that are not buttons (device mocks) open with Enter / Space
+        const t = e.target as HTMLElement;
+        if ((e.key === 'Enter' || e.key === ' ') && t.matches?.('[data-gallery]:not(button)')) { e.preventDefault(); open(t); }
+        return;
+      }
+      if (e.key === 'Escape') { e.preventDefault(); close(); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); go(-1); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(1); }
+      else if (e.key === '+' || e.key === '=') { e.preventDefault(); setScale(scale * 1.5); }
+      else if (e.key === '-') { e.preventDefault(); setScale(scale / 1.5); }
+      else if (e.key === '0') { e.preventDefault(); resetFit(); }
+      else if (e.key === 'Tab' && lb) {
+        const f = [...lb.querySelectorAll<HTMLElement>('button:not([disabled]):not([hidden])')];
+        if (!f.length) return;
+        const first = f[0];
+        const last = f[f.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+        else if (!lb.contains(document.activeElement)) { e.preventDefault(); first.focus(); }
+      }
+    });
+
+    window.addEventListener('resize', () => {
+      if (!isOpen()) return;
+      const wasFit = atFit;
+      computeFit();
+      if (wasFit) scale = fit; else scale = Math.min(1, Math.max(fit, scale));
+      clamp();
+      apply();
+    });
+
+    // Wheel / trackpad pinch zooms around the pointer.
+    document.addEventListener('wheel', (e) => {
+      if (!isOpen() || !(e.target as Element).closest('[data-lb-stage]')) return;
+      e.preventDefault();
+      const r = el.stage.getBoundingClientRect();
+      setScale(scale * Math.exp(-e.deltaY * (e.ctrlKey ? 0.01 : 0.0025)), e.clientX - r.left, e.clientY - r.top);
+    }, { passive: false });
+
+    // Pointer: drag to pan when zoomed, swipe to browse at fit size, pinch with two fingers, double tap toggles fit / 100 %.
+    const pts = new Map<number, { x: number; y: number }>();
+    let start = { x: 0, y: 0, px: 0, py: 0 };
+    let pinch = { d: 0, s: 1 };
+    let moved = 0;
+    let downOnPic = false; // the stage captures the pointer, so the target of pointerup is always the stage
+
+    document.addEventListener('pointerdown', (e) => {
+      if (!isOpen() || !(e.target as Element).closest('[data-lb-stage]')) return;
+      el.stage.setPointerCapture?.(e.pointerId);
+      if (pts.size === 0) downOnPic = !!(e.target as Element).closest('[data-lb-pic]');
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 1) { start = { x: e.clientX, y: e.clientY, px: x, py: y }; moved = 0; el.stage.classList.add('is-panning'); }
+      if (pts.size === 2) {
+        const [a, b] = [...pts.values()];
+        pinch = { d: Math.hypot(a.x - b.x, a.y - b.y), s: scale };
+      }
+    });
+
+    document.addEventListener('pointermove', (e) => {
+      if (!pts.has(e.pointerId)) return;
+      pts.set(e.pointerId, { x: e.clientX, y: e.clientY });
+      if (pts.size === 2) {
+        const [a, b] = [...pts.values()];
+        const r = el.stage.getBoundingClientRect();
+        setScale((pinch.s * Math.hypot(a.x - b.x, a.y - b.y)) / pinch.d, (a.x + b.x) / 2 - r.left, (a.y + b.y) / 2 - r.top);
+        moved = 99;
+        return;
+      }
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      moved = Math.max(moved, Math.hypot(dx, dy));
+      if (!atFit) { x = start.px + dx; y = start.py + dy; clamp(); apply(); }
+    });
+
+    const end = (e: PointerEvent) => {
+      if (!pts.has(e.pointerId)) return;
+      const wasSingle = pts.size === 1;
+      pts.delete(e.pointerId);
+      el.stage.classList.remove('is-panning');
+      if (!wasSingle) { const [p] = [...pts.values()]; if (p) start = { x: p.x, y: p.y, px: x, py: y }; return; }
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+      if (e.type === 'pointerup' && atFit && Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.5) { go(dx < 0 ? 1 : -1); return; }
+      if (e.type === 'pointerup' && moved < 6 && downOnPic) {
+        const r = el.stage.getBoundingClientRect();
+        toggleLevel(e.clientX - r.left, e.clientY - r.top); // a click on the image toggles fit / 100 %
+      }
+    };
+    document.addEventListener('pointerup', end);
+    document.addEventListener('pointercancel', end);
+
+    // Leaving the page (ClientRouter) closes the gallery.
+    document.addEventListener('astro:before-swap', () => {
+      document.documentElement.style.overflow = '';
+      lb = null;
+    });
+  }
+</script>

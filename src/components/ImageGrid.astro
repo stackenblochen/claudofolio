@@ -13,13 +13,15 @@ import Img from './Img.astro';
 
 interface Props {
   /** `bg: 'white'` puts the image on plain white in both themes (for illustrations drawn for a white page). */
-  items: { src: ImageMetadata | string; alt: string; bg?: 'white' }[];
+  items: { src: ImageMetadata | string; alt: string; bg?: 'white'; caption?: string }[];
+  /** Opens every image in the gallery (I18); an item's `caption` shows below it there. */
+  gallery?: boolean;
   /** Columns from 768 px. Default 3. */
   columns?: 2 | 3 | 4;
   /** Tile ratio, e.g. "3 / 2": every image is fitted into a tile of this ratio. Without it the images keep their own (same) ratio. */
   ratio?: string;
 }
-const { items, columns = 3, ratio } = Astro.props;
+const { items, columns = 3, ratio, gallery = false } = Astro.props;
 // An image whose ratio is within 2 % of the tile fills it (cover: resized copies are rounded to whole pixels, which would leave a hairline of the tile colour); any other image is fitted whole.
 const [rw, rh] = ratio ? ratio.split('/').map((n) => parseFloat(n)) : [0, 0];
 const fills = (src: ImageMetadata | string) => typeof src !== 'string' && !!ratio && Math.abs(src.width / src.height / (rw / rh) - 1) < 0.02;
@@ -29,7 +31,7 @@ const fills = (src: ImageMetadata | string) => typeof src !== 'string' && !!rati
   <ul class:list={['grid', 'reveal', { tiles: !!ratio }]} style={`--cols:${columns}${ratio ? `;--ratio:${ratio}` : ''}`} role="list">
     {items.map((i) => (
       <li class:list={{ tile: !!ratio, 'media-m': !!ratio, white: i.bg === 'white', fill: fills(i.src) }}>
-        <Img src={i.src} alt={i.alt} class={ratio ? undefined : 'media-m media-border media-shadow'} sizes="(min-width: 768px) 400px, 50vw" />
+        <Img src={i.src} alt={i.alt} class={ratio ? undefined : 'media-m media-border media-shadow'} sizes="(min-width: 768px) 400px, 50vw" gallery={gallery} caption={i.caption} />
       </li>
     ))}
   </ul>

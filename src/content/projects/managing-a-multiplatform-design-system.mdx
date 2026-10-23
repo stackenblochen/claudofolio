@@ -45,15 +45,15 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
   <Fragment slot="media">
     <Comparison arrow={arrowDown}>
       <Fragment slot="before">
-        <Mock size="cover" layout="set" shadow="soft" stage="var(--fill)" devices={[
+        <Mock gallery size="cover" layout="set" shadow="soft" stage="var(--fill)" devices={[
           { device: 'desktop', bar: false, src: thenDesktop, alt: 'The app in 2020 on desktop: a light, consumer-style messenger interface with a call, a chart in the conversation and group details' },
-          { device: 'ios', cutout: 'none', src: thenPhone, alt: 'The 2020 app on a phone: a video call with eight participants' },
+          { device: 'ios', cutout: 'none', src: thenPhone, alt: 'The 2020 app on a phone: a video call with eight participants', gallery:false },
         ]} />
       </Fragment>
       <Fragment slot="after">
-        <Mock size="cover" layout="set" shadow="soft" stage="var(--fill)" devices={[
+        <Mock gallery size="cover" layout="set" shadow="soft" stage="var(--fill)" devices={[
           { device: 'desktop', bar: false, src: nowDesktop, alt: 'The app today on desktop: an enterprise collaboration interface with navigation, conversation list and group details' },
-          { device: 'ios', cutout: 'none', src: nowPhone, alt: 'The app today on a phone: a video call with eight participants' },
+          { device: 'ios', cutout: 'none', src: nowPhone, alt: 'The app today on a phone: a video call with eight participants', gallery:false },
         ]} />
       </Fragment>
     </Comparison>
@@ -108,8 +108,8 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
       <p>On Android and iOS, Wire follows each platform’s native patterns, like Apple’s Liquid Glass or Material’s floating action button, so the app feels native on every device.</p>
     </MediaText>
     <MediaRow>
-      <Mock size="half" align="fit" stage="var(--bg-secondary)" devices={[{ device: 'ios', src: navIos, alt: 'Main navigation on iOS' }]} />
-      <Mock size="half" align="fit" stage="var(--bg-secondary)" devices={[{ device: 'android', src: navAndroid, alt: 'Main navigation on Android' }]} />
+      <Mock gallery size="half" align="fit" stage="var(--bg-secondary)" devices={[{ device: 'ios', src: navIos, alt: 'Main navigation on iOS' }]} />
+      <Mock gallery size="half" align="fit" stage="var(--bg-secondary)" devices={[{ device: 'android', src: navAndroid, alt: 'Main navigation on Android' }]} />
     </MediaRow>
   </Fragment>
 </StorySection>
