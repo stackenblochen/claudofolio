@@ -20,13 +20,13 @@ const icon = (svg: string) => svg.replace('<svg', '<svg aria-hidden="true" focus
   <div class="top">
     <div class="pager">
       <span class="count t-label" data-lb-count aria-live="polite"></span>
-      <button type="button" class="btn" data-lb-prev aria-label="Previous image" set:html={icon(prev)} />
-      <button type="button" class="btn" data-lb-next aria-label="Next image" set:html={icon(next)} />
+      <button type="button" class="icon-btn" data-lb-prev aria-label="Previous image" set:html={icon(prev)} />
+      <button type="button" class="icon-btn" data-lb-next aria-label="Next image" set:html={icon(next)} />
     </div>
     <div class="tools">
-      <button type="button" class="btn" data-lb-zoom-out aria-label="Zoom out" set:html={icon(zoomOut)} />
-      <button type="button" class="btn" data-lb-zoom-in aria-label="Zoom in" set:html={icon(zoomIn)} />
-      <button type="button" class="btn" data-lb-close aria-label="Close gallery" set:html={icon(close)} />
+      <button type="button" class="icon-btn" data-lb-zoom-out aria-label="Zoom out" set:html={icon(zoomOut)} />
+      <button type="button" class="icon-btn" data-lb-zoom-in aria-label="Zoom in" set:html={icon(zoomIn)} />
+      <button type="button" class="icon-btn" data-lb-close aria-label="Close gallery" set:html={icon(close)} />
     </div>
   </div>
   <div class="stage" data-lb-stage>
@@ -50,16 +50,10 @@ const icon = (svg: string) => svg.replace('<svg', '<svg aria-hidden="true" focus
   .pager { display: flex; align-items: center; gap: var(--space-1); }
   .count { margin-right: var(--space-2); color: var(--text-default); font-variant-numeric: tabular-nums; }
   .tools { display: flex; align-items: center; gap: var(--space-1); margin-left: auto; }
-  .btn {
-    display: inline-flex; align-items: center; justify-content: center; border: 0; cursor: pointer;
-    background: transparent; color: var(--text-strong); border-radius: var(--radius-pill);
-    transition: background 150ms ease, opacity 150ms ease;
-  }
-  .btn { width: 40px; height: 40px; }
-  .btn:hover { background: var(--fill); }
-  .btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
-  .btn:disabled { opacity: 0.3; cursor: default; background: transparent; }
-  .lb button :global(svg) { width: 24px; height: 24px; }
+  /* the shared icon button (base.css), a little bigger here */
+  .icon-btn { width: 40px; height: 40px; }
+  .icon-btn:disabled { opacity: 0.3; cursor: default; background: transparent; }
+  .lb .icon-btn :global(svg) { width: 24px; height: 24px; }
   .stage { position: relative; overflow: hidden; touch-action: none; cursor: default; }
   /* the picture is positioned by the script (transform) at its own pixel size; no radius, border or background, so it shows exactly as it is */
   .pic { position: absolute; left: 0; top: 0; max-width: none; transform-origin: 0 0; user-select: none; -webkit-user-drag: none; opacity: 0; transition: opacity 150ms ease; }
@@ -72,9 +66,9 @@ const icon = (svg: string) => svg.replace('<svg', '<svg aria-hidden="true" focus
   .stage.can-zoom-out { cursor: zoom-out; }
   .stage.can-pan { cursor: grab; } /* the hand only shows where the image can actually be dragged */
   .stage.is-panning { cursor: grabbing; }
-  .btn[hidden] { display: none; }
+  .icon-btn[hidden] { display: none; }
   .caption-bar { min-height: 3.25rem; margin: 0; padding: var(--space-2) var(--space-5) var(--space-4); text-align: center; color: var(--text-default); max-width: 60rem; margin-inline: auto; }
-  @media (prefers-reduced-motion: reduce) { .pic, .btn { transition: none; } }
+  @media (prefers-reduced-motion: reduce) { .pic { transition: none; } }
 </style>
 
 <script>
