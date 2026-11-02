@@ -38,6 +38,7 @@ const others = (await getProjects({ exclude: project.id })).map(toCard);
       imageAlt={d.coverAlt}
       background={d.heroBackground}
       confidential={d.protected}
+      glow={d.heroGlow}
     />
     <Overview sentences={d.lead} meta={meta.length >= 3 ? meta : []} />
     <div class="stories"><slot /></div>

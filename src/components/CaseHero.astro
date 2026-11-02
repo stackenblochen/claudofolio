@@ -3,6 +3,7 @@
  * H2 + H3 Case hero. variant "mockup": H1, then the cover image with the stamp overlapping its bottom-right corner. The cover is a cutout
  * (window and phone on transparent) exported with its 1 px outline baked in; the soft shadow comes from .app-shot. No radius, no extra outline.
  * variant "backdrop": full-cover dimmed background image, H1 bottom-aligned, stamp below.
+ * `glow` (mockup only; frontmatter `heroGlow`) puts the soft halo of the project teasers behind the image: a lighter gray with a trace of salmon.
  * H1 is sentence case, ≤ 8 words. The expertise labels sit on top of it as an eyebrow.
  */
 import type { ImageMetadata } from 'astro';
@@ -19,8 +20,9 @@ interface Props {
   background?: ImageMetadata | string;
   confidential?: boolean;
   labels?: string[];
+  glow?: boolean;
 }
-const { title, variant = 'mockup', image, imageAlt = '', background, confidential = false, labels = [] } = Astro.props;
+const { title, variant = 'mockup', image, imageAlt = '', background, confidential = false, labels = [], glow = false } = Astro.props;
 const bg = background ? (typeof background === 'string' ? background : background.src) : undefined;
 ---
 
@@ -32,7 +34,7 @@ const bg = background ? (typeof background === 'string' ? background : backgroun
 
     {variant === 'mockup' && image && (
       <div class="cover-wrap">
-        <div class="cover">
+        <div class:list={['cover', { glow }]}>
           <Img src={image} alt={imageAlt} class="app-shot" loading="eager" fetchpriority="high" sizes="(min-width: 1230px) 900px, 100vw" />
         </div>
       </div>
@@ -62,6 +64,13 @@ const bg = background ? (typeof background === 'string' ? background : backgroun
   @media (min-width: 992px) { .cover { width: calc(100% * 10 / 12 - var(--gutter) * 2 / 12); } }
   @media (min-width: 1230px) { .cover { width: calc(100% * 9 / 12 - var(--gutter) * 3 / 12); } }
   .cover :global(img) { width: 100%; }
+  /* optional halo behind the image (the same colours as the teaser halo, a little stronger because the stage is bigger) */
+  .cover.glow { isolation: isolate; --glow-color: color-mix(in srgb, var(--accent-primary) 10%, var(--gray-600)); --glow: 55%; }
+  :global(:root[data-theme='light']) .cover.glow { --glow-color: color-mix(in srgb, var(--accent-primary) 3%, var(--color-white)); --glow: 90%; }
+  .cover.glow::before {
+    content: ''; position: absolute; inset: -35% -30%; z-index: -1; pointer-events: none;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--glow-color) var(--glow), transparent), transparent);
+  }
   /* The stamp sits right under the visual, inside the text measure, and reaches down into the lead's top padding
    * so the "Background" eyebrow lines up with its lower edge. */
   .hero.has-stamp, .hero.backdrop.has-stamp { padding-bottom: 0; }

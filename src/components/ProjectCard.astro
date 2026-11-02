@@ -2,7 +2,7 @@
 /**
  * L1 Project teaser: full media-width panel (same measure as figures). From 1230 px two equal columns, fixed 340 px high: text left
  * (top aligned) with summary, cover right (centred). 992–1229 px: 5/7 columns, 340 px high, summary cut to three lines with an ellipsis. 768–991 px: no summary, 5/7 columns, height follows the cover.
- * Below 768 px the labels and title sit on top of the cover, 20 px padding all round, no summary.
+ * Below 768 px the logo and title sit on top of the cover, 20 px padding all round, no summary.
  *
  * From 992 px, with a fine hovering pointer (and no reduced-motion preference), the card grows slightly (1.5 %), gets a border and a
  * lifted shadow while the pointer is on it. The border also shows on keyboard focus. The whole panel is the link. On touch, below 992 px and with
@@ -11,7 +11,6 @@
 import type { CardData } from '../lib/projects';
 import Img from './Img.astro';
 import Mock from './Mock.astro';
-import LabelList from './LabelList.astro';
 
 interface Props {
   card: CardData;
@@ -22,7 +21,7 @@ const { card } = Astro.props;
 <article class="teaser" data-teaser>
   <a href={card.href} class="link-block">
     <div class="copy" data-teaser-copy>
-      <LabelList labels={card.labels} />
+      {card.logo && <div class="logo" style={`--logo-h:${card.logo.height}px`}><Img src={card.logo.src} alt="" /></div>}
       <h3 class="t-subheading">{card.title}</h3>
       {card.summary && <p class="sum t-label">{card.summary}</p>}
     </div>
@@ -43,10 +42,20 @@ const { card } = Astro.props;
      --teaser-copy-top / --teaser-copy-bottom: space above and below the text
      --teaser-thumb-pad: space around the thumb
      The gap between the cards is set in ProjectGrid.astro (the same on Home and under "Other projects"). */
-  .teaser { --teaser-h: 320px; --teaser-copy-top: var(--space-5); --teaser-copy-bottom: var(--space-6); --teaser-thumb-pad: var(--space-6); }
-  @media (min-width: 1230px) { .teaser { --teaser-h: 320px; --teaser-copy-top: var(--space-6); --teaser-copy-bottom: var(--space-7); } }
+  .teaser { --teaser-h: 320px; --teaser-copy-top: calc(var(--col-step) / 2); --teaser-copy-bottom: var(--space-6); --teaser-thumb-pad: var(--space-6); }
+  @media (min-width: 1230px) { .teaser { --teaser-h: 320px; --teaser-copy-top: calc(var(--col-step) / 2); --teaser-copy-bottom: var(--space-7); } }
 
-  .teaser { position: relative; background: var(--bg-secondary); border-radius: var(--radius-l); overflow: hidden; }
+  /* a soft halo behind the thumb, only while the card is hovered or focused: a lighter gray with a very faint salmon tint (the accent, a tenth of it; in light mode near-white with a trace of it) that fades in over the card colour
+     (`--teaser-halo-color`, strength `--teaser-halo`) */
+  .teaser { --teaser-halo-color: color-mix(in srgb, var(--accent-primary) 10%, var(--gray-600)); --teaser-halo: 45%; position: relative; background: var(--bg-secondary); border-radius: var(--radius-l); overflow: hidden; }
+  :global(:root[data-theme='light']) .teaser { --teaser-halo-color: color-mix(in srgb, var(--accent-primary) 3%, var(--color-white)); --teaser-halo: 80%; } /* light mode: mostly a lighter, near-white glow, only a trace of salmon */
+  .stage { position: relative; isolation: isolate; }
+  .stage::before {
+    content: ''; position: absolute; inset: -60% -45%; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 450ms ease;
+    background: radial-gradient(closest-side, color-mix(in srgb, var(--teaser-halo-color) var(--teaser-halo), transparent), transparent);
+  }
+  .teaser:has(:focus-visible) .stage::before { opacity: 1; }
+  @media (hover: hover) { .teaser:hover .stage::before { opacity: 1; } }
   /* border, only shown on hover (and keyboard focus). Drawn as an overlay, so it adds no size and shifts nothing (the text keeps
      lining up with the section headline). */
   .teaser::after { content: ''; position: absolute; inset: 0; z-index: 3; border: 1px solid var(--border); border-color: transparent; border-radius: inherit; pointer-events: none; transition: border-color 250ms ease; }
@@ -54,8 +63,13 @@ const { card } = Astro.props;
   .link-block { position: relative; z-index: 1; display: flex; flex-direction: column; gap: var(--space-4); padding: var(--space-4); text-decoration: none; color: inherit; }
   .copy { display: flex; flex-direction: column; gap: var(--space-2); } /* tight on mobile and tablet */
   .copy h3 { font-family: var(--font-headline); word-spacing: var(--ws-headline); font-weight: var(--text-subheading-weight); letter-spacing: 0; } /* the card title is a Clash Display headline: 600 in dark mode, 700 in light mode (it was Geist) */
-  .sum { color: var(--text-default); }
+  /* title ramp: 20 px (phone and tablet), 24 px from 992 px, 28 px from 1230 px */
+  .copy h3 { font-size: 1.25rem; line-height: var(--lh-headline); }
+  .sum { color: var(--text-default); flex: none; } /* never squeezed: a card grows instead of cutting its summary */
   .sum { display: none; } /* the summary only shows from 992 px, below that the teaser stays compact */
+  /* the company's logo: small, pure white (black in light mode) and above the title (the labels are not shown on the teaser) */
+  .logo { align-self: flex-start; line-height: 0; margin-bottom: var(--space-3); } /* extra room between the logo and the title, on top of the copy's gap */
+  .logo :global(img) { display: block; height: var(--logo-h); width: auto; filter: var(--filter-logo); }
   .stage { display: grid; place-items: center; }
   .thumb { position: relative; width: 100%; --thumb-outline: var(--border-dark-mode); } /* the outline shows in dark mode; `coverOutline: light` in the frontmatter swaps it to light mode */
   .thumb--outline-light { --thumb-outline: var(--border-light-mode); }
@@ -73,16 +87,15 @@ const { card } = Astro.props;
 
   /* 768–991: text left, cover right and wider (7 of 12 parts). Height follows the cover, whose padding is the same on all sides. */
   @media (min-width: 768px) {
-    .link-block { display: grid; grid-template-columns: 5fr 7fr; align-items: start; gap: 0; padding: 0; }
+    .link-block { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); align-items: start; gap: 0; padding: 0; }
     /* the teaser is half a column wider on each side than the headline above it, so the text starts half a column in and lines up with it */
-    .copy { padding: var(--space-5) var(--space-6) var(--space-6); padding-left: calc(var(--col-step) / 2); }
+    .copy { padding: calc(var(--col-step) / 2) var(--space-6) var(--space-6); padding-left: calc(var(--col-step) / 2); }
     .stage { align-self: stretch; padding: var(--space-5); }
   }
 
   @media (min-width: 992px) {
-    .copy { gap: var(--space-4); container-type: inline-size; }
-    /* the title shrinks (down to 18 px) with the text column, so it stays on one line wherever it fits; a longer title still wraps */
-    .copy h3 { font-size: clamp(1.125rem, 7cqi, 1.5rem); }
+    .copy { gap: var(--space-4); container-type: inline-size; align-self: stretch; }
+    .copy h3 { font-size: 1.5rem; }
   }
 
   /* 992–1229: with the summary; cover column one column wider than half (7 of 12), fixed 280 px (the narrow text column can wrap the title and the labels), summary clamped to three lines.
@@ -99,7 +112,8 @@ const { card } = Astro.props;
   }
   /* from 1230 px: two equal columns (the height and paddings are the variables at the top) */
   @media (min-width: 1230px) {
-    .link-block { grid-template-columns: 1fr 1fr; }
+    .link-block { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); } /* minmax(0, …): the columns stay exactly equal, whatever the thumb or the text would like */
+    .copy h3 { font-size: 1.75rem; }
     .copy { padding: var(--teaser-copy-top) var(--space-7) var(--teaser-copy-bottom); padding-left: calc(var(--col-step) / 2); }
     .sum { display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3; overflow: hidden; } /* three lines at most, then an ellipsis */
   }
@@ -112,4 +126,3 @@ const { card } = Astro.props;
     .teaser:hover::after { border-color: light-dark(var(--color-white), var(--border)); } /* white on hover in light mode */
   }
 </style>
-

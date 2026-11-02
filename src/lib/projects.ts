@@ -1,10 +1,18 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
 import type { ImageMetadata } from 'astro';
 import { url } from './site';
+import wireLogo from '../assets/wire-logo-white.svg';
+import starthubLogo from '../assets/starthub-logo-white.svg';
 
 export type ProjectEntry = CollectionEntry<'projects'>;
 
 /** Plain shape used by ProjectCard / ProjectGrid, so the styleguide can feed them without the collection. */
+/** White company logos for the teaser cards, by the `company` of a case study, with the height (px) that makes each look equally big. A company without an entry shows no logo. */
+const COMPANY_LOGOS: Record<string, { src: ImageMetadata; height: number }> = {
+  Wire: { src: wireLogo, height: 20 },
+  'EDEKA StartHub': { src: starthubLogo, height: 14 },
+};
+
 export interface CardData {
   title: string;
   labels: string[];
@@ -17,6 +25,8 @@ export interface CardData {
   /** Which mode shows the thumb's thin outline (the mode where the cover would bleed into the card). Default 'dark'. */
   coverOutline?: 'dark' | 'light' | 'none';
   thumb?: ProjectEntry['data']['thumb'];
+  /** The company's logo, small and quiet in the card (from `COMPANY_LOGOS`). */
+  logo?: { src: ImageMetadata; height: number };
 }
 
 /** `hidden` projects are never built; `local` ones only exist in the dev server; `staging` ones are left out of the production release (SITE_TARGET=production). */
@@ -50,5 +60,6 @@ export function toCard(p: ProjectEntry): CardData {
     coverFill: p.data.teaserImage ? p.data.teaserFill : p.data.coverFill,
     coverOutline: p.data.coverOutline,
     thumb: p.data.thumb,
+    logo: COMPANY_LOGOS[p.data.company],
   };
 }

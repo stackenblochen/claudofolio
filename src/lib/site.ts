@@ -11,6 +11,7 @@ export const SITE = {
 };
 
 export const NAV = [
+  { label: 'Work', href: '/#selected-work' },
   { label: 'About me', href: '/about/' },
 ];
 

@@ -96,6 +96,7 @@
   --text-label-lh: clamp(1.5rem, 1.443rem + 0.2424vw, 1.625rem);
   --text-label-weight: 300;
   --text-label-ls: 0;
+  --text-nav-size: clamp(0.875rem, 0.8125rem + 0.27vw, 1rem); /* main navigation (desktop): 14 → 16 px, a step below the label */
   --text-body-size: clamp(1rem, 0.9148rem + 0.3636vw, 1.188rem);
   --text-body-lh: clamp(1.6rem, 1.5175rem + 0.3515vw, 1.781rem); /* 25.6 px on a 375 px phone (1.6 × the size), growing to 28.5 px by 1200 px */
   --text-body-weight: 300; /* dark: light body text; light theme: 400 (see the end of this file) */

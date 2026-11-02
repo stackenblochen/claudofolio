@@ -47,6 +47,7 @@ const projects = defineCollection({
         .optional(),
       heroVariant: z.enum(['mockup', 'backdrop']).default('mockup'),
       heroBackground: image().optional(), // for 'backdrop'
+      heroGlow: z.boolean().default(false), // 'mockup' only: the soft teaser halo (lighter gray, a trace of salmon) behind the hero image
       protected: z.boolean().default(false), // password gate, see components/Protected.astro; also shows the confidential stamp
       company: z.string(),
       role: z.string(),
