@@ -1,22 +1,22 @@
 ---
 /**
- * Home stage: doodles, screenshots and emoji that pop up on their own next to the headline, never over it. Every 2.5-4.5 s a new picture lands on top at a
- * random spot, tilt and size inside the box; the newest is the hero (bigger), the older ones sink back (smaller and fainter) and the oldest fades out, so at most 3 are visible at once.
- * The box is as high as the text block and the pictures cluster in its middle, overlapping each other.
- * Nothing depends on the pointer (spawning does not pause on hover). From 992 px the box sits to the right of the text,
+ * Home stage: doodles, screenshots and emoji that pop up on their own next to the headline, never over it. Every 2.5-4.5 s a new picture lands in the middle of
+ * the box with a random tilt, as big as fits (its whole shape inside the box, with a margin for the tilt and the float); the previous one fades out.
+ * The box is as high as the text block.
+ * Spawning does not depend on the pointer; the only reaction is the bounce when the cursor touches the newest picture. From 992 px the box sits to the right of the text,
  * below that under it. Pictures come from src/assets/doodles/ (already optimised WebP, max 640 px); they are drawn from a shuffled bag, so none repeats
  * until all have been shown. Decorative only (aria-hidden). With reduced motion a static arrangement of three is shown.
  * Single-colour pictures follow the theme: black and white ones (BLACK / WHITE) are drawn in the strong text colour (white in dark mode, black in light mode)
  * through a mask, and the salmon marks the same way in the accent colour (ACCENT).
  */
 /** Pictures shown at emoji size (emoji, plus any others listed here). */
-const SMALL = new Set(['reader']);
+const SMALL = new Set<string>([]);
 /** Pictures shown a bit bigger than the rest. */
-const BIG = new Set(['holo-shape', 'blob-gradient']);
-const BLACK = new Set(['wl', 'wolfgang-black', 'blob-black-2', 'arrow-curve', 'arrow-loop']);
+const BIG = new Set(['holo-shape', 'blob-gradient', 'glass-sphere', 'spotlight', 'wolfgang-black', 'board', 'emoji-bubbles']);
+const BLACK = new Set(['wl', 'wolfgang-black', 'arrow-curve']);
 const WHITE = new Set(['shape-white-a', 'shape-white-b']);
 /** Flat one-colour marks, drawn through a mask in `--accent-primary` (the styleguide salmon, theme aware) instead of their own pixels. */
-const ACCENT = new Set(['wl-red', 'wolfgang-red', 'swoosh-red']);
+const ACCENT = new Set<string>([]);
 const files = import.meta.glob<{ default: ImageMetadata }>('../assets/doodles/*.webp', { eager: true });
 const items = Object.entries(files).map(([path, mod]) => {
   const name = path.split('/').pop()!.replace('.webp', '');
@@ -25,8 +25,6 @@ const items = Object.entries(files).map(([path, mod]) => {
     name,
     src,
     ratio: +(width / height).toFixed(3),
-    small: name.startsWith('emoji') || SMALL.has(name),
-    big: BIG.has(name),
     accent: ACCENT.has(name),
     mono: BLACK.has(name) ? 'dark' : WHITE.has(name) ? 'light' : '',
   };
@@ -43,12 +41,12 @@ const items = Object.entries(files).map(([path, mod]) => {
   :global(:root[data-theme='light']) .doodles { --doodle-shadow: 0.08; }
   .doodles :global(.doodle) {
     position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%);
-    width: calc(var(--w) * 1%); max-height: 60%; object-fit: contain; height: auto;
+    width: calc(var(--w) * 1%); object-fit: contain; height: auto;
     translate: -50% -50%;
     rotate: calc(var(--r) * 1deg);
-    scale: calc(var(--s, 1) * var(--hero, 1) * (1 - var(--depth, 0) * 0.045));
+    scale: calc(var(--s, 1) * (1 - var(--depth, 0) * 0.045));
     opacity: 0; z-index: var(--z, 1); pointer-events: none;
-    transition: opacity 380ms ease, scale 520ms cubic-bezier(0.34, 1.4, 0.64, 1), rotate 520ms cubic-bezier(0.34, 1.4, 0.64, 1), translate 520ms cubic-bezier(0.34, 1.4, 0.64, 1);
+    transition: left 700ms cubic-bezier(0.34, 1.5, 0.64, 1), top 700ms cubic-bezier(0.34, 1.5, 0.64, 1), opacity 380ms ease, scale 520ms cubic-bezier(0.34, 1.4, 0.64, 1), rotate 520ms cubic-bezier(0.34, 1.4, 0.64, 1), translate 520ms cubic-bezier(0.34, 1.4, 0.64, 1);
     filter: drop-shadow(0 0.3rem 0.7rem rgb(0 0 0 / var(--doodle-shadow)));
     /* very subtle, endless float; amplitude, direction and speed are random per picture (set by JS) */
     animation: doodle-float var(--fd, 7s) ease-in-out var(--fl, 0s) infinite;
@@ -61,7 +59,6 @@ const items = Object.entries(files).map(([path, mod]) => {
   .doodles :global(.doodle.is-new) { scale: calc(var(--s, 1) * 0.7); rotate: calc(var(--r) * -0.6deg); translate: -50% -42%; transition: none; }
   /* every picture gets its depth (0 = newest) from the script: it gets fainter and smaller the further back it is, for any number of pictures (MAX) */
   .doodles :global(.doodle[data-depth]) { opacity: max(0.15, calc(1 - var(--depth, 0) * 0.28)); }
-  .doodles :global(.doodle[data-depth='0']) { --hero: 1.3; } /* the newest picture is the hero: bigger, and it shrinks back when the next one lands */
   .doodles :global(.doodle.is-gone) { opacity: 0; }
   /* accent marks: the picture's own pixels are pushed out of the box and the accent colour shows through the picture's shape instead */
   .doodles :global(.doodle.is-accent) {
@@ -77,14 +74,11 @@ const items = Object.entries(files).map(([path, mod]) => {
 </style>
 
 <script>
-  type Item = { name: string; src: string; ratio: number; small: boolean; big: boolean; accent: boolean; mono: '' | 'dark' | 'light' };
+  type Item = { name: string; src: string; ratio: number; accent: boolean; mono: '' | 'dark' | 'light' };
 
   const START = 'wl'; // the picture that always comes first
   const MAX = 1; // pictures visible at once
-  const SCALE = 1.3; // picture sizes relative to the (narrow) box
-  const HERO = 1.6; // the newest picture is this much bigger (matches --hero in the CSS)
-  const SPREAD_X = 5; // max distance of a picture's centre from the box middle, sideways, in % of the box width (50 = the box edges). Up to 50 the pictures stay in the box (the text limits the left side); above 50 they may leave it
-  const SPREAD_Y = 10; // the same, up and down, in % of the box height (the box is as high as the text block). Up to 50 the pictures stay in the box (with at least 15 % of travel even when a picture is as high as the box); above 50 they may leave it
+  const FIT = 0.88; // share of the box a picture may fill: the rest is room for the tilt and the float
   const EVERY: [number, number] = [2500, 4500]; // ms between two new pictures (random in this range)
 
   let stop: (() => void) | undefined;
@@ -102,7 +96,6 @@ const items = Object.entries(files).map(([path, mod]) => {
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let bag: Item[] = [];
     let z = 1;
-    let last: { x: number; y: number }[] = [];
     const live: HTMLImageElement[] = []; // newest last
     let timer = 0, visible = true;
     const starts: number[] = [];
@@ -124,36 +117,10 @@ const items = Object.entries(files).map(([path, mod]) => {
       return bag.shift()!;
     };
 
-    // spot: fully inside the box (so never over the headline), away from the last two
-    const spot = (w: number, ratio: number) => {
+    // the biggest width (in % of the box width) at which the whole picture still fits the box
+    const fit = (ratio: number) => {
       const r = box.getBoundingClientRect();
-      const hp = Math.min(60, ((w / 100) * r.width / ratio / Math.max(r.height, 1)) * 100) * HERO; // ... and this high, in % of the box height
-      const pad = 8; // % kept free at the top and bottom: the tilt and the float push a picture a little past its box
-      // Sideways: SPREAD_X limits how far from the middle a picture's centre may be, but a picture (as the hero, HERO times wider) may reach over the
-      // box edge only into the gap to the text (never onto it) and a little over the right edge. So the room left of the middle is what limits wide pictures.
-      const gap = parseFloat(getComputedStyle(box.parentElement!).columnGap) || 30;
-      const we = w * HERO;
-      // Up to 50 (the box edge) the safe limits above apply; above 50 the value is taken literally and the pictures may leave the box
-      // (then they can also reach the text on the left, or the top and bottom of the stage).
-      const xr: [number, number] = SPREAD_X > 50
-        ? [50 - SPREAD_X, 50 + SPREAD_X]
-        : [Math.max(50 - SPREAD_X, we / 2 - (gap * 0.7 / r.width) * 100), Math.min(50 + SPREAD_X, 100 - we / 2 + 12)];
-      const yr: [number, number] = SPREAD_Y > 50
-        ? [50 - SPREAD_Y, 50 + SPREAD_Y]
-        : (() => {
-            // vertical travel that keeps the whole picture in the box; a picture as high as the box (the hero on a short text block) would have none,
-            // so there is always at least min(SPREAD_Y, 15) % of travel, and SPREAD_Y still scales it
-            const room = Math.max(50 - hp / 2 - pad, Math.min(SPREAD_Y, 15));
-            const t = Math.min(SPREAD_Y, room);
-            return [50 - t, 50 + t] as [number, number];
-          })();
-      let best = { x: 50, y: 50 }, bestD = -1;
-      for (let i = 0; i < 8; i++) {
-        const c = { x: rand(Math.min(...xr), Math.max(...xr)), y: rand(...yr) };
-        const d = Math.min(...last.map((p) => Math.hypot(p.x - c.x, p.y - c.y)), 99);
-        if (d > bestD) { bestD = d; best = c; }
-      }
-      return best;
+      return Math.min(100, (r.height / Math.max(r.width, 1)) * ratio * 100) * FIT;
     };
 
     const setDepth = (el: HTMLElement, d: number) => { el.dataset.depth = String(d); el.style.setProperty('--depth', String(d)); };
@@ -166,15 +133,10 @@ const items = Object.entries(files).map(([path, mod]) => {
       el.dataset.src = it.src;
       if (it.mono) el.dataset.mono = it.mono;
       if (it.accent || it.mono) el.style.setProperty('--mask', `url("${it.src}")`);
-      // emoji (and the other small pictures) are small, photos and screenshots bigger, wide ones widest; a tall small picture gets the height of an emoji, a few pictures a bit more; the rest is chance
-      const base = (it.small ? 36 * Math.min(1, it.ratio * 1.1) : (it.ratio > 1.6 ? 62 : 50) * (it.big ? 1.35 : 1)) * SCALE;
-      const w = Math.min(base * rand(0.85, 1.2), 100 / HERO); // never wider than the box, even as the hero
-      const { x, y } = spot(w, it.ratio);
-      last = [{ x, y }, ...last].slice(0, 2);
-      el.style.setProperty('--x', x.toFixed(1));
-      el.style.setProperty('--y', y.toFixed(1));
-      el.style.setProperty('--w', w.toFixed(1));
-      el.style.setProperty('--r', ((Math.random() < 0.5 ? -1 : 1) * rand(2, 14)).toFixed(1));
+      el.style.setProperty('--x', '50');
+      el.style.setProperty('--y', '50');
+      el.style.setProperty('--w', fit(it.ratio).toFixed(1));
+      el.style.setProperty('--r', ((Math.random() < 0.5 ? -1 : 1) * rand(2, 10)).toFixed(1));
       el.style.setProperty('--z', String(z++));
       el.style.setProperty('--fx', `${((Math.random() < 0.5 ? -1 : 1) * rand(2, 5)).toFixed(1)}px`);
       el.style.setProperty('--fy', `${((Math.random() < 0.5 ? -1 : 1) * rand(3, 6)).toFixed(1)}px`);
@@ -229,7 +191,34 @@ const items = Object.entries(files).map(([path, mod]) => {
     const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
     io.observe(box);
 
+    // bounce off: when the cursor touches the newest picture, it is knocked away from the cursor to a new spot (it stays inside the box, give or take a little),
+    // turns, and its idle drift continues in the new direction
+    let cool = 0;
+    const touch = (e: PointerEvent) => {
+      const el = live[live.length - 1];
+      if (!el || el.classList.contains('is-new') || el.classList.contains('is-gone') || performance.now() < cool) return;
+      const r = el.getBoundingClientRect();
+      const cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+      // inside the ellipse of the picture (the rectangle's corners are mostly empty)
+      const nx = (e.clientX - cx) / (r.width / 2), ny = (e.clientY - cy) / (r.height / 2);
+      if (nx * nx + ny * ny > 1) return;
+      cool = performance.now() + 600;
+      const len = Math.hypot(nx, ny) || 1, ux = -nx / len, uy = -ny / len; // away from the cursor
+      const bx = box.getBoundingClientRect();
+      const hw = (r.width / bx.width) * 50, hh = (r.height / bx.height) * 50; // half the picture, in % of the box
+      const room = (half: number) => Math.max(0, 50 - half) + 6; // travel from the middle: until the picture touches the box edge, plus a little
+      const x = Math.min(50 + room(hw), Math.max(50 - room(hw), +el.style.getPropertyValue('--x') + ux * 22));
+      const y = Math.min(50 + room(hh), Math.max(50 - room(hh), +el.style.getPropertyValue('--y') + uy * 22));
+      el.style.setProperty('--x', x.toFixed(1));
+      el.style.setProperty('--y', y.toFixed(1));
+      el.style.setProperty('--r', ((ux < 0 ? -1 : 1) * rand(4, 12)).toFixed(1));
+      el.style.setProperty('--fx', `${(ux * rand(3, 6)).toFixed(1)}px`);
+      el.style.setProperty('--fy', `${(uy * rand(3, 6)).toFixed(1)}px`);
+    };
+    if (!reduced) document.addEventListener('pointermove', touch, { passive: true });
+
     stop = () => {
+      document.removeEventListener('pointermove', touch);
       starts.forEach(clearTimeout); window.clearTimeout(timer); io.disconnect();
       box.replaceChildren(); stop = undefined;
     };
