@@ -27,6 +27,10 @@ import SchemaArrow from '../components/schema/SchemaArrow.astro';
 import SchemaList from '../components/schema/SchemaList.astro';
 import arrowDown from '../assets/arrow-red-down.svg';
 import arrowRight from '../assets/arrow-red-right.svg';
+import maximize from '@tabler/icons/outline/arrows-maximize.svg?raw';
+import minimize from '@tabler/icons/outline/arrows-minimize.svg?raw';
+import pause from '@tabler/icons/outline/player-pause.svg?raw';
+import play from '@tabler/icons/outline/player-play.svg?raw';
 import Portrait from '../components/Portrait.astro';
 import ContactBlock from '../components/ContactBlock.astro';
 import portrait from '../assets/portrait.webp';
@@ -281,6 +285,23 @@ const cards: CardData[] = [
     <p class="t-label">Quiet links, as in the footer (default text colour; hover for strong text and a salmon underline): <a class="link--quiet" href="#link-demo">Imprint</a> <a class="link--quiet" href="https://example.com">LinkedIn</a></p>
   </div></div>
 
+  <SectionTitle id="button">Button</SectionTitle>
+  <div class="container"><div class="measure-text prose">
+    <p>A text pill for a page-level action (<code>.btn</code>), one style, no variants:</p>
+    <p class="icon-demo"><a class="btn t-label" href="#button">Explore</a><a class="btn t-label" href="#button">Contact</a></p>
+  </div></div>
+
+  <SectionTitle id="icon-button">Icon button</SectionTitle>
+  <div class="container"><div class="measure-text prose">
+    <p>One round, label-less button (<code>.icon-btn</code>) for single actions; the accessible name lives in <code>aria-label</code>. Default, with <code>data-on</code> (the second icon of a toggle) and the glass variant for use over media:</p>
+    <p class="icon-demo">
+      <button type="button" class="icon-btn" aria-label="Pause video"><Fragment set:html={pause.replace('<svg', '<svg class="icon-btn__a" aria-hidden="true"')} /><Fragment set:html={play.replace('<svg', '<svg class="icon-btn__b" aria-hidden="true"')} /></button>
+      <button type="button" class="icon-btn" data-on aria-label="Play video"><Fragment set:html={pause.replace('<svg', '<svg class="icon-btn__a" aria-hidden="true"')} /><Fragment set:html={play.replace('<svg', '<svg class="icon-btn__b" aria-hidden="true"')} /></button>
+      <button type="button" class="icon-btn" aria-label="Enter fullscreen"><Fragment set:html={maximize.replace('<svg', '<svg class="icon-btn__a" aria-hidden="true"')} /></button>
+      <span class="gradient gradient--calm-blue glass-demo"><button type="button" class="icon-btn icon-btn--glass" data-on aria-label="Exit fullscreen"><Fragment set:html={maximize.replace('<svg', '<svg class="icon-btn__a" aria-hidden="true"')} /><Fragment set:html={minimize.replace('<svg', '<svg class="icon-btn__b" aria-hidden="true"')} /></button></span>
+    </p>
+  </div></div>
+
   <SectionTitle id="grid-demo">Grid</SectionTitle>
   <div class="container grid-demo" data-grid-demo>
     <p class="t-label readout measure-text" data-readout>Reading grid values…</p>
@@ -436,6 +457,8 @@ const cards: CardData[] = [
 </Base>
 
 <style>
+  .icon-demo { display: flex; align-items: center; gap: var(--space-3); }
+  .glass-demo { display: inline-flex; padding: var(--space-3); border-radius: var(--radius-m); }
   .grid-demo { padding-top: var(--space-5); display: flex; flex-direction: column; gap: var(--space-4); }
   .readout { font-variant-numeric: tabular-nums; }
   .cols { row-gap: 0; }

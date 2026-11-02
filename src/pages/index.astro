@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import HomeHero from '../components/HomeHero.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import ProjectGrid from '../components/ProjectGrid.astro';
+import { url } from '../lib/site';
 import { getTeasers } from '../lib/projects';
 
 const projects = await getTeasers();
@@ -11,17 +12,21 @@ const projects = await getTeasers();
 <Base description="Wolfgang Lattermann is a product designer based in Berlin. Selected work in product design and design systems.">
   <HomeHero>
     <Fragment slot="intro">Hi, I’m <em>Wolfgang</em><br class="br-md" /> a product designer<br class="br-md" /> from Berlin.</Fragment>
-    <!-- <Fragment slot="subline">Making complex things simple,<br class="br-md" /> with an eye on what they could become.</Fragment>  -->
+    <Fragment slot="actions">
+      <a class="btn t-label" href="#selected-work">View work</a>
+      <a class="btn t-label" href={url('/about/')}>About me</a>
+    </Fragment>
   </HomeHero>
 
 
-  <section class="work section section--pure" aria-labelledby="work">
+  <section id="selected-work" class="work section section--pure" aria-labelledby="work">
     <SectionTitle id="work" chapter>Selected work</SectionTitle>
     <div class="container grid-wrap"><ProjectGrid items={projects} /></div>
   </section>
 </Base>
 
 <style>
-  .work { padding-top: 0; scroll-margin-top: var(--header-h); }
+  .work { padding-top: 0; /* the "View work" button lands here: the section starts a chapter gap above the red dash, so pull the target down to leave the dash and headline clear of the header */
+    scroll-margin-top: calc(var(--header-h) + var(--space-6) - var(--chapter-gap)); }
   .grid-wrap { margin-top: var(--space-6); }
 </style>

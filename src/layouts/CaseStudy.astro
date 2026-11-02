@@ -37,7 +37,7 @@ const others = (await getProjects({ exclude: project.id })).map(toCard);
       image={d.cover}
       imageAlt={d.coverAlt}
       background={d.heroBackground}
-      confidential={d.confidential}
+      confidential={d.protected}
     />
     <Overview sentences={d.lead} meta={meta.length >= 3 ? meta : []} />
     <div class="stories"><slot /></div>
@@ -61,4 +61,5 @@ const others = (await getProjects({ exclude: project.id })).map(toCard);
 
 <script>
   import '../lib/embed-fullscreen';
+  import '../lib/video-loop';
 </script>

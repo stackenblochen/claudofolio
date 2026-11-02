@@ -31,7 +31,7 @@ src/
   styles/                # tokens.css, base.css, mock.css, frames/
   assets/                # images processed by astro:assets (AVIF/WebP, srcset); projects/<slug>/, doodles/
 public/
-  fonts/                 # Geist variable, Clash Display and Telma woff2 (see fonts/README.md)
+  fonts/                 # Geist variable, Clash Display and Telma woff2 (notes in docs/fonts.md)
   demos/<slug>/          # self-contained interactive HTML demos (iframes)
   cv/, videos/, favicons
 ```
@@ -41,7 +41,7 @@ public/
 The schema is `src/content.config.ts` (Zod); it is the single source of truth for frontmatter, so it is not repeated here. The fields in short:
 
 - **Titles and teaser:** `title` (H1, sentence case, ≤ 70 chars, `*word*` marks a Telma highlight), `shortTitle` (card and `<title>`), `summary` (≤ 160, but aim for about 90 characters: the wide card shows three lines), `labels` (1–3 expertise pills, see L3 in `02-modules.md`), `tags`, `cover` + `coverAlt`, optional `thumb` (teaser as a `Mock`).
-- **Hero:** `heroVariant` (`mockup` | `backdrop`), `heroBackground`, `confidential` (stamp), `protected` (password gate).
+- **Hero:** `heroVariant` (`mockup` | `backdrop`), `heroBackground`, `protected` (password gate; also shows the confidential stamp, so the stamp only appears on password-protected case studies).
 - **Meta:** `company`, `role`, `team`, `timeline`, `year`, `platforms`. The meta row shows only with at least three of role, team, timeline, platforms.
 - **Story:** `lead` (1–3 sentences). The outcome is the last `StorySection` in the MDX, see below.
 - **Housekeeping:** `order` (grid position), `status`: `hidden` (not built anywhere), `local` (dev server only), `staging` (local dev and GitHub Pages only) or `live` (also in the hallo-wl.de release, default).
@@ -64,7 +64,7 @@ Required (★) and optional (○) blocks, in this order:
 
 | # | Block | Module | Rules |
 |---|---|---|---|
-| ★1 | Hero | `CaseHero` | H1 ≤ 8 words, sentence case. Mockup or backdrop. Stamp if `confidential` |
+| ★1 | Hero | `CaseHero` | H1 ≤ 8 words, sentence case. Mockup or backdrop. Stamp if `protected` |
 | ★2 | Overview | `Overview` (from `lead` + role/team/timeline) | 1–3 sentences: situation → why it mattered → what you did. Role, team and timeline as the row under it |
 | ★3 | Story sections | 4–8× numbered `StorySection` (MDX) | Each: title ≤ 4 words, then The problem / The decision / The outcome (one or two sentences each) and the media that shows it. A section that does not fit the three beats uses plain paragraphs |
 | ○4 | Insights | `StorySection` + 3× `ImageText` in its media | Source of the insights in one sentence, then 3 insights (title ≤ 4 words + 1–2 sentences) |

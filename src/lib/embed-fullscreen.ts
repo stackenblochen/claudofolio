@@ -18,7 +18,6 @@ if (!w.__embedFs) {
       const on = document.fullscreenElement === live(b);
       b.toggleAttribute('data-on', on);
       b.setAttribute('aria-label', on ? 'Exit fullscreen' : 'Enter fullscreen');
-      b.querySelector('span')!.textContent = on ? 'Exit fullscreen' : 'Fullscreen';
     });
   });
   // the buttons are hidden until we know the browser can do fullscreen (also after each ClientRouter navigation, and after a protected case study is unlocked)

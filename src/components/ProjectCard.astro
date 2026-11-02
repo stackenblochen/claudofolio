@@ -4,7 +4,7 @@
  * (top aligned) with summary, cover right (centred). 992–1229 px: 5/7 columns, 340 px high, summary cut to three lines with an ellipsis. 768–991 px: no summary, 5/7 columns, height follows the cover.
  * Below 768 px the labels and title sit on top of the cover, 20 px padding all round, no summary.
  *
- * From 992 px, with a fine hovering pointer (and no reduced-motion preference), the card grows slightly (5 %), gets a border and a
+ * From 992 px, with a fine hovering pointer (and no reduced-motion preference), the card grows slightly (1.5 %), gets a border and a
  * lifted shadow while the pointer is on it. The border also shows on keyboard focus. The whole panel is the link. On touch, below 992 px and with
  * reduced motion the teaser stays plain. (The former colour-split ripple on hover is switched off; its code is kept in lib/teaser-fx.ts.)
  */
@@ -108,7 +108,7 @@ const { card } = Astro.props;
      (see ::after above) and a shadow while the pointer is on it. */
   @media (min-width: 992px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
     .teaser { transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 450ms ease; }
-    .teaser:hover { transform: scale(1.05); box-shadow: var(--shadow-elevated); }
+    .teaser:hover { transform: scale(1.015); box-shadow: var(--shadow-elevated); }
     .teaser:hover::after { border-color: light-dark(var(--color-white), var(--border)); } /* white on hover in light mode */
   }
 </style>

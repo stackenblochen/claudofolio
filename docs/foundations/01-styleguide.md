@@ -208,9 +208,39 @@ Two kinds of link (plus nav and teaser), defined once in `base.css` (token `--ac
 | Quiet link (`.link--quiet`, the footer) | `--text-default` with a 1 px underline in that colour | `--text-strong` and a 2 px salmon underline |
 | Link that leaves the page (`href` starting with `http` or `mailto:`, or ending in `.pdf`; on both kinds) | as above, followed by a small arrow (↗) | as above |
 | Nav item (desktop) | Pill with a blurred translucent background (`--bg-glass`, `backdrop-filter: blur(16px)`), `--text-strong` | `--fill`; the current page looks the same |
-| Project teaser | the whole panel is the link | grows 5 %, border and a lifted shadow (`--shadow-elevated`) (pointer devices from 992 px, not with reduced motion) | |
+| Project teaser | the whole panel is the link | grows 1.5 %, border and a lifted shadow (`--shadow-elevated`) (pointer devices from 992 px, not with reduced motion) | |
 | Focus | 2 px `--accent-primary` outline, 4 px offset (`:focus-visible`) on every interactive element | |
 | Selection | salmon background, black text | |
+
+### Button
+
+Ghost pill (outline, no fill) for a page-level action or link (`.btn` in `base.css`, on an `<a>` or a `<button>`; add `.t-label` for the type). One style, no primary/secondary variants.
+
+| State | Spec |
+|---|---|
+| Default | `--text-strong` text, 1 px `--text-strong` border, transparent |
+| Hover | text and border `--accent-primary` (salmon), 12 % salmon tint behind |
+| Focus | 2 px `--accent-primary` outline, 2 px offset |
+
+Pill radius, `--space-3` / `--space-5` padding, `--weight-emphasis`. Several buttons sit in a row with a `--space-3` gap and wrap on small screens. Used on the home stage ("View work" scrolls to `#selected-work`, "About me" opens the About page). Live reference: `/styleguide#button`.
+
+### Icon button
+
+One component for every label-less control (`.icon-btn` in `base.css`; never restyle it per component, only position it). Used by the Embed fullscreen button and the Video pause/play button.
+
+| Aspect | Rule |
+|---|---|
+| Shape | 34 × 34 px round (`--radius-pill`), 18 px outline icon from `@tabler/icons` (`outline/…svg?raw`), no label |
+| Default | transparent, icon `--text-default` |
+| Hover | `--fill` background, icon `--text-strong` |
+| Focus | the shared 2 px `--accent-primary` outline, 2 px offset |
+| Over media (`.icon-btn--glass`) | `--bg-glass` with a 16 px blur, icon `--text-strong` (e.g. fullscreen mode) |
+| Accessible name | required: `aria-label` states the action ("Pause video", "Enter fullscreen"). Never rely on the icon alone |
+| Toggle | two icons: `.icon-btn__a` (default) and `.icon-btn__b`; `data-on` on the button swaps them. Update `aria-label` together with it ("Play video", "Exit fullscreen") |
+| Placement | right-aligned under the media it controls (`.icon-btn--end` in a flex column, or absolutely positioned), `--space-2` below it; floats over the bottom-right corner when the media is fullscreen |
+| Visibility | hidden (`hidden`) until a script knows the action works (no fullscreen API, no JS = no button) |
+
+Live reference: `/styleguide#icon-button`.
 
 No information is available on hover only.
 

@@ -3,7 +3,7 @@
  * H1 Home intro: the headline and subline on the left, the doodles (DoodleStack) right next to them and never over them, on the page background.
  * Text and doodles form one group, centred in the stage (10 columns, media measure). Below 992 px the doodles sit under the text.
  *
- * Slots: "intro" (the headline), "subline" (optional line below it).
+ * Slots: "intro" (the headline), "subline" (optional line below it), "actions" (optional row of `.btn` buttons under the text).
  */
 import DoodleStack from './DoodleStack.astro';
 ---
@@ -15,6 +15,7 @@ import DoodleStack from './DoodleStack.astro';
         <div class="text">
           <h1 class="intro t-title"><slot name="intro" /></h1>
           {Astro.slots.has('subline') && <p class="subline t-subheading"><slot name="subline" /></p>}
+          {Astro.slots.has('actions') && <div class="actions"><slot name="actions" /></div>}
         </div>
         <DoodleStack />
       </div>
@@ -23,18 +24,22 @@ import DoodleStack from './DoodleStack.astro';
 </section>
 
 <style>
+  /* the stage fills the whole window height (below the header), its content centred */
   .home-hero {
-    padding-top: calc(var(--header-h) + var(--space-3));
+    box-sizing: border-box; min-height: 100vh; min-height: 100svh; display: flex; flex-direction: column;
+    padding-top: var(--header-h);
     background: var(--bg-primary);
   }
+  .home-hero > .container { flex: 1; display: flex; flex-direction: column; justify-content: center; }
   /* headline left, doodles right from 992 px; below that the doodles sit under the text */
   .stage {
     position: relative; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--space-5);
-    /* below 768 px the stage grows with its content (text + stack) and starts at the top, so the headline never slides under the header */
-    justify-content: flex-start; padding-top: var(--space-4);
+    /* below 768 px the stage grows with its content (text + stack), centred in the window; padding keeps it clear of the header on short screens */
+    justify-content: center; padding-block: var(--space-4);
   }
   .group { display: flex; flex-direction: column; gap: var(--space-5); align-items: flex-start; width: 100%; }
   .text { position: relative; z-index: 3; display: flex; flex-direction: column; gap: var(--space-6); }
+  .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
   .intro { text-wrap: pretty; } /* fill the text width instead of balancing short lines */
   /* below 1230 px: fixed font-size steps (line height 1.19), no fluid scaling; from 1230 px the .t-title size applies */
   @media (max-width: 1229px) { .intro { font-size: 2rem; line-height: 1.19; } }
@@ -44,8 +49,7 @@ import DoodleStack from './DoodleStack.astro';
   .subline { font-family: var(--font-sans); word-spacing: normal; font-weight: 400; text-wrap: pretty; }
   @media (min-width: 992px) {
     .stage {
-      flex-direction: row; align-items: center; justify-content: center; padding-top: 0;
-      height: clamp(26rem, 40vw + 15rem, 650px); /* about 650 px on desktop, so the stage no longer fills the whole screen */
+      flex-direction: row; align-items: center; justify-content: center; padding-block: var(--space-6);
     }
     /* text and doodles form one group, centred in the stage (and so on the screen), a small gap apart; the doodles are as high as the text block, no higher or lower */
     .group { flex-direction: row; align-items: stretch; gap: var(--space-5); width: auto; }

@@ -9,8 +9,7 @@ coverAlt: Design system foundations shown across mobile and desktop screens
 coverFill: true
 heroVariant: backdrop
 heroBackground: ../../assets/projects/design-system/cover.png
-confidential: true
-protected: true
+protected: false
 company: Wire
 role: Product Designer
 year: 2026
@@ -76,6 +75,7 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
       poster={tokensPoster}
       posterAlt="The app UI in the blue accent and dark theme, as shown in the token demo"
       note="Interactive token demo, best viewed on desktop."
+      caption="Interactive demo of applied color tokens."
     />
   </Fragment>
 </StorySection>
@@ -143,8 +143,8 @@ import claudeDesign from '../../assets/projects/design-system/claude-design-scre
       <p>A Claude design system has the main views defined, so that PMs and designers can use it to prototype and test quickly.</p>
     </MediaText>
     <Mock size="media" align="cut-bottom" zoom={1.05} stage="var(--fill)" devices={[{ device: 'desktop', src: claudeDesign, alt: 'The design system set up in Claude, showing the conversation details view with the group details panel' }]} />
-    <Video src={siteUrl('/videos/design-system/prototype-login.mp4')} title="Prototype of the login flow" loop />
-    <Video src={siteUrl('/videos/design-system/prototype-connect.mp4')} title="Prototype of the connect flow" loop />
+    <Video src={siteUrl('/videos/design-system/prototype-login.mp4')} title="Prototype of the login flow" caption="Prototyping login screen" loop />
+    <Video src={siteUrl('/videos/design-system/prototype-connect.mp4')} title="Prototype of the connect flow" caption="Prototyping connect flow" loop />
   </Fragment>
 </StorySection>
 
