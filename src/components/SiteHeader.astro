@@ -69,6 +69,12 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
     height: var(--header-h);
     margin-bottom: calc(var(--header-h) * -1); /* floats over the hero */
   }
+  /* phones: the header slides away while the page is scrolled down and comes back on the first scroll up (script below), so it never sits over the text. The transform exists only while hidden: the open menu (a fixed overlay inside the header) must not get a transformed parent. */
+  @media (max-width: 767px) {
+    .site-header { transition: transform 260ms ease; }
+    .site-header[data-hidden] { transform: translateY(-100%); }
+    @media (prefers-reduced-motion: reduce) { .site-header { transition: none; } }
+  }
   .site-header[data-on-dark] { color-scheme: dark; } /* set by CaseHero while a dark backdrop hero is under the header */
   .bar { height: 100%; display: flex; align-items: center; justify-content: space-between; position: relative; z-index: 3; }
   .logo { display: block; width: 100px; color: var(--text-strong); line-height: 0; }
@@ -152,5 +158,18 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
     const main = document.getElementById('main');
     if (main) new MutationObserver(syncOnDark).observe(main, { childList: true, subtree: true });
     syncOnDark();
+
+    // phones: hide the header on scroll down, show it on scroll up (and at the top of the page, with the menu open, or when something in it gets focus)
+    let lastY = window.scrollY;
+    const autoHide = () => {
+      const y = window.scrollY, d = y - lastY;
+      if (burger?.getAttribute('aria-expanded') === 'true') { header?.removeAttribute('data-hidden'); lastY = y; return; }
+      if (y <= (header?.offsetHeight ?? 0)) { header?.removeAttribute('data-hidden'); lastY = y; return; }
+      if (Math.abs(d) < 6) return;
+      header?.toggleAttribute('data-hidden', d > 0);
+      lastY = y;
+    };
+    window.addEventListener('scroll', autoHide, { passive: true, signal });
+    header?.addEventListener('focusin', () => header.removeAttribute('data-hidden'), { signal });
   });
 </script>

@@ -146,7 +146,7 @@ Eight roles, applied with a class. The semantic level (`h1`, `h2` …) and the l
 | `.t-quote` | 30 → 56 px | 38 → 68 px | 700 / 800 | −0.0025em / −0.0135em | The design vision statement (`Quote`); highlights only coloured salmon |
 | `.t-heading` | 26 → 34 px | 32 → 44 px | 700 | 0 | Section titles, the home subline, company names |
 | `.t-subheading` | 18 → 24 px | 26 → 32 px | 700 | 0 | Sub-headings, card titles, roles, intro paragraphs (About, Overview) |
-| `.t-body` | 16 → 19 px | 25.6 → 28.5 px | 300 / 400 | 0 / −0.007em | Paragraphs, lists, meta values |
+| `.t-body` | 16 → 19 px | 25.6 → 28.5 px (phones below 768 px: 1.45 × the size, about 23.2 px at 16 px) | 300 / 400 | 0 / −0.007em | Paragraphs, lists, meta values |
 | `.t-label` | 15 → 18 px | 24 → 26 px | 300 | 0 | Eyebrows, meta labels, dates, footer |
 | `.t-caption` | = label | = label | 300, italic | | Image captions, `--text-default` |
 

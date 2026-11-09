@@ -19,6 +19,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+  overflow-x: clip; /* safety net: nothing wider than the window may widen the page (Safari lets transformed, wider-than-window content do that); clip, unlike hidden, keeps position: sticky working */
 }
 main { flex: 1 0 auto; }
 img, svg, video, canvas { display: block; max-width: 100%; height: auto; }
