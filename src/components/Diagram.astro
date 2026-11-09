@@ -15,6 +15,7 @@
  * `gallery`: the drawing opens in the gallery (I18).
  * Drawings scale with the figure width (container `diagram`, query units), reference width 995 px.
  */
+import { ALL_GRADIENTS, MOODS, gradientBackground } from '../lib/gradients';
 interface Props {
   size?: 'full' | 'media' | 'cover' | 'half' | 'third';
   title?: string;
@@ -25,12 +26,15 @@ interface Props {
   border?: boolean | 'dark-mode' | 'light-mode';
   /** Opens the drawing in the gallery (I18): a live copy at 1600 px wide, zoomable, with the caption (else the title) below it. */
   gallery?: boolean;
-  /** A fixed stage background (CSS colour) for content that brings its own look, e.g. light dashboard cards in both themes. */
+  /** The stage background: a gradient name ("soft-blue", "dusk:orb", as in Mock, follows the theme) or a fixed CSS colour for content that brings its own look. */
   stage?: string;
 }
 const { size = 'media', title, caption, fixed = false, ratio, border, gallery = false, stage } = Astro.props;
 const measure = { full: 'measure-wide', cover: 'measure-wide', media: 'measure-media', half: undefined, third: undefined }[size];
 const hasHead = !!title || Astro.slots.has('intro');
+const [stageName, stageShape] = stage && /^[a-z-]+(:[a-z]+)?$/.test(stage) ? stage.split(':') : [stage];
+const gradientId = stageName && (MOODS.find((m) => m.name === stageName)?.id ?? ALL_GRADIENTS.find((g) => g.id === stageName)?.id);
+const stageCss = gradientId ? gradientBackground(gradientId, stageShape) : stage;
 ---
 
 <div class:list={['diagram', { group: hasHead }]} data-size={size}>
@@ -41,7 +45,7 @@ const hasHead = !!title || Astro.slots.has('intro');
     </div>
   )}
   <figure class:list={['fig', measure, 'reveal']}>
-    <div class="stage" data-size={size} data-fixed={fixed || undefined} style={[fixed && ratio ? `--stage-ratio:${ratio}` : '', stage ? `background:${stage}` : ''].join(';') || undefined} data-border={border === true ? 'both' : border || undefined}
+    <div class="stage" data-size={size} data-fixed={fixed || undefined} style={[fixed && ratio ? `--stage-ratio:${ratio}` : '', stageCss ? `background:${stageCss}` : ''].join(';') || undefined} data-border={border === true ? 'both' : border || undefined}
       data-gallery={gallery ? 'diagram' : undefined} data-gallery-node={gallery ? '' : undefined} data-caption={gallery ? caption || title || undefined : undefined}
       role={gallery ? 'button' : undefined} tabindex={gallery ? 0 : undefined} aria-label={gallery ? `Open in gallery: ${title || caption || 'diagram'}` : undefined}><slot /></div>
     {caption && <figcaption class="t-caption caption">{caption}</figcaption>}

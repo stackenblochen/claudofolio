@@ -4,7 +4,7 @@
  * `step`: a line drawn as steps. `tone`: "blue" (default) | "green" (on track) | "red" (off track). `goal`: the target, a grey line across the chart; with it a dashed projection runs from the last value to `forecast`
  * (default: the goal) and ends in a dot. Draw the forecast as the continuation of the trend, so it never contradicts the history; `span` = share of the width the real series fills when there is a goal (default 0.72).
  * `ticks` = x labels (with a small tick under the axis), spread evenly or at `tickAt` (0–1 along the axis, for real dates);
- * `now` = a dashed vertical line at the last real value (today), where the projection starts; `yLabels` = labels down the right edge, top to bottom; `unit` = small caption above;
+ * `grid` = horizontal gridlines across the chart (one per y label, at least three), as on the large chart. `now` = a dashed vertical line at the last real value (today), where the projection starts; `yLabels` = labels down the right edge, top to bottom; `unit` = small caption above;
  * `labels` = one name per value and `valueLabel` = the unit after the value, both for the hover tooltip.
  *
  *   <DashSpark alt="…" mode="area" values={[…]} unit="Person Weeks" ticks={['Mar', 'Jun']} yLabels={['60', '0']} />
@@ -12,9 +12,9 @@
 import './dashboard.css';
 interface Props {
   alt: string; values: number[]; mode?: 'line' | 'area' | 'bars'; step?: boolean; tone?: 'blue' | 'green' | 'red'; goal?: number; forecast?: number; span?: number;
-  ticks?: string[]; tickAt?: number[]; now?: boolean; yLabels?: string[]; unit?: string; height?: number; labels?: string[]; valueLabel?: string;
+  ticks?: string[]; tickAt?: number[]; now?: boolean; grid?: boolean; yLabels?: string[]; unit?: string; height?: number; labels?: string[]; valueLabel?: string;
 }
-const { alt, values, mode = 'line', step = false, tone = 'blue', goal, forecast, span, ticks = [], tickAt, now, yLabels = [], unit, height = 76, labels = [], valueLabel = '' } = Astro.props;
+const { alt, values, mode = 'line', step = false, tone = 'blue', goal, forecast, span, ticks = [], tickAt, now, grid = false, yLabels = [], unit, height = 76, labels = [], valueLabel = '' } = Astro.props;
 const W = 360, H = height, PAD = 4, RIGHT = yLabels.length ? 34 : 4, B = ticks.length ? 20 : 6;
 const ih = H - PAD - B, iw = W - PAD - RIGHT;
 const end = forecast ?? goal; // where the dashed projection ends
@@ -40,6 +40,7 @@ const pts = values.map((v, i) => [f(mode === 'bars' ? x(i) + bw / 2 : x(i)), f(y
   {unit && <div class="dcard__unit">{unit}</div>}
   <div class="dcard__chart">
     <svg class:list={['dspark', `dspark--${tone}`]} viewBox={`0 0 ${W} ${H}`} role="img" aria-label={alt} data-pts={JSON.stringify(pts)} data-w={W} data-h={H} data-vl={valueLabel}>
+      {grid && Array.from({ length: Math.max(yLabels.length, 3) - 1 }, (_, k) => <line class="dspark__grid" x1={PAD} x2={gx} y1={f(PAD + (ih * k) / (Math.max(yLabels.length, 3) - 1))} y2={f(PAD + (ih * k) / (Math.max(yLabels.length, 3) - 1))} />)}
       {goal != null && <line class="dspark__target" x1={PAD} x2={gx} y1={f(y(goal))} y2={f(y(goal))} />}
       {mode === 'area' && <path class="dspark__area" d={`${stepped} L${f(x(n - 1))} ${axisY} L${f(x(0))} ${axisY} Z`} />}
       {mode === 'bars'

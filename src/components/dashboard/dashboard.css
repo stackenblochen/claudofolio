@@ -96,6 +96,7 @@
 .dspark__dot { fill: var(--d-text); }
 .dspark__now { stroke: var(--d-text-3); stroke-width: 1; stroke-dasharray: 3 3; vector-effect: non-scaling-stroke; }
 .dspark__nowtext { fill: var(--d-text-2); }
+.dspark__grid { stroke: var(--d-grid); stroke-width: 1; }
 .dspark__axis { stroke: var(--d-text-3); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .dspark__text { fill: var(--d-text-3); font-size: 10px; font-weight: 400; font-family: var(--d-font); }
 
@@ -285,6 +286,8 @@
 .dtable__head span { display: inline-flex; align-items: center; gap: 2px; }
 .dtable__row { height: 40px; border-bottom: 1px solid var(--d-line); }
 .dtable__row span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: #212121; }
+.dtable__head span.is-right { justify-content: flex-end; }
+.dtable__row span.is-right { text-align: right; font-variant-numeric: tabular-nums; }
 .dtable__row span.is-first { font-weight: 700; color: #000; }
 
 .dmaplegend { position: absolute; right: 0; bottom: 96px; width: 168px; background: #fff; border-radius: 4px 0 0 4px; box-shadow: var(--d-shadow); }

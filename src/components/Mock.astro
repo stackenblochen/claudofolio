@@ -41,8 +41,10 @@ interface Props {
   stage?: string;
   /** Shadow under the devices: heavy (default), soft or none. */
   shadow?: 'none' | 'soft' | 'heavy';
-  /** The 1px outline around the devices. `auto` (default): the rule in mock.css (only a dark window without a stage gets one). `dark`: shown only in dark mode, `light`: only in light mode, `both`: always, `none`: never. */
+  /** The 1px outline around the devices (the window or phone itself). `auto` (default): the rule in mock.css (only a dark window without a stage gets one). `dark`: shown only in dark mode, `light`: only in light mode, `both`: always, `none`: never. */
   outline?: 'auto' | 'dark' | 'light' | 'both' | 'none';
+  /** The 1px border around the whole mock area (the stage), like the image tiles. `auto` (default) = none; `dark`: only in dark mode, `light`: only in light mode, `both`: always. */
+  border?: 'auto' | 'dark' | 'light' | 'both' | 'none';
   /** Cut alignments: how much the window is enlarged (default 1.7 from mock.css). */
   zoom?: number;
   /** Width on the page: `wide` = 12 cols (default for full and cover), `media` = the 10 col media measure. Overrides the default of the size. */
@@ -52,7 +54,8 @@ interface Props {
   /** Opens the screenshots in the gallery (I18), without the device frame; the caption shows below them there. Each screen of a `set` is its own gallery image; a device's own `gallery` overrides this per screen. */
   gallery?: boolean;
 }
-const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, zoom, outline = 'auto', shadow = 'heavy', width, devices, caption, gallery = false } = Astro.props;
+const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, zoom, outline = 'auto', border = 'auto', shadow = 'heavy', width, devices, caption, gallery = false } = Astro.props;
+const borderCss = { auto: undefined, dark: 'var(--border-dark-mode)', light: 'var(--border-light-mode)', both: 'var(--border)', none: undefined }[border];
 const outlineCss = { auto: undefined, dark: 'var(--border-dark-mode)', light: 'var(--border-light-mode)', both: 'var(--border)', none: 'transparent' }[outline];
 
 // a gradient name resolves to the site's gradient tokens, so the stage follows the theme; "dusk:orb" adds a shape (see SHAPES in src/lib/gradients.ts)
@@ -92,9 +95,9 @@ const measure = width ? `measure-${width}` : { full: 'measure-wide', cover: 'mea
 
 <figure class:list={['mock-fig', measure, 'reveal']} data-size={size}>
   <div class="mock" data-size={size} data-align={align} data-theme={theme} data-layout={layout} data-phone={phone} data-shadow={shadow}
-    data-stage={stageCss ? '' : undefined} style={[stageCss && `--mock-stage:${stageCss}`, zoom && `--mock-zoom:${zoom}`, outlineCss && `--mock-outline:${outlineCss}`].filter(Boolean).join(';') || undefined}>
+    data-stage={stageCss ? '' : undefined} data-border={borderCss ? '' : undefined} style={[stageCss && `--mock-stage:${stageCss}`, zoom && `--mock-zoom:${zoom}`, outlineCss && `--mock-outline:${outlineCss}`, borderCss && `--mock-border:${borderCss}`].filter(Boolean).join(';') || undefined}>
     {items.map(({ d, style, g }) => (
-      <div class="mock__device" data-device={d.device} data-fill={d.device === 'desktop' ? d.fill : undefined} data-cutout={d.cutout} data-crop={d.ratio ? '' : undefined} data-zoom={style && style.includes('--mock-z-w') ? '' : undefined} style={style}
+      <div class="mock__device" data-device={d.device} data-fill={d.device === 'desktop' ? d.fill : undefined} data-bar={d.device === 'desktop' && d.bar === false ? 'none' : undefined} data-cutout={d.cutout} data-crop={d.ratio ? '' : undefined} data-zoom={style && style.includes('--mock-z-w') ? '' : undefined} style={style}
         data-gallery={g?.src} data-w={g?.w} data-h={g?.h} data-caption={g ? caption || undefined : undefined} data-alt={g ? d.alt : undefined}
         role={g ? 'button' : undefined} tabindex={g ? 0 : undefined} aria-label={g ? `Open image in gallery: ${d.alt}` : undefined}>
         {d.device === 'browser' && <Fragment set:html={browserChrome({ browser: d.browser, url: d.bar || '', tab: d.tab })} />}

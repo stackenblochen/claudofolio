@@ -188,6 +188,7 @@ const icon = (svg: string) => svg.replace('<svg', '<svg aria-hidden="true" focus
         node.replaceChildren(copy);
         node.style.width = `${NODE_W}px`;
         node.style.height = 'auto';
+        document.dispatchEvent(new CustomEvent('dash:fit'));
         nat = { w: NODE_W, h: node.offsetHeight };
         node.style.height = `${nat.h}px`;
         resetFit();

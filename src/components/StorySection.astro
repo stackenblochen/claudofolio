@@ -49,6 +49,10 @@ const beats = [
 <style>
   .inner { display: grid; grid-template-columns: 1fr; gap: var(--space-6); }
   .plain { margin-top: var(--space-6); }
+  /* a figure of text width inside a plain section (e.g. the chart above the Outcome list): left aligned in the text column and 5 of the 12 columns wide (the full column below 768 px), caption left aligned too */
+  .plain :global(figure.measure-text) { width: 100%; margin-inline: 0; margin-bottom: var(--space-4); }
+  @media (min-width: 768px) { .plain :global(figure.measure-text) { width: calc(5 * var(--col-step) - var(--gutter)); max-width: 100%; } }
+  .plain :global(figure.measure-text .caption) { text-align: left; margin-inline: 0; }
   /* ordered list in a plain section: numbers 01, 02, 03 in the accent colour */
   .plain :global(ol) { padding-left: 0; list-style: none; counter-reset: story-list; display: grid; gap: var(--space-4); }
   .plain :global(ol > li) { counter-increment: story-list; color: var(--text-strong); display: grid; grid-template-columns: 2.5em 1fr; margin: 0; }

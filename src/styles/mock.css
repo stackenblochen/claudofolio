@@ -61,6 +61,9 @@
   background: var(--mock-stage, transparent);
 }
 
+/* the `border` prop: a 1px edge around the whole mock area (the stage), like the image tiles; `outline` is the ring around the window itself */
+.mock[data-border]::after { content: ''; position: absolute; inset: 0; z-index: 5; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--mock-border); pointer-events: none; }
+
 /* shadow levels, set per mock with the `shadow` prop */
 .mock[data-shadow="soft"] {
   --mock-shadow: 0 2px 16px 0 light-dark(rgba(0, 0, 0, 0.08), rgba(0, 0, 0, 0.3));
@@ -160,6 +163,8 @@
 /* The bar and the screenshot meet at a fractional pixel, where both edges are anti-aliased and the stage would show
  * through as a thin line. The bar colour behind the window closes that seam. */
 .mock__device[data-device="desktop"] { background: var(--mock-d-bar); }
+/* no bar: nothing to seal, and a screenshot with its own rounded transparent corners must show the stage there, not the bar colour (a light arc in the corner) */
+.mock__device[data-device="desktop"][data-bar="none"] { background: transparent; }
 .mock[data-align^="cut"] .mock__device[data-device="desktop"],
 .mock[data-align^="cut"] .mock__device[data-device="browser"] {
   --w: calc(var(--mock-desktop-w) * var(--mock-zoom));

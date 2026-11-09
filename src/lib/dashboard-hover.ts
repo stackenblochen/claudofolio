@@ -36,18 +36,21 @@ function leave(svg: SVGSVGElement) {
 }
 document.addEventListener('pointerleave', () => document.querySelectorAll('.dspark.is-hot').forEach((o) => leave(o as SVGSVGElement)), true);
 
-// DashApp is laid out at 1440 px and scaled to the width of its frame. Frames can arrive after load (protected case studies insert their content after decryption).
+// DashApp is laid out at 1440 px and scaled to the width of its frame (up as well as down: the gallery shows a diagram at 1600 px). Frames can arrive after load
+// (protected case studies insert their content after decryption; the gallery clones a live drawing, and a clone keeps the attributes of its original, so frames are tracked here, not marked in the DOM).
 const APP_WIDTH = 1440;
+const fitted = new WeakSet<Element>();
 function fit(frame: HTMLElement) {
   const app = frame.querySelector<HTMLElement>('.dapp');
   if (!app) return;
-  const s = Math.min(1, frame.clientWidth / APP_WIDTH);
+  const s = frame.clientWidth / APP_WIDTH;
   app.style.setProperty('--dz', String(s));
   frame.style.height = `${app.offsetHeight * s}px`;
 }
 function register() {
-  document.querySelectorAll<HTMLElement>('.dapp-frame:not([data-fit])').forEach((frame) => {
-    frame.dataset.fit = '';
+  document.querySelectorAll<HTMLElement>('.dapp-frame').forEach((frame) => {
+    if (fitted.has(frame)) return;
+    fitted.add(frame);
     const ro = new ResizeObserver(() => fit(frame));
     ro.observe(frame);
     const app = frame.querySelector('.dapp');
@@ -55,5 +58,7 @@ function register() {
     fit(frame);
   });
 }
+// the gallery clones a live drawing at a fixed width and measures it right away: it asks for a synchronous fit first (a clone keeps the inline height of its original)
+document.addEventListener('dash:fit', () => { register(); document.querySelectorAll<HTMLElement>('.dapp-frame').forEach(fit); });
 register();
-new MutationObserver(() => { if (document.querySelector('.dapp-frame:not([data-fit])')) register(); }).observe(document.documentElement, { childList: true, subtree: true });
+new MutationObserver(register).observe(document.documentElement, { childList: true, subtree: true });

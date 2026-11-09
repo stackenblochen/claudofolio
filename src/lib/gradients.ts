@@ -26,13 +26,14 @@ export const INTENSITY_NOTES: Record<Intensity, string> = {
 };
 
 /** Dominant hue family with its partner hue for the bottom of the gradient (degrees on the HSL wheel). `sat` scales the saturation (gray is nearly neutral), `darkL` lowers the dark lightness (calm and active only). */
-export const TONALITIES: Record<string, { label: string; top: number; bottom: number; sat?: number; darkL?: number }> = {
+export const TONALITIES: Record<string, { label: string; top: number; bottom: number; sat?: number; darkL?: number; darkStops?: Partial<Record<Intensity, Stops>> }> = {
   yellow: { label: 'Yellow', top: 46, bottom: 12 }, // yellow into salmon
   salmon: { label: 'Salmon', top: 8, bottom: 322 }, // salmon into mauve
   violet: { label: 'Violet', top: 264, bottom: 338 }, // violet into rose
   blue: { label: 'Blue', top: 214, bottom: 258 }, // sky blue into periwinkle
   green: { label: 'Green', top: 168, bottom: 118 }, // teal into fresh green
-  gray: { label: 'Gray', top: 240, bottom: 232, sat: 0.14, darkL: 18 }, // cool gray, barely tinted; a little darker than the colours in dark mode
+  // cool gray, barely tinted. Dark mode: its own lightness steps (`darkStops`), so soft, calm and active are clearly apart: soft is deep and quiet, active the lightest and strongest
+  gray: { label: 'Gray', top: 240, bottom: 232, sat: 0.14, darkL: 18, darkStops: { soft: [[24, 17], [26, 25]], calm: [[32, 29], [37, 40]], active: [[62, 41], [56, 54]] } },
 };
 export type Tonality = string;
 export const TONALITY_IDS: Tonality[] = Object.keys(TONALITIES);
@@ -98,14 +99,14 @@ const contrastWithWhite = (rgb: RGB) => 1.05 / (luminance(rgb) + 0.05);
 const toHex = (rgb: RGB) => '#' + rgb.map((v) => Math.round(v).toString(16).padStart(2, '0')).join('');
 
 /** Dark stops: lower the lightness a little at a time until white text stays readable over top, middle and bottom. */
-function darkPair(intensity: Intensity, topHue: number, bottomHue: number, sat = 1, darkL = 0): [string, string] {
-  const [[ts0, tl], [bs0, bl]] = RECIPE.dark[intensity];
+function darkPair(intensity: Intensity, topHue: number, bottomHue: number, sat = 1, darkL = 0, stops?: Stops): [string, string] {
+  const [[ts0, tl], [bs0, bl]] = stops ?? RECIPE.dark[intensity];
   const ts = ts0 * sat, bs = bs0 * sat;
-  let dl = intensity === 'soft' ? 0 : darkL;
+  let dl = intensity === 'soft' || stops ? 0 : darkL;
   for (; dl < 24 + darkL; dl++) {
     const t = hslToRgb(topHue, ts, tl - dl), b = hslToRgb(bottomHue, bs, bl - dl);
     const mid = t.map((v, i) => (v + b[i]) / 2) as RGB;
-    if (intensity === 'soft' || Math.min(contrastWithWhite(t), contrastWithWhite(mid), contrastWithWhite(b)) >= 3.2) break;
+    if (intensity === 'soft' || stops || Math.min(contrastWithWhite(t), contrastWithWhite(mid), contrastWithWhite(b)) >= 3.2) break;
   }
   return [toHex(hslToRgb(topHue, ts, tl - dl)), toHex(hslToRgb(bottomHue, bs, bl - dl))];
 }
@@ -130,12 +131,12 @@ export interface GradientDef {
 const FIXED: GradientDef[] = [];
 export const GRADIENTS: GradientDef[] = INTENSITIES.flatMap((intensity) =>
   TONALITY_IDS.map((tonality) => {
-    const { top, bottom, sat, darkL } = TONALITIES[tonality];
+    const { top, bottom, sat, darkL, darkStops } = TONALITIES[tonality];
     return {
       id: `${intensity}-${tonality}`,
       intensity,
       tonality,
-      dark: darkPair(intensity, top, bottom, sat, darkL),
+      dark: darkPair(intensity, top, bottom, sat, darkL, darkStops?.[intensity]),
       light: lightPair(intensity, top, bottom, sat),
     };
   }),

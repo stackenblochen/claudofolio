@@ -94,7 +94,7 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
     transition: background 200ms ease, color 200ms ease;
   }
   .menu a[aria-current='page'] { background: var(--fill); }
-  .menu a:hover { color: var(--accent-primary); background-image: linear-gradient(color-mix(in srgb, var(--accent-primary) 12%, transparent), color-mix(in srgb, var(--accent-primary) 12%, transparent)); } /* as the ghost buttons (.btn), tint on top of the glass */
+  .menu a:hover, .menu a[aria-current='page']:hover { color: light-dark(var(--color-white), var(--gray-950)); background: var(--accent-primary); } /* hover: a solid salmon pill, white text in light mode, near-black in dark mode (contrast on the lighter salmon) */
   .burger { background: none; border: 0; padding: var(--space-3) 0 var(--space-3) var(--space-3); cursor: pointer; }
   .bars, .bars::before { display: block; width: 24px; height: 2px; background: var(--text-default); }
   .bars { position: relative; margin-block: 6px; }
