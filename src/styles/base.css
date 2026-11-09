@@ -111,6 +111,7 @@ button { font: inherit; color: inherit; }
 @media (min-width: 768px) { .caption { max-width: calc(var(--measure-text-cols) * var(--col-step) - var(--gutter)); margin-inline: auto; } }
 .prose { font-size: var(--text-body-size); line-height: var(--text-body-lh); font-weight: var(--text-body-weight); letter-spacing: var(--text-body-ls); }
 .prose > * + * { margin-top: 1.5em; }
+@media (max-width: 767px) { .prose > * + * { margin-top: 1.1em; } } /* phones: paragraphs sit closer together */
 .prose strong, .prose b { color: var(--text-strong); font-weight: var(--weight-emphasis); letter-spacing: var(--ls-emphasis); }
 .prose ul, .prose ol { padding-left: 1.4em; }
 .prose li { margin: var(--space-2) 0; }

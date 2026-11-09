@@ -69,4 +69,14 @@ const beats = [
   .media { display: flex; flex-direction: column; gap: var(--space-4); }
   /* a new group in the media slot (a MediaText, or a Diagram with a headline) gets extra space above it: 100 px in total */
   .media > :global(.group:not(:first-child)) { margin-top: var(--space-8); }
+  /* phones: tighter spacing between the heading, the three beats and the media */
+  @media (max-width: 767px) {
+    .inner { gap: var(--space-5); }
+    .beats { margin-top: var(--space-4); }
+    .beat { padding-block: var(--space-3); }
+    .beat:first-child { padding-top: 0; }
+    .beat:last-child { padding-bottom: 0; }
+    .plain { margin-top: var(--space-4); }
+    .story[data-closing] .plain { margin-top: var(--space-4); }
+  }
 </style>

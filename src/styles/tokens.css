@@ -143,6 +143,8 @@
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --duration-reveal: 700ms;
 }
+/* phones: less space between chapters and sections (the fluid values above start at 80 px / 48 px at 375 px) */
+@media (max-width: 767px) { :root { --chapter-gap: 3.5rem; --section-y: 2.5rem; } }
 /* phones (below 768 px): a tighter body line height, 1.45 × the size (about 23.2 px at 16 px; it was 1.6 ×, 25.6 px). Tablets and desktop keep the values above. */
 @media (max-width: 767px) { :root { --text-body-lh: calc(var(--text-body-size) * 1.45); } }
 

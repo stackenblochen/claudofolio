@@ -14,7 +14,7 @@
 // it stops unless that file is already ours or you pass --backup-old-index (which renames it to index-old.html first).
 import { Client } from 'basic-ftp';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
-import { join, relative } from 'node:path';
+import { basename, dirname, join, posix, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
@@ -77,13 +77,52 @@ try {
     if (all.length > 15) console.log(`  … and ${all.length - 15} more`);
   } else {
     if (oldIndex) await client.rename('index.html', 'index-old.html');
-    await client.uploadFromDir(local);
+    await upload();
     console.log('Done. Check: the home page, a protected case study, and a nonexistent address under /portfolio/ (404 page).');
   }
 } catch (e) {
   fail(`FTP error: ${e.message}`);
 } finally {
   client.close();
+}
+
+// Uploads file by file (same result as uploadFromDir, overwriting files of the same name) so there is a progress line:
+// percent of all bytes, files done, MB, speed and the file in flight. In a terminal it updates in place; in a log it prints a line every 5 %.
+async function upload() {
+  const sizes = all.map((p) => statSync(p).size);
+  const total = sizes.reduce((a, b) => a + b, 0) || 1;
+  const mb = (n) => (n / 1048576).toFixed(1);
+  const tty = process.stdout.isTTY;
+  const t0 = Date.now();
+  let done = 0, inFile = 0, count = 0, lastBucket = -1, current = '';
+  const line = () => {
+    const bytes = done + inFile, pct = Math.min(100, Math.floor((bytes / total) * 100));
+    const secs = (Date.now() - t0) / 1000, speed = secs > 0 ? bytes / secs : 0;
+    const eta = speed > 0 ? Math.max(0, Math.round((total - bytes) / speed)) : 0;
+    const bar = '#'.repeat(Math.floor(pct / 4)).padEnd(25, '.');
+    return `[${bar}] ${String(pct).padStart(3)}%  ${count}/${all.length} files  ${mb(bytes)}/${mb(total)} MB  ${mb(speed)} MB/s  ~${eta}s left  ${current}`;
+  };
+  const show = (force = false) => {
+    if (tty) process.stdout.write('\r' + line().slice(0, process.stdout.columns ? process.stdout.columns - 1 : 160).padEnd(process.stdout.columns ? process.stdout.columns - 1 : 0));
+    else {
+      const bucket = Math.floor(((done + inFile) / total) * 20);
+      if (force || bucket !== lastBucket) { lastBucket = bucket; console.log(line()); }
+    }
+  };
+  client.trackProgress((info) => { inFile = info.bytes; if (tty) show(); });
+  let remoteHere = null;
+  for (let i = 0; i < all.length; i++) {
+    const rel = relative(local, all[i]).split(sep).join('/');
+    const dir = posix.join(remoteDir, dirname(rel) === '.' ? '' : dirname(rel));
+    if (dir !== remoteHere) { await client.ensureDir(dir); remoteHere = dir; }
+    current = rel;
+    inFile = 0;
+    await client.uploadFrom(all[i], basename(rel));
+    done += sizes[i]; inFile = 0; count = i + 1;
+    show();
+  }
+  client.trackProgress();
+  if (tty) process.stdout.write('\n'); else show(true);
 }
 
 function fail(msg) {

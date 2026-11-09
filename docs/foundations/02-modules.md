@@ -86,7 +86,7 @@ Full-cover background image (dimmed), H1 bottom-aligned, stamp below. H1 on the 
 ### H3 Case hero, mockup
 H1 on the full grid width, then the cover image on the media measure (radius 12), with the stamp overlapping its bottom-right corner (shown when the case study is `protected`; `CaseHero` prop `confidential`). Same component as H2, selected with `variant`.
 
-`CaseHero` props: `title` (sentence case, ≤ 8 words, `*word*` highlight markup), `labels` (the project's expertise labels, shown centred as an eyebrow on top of the H1), `variant: 'mockup' | 'backdrop'`, `image`, `imageAlt`, `background`, `confidential`, `glow` (mockup only; frontmatter `heroGlow: true`: the soft halo of the project teasers, a lighter gray with a trace of salmon, behind the hero image; not available for the backdrop variant, which has its own filled background). Padding above the H1 is `--hero-top`.
+`CaseHero` props: `title` (sentence case, ≤ 8 words, `*word*` highlight markup), `labels` (optional expertise labels as a centred eyebrow on top of the H1; the `CaseStudy` layout does not pass them, so case studies show no eyebrow), `variant: 'mockup' | 'backdrop'`, `image`, `imageAlt`, `background`, `confidential`, `glow` (mockup only; frontmatter `heroGlow: true`: the soft halo of the project teasers, a lighter gray with a trace of salmon, behind the hero image; not available for the backdrop variant, which has its own filled background). Padding above the H1 is `--hero-top`.
 
 ### H4 Page header
 H1 (`.t-title`, text measure) and optional intro paragraphs in the default slot: `.t-subheading` at weight 400, strong colour, text-wrap `pretty`. Props: `eyebrow`, `title` (`*word*` highlight markup).
@@ -99,7 +99,7 @@ H1 (`.t-title`, text measure) and optional intro paragraphs in the default slot:
 `.t-heading` title with the salmon dash above it (`.t-number`, like the section numbers in the case studies) and the chapter gap above (`chapter`, used by every section title on Home and About: "Selected work", "Experience", "Career", "Education"; the Contact block matches). Without `chapter` (the styleguide) there is no dash and less space above. Semantic level configurable.
 
 ### Case study structure (T9, T10, T7, I11)
-Every case study uses one layout, `layouts/CaseStudy.astro`. Order: hero (`CaseHero`: labels, title, cover) → `Overview` → numbered `StorySection`s (the MDX body) → optional `ScreenGallery` (MDX) → other projects. Hero and Overview come from the frontmatter; the sections, the Outcome included, are written in the MDX. No full-width dividers: the space between sections is `--chapter-gap`. `unlisted: true` keeps a case study off Home and out of "Other projects" while its URL still works. Media (screenshots, mocks, schemas, embeds) is different for every case study and always goes in a section's `media` slot.
+Every case study uses one layout, `layouts/CaseStudy.astro`. Order: hero (`CaseHero`: title, cover; no label eyebrow) → `Overview` → numbered `StorySection`s (the MDX body) → optional `ScreenGallery` (MDX) → other projects. Hero and Overview come from the frontmatter; the sections, the Outcome included, are written in the MDX. No full-width dividers: the space between sections is `--chapter-gap`. `unlisted: true` keeps a case study off Home and out of "Other projects" while its URL still works. Media (screenshots, mocks, schemas, embeds) is different for every case study and always goes in a section's `media` slot.
 
 ### T9 Overview
 From `lead` and the meta, stacked on the centred text measure (8 / 9 cols): h2 "Project overview", the lead paragraphs in the same style as the About page intro (`.t-subheading` at weight 400, strong colour, `text-wrap: pretty`), then role, team and timeline as a row (only with at least three of role, team, timeline, platforms). Props: `title`, `sentences`, `meta`; the default slot takes custom paragraphs.
@@ -123,7 +123,7 @@ A timeline item: bullet on a vertical line, optional logo (own height per logo, 
 Shared rules: radius 16 (diagrams, squares, video, embeds; 12 below 768 px) or 12 (UI screenshots); border where the image edge would dissolve into the dark background; shadow on screenshots. All media sit inside the grid padding.
 
 ### I1 Figure
-`Figure`: one or more images with an optional caption (`.t-caption`, ≤ 8 words) and natural height, for screenshots, diagrams, boards and documents alike. `src` + `alt` for one image, or `images` for several.
+`Figure`: one or more images with an optional caption (`.t-caption`, ≤ 8 words: short, precise, descriptive and professional, a label for what the image shows, no feature lists, no second clause, no promotional wording, no trailing period needed) and natural height, for screenshots, diagrams, boards and documents alike. `src` + `alt` for one image, or `images` for several.
 - **`layout`:** `stack` (default) puts the images one under the other with one caption; `pair` puts two side by side (5 + 5 columns from 768 px, stacked below).
 - **`kind`:** `screenshot` (default) = radius 12, border and shadow; `image` = radius 16, plain (photos, documents, boards); `appshot` = transparent PNG app shots (outline instead of border and shadow).
 - **`border`:** `true` (default for screenshots) = both themes, `"dark-mode"` / `"light-mode"` = only in that mode, `false` = none (default for images).

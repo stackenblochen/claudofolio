@@ -112,6 +112,7 @@ Same frame, with these sections suggested: **Where we were** (Comparison: today)
 ## 4. Writing rules
 
 - **Voice:** first person singular for your own actions ("I led…"); use "we" only for genuine team decisions. Present tense for the product, past tense for the project.
+- **Tone:** friendly and easy to read, but professional. Be concise. Avoid overusing buzzwords, avoid promotional wording, avoid filler phrases. Avoid overusing dashes ("–", "—"): prefer a full stop, a comma or a colon. Applies to every text on the site (body text, leads, outcomes, captions, labels).
 - **Sentence case** everywhere (titles, headings, buttons). No Title Case.
 - **Overview sentences:** each ≤ 25 words, one idea per sentence, no jargon in the first one.
 - **Paragraphs:** ≤ 4 sentences. One message per paragraph.
