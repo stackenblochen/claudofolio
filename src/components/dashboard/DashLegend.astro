@@ -1,0 +1,7 @@
+---
+/** A chart legend: coloured dots with names. `tone`: blue | teal | green | red. */
+import './dashboard.css';
+interface Props { items: { label: string; tone: 'blue' | 'teal' | 'green' | 'red' }[] }
+const { items } = Astro.props;
+---
+<ul class="dash dlegend">{items.map((i) => <li><span class={`dlegend__dot dlegend__dot--${i.tone}`}></span>{i.label}</li>)}</ul>

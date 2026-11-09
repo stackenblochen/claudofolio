@@ -1,0 +1,26 @@
+---
+/**
+ * Full-width rows with a divider above, a label, a value and a chevron: scorecards and targets. Optional header (`title` bold, `unit` grey on the right).
+ * `value` is a string ("− 3.1%"); `unit` (row) is small grey text before it; `status` adds a status word (green "on track"; `statusTone: 'bad'` makes it red, "off track");
+ * `chevron: false` for a row that does not lead anywhere (the space stays, so values line up).
+ */
+import './dashboard.css';
+import DashChevron from './DashChevron.astro';
+interface Row { label: string; value?: string; unit?: string; status?: string; statusTone?: 'bad'; chevron?: boolean }
+interface Props { rows: Row[]; title?: string; unit?: string }
+const { rows, title, unit } = Astro.props;
+---
+<div class="dash">
+  {title && <div class="dmetric__head"><span class="dmetric__title">{title}</span>{unit && <span class="dmetric__unit">{unit}</span>}</div>}
+  {rows.map((r) => (
+    <div class="drow">
+      <span class="drow__label">{r.label}</span>
+      <span class="drow__value">
+        {r.status && <span class:list={['drow__status', { 'drow__status--bad': r.statusTone === 'bad' }]}>{r.status}</span>}
+        {r.unit && <span class="drow__unit">{r.unit}</span>}
+        {r.value}
+        <span class:list={['drow__chev', { 'drow__chev--off': r.chevron === false }]}><DashChevron /></span>
+      </span>
+    </div>
+  ))}
+</div>

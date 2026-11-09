@@ -1,0 +1,32 @@
+---
+/** The legend card of the software map: colour and height scale, area, and the change colours. It opens from the info FAB (DashFab) and takes its place in the corner; the X in its upper right corner closes it again. */
+import './dashboard.css';
+import DashIcon from './DashIcon.astro';
+---
+<aside class="dash dmaplegend">
+  <span class="dmaplegend__close" aria-label="Close legend"><DashIcon name="x" size={18} /></span>
+  <div class="dmaplegend__sec">
+    <div class="dmaplegend__cap">Color &amp; Height</div>
+    <div class="dmaplegend__title">Complexity</div>
+    <div class="dmaplegend__sub">Lines of Code</div>
+    <div class="dmaplegend__scale">
+      <div><span class="dmaplegend__bar dmaplegend__bar--0"></span><em>300</em></div>
+      <div><span class="dmaplegend__bar dmaplegend__bar--1"></span><em>600</em></div>
+      <div><span class="dmaplegend__bar dmaplegend__bar--2"></span><em>900</em></div>
+      <div><span class="dmaplegend__bar dmaplegend__bar--3"></span><em>1.2k</em></div>
+    </div>
+  </div>
+  <div class="dmaplegend__sec">
+    <div class="dmaplegend__cap">Area</div>
+    <div class="dmaplegend__title">Code Size</div>
+    <div class="dmaplegend__sub">Lines of Code</div>
+  </div>
+  <div class="dmaplegend__sec">
+    <div class="dmaplegend__cap">Changes</div>
+    <ul class="dmaplegend__list">
+      <li><span class="dmaplegend__sw dmaplegend__sw--green"></span>Improvement</li>
+      <li><span class="dmaplegend__sw dmaplegend__sw--purple"></span>Deterioration</li>
+      <li><span class="dmaplegend__sw dmaplegend__sw--gray"></span>Unmodified</li>
+    </ul>
+  </div>
+</aside>

@@ -1,0 +1,54 @@
+---
+/**
+ * The app container of the Seerene dashboard (2019): top navigation, dark sidebar (slot `sidebar`, a DashSidebar), page header and footer
+ * around the content (default slot, usually a DashGrid). Always light, Roboto, same variables as the cards (dashboard.css).
+ * `flush` = no page padding at all (the content fills the area between the top bar and the footer, e.g. the map); `compact` = tighter page padding (screens that bring their own toolbar and panels, like the map); the sidebar is optional (no `sidebar` slot, no sidebar).
+ * Put it in `<Diagram size="full" fixed ratio="auto" stage="#fafafa">` so it fills the frame edge to edge.
+ * The app is always laid out at 1440 px wide (three cards across, as in a real 1440 px browser window) and scaled down to the width of its frame
+ * by `lib/dashboard-hover.ts` (`.dapp-frame` is the scaling wrapper).
+ *
+ *   <DashApp nav={['Home', 'Applications']} active="Home" user="Thomas M. McNeill" title="Henry's Dashboard" chips={[{ label: 'Dashboard Owner', value: 'Wolfgang Lattermann' }]}>
+ *     <DashSidebar slot="sidebar" … />
+ *     <DashControl slot="controls" label="Timerange" value="Last 4 weeks" />   (optional, at the right of the title)
+ *     <DashGrid>…</DashGrid>
+ *   </DashApp>
+ */
+import './dashboard.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import DashIcon from './DashIcon.astro';
+import logo from '../../assets/seerene-logo.svg';
+interface Props { nav: string[]; active?: string; user?: string; title?: string; description?: string; share?: boolean; chips?: { label: string; value: string; plain?: boolean }[]; footerLinks?: string[]; copyright?: string; compact?: boolean; flush?: boolean }
+const { nav, active, user, title, description, share = true, chips = [], footerLinks = ['Terms of Use', 'Imprint', 'Support'], copyright = '© 2019 Seerene', compact = false, flush = false } = Astro.props;
+---
+<div class="dapp-frame">
+<div class="dash dapp">
+  <header class="dapp__top">
+    <div class="dapp__logo" aria-label="Seerene"><span class="dapp__logomark" aria-hidden="true" style={`--logo:url(${logo.src})`}></span><span class="dapp__logotext">seerene</span></div>
+    <nav class="dapp__nav" aria-label="Main">
+      {nav.map((n) => <span class:list={['dapp__link', { 'is-active': n.toLowerCase() === active?.toLowerCase() }]}>{n}</span>)}
+    </nav>
+    <div class="dapp__user"><DashIcon name="user" size={24} />{user}</div>
+  </header>
+  <div class="dapp__body">
+    {Astro.slots.has('sidebar') && <aside class="dapp__side"><slot name="sidebar" /></aside>}
+    <div class="dapp__main">
+      <main class:list={['dapp__content', { 'dapp__content--compact': compact, 'dapp__content--flush': flush }]}>
+        {title && (
+          <div class="dapp__page">
+            <div class="dapp__pagehead">
+              <h2 class="dapp__title">{title}{share && <span class="dapp__share"><DashIcon name="share" size={18} /></span>}</h2>
+              <slot name="controls" />
+            </div>
+            {description && <p class="dapp__desc">{description}</p>}
+            {chips.length > 0 && <div class="dapp__chips">{chips.map((c) => <span class="dapp__chip">{c.plain ? c.label : `${c.label}:`} <b>{c.value}</b></span>)}</div>}
+          </div>
+        )}
+        <slot />
+      </main>
+      <footer class="dapp__foot">{footerLinks.map((l) => <span>{l}</span>)}<span class="dapp__copy">{copyright}</span></footer>
+    </div>
+  </div>
+</div>
+</div>

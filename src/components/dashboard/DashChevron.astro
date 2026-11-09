@@ -1,0 +1,7 @@
+---
+/** Small chevron used by rows, rankings and the scope drop-down (Tabler chevron). `dir`: right (default) | down. */
+import DashIcon from './DashIcon.astro';
+interface Props { dir?: 'right' | 'down'; size?: number }
+const { dir = 'right', size = 14 } = Astro.props;
+---
+<DashIcon name={dir === 'down' ? 'chevron-down' : 'chevron-right'} size={size} />

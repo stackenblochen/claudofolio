@@ -1,0 +1,34 @@
+---
+/**
+ * Dashboard widget card with fixed slots, so a row of cards scans easily. Head: title (max 2 lines, always 2 lines of space) with the badge
+ * right behind it (`badge`, only for applications), then a one-line subline: `scope` with a drop-down chevron, `link` ("1 filter applied") on the right.
+ * `entity` is a third head line (always with the APP tag) for cards that show a named view of one application ("Apolo APP"); the head has a fixed height so the body always starts at the same place.
+ * Body: data on top (DashMetric, DashRanking), a DashSpark chart pinned to the bottom with a max height. All cards in a grid row share one height. `foot` adds a right-aligned footer line. `empty` draws the dashed "Add widget" card.
+ *
+ *   <DashCard title="Hadoop" badge scope="Last 6 month"> … </DashCard>
+ */
+import './dashboard.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import DashBadge from './DashBadge.astro';
+import DashChevron from './DashChevron.astro';
+interface Props { title?: string; badge?: boolean; entity?: string; scope?: string; link?: string; foot?: string; empty?: boolean }
+const { title, badge, entity, scope, link, foot, empty = false } = Astro.props;
+---
+{empty ? (
+  <div class="dash dcard dcard--empty">+ {title ?? 'Add widget'}</div>
+) : (
+  <div class="dash dcard">
+    <div class="dcard__head">
+      <h3 class="dcard__title">{title}{badge && <DashBadge />}</h3>
+      <div class="dcard__sub">
+        <div class="dcard__scope">{scope}{scope && <DashChevron dir="down" />}</div>
+        {link && <div class="dcard__link">{link}</div>}
+      </div>
+      {entity && <div class="dcard__entity">{entity}<DashBadge /></div>}
+    </div>
+    <div class="dcard__body"><slot /></div>
+    {foot && <div class="dcard__foot">{foot}</div>}
+  </div>
+)}

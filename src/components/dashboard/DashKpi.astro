@@ -1,0 +1,51 @@
+---
+/**
+ * One KPI column of the application details page: a small "Select KPI n" label, the KPI name with a drop-down chevron on a line, then rows
+ * (label grey, value bold with its unit; `action` = a blue link such as "Set Target" instead of a value; `edit` = a pencil before the value),
+ * and a "Show on Map" link below. `open` + `menu` (groups of items with a name and a description, one `hover` = highlighted, one `selected` = blue text)
+ * show the KPI drop-down open: a white pop-up over the column with the focused field and the grouped list (it is cut off at the bottom, as a scrolling list).
+ */
+import './dashboard.css';
+import DashChevron from './DashChevron.astro';
+import DashIcon from './DashIcon.astro';
+interface Row { label: string; value?: string; unit?: string; action?: string; edit?: boolean }
+interface MenuItem { name: string; text: string; state?: 'hover' | 'selected' }
+interface MenuGroup { title: string; items: MenuItem[] }
+interface Props { label: string; name: string; rows: Row[]; mapLink?: string; open?: boolean; menu?: MenuGroup[] }
+const { label, name, rows, mapLink = 'Show on Map', open = false, menu = [] } = Astro.props;
+---
+<div class="dash dkpi">
+  <div class="dkpi__label">{label}</div>
+  <div class="dkpi__select"><span>{name}</span><DashChevron dir="down" size={18} /></div>
+  {rows.map((r) => (
+    <div class="dkpi__row">
+      <span class="dkpi__rowlabel">{r.label}</span>
+      {r.action
+        ? <span class="dkpi__action">{r.action}</span>
+        : <span class="dkpi__value">{r.edit && <DashIcon name="pencil" size={16} />}<b>{r.value}</b>{r.unit && <span class="dkpi__unit">{r.unit}</span>}</span>}
+    </div>
+  ))}
+  {mapLink && <div class="dkpi__map">{mapLink}</div>}
+  {open && (
+    <div class="dkpi__pop">
+      <div class="dkpi__pophead">
+        <div class="dkpi__label dkpi__label--open">{label}</div>
+        <div class="dkpi__input"><span class="dkpi__caret"></span></div>
+      </div>
+      <div class="dmenu">
+        {menu.map((g) => (
+          <>
+            <div class="dmenu__group">{g.title}</div>
+            {g.items.map((i) => (
+              <div class:list={['dmenu__item', { 'is-hover': i.state === 'hover', 'is-selected': i.state === 'selected' }]}>
+                <div class="dmenu__name">{i.name}</div>
+                <div class="dmenu__text">{i.text}</div>
+              </div>
+            ))}
+          </>
+        ))}
+        <span class="dmenu__scroll"></span>
+      </div>
+    </div>
+  )}
+</div>

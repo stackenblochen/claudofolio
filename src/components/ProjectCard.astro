@@ -47,7 +47,7 @@ const { card } = Astro.props;
 
   /* a soft halo behind the thumb, only while the card is hovered or focused: a lighter gray with a very faint salmon tint (the accent, a tenth of it; in light mode near-white with a trace of it) that fades in over the card colour
      (`--teaser-halo-color`, strength `--teaser-halo`) */
-  .teaser { --teaser-halo-color: color-mix(in srgb, var(--accent-primary) 10%, var(--gray-600)); --teaser-halo: 45%; position: relative; background: var(--bg-secondary); border-radius: var(--radius-l); overflow: hidden; }
+  .teaser { --teaser-halo-color: color-mix(in srgb, var(--accent-primary) 2%, var(--gray-500)); --teaser-halo: 30%; position: relative; background: var(--bg-secondary); border-radius: var(--radius-l); overflow: hidden; }
   :global(:root[data-theme='light']) .teaser { --teaser-halo-color: color-mix(in srgb, var(--accent-primary) 3%, var(--color-white)); --teaser-halo: 80%; } /* light mode: mostly a lighter, near-white glow, only a trace of salmon */
   .stage { position: relative; isolation: isolate; }
   .stage::before {

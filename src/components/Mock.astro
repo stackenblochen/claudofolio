@@ -27,6 +27,8 @@ type Device = {
   cutout?: 'none';                  // ios: frame without the dynamic island, for screenshots that already contain it
   ratio?: string;                   // crop the screen, e.g. '16 / 10'
   focus?: string;                   // object-position of the crop, e.g. 'top right'
+  zoom?: number;                    // none: zoom into the screenshot (1 = fills the stage, 2 = twice as big); the gallery still shows the whole image
+  at?: string;                      // none + zoom: the point of the screenshot kept in the centre of the stage, in percent of the image, e.g. '38% 45%' (default '50% 50%')
   gallery?: boolean;                // overrides the mock's `gallery` for this screen: false keeps it out of the gallery (e.g. the phone of a set), true opens it even if the mock has no `gallery`
 };
 interface Props {
@@ -39,6 +41,8 @@ interface Props {
   stage?: string;
   /** Shadow under the devices: heavy (default), soft or none. */
   shadow?: 'none' | 'soft' | 'heavy';
+  /** The 1px outline around the devices. `auto` (default): the rule in mock.css (only a dark window without a stage gets one). `dark`: shown only in dark mode, `light`: only in light mode, `both`: always, `none`: never. */
+  outline?: 'auto' | 'dark' | 'light' | 'both' | 'none';
   /** Cut alignments: how much the window is enlarged (default 1.7 from mock.css). */
   zoom?: number;
   /** Width on the page: `wide` = 12 cols (default for full and cover), `media` = the 10 col media measure. Overrides the default of the size. */
@@ -48,12 +52,15 @@ interface Props {
   /** Opens the screenshots in the gallery (I18), without the device frame; the caption shows below them there. Each screen of a `set` is its own gallery image; a device's own `gallery` overrides this per screen. */
   gallery?: boolean;
 }
-const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, zoom, shadow = 'heavy', width, devices, caption, gallery = false } = Astro.props;
+const { size = 'full', align = 'center', theme = 'light', layout, phone, stage, zoom, outline = 'auto', shadow = 'heavy', width, devices, caption, gallery = false } = Astro.props;
+const outlineCss = { auto: undefined, dark: 'var(--border-dark-mode)', light: 'var(--border-light-mode)', both: 'var(--border)', none: 'transparent' }[outline];
 
 // a gradient name resolves to the site's gradient tokens, so the stage follows the theme; "dusk:orb" adds a shape (see SHAPES in src/lib/gradients.ts)
 const [stageName, stageShape] = stage && /^[a-z-]+(:[a-z]+)?$/.test(stage) ? stage.split(':') : [stage];
 const gradientId = stageName && (MOODS.find((m) => m.name === stageName)?.id ?? ALL_GRADIENTS.find((g) => g.id === stageName)?.id);
 const stageCss = gradientId ? gradientBackground(gradientId, stageShape) : stage;
+
+const stageRatio = { full: 3 / 2, media: 3 / 2, cover: 16 / 10, half: 1, pair: 3 / 2, third: 3 / 4 }[size];
 
 // a transparent desktop bar takes the page background: a small copy of the screenshot is passed to the bar
 const shot = async (img?: ImageMetadata) => (img ? (await getImage({ src: img, width: Math.min(img.width, 1200), format: 'webp' })).src : undefined);
@@ -61,29 +68,39 @@ const items = await Promise.all(
   devices.map(async (d) => {
     const glass = d.device === 'desktop' && d.fill === 'transparent' && d.bar !== false;
     const [a, b] = glass ? await Promise.all([shot(d.src), shot(d.srcDark)]) : [];
-    const style = [d.ratio && `--mock-ratio:${d.ratio}`, d.focus && `--mock-focus:${d.focus}`, a && `--mock-shot:url(${a})`, b && `--mock-shot-dark:url(${b})`]
+    // zoom (device none): the image is laid out at `zoom` x the size that just covers the stage, with the point `at` in the centre (clamped so no stage shows)
+    let zoomCss: string[] = [];
+    if (d.device === 'none' && d.zoom && d.zoom > 1) {
+      const Sh = 1 / stageRatio, Iw = d.src.width, Ih = d.src.height;
+      const cover = Math.max(1 / Iw, Sh / Ih);
+      const W = Iw * cover * d.zoom, H = Ih * cover * d.zoom;
+      const [fx, fy] = (d.at ?? '50% 50%').split(/\s+/).map((v) => parseFloat(v) / 100);
+      const left = Math.min(0, Math.max(1 - W, 0.5 - fx * W)), top = Math.min(0, Math.max(Sh - H, Sh / 2 - fy * H));
+      zoomCss = [`--mock-z-w:${(W * 100).toFixed(2)}%`, `--mock-z-h:${((H / Sh) * 100).toFixed(2)}%`, `--mock-z-l:${(left * 100).toFixed(2)}%`, `--mock-z-t:${((top / Sh) * 100).toFixed(2)}%`];
+    }
+    const style = [...zoomCss, d.ratio && `--mock-ratio:${d.ratio}`, d.focus && `--mock-focus:${d.focus}`, a && `--mock-shot:url(${a})`, b && `--mock-shot-dark:url(${b})`]
       .filter(Boolean).join(';') || undefined;
     // the gallery shows the screenshot itself in full resolution (the dark one if there is one: the gallery is dark only)
     const g = (d.gallery ?? gallery) ? { src: (await getImage({ src: d.srcDark ?? d.src, width: Math.min((d.srcDark ?? d.src).width, 3200), format: 'webp', quality: 85 })).src, w: (d.srcDark ?? d.src).width, h: (d.srcDark ?? d.src).height } : undefined;
     return { d, style, g };
   }),
 );
-const widths = [480, 768, 1200, 1600, 2400];
+const widths = [480, 768, 1200, 1600, 2400, 3200];
 const sizes = { full: '(min-width: 1230px) 1170px, 100vw', cover: '(min-width: 1230px) 1170px, 100vw', media: '(min-width: 1230px) 970px, 100vw', half: '(min-width: 768px) 900px, 100vw', pair: '(min-width: 768px) 900px, 100vw', third: '(min-width: 768px) 500px, 100vw' }[size];
 const measure = width ? `measure-${width}` : { full: 'measure-wide', cover: 'measure-wide', media: 'measure-media', half: undefined, pair: undefined, third: undefined }[size];
 ---
 
 <figure class:list={['mock-fig', measure, 'reveal']} data-size={size}>
   <div class="mock" data-size={size} data-align={align} data-theme={theme} data-layout={layout} data-phone={phone} data-shadow={shadow}
-    data-stage={stageCss ? '' : undefined} style={[stageCss && `--mock-stage:${stageCss}`, zoom && `--mock-zoom:${zoom}`].filter(Boolean).join(';') || undefined}>
+    data-stage={stageCss ? '' : undefined} style={[stageCss && `--mock-stage:${stageCss}`, zoom && `--mock-zoom:${zoom}`, outlineCss && `--mock-outline:${outlineCss}`].filter(Boolean).join(';') || undefined}>
     {items.map(({ d, style, g }) => (
-      <div class="mock__device" data-device={d.device} data-fill={d.device === 'desktop' ? d.fill : undefined} data-cutout={d.cutout} data-crop={d.ratio ? '' : undefined} style={style}
+      <div class="mock__device" data-device={d.device} data-fill={d.device === 'desktop' ? d.fill : undefined} data-cutout={d.cutout} data-crop={d.ratio ? '' : undefined} data-zoom={style && style.includes('--mock-z-w') ? '' : undefined} style={style}
         data-gallery={g?.src} data-w={g?.w} data-h={g?.h} data-caption={g ? caption || undefined : undefined} data-alt={g ? d.alt : undefined}
         role={g ? 'button' : undefined} tabindex={g ? 0 : undefined} aria-label={g ? `Open image in gallery: ${d.alt}` : undefined}>
         {d.device === 'browser' && <Fragment set:html={browserChrome({ browser: d.browser, url: d.bar || '', tab: d.tab })} />}
         {d.device === 'desktop' && d.bar !== false && <Fragment set:html={desktopBar({ controls: d.controls })} />}
         <div class="mock__screen">
-          <Image class:list={['mock__img', d.srcDark && 'mock__img--light']} src={d.src} alt={d.alt} widths={widths} sizes={sizes} format="webp" />
+          <Image class:list={['mock__img', d.srcDark && 'mock__img--light']} src={d.src} alt={d.alt} widths={widths} sizes={d.zoom && d.zoom > 1 ? `${Math.round(d.zoom * 100)}vw` : sizes} format="webp" />
           {d.srcDark && <Image class="mock__img mock__img--dark" src={d.srcDark} alt="" widths={widths} sizes={sizes} format="webp" />}
         </div>
       </div>

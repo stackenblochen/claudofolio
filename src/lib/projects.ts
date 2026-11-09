@@ -3,6 +3,7 @@ import type { ImageMetadata } from 'astro';
 import { url } from './site';
 import wireLogo from '../assets/wire-logo-white.svg';
 import starthubLogo from '../assets/starthub-logo-white.svg';
+import seereneLogo from '../assets/seerene-logo.svg';
 
 export type ProjectEntry = CollectionEntry<'projects'>;
 
@@ -11,6 +12,7 @@ export type ProjectEntry = CollectionEntry<'projects'>;
 const COMPANY_LOGOS: Record<string, { src: ImageMetadata; height: number }> = {
   Wire: { src: wireLogo, height: 20 },
   'EDEKA StartHub': { src: starthubLogo, height: 14 },
+  Seerene: { src: seereneLogo, height: 16 },
 };
 
 export interface CardData {

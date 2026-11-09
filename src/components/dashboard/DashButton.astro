@@ -1,0 +1,8 @@
+---
+/** Buttons: `primary` (default) is the contained blue button with white caps text; `secondary` is the text button (blue caps text, no fill, no outline). Optional leading `icon`. */
+import './dashboard.css';
+import DashIcon from './DashIcon.astro';
+interface Props { label: string; variant?: 'primary' | 'secondary'; icon?: 'plus' | 'x' }
+const { label, variant = 'primary', icon } = Astro.props;
+---
+<span class:list={['dash', 'dbtn', { 'dbtn--secondary': variant === 'secondary' }]}>{icon && <DashIcon name={icon} size={16} />}{label}</span>

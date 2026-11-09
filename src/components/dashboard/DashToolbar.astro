@@ -1,0 +1,7 @@
+---
+/** The filter bar of a map or list page: a white strip of DashField / DashTags controls and buttons, with a DashButton at the right (`margin-left: auto`). `class`: e.g. `dtoolbar--float` to float it over the map. */
+import './dashboard.css';
+interface Props { class?: string }
+const { class: cls } = Astro.props;
+---
+<div class:list={['dash', 'dtoolbar', cls]}><slot /></div>

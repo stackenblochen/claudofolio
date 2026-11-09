@@ -1,0 +1,33 @@
+---
+/**
+ * Vertical ranking, rows edge to edge: rank, name, value, chevron; the bar behind each row is value / largest value.
+ * `head` = [left, right] column headers. Put `foot` ("Rank 1-5 of 23") on the DashCard.
+ */
+import './dashboard.css';
+import DashChevron from './DashChevron.astro';
+import DashIcon from './DashIcon.astro';
+interface Props { items: { name: string; value: number; label?: string }[]; head?: [string, string] }
+const { items, head } = Astro.props;
+const max = Math.max(...items.map((i) => i.value));
+---
+<div class="dash">
+  {head && (
+    <div class="drank__head">
+      <span>
+        <DashIcon name="sort" size={18} />
+        {head[0]}
+      </span>
+      <span>{head[1]}</span>
+    </div>
+  )}
+  <ol class="drank">
+    {items.map((it, i) => (
+      <li class="drank__row" style={`--w:${((it.value / max) * 100).toFixed(1)}%`}>
+        <span class="drank__n">{i + 1}</span>
+        <span class="drank__name">{it.name}</span>
+        <span>{it.label ?? it.value}</span>
+        <span class="drow__chev"><DashChevron /></span>
+      </li>
+    ))}
+  </ol>
+</div>

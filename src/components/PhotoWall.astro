@@ -1,0 +1,56 @@
+---
+/**
+ * I19 Photo wall: a two-column bento of photos on the media measure (10 of 12 columns from 768 px, like the mocks; it brings its own `.container`, as it sits outside any section), for the start of a case study (between the overview and the first section).
+ * Pass the two columns as arrays; each column stacks its tiles with the usual gap. A tile is at least square: a landscape photo is zoomed in to the
+ * tile ratio (`position` picks the part that stays visible, like CSS object-position), a portrait photo keeps its own ratio. `ratio` (height / width)
+ * overrides the tile shape, so the two columns can be given the same total height. `bg: 'white'` puts a cut-out on plain white in both themes.
+ * Tiles are plain: radius 12, no outline, no captions; the alt text carries the content.
+ *
+ *   <PhotoWall columns={[[{ src: a, alt: '…', ratio: 1.2, position: '10% 50%' }, { src: b, alt: '…' }], [{ src: c, alt: '…' }]]} />
+ */
+import type { ImageMetadata } from 'astro';
+import Img from './Img.astro';
+
+interface Tile {
+  src: ImageMetadata;
+  alt: string;
+  /** Tile height / width (at least 1). Default: the photo's own ratio, at least 1 (square). */
+  ratio?: number;
+  /** Which part of a zoomed-in photo stays visible, as CSS object-position (default centre). */
+  position?: string;
+  bg?: 'white';
+}
+interface Props {
+  columns: [Tile[], Tile[]];
+}
+const { columns } = Astro.props;
+const ratio = (t: Tile) => Math.max(1, t.ratio ?? t.src.height / t.src.width);
+---
+
+<div class="container">
+<div class="measure-media wall-wrap">
+  <div class="wall reveal">
+    {columns.map((col) => (
+      <div class="col">
+        {col.map((t) => (
+          <div class:list={['tile', { white: t.bg === 'white' }]} style={`--r:${ratio(t).toFixed(3)}${t.position ? `;--pos:${t.position}` : ''}`}>
+            <Img src={t.src} alt={t.alt} sizes="(min-width: 1230px) 560px, (min-width: 768px) 45vw, 50vw" />
+          </div>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+</div>
+
+<style>
+  .wall-wrap { margin-top: var(--space-8); } /* air between the overview above and the wall */
+  .wall { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--space-4); align-items: start; }
+  .col { display: flex; flex-direction: column; gap: var(--space-4); }
+  .tile { aspect-ratio: 1 / var(--r); overflow: hidden; border-radius: var(--radius-m); background: var(--bg-secondary); }
+  .tile.white { background: var(--color-white); }
+  .tile :global(img) { display: block; width: 100%; height: 100%; object-fit: cover; object-position: var(--pos, 50% 50%); }
+  @media (min-width: 768px) {
+    .wall, .col { gap: var(--space-5); }
+  }
+</style>

@@ -1,0 +1,7 @@
+---
+/** A white content panel (the same surface as a card) for page areas such as the KPI comparison and its chart. Padding 24 px; `flush` = no padding and no gap (the content brings its own). */
+import './dashboard.css';
+interface Props { flush?: boolean; class?: string }
+const { flush = false, class: cls } = Astro.props;
+---
+<section class:list={['dash', 'dpanel', { 'dpanel--flush': flush }, cls]}><slot /></section>

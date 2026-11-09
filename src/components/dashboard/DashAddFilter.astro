@@ -1,0 +1,13 @@
+---
+/** "Filter by" in the toolbar with a blue "+" and ADD FILTER, or (`chip`) an applied filter chip like "Author John Appleseed" with a close icon. */
+import './dashboard.css';
+import DashIcon from './DashIcon.astro';
+interface Props { label?: string; chip?: { name: string; value: string } }
+const { label = 'Filter by', chip } = Astro.props;
+---
+<div class="dash dtfield dtfield--filter">
+  <div class="dtfield__label">{label}</div>
+  {chip
+    ? <span class="dchip"><small>{chip.name}</small>{chip.value}<DashIcon name="x" size={14} /></span>
+    : <span class="dadd"><span class="dadd__plus"><DashIcon name="plus" size={14} /></span>ADD FILTER</span>}
+</div>

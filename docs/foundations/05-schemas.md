@@ -49,7 +49,7 @@ Use it for structures, processes, hierarchies and flows. Text, lines and shapes 
 |---|---|
 | `Schema` | The SVG canvas inside a `fixed` `Diagram`. `width` × `height` = the Figma frame; the drawing is scaled to fit and centred. `alt` is required (the drawing is one image for screen readers) |
 | `SchemaGroup` | Rounded container (`x y w h`, radius `r` = 44) |
-| `SchemaPill` | Pill with a mono label. `variant="outline"` (line, sits in a group) or `"filled"` |
+| `SchemaPill` | Pill with a mono label. `variant="outline"` (line, sits in a group), `"filled"`, `"accent"` (salmon fill with dark text, for the few entries the story is about) or `"quiet"` (line with dimmed text, for the least important ones) |
 | `SchemaArrow` | Line through `points` with rounded corners (`r` = 24) and an open arrowhead at the last point. Two points = straight, 3–4 = elbow. `dotted`: a dotted line (2.5 px dots) with a thinner solid head (1.5 px), for a secondary link such as a page that leads back into the navigation |
 | `SchemaList` | Mono title plus `→` items (Geist) |
 

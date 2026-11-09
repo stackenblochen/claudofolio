@@ -1,0 +1,35 @@
+---
+/**
+ * Laptop scene: a hero image in the composition of a close-up photo. A plain, front-on laptop (black bezel, camera, thin aluminium rim, no tilt,
+ * no glow) fills most of the frame and runs off the bottom, in front of a photo background (`bg`: a blurred plant on a bright wall). The `src`
+ * screenshot sits on the screen as it is, with only a faint reflection. Rendered to a 2560 × 1600 image (16:10, the case-study cover): put it
+ * alone on a page, screenshot it at 2560 × 1600 and use that as `cover` (with `coverFill: true`).
+ *
+ *   <LaptopScene src={dashboard.src} bg={plants.src} />
+ *
+ * `src`: URL of the screenshot (cropped to the 16:10 screen from the top left). `bg`: URL of a 2560 × 1600 background photo.
+ */
+interface Props { src: string; bg: string }
+const { src, bg } = Astro.props;
+---
+<div class="scene" style={`background-image:url(${bg})`}>
+  <div class="laptop">
+    <div class="lid">
+      <span class="cam"></span>
+      <div class="screen"><img src={src} alt="" /><span class="glare"></span></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .scene { position: relative; width: 2560px; height: 1600px; overflow: hidden; background-size: cover; background-position: center; background-color: #e9ebe8; }
+  .laptop { position: absolute; left: 190px; top: 300px; width: 2200px; }
+  .lid {
+    position: relative; padding: 60px 52px 0; border-radius: 54px 54px 0 0; background: #0b0b0c;
+    box-shadow: 0 0 0 3px #b9bcc0, 0 0 0 4px #8d9095, 0 50px 130px rgba(30, 40, 30, 0.28), 0 14px 40px rgba(30, 40, 30, 0.18);
+  }
+  .cam { position: absolute; top: 24px; left: 50%; width: 11px; height: 11px; margin-left: -5px; border-radius: 50%; background: radial-gradient(circle at 35% 35%, #35405a, #0d0f15 65%); }
+  .screen { position: relative; width: 100%; aspect-ratio: 16 / 10; overflow: hidden; border-radius: 6px 6px 0 0; background: #000; }
+  .screen img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: left top; display: block; }
+  .glare { position: absolute; inset: 0; pointer-events: none; background: linear-gradient(118deg, rgba(255, 255, 255, 0.07) 0%, rgba(255, 255, 255, 0.02) 22%, transparent 38%); }
+</style>

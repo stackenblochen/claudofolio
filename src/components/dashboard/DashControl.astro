@@ -1,0 +1,8 @@
+---
+/** An inline drop-down control in a page header: a label and the current value in the link blue ("Timerange: Last 4 weeks"). */
+import './dashboard.css';
+import DashChevron from './DashChevron.astro';
+interface Props { label: string; value: string }
+const { label, value } = Astro.props;
+---
+<div class="dash dctl"><span class="dctl__label">{label}:</span><span class="dctl__value">{value}<DashChevron dir="down" size={16} /></span></div>

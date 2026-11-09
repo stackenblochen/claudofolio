@@ -1,0 +1,8 @@
+---
+/** A round floating button (white, soft shadow, blue icon) that opens a panel that takes its place: the map legend (info icon) or the side panel (panel icon). */
+import './dashboard.css';
+import DashIcon from './DashIcon.astro';
+interface Props { icon: 'info' | 'panel-expand'; label: string; class?: string }
+const { icon, label, class: cls } = Astro.props;
+---
+<span class:list={['dash', 'dfab', cls]} role="button" aria-label={label}><DashIcon name={icon} size={24} /></span>

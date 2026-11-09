@@ -1,0 +1,27 @@
+---
+/**
+ * Dark sidebar of the dashboard app. `sections`: an optional header (icon, title; leave both out for a section that is only a small-caps `label` with items below it, not selectable) and an optional small-caps `label` ("Recently used"), items
+ * (`active` = blue, `linked` = link icon) and a `create` row; `chevron` adds the drop-down chevron to a section header that opens a list ("Create Dashboard"). `footer` = the pinned bottom entry.
+ *
+ *   <DashSidebar sections={[{ icon: 'grid', title: 'Select dashboard', label: 'Recently used', items: [{ name: 'Henry\'s Dashboard', active: true }], create: 'Create Dashboard' }]} footer="Manage home" />
+ */
+import './dashboard.css';
+import DashIcon from './DashIcon.astro';
+interface Item { name: string; active?: boolean; linked?: boolean }
+interface Section { icon?: 'grid' | 'building' | 'compare' | 'code'; title?: string; chevron?: boolean; label?: string; items?: Item[]; create?: string }
+interface Props { sections: Section[]; footer?: string }
+const { sections, footer } = Astro.props;
+---
+<nav class="dside" aria-label="Dashboards">
+  <div class="dside__sections">
+    {sections.map((s) => (
+      <div class="dside__section">
+        {s.title && s.icon && <div class="dside__head"><DashIcon name={s.icon} /><span>{s.title}</span>{s.chevron && <DashIcon name="chevron-down" size={16} />}</div>}
+        {s.label && <div class="dside__label">{s.label}</div>}
+        {s.items?.map((i) => <div class:list={['dside__item', { 'is-active': i.active }]}>{i.name}{i.linked && <DashIcon name="link" size={16} />}</div>)}
+        {s.create && <div class="dside__item dside__create"><DashIcon name="plus-circle" />{s.create}</div>}
+      </div>
+    ))}
+  </div>
+  {footer && <div class="dside__foot"><DashIcon name="gear" /><span>{footer}</span></div>}
+</nav>

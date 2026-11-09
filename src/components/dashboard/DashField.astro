@@ -1,0 +1,12 @@
+---
+/** A select field in the toolbar: small grey label above the value in the link blue; `badge` adds the APP tag behind the value. A divider sits on its right edge. */
+import './dashboard.css';
+import DashBadge from './DashBadge.astro';
+import DashChevron from './DashChevron.astro';
+interface Props { label: string; value: string; badge?: boolean; width?: number }
+const { label, value, badge = false, width } = Astro.props;
+---
+<div class="dash dtfield" style={width ? `width:${width}px` : undefined}>
+  <div class="dtfield__text"><div class="dtfield__label">{label}</div><div class="dtfield__value">{value}{badge && <DashBadge />}</div></div>
+  <DashChevron dir="down" size={18} />
+</div>

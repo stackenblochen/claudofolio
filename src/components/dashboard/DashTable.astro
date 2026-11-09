@@ -1,0 +1,15 @@
+---
+/**
+ * A plain data table: a small grey header row (a `chevron` marks a sortable column) and 40 px rows with dividers; the first column is bold
+ * (a date), long text is cut with an ellipsis. `widths` = grid column widths, e.g. ['28%', '32%', '1fr'].
+ */
+import './dashboard.css';
+import DashChevron from './DashChevron.astro';
+interface Props { cols: { label: string; chevron?: boolean }[]; rows: string[][]; widths?: string[] }
+const { cols, rows, widths = cols.map(() => '1fr') } = Astro.props;
+const grid = `grid-template-columns:${widths.join(' ')}`;
+---
+<div class="dash dtable">
+  <div class="dtable__head" style={grid}>{cols.map((c) => <span>{c.label}{c.chevron && <DashChevron dir="down" size={14} />}</span>)}</div>
+  {rows.map((r) => <div class="dtable__row" style={grid}>{r.map((v, i) => <span class:list={{ 'is-first': i === 0 }}>{v}</span>)}</div>)}
+</div>

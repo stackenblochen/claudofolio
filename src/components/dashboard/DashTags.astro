@@ -1,0 +1,11 @@
+---
+/** Tag filters in the toolbar: the label and one dot per tag (filled = tag shown, outlined = hidden), then a drop-down chevron. `tones`: teal | orange | pink | off. */
+import './dashboard.css';
+import DashChevron from './DashChevron.astro';
+interface Props { label?: string; tones: ('teal' | 'orange' | 'pink' | 'off')[] }
+const { label = 'Tag Filters', tones } = Astro.props;
+---
+<div class="dash dtfield dtfield--tags">
+  <div class="dtfield__text"><div class="dtfield__label">{label}</div><div class="dtags">{tones.map((t) => <span class={`dtag dtag--${t}`}></span>)}</div></div>
+  <DashChevron dir="down" size={18} />
+</div>

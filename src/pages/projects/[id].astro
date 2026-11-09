@@ -6,6 +6,14 @@ import StorySection from '../../components/StorySection.astro';
 import ScreenGallery from '../../components/ScreenGallery.astro';
 import Figure from '../../components/Figure.astro';
 import Comparison from '../../components/Comparison.astro';
+import DashCard from '../../components/dashboard/DashCard.astro';
+import DashMetric from '../../components/dashboard/DashMetric.astro';
+import DashSpark from '../../components/dashboard/DashSpark.astro';
+import DashRanking from '../../components/dashboard/DashRanking.astro';
+import DashApp from '../../components/dashboard/DashApp.astro';
+import DashSidebar from '../../components/dashboard/DashSidebar.astro';
+import DashGrid from '../../components/dashboard/DashGrid.astro';
+import DashBadge from '../../components/dashboard/DashBadge.astro';
 import ImageText from '../../components/ImageText.astro';
 import Video from '../../components/Video.astro';
 import Embed from '../../components/Embed.astro';
@@ -16,6 +24,7 @@ import Diagram from '../../components/Diagram.astro';
 import MediaText from '../../components/MediaText.astro';
 import MediaRow from '../../components/MediaRow.astro';
 import ImageGrid from '../../components/ImageGrid.astro';
+import PhotoWall from '../../components/PhotoWall.astro';
 import Quote from '../../components/Quote.astro';
 import Principles from '../../components/Principles.astro';
 import SchemaGroup from '../../components/schema/SchemaGroup.astro';
@@ -34,7 +43,7 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 
 // Available in every case-study MDX without imports.
-const components = { StorySection, ScreenGallery, Figure, Comparison, ImageText, Video, Embed, Arrow, Mock, Diagram, MediaText, MediaRow, ImageGrid, Quote, Principles, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips };
+const components = { DashApp, DashSidebar, DashGrid, DashBadge, DashCard, DashMetric, DashSpark, DashRanking, StorySection, ScreenGallery, Figure, Comparison, ImageText, Video, Embed, Arrow, Mock, Diagram, MediaText, MediaRow, ImageGrid, PhotoWall, Quote, Principles, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips };
 ---
 
 <CaseStudy project={project}>

@@ -1,0 +1,15 @@
+---
+/**
+ * Chart tooltip (hover state): a white card with a date line and one row per KPI (coloured dot, name, bold value, unit).
+ * Position it inside a `position: relative` chart stack with `x` (0-1 along the width) and `top` (px); it sits to the right of the cursor.
+ */
+import './dashboard.css';
+interface Props { title: string; rows: { tone: 'blue' | 'teal' | 'green' | 'red'; label: string; value: string; unit?: string }[]; x: number; top?: number }
+const { title, rows, x, top = 60 } = Astro.props;
+---
+<div class="dash dtip2" style={`left:calc(${(x * 100).toFixed(2)}% + 16px);top:${top}px`}>
+  <div class="dtip2__title">{title}</div>
+  {rows.map((r) => (
+    <div class="dtip2__row"><span class={`dlegend__dot dlegend__dot--${r.tone}`}></span><span class="dtip2__label">{r.label}</span><b>{r.value}</b>{r.unit && <span class="dtip2__unit">{r.unit}</span>}</div>
+  ))}
+</div>

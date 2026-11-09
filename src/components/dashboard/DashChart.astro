@@ -1,0 +1,53 @@
+---
+/**
+ * Large chart for a detail page (full panel width, about 1120 px at the native app size).
+ * kind="combo": a stepped area on the left axis plus a line on the right axis, over horizontal gridlines with labels on both sides.
+ * kind="bars": outlined bars (green) with a baseline only, e.g. code changes under the combo chart.
+ *
+ *   <DashChart kind="combo" area={…} line={…} leftLabels={['150','100','50','0']} rightLabels={['300k','200k','100k','0']} unitLeft="Person days" unitRight="Lines of Code" ticks={…} tickAt={…} alt="…" />
+ *   <DashChart kind="bars" bars={…} ticks={…} tickAt={…} alt="…" />
+ * `hover` = index of a data point to show in its hover state: a vertical cursor, dots on the lines, the bar lit up (the tooltip itself is DashTooltip).
+ * `area`/`line`/`bars` are plain numbers; `areaMax`/`lineMax`/`barsMax` set the top of each scale (default: the largest value, rounded up by the labels).
+ */
+import './dashboard.css';
+interface Props {
+  alt: string; kind?: 'combo' | 'bars'; area?: number[]; line?: number[]; bars?: number[]; areaMax?: number; lineMax?: number; barsMax?: number;
+  leftLabels?: string[]; rightLabels?: string[]; unitLeft?: string; unitRight?: string; ticks?: string[]; tickAt?: number[]; height?: number; hover?: number; width?: number;
+}
+const { alt, kind = 'combo', area = [], line = [], bars = [], areaMax, lineMax, barsMax, leftLabels = [], rightLabels = [], unitLeft, unitRight, ticks = [], tickAt = [], height, hover, width } = Astro.props;
+const W = width ?? 1120, L = 40, R = 52, TOP = 8, TICKS_H = ticks.length ? 22 : 6;
+const H = height ?? (kind === 'combo' ? 330 : 96);
+const px0 = L, px1 = W - R, pw = px1 - px0, ih = H - TOP - TICKS_H, base = TOP + ih;
+const f = (v: number) => +v.toFixed(1);
+const yOf = (v: number, max: number) => base - (v / max) * ih;
+const aMax = areaMax ?? Math.max(...area, 1), lMax = lineMax ?? Math.max(...line, 1), bMax = barsMax ?? Math.max(...bars, 1);
+const stepW = (n: number) => pw / Math.max(1, n);
+// stepped area: each value holds for one step
+const areaPath = area.length ? area.map((v, i) => `${i ? 'L' : 'M'}${f(px0 + i * stepW(area.length))} ${f(yOf(v, aMax))} L${f(px0 + (i + 1) * stepW(area.length))} ${f(yOf(v, aMax))}`).join(' ') : '';
+const areaFill = area.length ? `${areaPath} L${px1} ${base} L${px0} ${base} Z` : '';
+const linePath = line.length ? line.map((v, i) => `${i ? 'L' : 'M'}${f(px0 + (i + 0.5) * stepW(line.length))} ${f(yOf(v, lMax))}`).join(' ') : '';
+const grid = leftLabels.length > 1 ? leftLabels.map((_, i) => base - (i * ih) / (leftLabels.length - 1)) : [];
+const labelsAt = (labels: string[]) => labels.map((t, i) => ({ t, y: base - (i * ih) / (labels.length - 1) }));
+const tx = (i: number) => px0 + (tickAt[i] ?? i / Math.max(1, ticks.length - 1)) * pw;
+const hoverN = area.length || bars.length || line.length;
+const hx = hover != null ? px0 + (hover + 0.5) * stepW(hoverN) : 0;
+const barW = bars.length ? Math.max(2, stepW(bars.length) - 4) : 0;
+---
+<div class="dash dchart">
+  {kind === 'combo' && (unitLeft || unitRight) && <div class="dchart__units"><span>{unitLeft}</span><span>{unitRight}</span></div>}
+  <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={alt}>
+    {kind === 'combo' && grid.map((y) => <line class="dchart__grid" x1={px0} x2={px1} y1={f(y)} y2={f(y)} />)}
+    {kind === 'combo' && area.length > 0 && <path class="dchart__area" d={areaFill} />}
+    {kind === 'combo' && area.length > 0 && <path class="dchart__arealine" d={areaPath} />}
+    {kind === 'combo' && line.length > 0 && <path class="dchart__line" d={linePath} />}
+    {kind === 'bars' && bars.map((v, i) => <rect class:list={['dchart__bar', { 'is-hot': i === hover }]} x={f(px0 + i * stepW(bars.length) + 2)} y={f(yOf(v, bMax))} width={f(barW)} height={f(base - yOf(v, bMax))} />)}
+    <line class="dchart__axis" x1={px0} x2={px1} y1={base} y2={base} />
+    {hover != null && <line class="dchart__cursor" x1={f(hx)} x2={f(hx)} y1={TOP} y2={base} />}
+    {hover != null && kind === 'combo' && area.length > 0 && <circle class="dchart__dot dchart__dot--blue" cx={f(hx)} cy={f(yOf(area[hover], aMax))} r="5" />}
+    {hover != null && kind === 'combo' && line.length > 0 && <circle class="dchart__dot dchart__dot--teal" cx={f(hx)} cy={f(yOf(line[hover], lMax))} r="5" />}
+    {kind === 'combo' && labelsAt(leftLabels).map((l) => <text class="dchart__text" x={px0 - 8} y={f(l.y + 4)} text-anchor="end">{l.t}</text>)}
+    {kind === 'combo' && labelsAt(rightLabels).map((l) => <text class="dchart__text" x={px1 + 8} y={f(l.y + 4)}>{l.t}</text>)}
+    {ticks.map((t, i) => <line class="dchart__axis" x1={f(tx(i))} x2={f(tx(i))} y1={base} y2={base + 4} />)}
+    {ticks.map((t, i) => <text class="dchart__text" x={f(tx(i))} y={base + 17} text-anchor="middle">{t}</text>)}
+  </svg>
+</div>

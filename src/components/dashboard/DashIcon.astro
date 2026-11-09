@@ -1,0 +1,33 @@
+---
+/**
+ * Icons of the dashboard app chrome: Tabler outline icons (@tabler/icons), drawn at 24 px, stroke in the text colour.
+ * Add an icon: import its SVG with ?raw below and register it in `icons`.
+ */
+import grid from '../../../node_modules/@tabler/icons/icons/outline/layout-grid.svg?raw';
+import building from '../../../node_modules/@tabler/icons/icons/outline/building.svg?raw';
+import plusCircle from '../../../node_modules/@tabler/icons/icons/outline/circle-plus.svg?raw';
+import link from '../../../node_modules/@tabler/icons/icons/outline/link.svg?raw';
+import gear from '../../../node_modules/@tabler/icons/icons/outline/settings.svg?raw';
+import share from '../../../node_modules/@tabler/icons/icons/outline/share.svg?raw';
+import chevronDown from '../../../node_modules/@tabler/icons/icons/outline/chevron-down.svg?raw';
+import chevronRight from '../../../node_modules/@tabler/icons/icons/outline/chevron-right.svg?raw';
+import user from '../../../node_modules/@tabler/icons/icons/outline/user-circle.svg?raw';
+import compare from '../../../node_modules/@tabler/icons/icons/outline/arrows-exchange.svg?raw';
+import code from '../../../node_modules/@tabler/icons/icons/outline/code.svg?raw';
+import pencil from '../../../node_modules/@tabler/icons/icons/outline/pencil.svg?raw';
+import xIcon from '../../../node_modules/@tabler/icons/icons/outline/x.svg?raw';
+import plus from '../../../node_modules/@tabler/icons/icons/outline/plus.svg?raw';
+import infoCircle from '../../../node_modules/@tabler/icons/icons/filled/info-circle.svg?raw';
+import panelExpand from '../../../node_modules/@tabler/icons/icons/outline/layout-sidebar-left-expand.svg?raw';
+import panelCollapse from '../../../node_modules/@tabler/icons/icons/outline/layout-sidebar-left-collapse.svg?raw';
+import sort from '../../../node_modules/@tabler/icons/icons/outline/sort-descending.svg?raw';
+
+const icons = { grid, building, 'plus-circle': plusCircle, link, gear, share, 'chevron-down': chevronDown, 'chevron-right': chevronRight, user, sort, compare, code, pencil, x: xIcon, plus, info: infoCircle, 'panel-expand': panelExpand, 'panel-collapse': panelCollapse };
+type Name = keyof typeof icons;
+interface Props { name: Name; size?: number }
+const { name, size = 20 } = Astro.props;
+const filled = name === 'info'; // Tabler filled icons: drawn as solid shapes instead of strokes
+// keep only the drawing: drop the svg wrapper and the empty bounding path
+const inner = icons[name].replace(/^[\s\S]*?<svg[^>]*>/, '').replace(/<\/svg>\s*$/, '').replace(/<path[^>]*stroke="none"[^>]*\/>/, '');
+---
+<svg class:list={['dicon', { 'dicon--filled': filled }]} viewBox="0 0 24 24" width={size} height={size} aria-hidden="true" set:html={inner} />

@@ -64,9 +64,11 @@ Measured values:
 | `srcDark` | image | Second screenshot that swaps in on dark |
 | `cutout="none"` | | iOS only: frame without the island, when the screenshot already contains it. The Android notch is part of the frame |
 | `width` | `wide` · `media` | Page width: `wide` = 12 cols (default of `full` and `cover`), `media` = the 10 col media measure |
+| `outline` | `auto` (default) · `dark` · `light` · `both` · `none` | The 1 px outline around the devices. `auto` = the rule in "Outline, shadow, radius" below (only a dark window without a stage has one), so existing mocks do not change. `dark` / `light` show it only in that mode (dark: the site's dark mode, light: the light mode), `both` always, `none` never. It is the `--mock-outline` variable set inline on the mock; a device on a stage has no outline of its own (`device: 'none'` on a stage draws none), so use it on mocks without a stage or with windows |
 | `shadow` | `heavy` (default) · `soft` · `none` | Shadow under the devices. Heavy = the site's screenshot shadow (`--shadow-screenshot`), soft = a lighter, tighter one, none = no shadow (the outline stays) |
 | `zoom` | number, e.g. `1.1` | Cut alignments only: how much the window is enlarged (default 1.7) |
 | `ratio`, `focus` | e.g. `16 / 10`, `top right` | Crop the screenshot to a ratio and choose which part stays visible |
+| `zoom`, `at` (per screen) | e.g. `zoom: 1.9`, `at: '38% 45%'` | `device: 'none'` only: zoom into the screenshot. `zoom` 1 = the image fills the stage (cover), 2 = twice as big; `at` = the point of the image (percent of its width and height) that is kept in the centre of the stage, clamped so the stage never shows. The gallery still opens the whole image. Different from the mock-level `zoom`, which enlarges a window in the cut alignments |
 
 Removed with the new frames: the desktop window title and the Chrome `profile` label.
 
@@ -101,3 +103,9 @@ The frame clips the screenshot, so the screenshot must not bring its own edge:
 - Use Android screenshots in the Android frame; an iOS status bar under the notch looks wrong.
 - Outline and shadow come from the template. Never bake a shadow, border or rounded corners into the screenshot.
 - PNG export (not in this repo; `mocks/render.mjs` in the Claude project): `node render.mjs spec.json out/`. Mocks render at their site width (full/cover 1230, media 1020, half 600, third 390) and are scaled 2× (half and third 3×), so radius and border match the site. Override with `scale`.
+
+## Product scene: laptop (hero images)
+
+`src/components/scenes/LaptopScene.astro` is a generator for hero images, not a `Mock` device. The composition follows a close-up photo: a plain, front-on laptop (black bezel, camera, thin aluminium rim; no tilt, no glow) fills most of the frame and runs off the bottom, in front of a photo background (`bg`, e.g. a blurred plant on a bright wall from the iCloud folder `Portfolio/Backgrounds/Plants`, resized to 2560 × 1600). The screenshot sits on the screen as it is, cropped from its top left to the 16:10 screen, with only a faint reflection.
+
+To make a cover: put `<LaptopScene src={shot.src} bg={bg.src} />` alone on a temporary page, screenshot it at 2560 × 1600 (headless Chrome: `--window-size=2560,1600 --force-device-scale-factor=1 --virtual-time-budget=10000 --screenshot=cover.png`), delete the page, and use the PNG as the case study's `cover` with `coverFill: true`. Used for the Seerene case study (background: `sarah-dorweiler-j_ICZ_TtTF0`, Unsplash).

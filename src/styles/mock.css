@@ -326,6 +326,8 @@
   overflow: hidden;
 }
 .mock__device[data-device="none"] .mock__screen { height: 100%; }
+/* zoom: the whole screenshot is laid out bigger than the stage and moved so the chosen point is centred; the stage clips it (sizes and offsets come from Mock.astro) */
+.mock__device[data-zoom] .mock__img { position: absolute; margin: 0; max-width: none; object-fit: fill; width: var(--mock-z-w); height: var(--mock-z-h); left: var(--mock-z-l); top: var(--mock-z-t); }
 /* With a stage the screenshot is the stage's content: the stage clips it (so the rounded corners are the stage's own),
  * and the device has no radius, outline or shadow of its own, so no stage colour shows through at the corners or edges. */
 .mock[data-stage]:has(> .mock__device[data-device="none"]) { overflow: hidden; border-radius: var(--mock-stage-radius); }

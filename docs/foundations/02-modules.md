@@ -39,6 +39,7 @@ Breakpoints: **xs** < 544 · **sm** 544–767 · **md** 768–991 · **lg** 992�
 | I15 | Principles (numbered columns) | `Principles` | Design vision |
 | I16 | Experience list (icon, title, text) | `ExperienceList` | About me |
 | I17 | Image grid (equal images, 3 columns) | `ImageGrid` | Case studies |
+| I19 | Photo wall (two-column bento of photos) | `PhotoWall` | Case studies |
 | I18 | Gallery (lightbox: zoom, browse, caption) | `Gallery` + `gallery` on images | Case studies |
 | **L — Collections** | | | |
 | L1 | Project teasers | `ProjectGrid`, `ProjectCard` | Home |
@@ -208,6 +209,8 @@ Square photo at half the text measure (4 of 8 columns on wide desktops), radius 
 `ExperienceList`: `items` (`icon`, `title`, `text`) at the text measure, no box: two columns from 768 px, one below. `icon` is a file name under `@tabler/icons/outline` (without `.svg`), shown 24 px in `--accent-primary` (salmon, like the label icons); the title is `.t-body` in the strong colour at the emphasis weight, the text `.t-body`. Used on the About page under the "Experience" section title.
 
 ### I17 Image grid
+`PhotoWall` (I19): a two-column bento of photos on the media measure, for the start of a case study between the overview and the first section. `columns` is two arrays of tiles (`src`, `alt`); each column stacks its tiles with the usual gap (16 px, 24 px from 768 px), two columns at every width. A tile is at least square: a landscape photo is zoomed in to the tile ratio (`position`, CSS object-position, picks what stays visible), a portrait photo keeps its own ratio; `ratio` (height / width) overrides the tile shape so the columns end at about the same height; `bg: 'white'` puts a cut-out on plain white. Radius 12, no outline, no captions.
+
 `ImageGrid`: `items` (`src`, `alt`) on the media measure, 3 columns from 768 px (`columns` 2–4), 2 below. Images of the same ratio use the screenshot look (radius 12, border, shadow); with `ratio` (e.g. `"3 / 2"`, or the ratio of the images so they fill it) each image is fitted into a tile of that ratio (`--bg-secondary`, 1 px outline drawn outside the tile, radius 12), so mixed ratios and transparent images line up like a gallery. An item can set `bg: 'white'` to sit on plain white in both themes (illustrations drawn for a white page). No captions. Starts a new group like `MediaText` (extra space above when it follows other media).
 
 ### I18 Gallery
