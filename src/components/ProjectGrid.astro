@@ -37,9 +37,9 @@ const { items, variant = DEFAULT_VARIANT } = Astro.props;
   @media (min-width: 768px) { .grid { gap: var(--space-4); } }
   @media (min-width: 992px) { .grid { gap: var(--space-5); } }
 
-  /* bento: two equal columns from 768 px, three from 992 px, full media width */
-  .grid--bento { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr); }
+  /* bento: the same width as the other content (the text measure: 8/9/9/12/12 columns, the width of the section headline and the chat), one column on phones,
+     two equal columns from 768 px */
+  .grid--bento { --n: var(--measure-text-cols); width: calc(100% * var(--n) / 12 - var(--gutter) * (12 - var(--n)) / 12); display: grid; grid-template-columns: minmax(0, 1fr); }
   .grid--bento > li { min-width: 0; }
   @media (min-width: 768px) { .grid--bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (min-width: 992px) { .grid--bento { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 </style>
