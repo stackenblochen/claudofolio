@@ -35,7 +35,7 @@ const items = NAV.map((n) => ({ ...n, href: url(n.href) }));
 const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
 ---
 
-<header class="site-header" data-site-header>
+<header class="site-header" data-site-header data-nav-in-hero={isHome ? '' : undefined}>
   <div class="container bar">
     {!isHome
       ? <a class="logo logo--back" href={backHref} aria-label={backLabel}><BubbleArrow dir="left" size={20} /></a>
@@ -127,6 +127,11 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
     background: var(--bg-glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
     transition: background 200ms ease, color 200ms ease;
   }
+  /* home page: the menu pills live in the hero (big, under the chat) at the top of the page; the header's menu fades in once the page is scrolled past
+     them (script below). The logo and the theme button stay as they are. */
+  .site-header[data-nav-in-hero] .menu { transition: opacity 220ms ease, transform 260ms ease, visibility 0s linear 0s; }
+  .site-header[data-nav-in-hero]:not([data-nav-show]) .menu { opacity: 0; visibility: hidden; transform: translateY(-8px); transition: opacity 180ms ease, transform 220ms ease, visibility 0s linear 220ms; }
+  @media (prefers-reduced-motion: reduce) { .site-header[data-nav-in-hero] .menu, .site-header[data-nav-in-hero]:not([data-nav-show]) .menu { transition: none; transform: none; } }
   .menu a[aria-current='page'] { background: var(--fill); }
   .menu a:hover, .menu a[aria-current='page']:hover { color: light-dark(var(--color-white), var(--gray-950)); background: var(--accent-primary); } /* hover: a solid salmon pill, white text in light mode, near-black in dark mode (contrast on the lighter salmon) */
   .burger { background: none; border: 0; padding: var(--space-3) 0 var(--space-3) var(--space-3); cursor: pointer; }
@@ -197,6 +202,18 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
       header?.toggleAttribute('data-hidden', d > 0);
       lastY = y;
     };
+    // home page: the header's menu shows as soon as the hero's own nav buttons are scrolled out of view (and hides again when they come back on screen,
+    // since those are the menu there)
+    const navShow = () => {
+      if (!header?.hasAttribute('data-nav-in-hero')) return;
+      const heroNav = document.querySelector<HTMLElement>('[data-hero-nav]');
+      const past = !heroNav || heroNav.getBoundingClientRect().bottom <= (header?.offsetHeight ?? 0);
+      header.toggleAttribute('data-nav-show', past);
+    };
+    window.addEventListener('scroll', navShow, { passive: true, signal });
+    window.addEventListener('resize', navShow, { signal });
+    header?.addEventListener('focusin', () => header.hasAttribute('data-nav-in-hero') && header.setAttribute('data-nav-show', ''), { signal });
+    navShow();
     window.addEventListener('scroll', autoHide, { passive: true, signal });
     header?.addEventListener('focusin', () => header.removeAttribute('data-hidden'), { signal });
   });
