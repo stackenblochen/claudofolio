@@ -67,7 +67,7 @@ const navItems = NAV.map((n) => ({ ...n, href: url(n.href) }));
     box-sizing: border-box; position: relative; display: flex; flex-direction: column;
     /* the hero fills the first screen and the chat (with the nav buttons) sits at its bottom edge, 120 px above it */
     min-height: 100vh; min-height: 100svh; justify-content: flex-end;
-    padding-top: calc(var(--header-h) + var(--space-9)); padding-bottom: 120px;
+    padding-top: calc(var(--header-h) + var(--space-9)); padding-bottom: 88px;
     background: var(--bg-primary);
   }
   /* the doodle wallpaper behind the chat, like a WhatsApp chat: the doodle tile (src/assets/stage/doodle-bg.svg, black shapes) is used as a mask over a
@@ -86,6 +86,7 @@ const navItems = NAV.map((n) => ({ ...n, href: url(n.href) }));
     filter: saturate(0.8); opacity: 0.5; /* 50% transparent: the stage colour shows through */
   }
   .home-hero > .container { position: relative; }
+  @media (min-width: 768px) { .home-hero { padding-bottom: 120px; } }
   .stage { position: relative; }
 
   /* the chat: the sender's picture (a circle), bubbles like an incoming message (the last with a small tail pointing at the picture).
@@ -96,34 +97,35 @@ const navItems = NAV.map((n) => ({ ...n, href: url(n.href) }));
      (`--chat-indent`, a negative offset), so it overlaps into the margin instead of pushing the bubbles inward; this is the one deliberate exception
      to the grid. Below 768 px there is no spare margin for the picture to overlap into (the page itself only has a 20 px gutter there), so it stays
      flush at the left instead and the bubbles/buttons are indented clear of it, as before. */
-  .stage { --chat-indent: calc(44px + var(--space-3)); }
+  .stage { --chat-indent: calc(40px + 12px); } /* phones: a 40 px picture and a 12 px gap (room for the bubble's tail) */
   @media (min-width: 768px) { .stage { --chat-indent: calc(56px + var(--space-4)); } }
-  .chat { --bubble: var(--color-white); --bubble-text: var(--gray-950); --typing-w: 104px; --typing-h: calc(1.3 * 1.375rem + 2 * var(--space-4)); position: relative; display: flex; flex-direction: column; justify-content: flex-end; } /* light bubbles with dark text in both themes, so they stand out from the wallpaper. The chat fills up from the bottom: its height is reserved by the script (min-height = the full conversation), the bubbles sit at the bottom edge next to the picture. */
-  @media (min-width: 768px) { .chat { --typing-h: calc(1.3 * 1.75rem + 2 * var(--space-4)); } }
-  .chat :global(.avatar) { position: absolute; left: 0; top: auto; bottom: 0; display: block; width: 44px; height: 44px; }
+  .chat { --bubble: var(--color-white); --bubble-text: var(--gray-950); --lead-fs: 1.25rem; --pad-y: var(--space-3); --pad-x: var(--space-4); --bubble-r: 24px; --typing-w: 88px; --typing-h: calc(1.3 * var(--lead-fs) + 2 * var(--pad-y)); position: relative; display: flex; flex-direction: column; justify-content: flex-end; } /* light bubbles with dark text in both themes, so they stand out from the wallpaper. The chat fills up from the bottom: its height is reserved by the script (min-height = the full conversation), the bubbles sit at the bottom edge next to the picture. */
+  @media (min-width: 768px) { .chat { --lead-fs: 1.75rem; --pad-y: var(--space-4); --bubble-r: 32px; --typing-w: 104px; } }
+  .chat :global(.avatar) { position: absolute; left: 0; top: auto; bottom: 0; display: block; width: 40px; height: 40px; }
   .chat :global(.avatar) :global(img) { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
   /* the green "available" dot, cut out of the picture's bottom right corner with a ring the colour of the section behind it */
-  .avatar-status { position: absolute; right: 0; bottom: 0; width: 12px; height: 12px; border-radius: 50%; background: #34c759; box-shadow: 0 0 0 3px var(--bg-primary); }
+  .avatar-status { position: absolute; right: -1px; bottom: -1px; width: 11px; height: 11px; border-radius: 50%; background: #34c759; box-shadow: 0 0 0 3px var(--bg-primary); }
   .bubbles { position: relative; display: flex; flex-direction: column; gap: var(--space-1); align-items: flex-start; min-width: 0; max-width: 40rem; margin-left: var(--chat-indent); }
   @media (min-width: 992px) { .bubbles { max-width: 56rem; } } /* wider bubbles on desktop (the stage's own width still caps them) */
   @media (min-width: 768px) {
     .chat :global(.avatar) { left: calc(-1 * var(--chat-indent)); width: 56px; height: 56px; }
-    .avatar-status { width: 14px; height: 14px; }
+    .avatar-status { right: 0; bottom: 0; width: 14px; height: 14px; }
     .bubbles { margin-left: 0; }
   }
   /* macOS-style squircle corners (`corner-shape`, Chrome/Edge 139+; other browsers keep the plain rounded corners) */
   .bubble { corner-shape: squircle; box-sizing: border-box; }
-  .bubble { position: relative; background: var(--bubble); color: var(--bubble-text); border-radius: 32px; padding: var(--space-4) var(--space-4); box-shadow: 0 1px 2px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.45)); }
+  .bubble { position: relative; background: var(--bubble); color: var(--bubble-text); border-radius: var(--bubble-r); padding: var(--pad-y) var(--pad-x); box-shadow: 0 1px 2px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.45)); }
   .bubble--last { border-bottom-left-radius: 0; }
-  .bubble--last::before { content: ''; position: absolute; bottom: 0; left: -9px; width: 10px; height: 14px; background: var(--bubble); clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+  .bubble--last::before { content: ''; position: absolute; bottom: 0; left: -7px; width: 8px; height: 12px; background: var(--bubble); clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+  @media (min-width: 768px) { .bubble--last::before { left: -9px; width: 10px; height: 14px; } }
   .bubble p { margin: 0; font-family: var(--font-sans); word-spacing: normal; text-wrap: pretty; }
   .bubble :global(em) { font-style: normal; font-weight: 700; color: var(--color-salmon-600); } /* "Wolfgang": salmon, bolder than the rest of the bubble */
   /* the 👋 reaction: a big emoji, no chip behind it, sitting on the top edge of the first message (absolutely positioned, so it never changes the spacing between bubbles) */
-  .reaction { position: absolute; top: -34px; right: var(--space-3); font-size: 3.25rem; line-height: 1; filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.35)); }
+  .reaction { position: absolute; top: -26px; right: var(--space-2); font-size: 2.5rem; line-height: 1; filter: drop-shadow(0 2px 4px rgb(0 0 0 / 0.35)); }
+  @media (min-width: 768px) { .reaction { top: -34px; right: var(--space-3); font-size: 3.25rem; } }
   /* the name/tagline and the years-of-experience bubbles: the whole chat now, since the longer paragraphs moved down to the About section (plain text
      there, not a chat bubble). Bigger and a bit bolder than plain body text, still the body font, so they read as the headline this chat replaces. */
-  .bubble--lead p { font-size: 1.375rem; line-height: 1.3; font-weight: 500; }
-  @media (min-width: 768px) { .bubble--lead p { font-size: 1.75rem; } }
+  .bubble--lead p { font-size: var(--lead-fs); line-height: 1.3; font-weight: 500; }
 
   /* the chat plays once (script below): the picture and the bubbles appear one after the other, each after a short "typing" bubble, then the actions fade in.
      Hidden states only apply with JS (the .js flag), and not with reduced motion, so the content is always there. The space stays reserved, nothing jumps.
@@ -148,7 +150,9 @@ const navItems = NAV.map((n) => ({ ...n, href: url(n.href) }));
 
   /* the buttons: reserved space from the start, only shown (and only then in the tab order / hit-testable) once the chat has finished playing */
   .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); margin-left: var(--chat-indent); }
-  @media (min-width: 768px) { .actions { margin-left: 0; } }
+  .actions { gap: 6px; margin-top: var(--space-5); }
+  .actions :global(.btn) { padding: var(--space-3); }
+  @media (min-width: 768px) { .actions { margin-left: 0; gap: var(--space-3); margin-top: var(--space-6); } .actions :global(.btn) { padding: var(--space-3) var(--space-5); } }
   :global(.js) .actions { opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity 260ms ease, transform 320ms cubic-bezier(0.2, 1, 0.3, 1); }
   :global(.js) .actions.is-in { opacity: 1; visibility: visible; transform: none; }
 
@@ -197,6 +201,15 @@ const navItems = NAV.map((n) => ({ ...n, href: url(n.href) }));
     fit();
     document.fonts?.ready.then(fit);
     window.addEventListener('resize', fit);
+    // also whenever the chat's own width changes (rotating a phone, a window resize, a media query kicking in), so the sizes never go stale
+    let lastW = chat.offsetWidth, fitTimer = 0;
+    const widthWatch = new ResizeObserver(() => {
+      if (chat.offsetWidth === lastW) return;
+      lastW = chat.offsetWidth;
+      clearTimeout(fitTimer);
+      fitTimer = window.setTimeout(fit, 50);
+    });
+    widthWatch.observe(chat);
     const showAll = () => { msgs.forEach((m) => m.classList.add('is-shown', 'is-in')); avatar?.classList.add('is-in'); actions?.classList.add('is-in'); };
     if (matchMedia('(prefers-reduced-motion: reduce)').matches) { showAll(); return; }
 
@@ -257,7 +270,7 @@ const navItems = NAV.map((n) => ({ ...n, href: url(n.href) }));
     window.addEventListener('hashchange', check);
     const poll = window.setInterval(() => { if (played) window.clearInterval(poll); else check(); }, 400); // a slow tab, or layout settling after load, without another event
     check();
-    stopChat = () => { io.disconnect(); window.removeEventListener('scroll', check); window.removeEventListener('resize', fit); window.removeEventListener('hashchange', check); window.clearInterval(poll); timers.forEach(clearTimeout); stopChat = undefined; };
+    stopChat = () => { io.disconnect(); widthWatch.disconnect(); window.removeEventListener('scroll', check); window.removeEventListener('resize', fit); window.removeEventListener('hashchange', check); window.clearInterval(poll); timers.forEach(clearTimeout); stopChat = undefined; };
   }
 
   document.addEventListener('astro:page-load', initChat);
