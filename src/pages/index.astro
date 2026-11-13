@@ -14,7 +14,6 @@ const projects = await getTeasers();
 
 <Base description="Wolfgang Lattermann is a product designer based in Berlin. Selected work, experience and career in product design and design systems.">
   <HomeHero>
-    <Fragment slot="intro">I’m <em>Wolfgang</em>, a design lead who sets the direction and ships it. 10+&nbsp;years of experience.</Fragment>
     <Fragment slot="actions">
       <a class="btn t-label" href="#selected-work">View work</a>
       <a class="btn t-label" href="#about">About me</a>
@@ -22,13 +21,13 @@ const projects = await getTeasers();
   </HomeHero>
 
 
-  <section id="about" class="work section section--pure" aria-labelledby="about-title">
-    <AboutIntro />
-  </section>
-
   <section id="selected-work" class="work section section--pure" aria-labelledby="work">
     <SectionTitle id="work" chapter>Selected work</SectionTitle>
     <div class="container grid-wrap"><ProjectGrid items={projects} /></div>
+  </section>
+
+  <section id="about" class="work section section--pure" aria-labelledby="about-title">
+    <AboutIntro />
   </section>
 
   <section class="work section section--pure">

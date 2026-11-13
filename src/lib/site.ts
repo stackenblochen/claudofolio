@@ -10,9 +10,10 @@ export const SITE = {
   description: 'Wolfgang Lattermann is a product designer based in Berlin.',
 };
 
+// Order matches the page: Selected work, then Experience/Career/Education, then the About me text+portrait, then Contact.
 export const NAV = [
-  { label: 'About me', href: '/#about' },
   { label: 'Work', href: '/#selected-work' },
+  { label: 'About me', href: '/#about' },
   { label: 'Contact', href: '/#contact' },
 ];
 

@@ -1,25 +1,53 @@
 ---
 /**
- * H1 Home intro: the headline across the 8 text columns with the buttons below, on the flat page background. The stage is only as high as its content.
+ * H1 Home intro, now a full chat: the headline is gone, replaced by a conversation that plays once, on load (the hero is already in view then) —
+ * the sender's picture (with a green "available" dot) tracks the bottom of whichever bubble is currently current, including while it is still a
+ * "typing" bubble. The opener ("👋") appears directly, no typing indicator, the way the first line of a chat usually is; every bubble after it lands
+ * after a typing pause whose length follows the length of the message. Once the whole sequence has played, the action buttons (slot "actions") fade
+ * in below the chat. With reduced motion, or without JS, everything (chat and buttons) is simply shown at once.
  *
- * Prism effect on the headline (see lib/prism.ts): while the pointer is anywhere on the stage (the whole hero), at full strength when it touches the type, slices of the text shear sideways and split into red / green / blue
- * fringes around the cursor (stronger while it moves, a base level while it rests). The real DOM text stays in place; a transparent WebGL canvas on top only
- * paints where there is distortion. The pointer reaction needs a fine hovering pointer; with reduced motion nothing moves. Now and then (every 5 to 9 s, when nobody is using the pointer) a short soft pass runs over "Wolfgang", "design lead" or "10+ years of experience".
- * The glass cube background (with random tilt, float and blurred edges) is in git (commit 90065de); the prism shader background in HomeHeroShader.astro; the doodles in DoodleStack.astro.
+ * This chat engine was first built for the About intro; that section (AboutIntro.astro, now after Selected work and Experience/Career/Education) still
+ * carries the fuller "I own the full process…" / "With a diploma…" paragraphs, but as plain, unanimated text — the chat here only plays the short
+ * opener (greeting, name + tagline in one bubble, years of experience), kept bigger and a bit bolder than plain body text (`.bubble--lead`), since it
+ * stands in for the old headline. The buttons (slot "actions") line up with the bubbles, not with the picture beside them.
+ * The old pointer-driven prism effect on the headline (lib/prism.ts) is not used here any more now that there is no single headline to run it on; the
+ * glass cube background, the prism shader background (HomeHeroShader.astro) and the doodles (DoodleStack.astro) are earlier, unused stage variants,
+ * kept for reference.
  *
- * Slots: "intro" (the headline), "subline" (optional line below it, not part of the prism effect), "actions" (optional row of `.btn` buttons under the text).
+ * Slots: "actions" (the row of `.btn` buttons under the chat, indented to line up with the bubbles).
  */
+import Img from './Img.astro';
+import portrait from '../assets/portrait.webp';
 ---
 
-<section class="home-hero" data-hero>
+<section class="home-hero section--pure" data-hero>
   <div class="container">
-    <div class="stage measure-text" data-stage>
-      <div class="text">
-        <h1 class="intro t-title" data-intro><slot name="intro" /></h1>
-        {Astro.slots.has('subline') && <p class="subline t-subheading"><slot name="subline" /></p>}
-        {Astro.slots.has('actions') && <div class="actions"><slot name="actions" /></div>}
+    <div class="stage measure-text">
+      <!-- the stage as a short chat: the portrait is the sender's picture (tracking the bottom of the current bubble); 👋, then name + tagline in one bubble, then the years of experience, then the last employer -->
+      <div class="chat" data-chat>
+        <span class="avatar">
+          <Img src={portrait} alt="Portrait of Wolfgang, looking to the side, in front of a blue background, wearing a mustard-yellow sweater" sizes="56px" />
+          <i class="avatar-status" aria-hidden="true"></i>
+          <span class="sr-only">Available</span>
+        </span>
+        <div class="bubbles" data-bubbles>
+          <div class="bubble bubble--emoji" data-msg data-first>
+            <span class="emoji" role="img" aria-label="Waving hand">👋</span>
+          </div>
+          <div class="bubble bubble--lead" data-msg>
+            <p class="t-body">Hi, I'm <em>Wolfgang</em>, a design lead who sets the direction and ships it.</p>
+          </div>
+          <div class="bubble bubble--lead" data-msg>
+            <p class="t-body">10+ years of experience.</p>
+          </div>
+          <div class="bubble bubble--lead bubble--last" data-msg>
+            <p class="t-body">Until recently at Wire, the secure messenger.</p>
+          </div>
+          <div class="typing" data-typing aria-hidden="true"><i></i><i></i><i></i></div>
+        </div>
       </div>
-      <canvas class="fx" data-fx aria-hidden="true"></canvas>
+
+      {Astro.slots.has('actions') && <div class="actions" data-actions><slot name="actions" /></div>}
     </div>
   </div>
 </section>
@@ -30,129 +58,185 @@
     padding-top: calc(var(--header-h) + var(--space-9)); padding-bottom: var(--space-8);
     background: var(--bg-primary);
   }
+  /* the doodle wallpaper behind the chat, like a WhatsApp chat: the doodle tile (src/assets/stage/doodle-bg.svg, black shapes) is used as a mask over a
+     faint gray, so it follows the theme and stays barely visible on the stage background. Tiled, behind the content. */
+  .home-hero::before {
+    content: ''; position: absolute; inset: 0; pointer-events: none;
+    background: color-mix(in srgb, var(--text-default) 4.5%, transparent);
+    -webkit-mask: url('../assets/stage/doodle-bg.svg') 0 0 / 560px auto repeat;
+            mask: url('../assets/stage/doodle-bg.svg') 0 0 / 560px auto repeat;
+  }
+  /* TRY: the photo background (src/assets/stage/pramod2.jpg) instead of the doodles; delete this rule (and the ::before above stays) to go back. */
+  .home-hero::before {
+    background: url('../assets/stage/pramod2.jpg') center / cover no-repeat;
+    -webkit-mask: linear-gradient(to bottom, #000 25%, transparent 100%); /* fades out into the page background at the bottom */
+            mask: linear-gradient(to bottom, #000 25%, transparent 100%);
+    filter: saturate(0.8); opacity: 0.5; /* 50% transparent: the stage colour shows through */
+  }
+  .home-hero > .container { position: relative; }
   .stage { position: relative; }
-  .text { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-6); }
-  .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
-  .intro { text-wrap: pretty; }
-  /* below 1230 px: fixed font-size steps (line height 1.19), no fluid scaling; from 1230 px the headline is 3.5rem */
-  @media (max-width: 1229px) { .intro { font-size: 2rem; line-height: 1.19; } }
-  @media (min-width: 768px) and (max-width: 1229px) { .intro { font-size: 2.75rem; } }
-  @media (min-width: 992px) and (max-width: 1229px) { .intro { font-size: 3.25rem; } }
-  @media (min-width: 1230px) { .intro { font-size: 3.5rem; line-height: 1.15; } }
-  .intro :global(em) { color: var(--accent-primary); }
-  .subline { font-family: var(--font-sans); word-spacing: normal; font-weight: 400; text-wrap: pretty; }
-  /* effect canvas: the same box as the stage, transparent, only visible while there is distortion; above the text (it redraws the headline), never catches the pointer */
-  .fx { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 260ms ease; }
-  .fx:global(.is-on) { opacity: 1; }
-  /* optional designed line breaks (only where a page asks for them) */
-  .intro :global(.br-md), .subline :global(.br-md) { display: none; }
-  @media (min-width: 768px) { .intro :global(.br-md), .subline :global(.br-md) { display: inline; } }
+
+  /* the chat: the sender's picture (a circle), bubbles like an incoming message (the last with a small tail pointing at the picture).
+     The bubbles are as wide as their content. The picture is positioned absolutely (script below moves it to track the bottom of whichever
+     bubble is currently the current one, including while it is still "typing"); without JS, or once everything is shown, it simply rests at the bottom. */
+  /* From 768 px, the bubbles and the buttons below sit flush with the stage's own left edge, which is the text measure — the same left edge as the
+     "Selected work" heading and every other section heading on the page. The picture is pulled out to the left of that edge by its own width + a gap
+     (`--chat-indent`, a negative offset), so it overlaps into the margin instead of pushing the bubbles inward; this is the one deliberate exception
+     to the grid. Below 768 px there is no spare margin for the picture to overlap into (the page itself only has a 20 px gutter there), so it stays
+     flush at the left instead and the bubbles/buttons are indented clear of it, as before. */
+  .stage { --chat-indent: calc(44px + var(--space-3)); }
+  @media (min-width: 768px) { .stage { --chat-indent: calc(56px + var(--space-4)); } }
+  .chat { --bubble: light-dark(var(--color-white), var(--gray-800)); --bubble-text: var(--text-strong); position: relative; } /* white bubbles in light mode, a step lighter than the cards in dark mode */
+  .chat :global(.avatar) { position: absolute; left: 0; top: auto; bottom: 0; display: block; width: 44px; height: 44px; }
+  .chat :global(.avatar) :global(img) { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
+  /* the green "available" dot, cut out of the picture's bottom right corner with a ring the colour of the section behind it */
+  .avatar-status { position: absolute; right: 0; bottom: 0; width: 12px; height: 12px; border-radius: 50%; background: #34c759; box-shadow: 0 0 0 3px var(--bg-primary); }
+  .bubbles { position: relative; display: flex; flex-direction: column; gap: var(--space-1); align-items: flex-start; min-width: 0; max-width: 40rem; margin-left: var(--chat-indent); }
+  @media (min-width: 768px) {
+    .chat :global(.avatar) { left: calc(-1 * var(--chat-indent)); width: 56px; height: 56px; }
+    .avatar-status { width: 14px; height: 14px; }
+    .bubbles { margin-left: 0; }
+  }
+  .bubble { position: relative; background: var(--bubble); color: var(--bubble-text); border-radius: 24px; padding: var(--space-4) var(--space-4); box-shadow: 0 1px 2px light-dark(rgb(0 0 0 / 0.12), rgb(0 0 0 / 0.45)); }
+  .bubble--last { border-bottom-left-radius: 0; }
+  .bubble--last::before { content: ''; position: absolute; bottom: 0; left: -9px; width: 10px; height: 14px; background: var(--bubble); clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+  .bubble p { margin: 0; font-family: var(--font-sans); word-spacing: normal; text-wrap: pretty; }
+  .bubble :global(em) { font-style: normal; color: var(--accent-primary); } /* "Wolfgang": salmon, same weight as the rest of the bubble */
+  /* the emoji message: the emoji big, as in Signal, in a bubble that fits it */
+  .bubble--emoji { padding: var(--space-4) var(--space-3); }
+  /* the name/tagline and the years-of-experience bubbles: the whole chat now, since the longer paragraphs moved down to the About section (plain text
+     there, not a chat bubble). Bigger and a bit bolder than plain body text, still the body font, so they read as the headline this chat replaces. */
+  .bubble--lead p { font-size: 1.375rem; line-height: 1.3; font-weight: 500; }
+  @media (min-width: 768px) { .bubble--lead p { font-size: 1.75rem; } }
+  .emoji { display: block; font-size: 3.5rem; line-height: 1.1; }
+
+  /* the chat plays once (script below): the picture and the bubbles appear one after the other, each after a short "typing" bubble, then the actions fade in.
+     Hidden states only apply with JS (the .js flag), and not with reduced motion, so the content is always there. The space stays reserved, nothing jumps.
+     The picture's pop-in is a scale only (its position is the separate `top` transition below, driven by inline style from the script). */
+  :global(.js) .chat .bubble { opacity: 0; transform: scale(0.92) translateY(8px); transform-origin: left bottom; transition: opacity 220ms ease, transform 300ms cubic-bezier(0.2, 1.3, 0.4, 1); }
+  :global(.js) .chat .bubble.is-in { opacity: 1; transform: none; }
+  :global(.js) .chat :global(.avatar) { opacity: 0; transform: scale(0.85); transition: opacity 220ms ease, transform 300ms cubic-bezier(0.2, 1.3, 0.4, 1), top 420ms cubic-bezier(0.3, 1, 0.4, 1); }
+  :global(.js) .chat :global(.avatar.is-in) { opacity: 1; transform: scale(1); }
+  .typing { position: absolute; left: 0; top: 0; display: flex; gap: 5px; align-items: center; padding: 11px 14px; border-radius: 12px; border-bottom-left-radius: 0; background: var(--bubble); opacity: 0; pointer-events: none; transition: opacity 160ms ease; }
+  .typing.is-on { opacity: 1; }
+  .typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--bubble-text); opacity: 0.55; animation: typing-dot 1s ease-in-out infinite; }
+  .typing i:nth-child(2) { animation-delay: 0.15s; }
+  .typing i:nth-child(3) { animation-delay: 0.3s; }
+  @keyframes typing-dot { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 0.9; } }
+
+  /* the buttons: reserved space from the start, only shown (and only then in the tab order / hit-testable) once the chat has finished playing */
+  .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); margin-top: var(--space-6); margin-left: var(--chat-indent); }
+  @media (min-width: 768px) { .actions { margin-left: 0; } }
+  :global(.js) .actions { opacity: 0; visibility: hidden; transform: translateY(10px); transition: opacity 260ms ease, transform 320ms cubic-bezier(0.2, 1, 0.3, 1); }
+  :global(.js) .actions.is-in { opacity: 1; visibility: visible; transform: none; }
+
+  @media (prefers-reduced-motion: reduce) {
+    :global(.js) .chat :global(.avatar), :global(.js) .chat .bubble, :global(.js) .actions { opacity: 1; visibility: visible; transform: none; transition: none; }
+    .typing { display: none; }
+  }
 </style>
 
 <script>
-  import { paintText, setupPrism, type Prism } from '../lib/prism';
+  /* The chat plays once, right on load (the hero sits at the top of the page, already in view): the sender's picture and the opener ("👋") appear
+     together, no typing indicator for it; each bubble after it lands after a typing pause whose length follows the length of the message. The picture
+     tracks the bottom of whichever bubble or typing indicator is currently current, sliding to meet each new one (inline `top`, eased by the avatar's
+     CSS transition). Once every bubble has landed, the action buttons fade in below the chat. With reduced motion everything (chat and buttons) is
+     shown at once (CSS; the picture then simply rests at the bottom via its default `bottom: 0`, no JS positioning needed). */
+  let stopChat: (() => void) | undefined;
 
-  let stop: (() => void) | undefined;
+  function initChat() {
+    stopChat?.();
+    const chat = document.querySelector<HTMLElement>('[data-chat]');
+    const bubbles = document.querySelector<HTMLElement>('[data-bubbles]');
+    const typing = document.querySelector<HTMLElement>('[data-typing]');
+    const actions = document.querySelector<HTMLElement>('[data-actions]');
+    if (!chat || !bubbles || !typing) return;
+    const msgs = [...chat.querySelectorAll<HTMLElement>('[data-msg]')];
+    const avatar = chat.querySelector<HTMLElement>('.avatar');
+    // Shrink-wrap: a bubble that wraps would otherwise stay as wide as its box, leaving empty space to the right of the shorter lines. Each lead text is
+    // set to the width of its longest line (re-measured on resize and once the fonts are loaded).
+    const fit = () => {
+      chat.querySelectorAll<HTMLElement>('.bubble--lead p').forEach((p) => {
+        p.style.width = '';
+        const r = document.createRange();
+        r.selectNodeContents(p);
+        const rects = [...r.getClientRects()];
+        if (rects.length < 2) return;
+        p.style.width = `${Math.ceil(Math.max(...rects.map((x) => x.right)) - Math.min(...rects.map((x) => x.left))) + 1}px`;
+      });
+    };
+    fit();
+    document.fonts?.ready.then(fit);
+    window.addEventListener('resize', fit);
+    const showAll = () => { msgs.forEach((m) => m.classList.add('is-in')); avatar?.classList.add('is-in'); actions?.classList.add('is-in'); };
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { showAll(); return; }
 
-  function init() {
-    stop?.();
-    const stage = document.querySelector<HTMLElement>('[data-stage]');
-    const canvas = document.querySelector<HTMLCanvasElement>('[data-fx]');
-    const intro = document.querySelector<HTMLElement>('[data-intro]');
-    const hero = document.querySelector<HTMLElement>('[data-hero]');
-    if (!stage || !canvas || !intro || !hero) return;
-    // Not with reduced motion. The pointer reaction needs a fine, hovering pointer; the occasional idle movement below runs everywhere else too.
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-    const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+    // Moves the picture so its bottom lines up with the bottom of `el` — a message bubble or the typing bubble, both positioned relative to `chat`
+    // (since `bubbles` adds no top offset of its own) — and remembers it, so a reflow can re-track the same thing.
+    let currentTarget: HTMLElement | null = msgs[0] ?? null;
+    const trackAvatar = (el: HTMLElement) => {
+      if (!avatar) return;
+      currentTarget = el;
+      avatar.style.bottom = 'auto';
+      avatar.style.top = `${el.offsetTop + el.offsetHeight - avatar.offsetHeight}px`;
+    };
+    if (currentTarget) trackAvatar(currentTarget); // where the picture will be resting when it first fades in (invisible until then, so no jump to see)
 
-    const prism: Prism | null = setupPrism({
-      stage,
-      canvas,
-      bg: hero,
-      paint: (ctx, rect) => paintText(ctx, rect, intro),
-      repaintEachFrame: false,
-      idleRepaintMs: 0,
-      hoverStrength: 0.1, // the base level while the pointer rests (default 0.22)
-      // overall strength, toned down. Dark type on a light page shows the colour fringes much less than light type on a dark page, so light mode gets more.
-      gain: () => (document.documentElement.dataset.theme === 'light' ? 1.0 : 0.7),
-    });
-    if (!prism) return;
+    const timers: number[] = [];
+    const wait = (ms: number) => new Promise<void>((done) => timers.push(window.setTimeout(done, ms)));
+    let played = false;
 
-    // The effect follows the pointer anywhere on the stage (the whole hero), and is at full strength when the pointer touches the type directly,
-    // weaker (`AWAY`) while it is elsewhere on the stage.
-    const AWAY = 0.4;
-    const range = document.createRange();
-    const overType = (x: number, y: number) => {
-      range.selectNodeContents(intro);
-      for (const r of range.getClientRects()) {
-        if (x >= r.left - 6 && x <= r.right + 6 && y >= r.top - 4 && y <= r.bottom + 4) return true;
+    const play = async () => {
+      if (played) return;
+      played = true;
+
+      // the opener ("👋"): no typing indicator, it is simply there, with the picture, the moment the chat plays
+      const first = msgs.find((m) => m.dataset.first !== undefined) ?? msgs[0];
+      if (first) {
+        trackAvatar(first);
+        avatar?.classList.add('is-in');
+        await wait(100);
+        first.classList.add('is-in');
+        await wait(300);
       }
-      return false;
-    };
-    let lastReal = 0; // when the real pointer last moved on the stage: the idle movement waits while someone is playing with it
-    const onMove = (e: PointerEvent) => {
-      if (e.pointerType === 'touch') return;
-      lastReal = performance.now();
-      const s = stage.getBoundingClientRect();
-      prism.pointer(e.clientX, e.clientY, e.clientX - s.left, e.clientY - s.top, overType(e.clientX, e.clientY) ? 1 : AWAY);
-    };
-    if (finePointer) {
-      hero.addEventListener('pointermove', onMove);
-      hero.addEventListener('pointerleave', prism.leave);
-    }
 
-    // ---- idle movement: now and then (every 5 to 9 s) a short, soft prism pass over the whole phrase "Wolfgang", "design lead" or "10+ years of experience"
-    const PHRASES: Array<() => Range | null> = [
-      () => { const em = intro.querySelector('em'); if (!em) return null; const r = document.createRange(); r.selectNodeContents(em); return r; },
-      () => phraseRange(intro, /design\s+lead/),
-      () => phraseRange(intro, /10\+\s*years\s+of\s+experience/),
-    ];
-    const FLASH_MS = 1600;  // how long one pass takes (eases in and out)
-    const FLASH_LEVEL = 0.3; // how strong an idle pass is (a real pointer on the type is about 0.4 to 0.6)
-    let visible = true, lastPhrase = -1, timer = 0;
-    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
-    io.observe(hero);
+      for (const m of msgs) {
+        if (m === first) continue;
+        // the typing bubble sits at the top of the slot where the next message will appear (right under the previous one); longer text types longer.
+        // The picture already tracks it here, so it is sitting at the bottom of the typing bubble throughout, not still at the previous message.
+        typing.style.top = `${m.offsetTop}px`;
+        typing.classList.add('is-on');
+        trackAvatar(typing);
+        const chars = (m.textContent ?? '').trim().length;
+        await wait(Math.min(900, 350 + chars * 3));
+        typing.classList.remove('is-on');
+        await wait(80);
+        m.classList.add('is-in');
+        trackAvatar(m); // slides the picture down (or up, if the message ends up shorter than the typing bubble) to meet this message the instant it lands
+        await wait(200);
+      }
 
-    // the whole phrase is distorted at once (one box per line if it wraps), not swept like the pointer
-    const flashPhrase = (range: Range) => {
-      const s = stage.getBoundingClientRect();
-      const boxes = [...range.getClientRects()].filter((r) => r.width > 4)
-        .map((r) => ({ left: r.left - s.left - 2, top: r.top - s.top, right: r.right - s.left + 2, bottom: r.bottom - s.top }));
-      prism.flash(boxes, FLASH_MS, FLASH_LEVEL);
+      // the buttons, once the whole conversation has played
+      await wait(150);
+      actions?.classList.add('is-in');
     };
-    const next = (ms: number) => {
-      timer = window.setTimeout(() => {
-        const quiet = performance.now() - lastReal > 2500;
-        if (visible && !document.hidden && quiet) {
-          let i = Math.floor(Math.random() * PHRASES.length);
-          if (i === lastPhrase) i = (i + 1) % PHRASES.length;
-          const range = PHRASES[i]();
-          if (range) { lastPhrase = i; flashPhrase(range); }
-        }
-        next(5000 + Math.random() * 4000);
-      }, ms);
-    };
-    next(2500); // the first pass comes a moment after the page has settled
 
-    stop = () => {
-      hero.removeEventListener('pointermove', onMove);
-      hero.removeEventListener('pointerleave', prism.leave);
-      window.clearTimeout(timer); io.disconnect();
-      prism.dispose();
-      stop = undefined;
-    };
+    // Starts once the chat is in view (it already is, on load, since the hero sits at the top of the page). The observer alone can miss a jump to the
+    // anchor (e.g. navigating back to "/"), so the scroll position is checked too.
+    const inView = () => { const r = chat.getBoundingClientRect(); return r.bottom > 0 && r.top < innerHeight; };
+    const check = () => { if (!played && inView()) play(); };
+    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) check(); }, { threshold: [0, 0.4, 0.8] });
+    io.observe(chat);
+    window.addEventListener('scroll', check, { passive: true });
+    window.addEventListener('hashchange', check);
+    const poll = window.setInterval(() => { if (played) window.clearInterval(poll); else check(); }, 400); // a slow tab, or layout settling after load, without another event
+    check();
+    // A reflow (font load, resize) can move things under the picture; snap it back to whatever it was last tracking.
+    const ro = new ResizeObserver(() => { if (currentTarget) trackAvatar(currentTarget); });
+    ro.observe(bubbles);
+    stopChat = () => { io.disconnect(); ro.disconnect(); window.removeEventListener('scroll', check); window.removeEventListener('resize', fit); window.removeEventListener('hashchange', check); window.clearInterval(poll); timers.forEach(clearTimeout); stopChat = undefined; };
   }
 
-  /** A range around the first text that matches `re`, inside `root` (the words can sit in a text node of the headline; non-breaking spaces count as spaces). */
-  function phraseRange(root: HTMLElement, re: RegExp): Range | null {
-    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-    for (let n = walker.nextNode() as Text | null; n; n = walker.nextNode() as Text | null) {
-      const m = re.exec(n.data);
-      if (m) { const r = document.createRange(); r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length); return r; }
-    }
-    return null;
-  }
-
-  document.addEventListener('astro:page-load', init);
-  document.addEventListener('astro:before-swap', () => stop?.());
+  document.addEventListener('astro:page-load', initChat);
+  document.addEventListener('astro:before-swap', () => stopChat?.());
 </script>

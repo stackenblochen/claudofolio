@@ -1,11 +1,10 @@
 ---
 /**
- * The first part of the About content on the home page: the "About me" title, the intro text and the portrait.
- * Selected work follows it, then AboutSections (experience, career, education). Used by pages/index.astro inside the standard-context section #about.
+ * The first part of the About content on the home page: the "About me" title, the intro paragraphs and the portrait below them (the site's original
+ * Portrait.astro: square, 50% width from 768 px), between Selected work and Experience/Career/Education (AboutSections.astro).
  */
-import { highlight } from '../lib/site';
 import SectionTitle from './SectionTitle.astro';
-import Img from './Img.astro';
+import Portrait from './Portrait.astro';
 import portrait from '../assets/portrait.webp';
 ---
 
@@ -13,157 +12,19 @@ import portrait from '../assets/portrait.webp';
   <SectionTitle id="about-title" chapter>About me</SectionTitle>
 
   <div class="container intro-wrap">
-    <div class="measure-text">
-      <!-- the intro as a chat: the portrait is the sender's picture (at the bottom, next to the last message), a 👋 message first, then each paragraph as a bubble (like a Signal or WhatsApp chat) -->
-      <div class="chat" data-chat>
-        <span class="avatar">
-          <Img src={portrait} alt="Portrait of Wolfgang, looking to the side, in front of a blue background, wearing a mustard-yellow sweater" sizes="56px" />
-          <i class="avatar-status" aria-hidden="true"></i>
-          <span class="sr-only">Available</span>
-        </span>
-        <div class="bubbles" data-bubbles>
-          <div class="bubble bubble--emoji" data-msg data-first>
-            <span class="emoji" role="img" aria-label="Waving hand">👋</span>
-          </div>
-          <div class="bubble" data-msg>
-            <p class="t-body">I own the full process from research to shipped detail, and I'm at my best when I can do both: design hands-on and set the vision for where the product goes next.</p>
-          </div>
-          <div class="bubble bubble--last" data-msg>
-            <p class="t-body">With a diploma in communications design and years of experience as a freelancer for agencies and in tech products, I bring a strong eye for visual detail to every project I work on.</p>
-          </div>
-          <div class="typing" data-typing aria-hidden="true"><i></i><i></i><i></i></div>
-        </div>
+    <div class="measure-text stack" style="--stack-gap: var(--space-5)">
+      <div class="intro stack t-subheading reveal">
+        <p>I own the full process from research to shipped detail, and I'm at my best when I can do both: design hands-on and set the vision for where the product goes next.</p>
+        <p>With a diploma in communications design and years of experience as a freelancer for agencies and in tech products, I bring a strong eye for visual detail to every project I work on.</p>
       </div>
     </div>
   </div>
+
+  <Portrait src={portrait} alt="Portrait of Wolfgang, looking to the side, in front of a blue background, wearing a mustard-yellow sweater" />
 </div>
 
 <style>
-  /* the chat: the sender's picture (a circle), bubbles like an incoming message (the last with a small tail pointing at the picture).
-     The bubbles are as wide as their content. The picture is positioned absolutely (script below moves it to track the bottom of whichever
-     message is currently the last one shown as the chat plays); without JS, or once everything is shown, it simply rests at the bottom. */
-  .chat { --bubble: var(--bg-secondary); position: relative; }
-  .chat :global(.avatar) { position: absolute; left: 0; top: auto; bottom: 0; display: block; width: 44px; height: 44px; }
-  .chat :global(.avatar) :global(img) { display: block; width: 100%; height: 100%; border-radius: 50%; object-fit: cover; }
-  /* the green "available" dot, cut out of the picture's bottom right corner with a ring the colour of the section behind it */
-  .avatar-status { position: absolute; right: 0; bottom: 0; width: 12px; height: 12px; border-radius: 50%; background: #34c759; box-shadow: 0 0 0 3px var(--bg-primary); }
-  .bubbles { position: relative; display: flex; flex-direction: column; gap: var(--space-1); align-items: flex-start; min-width: 0; max-width: 40rem; margin-left: calc(44px + var(--space-3)); }
-  @media (min-width: 768px) {
-    .chat :global(.avatar) { width: 56px; height: 56px; }
-    .avatar-status { width: 14px; height: 14px; }
-    .bubbles { margin-left: calc(56px + var(--space-4)); }
-  }
-  .bubble { position: relative; background: var(--bubble); color: var(--text-strong); border-radius: 12px; padding: var(--space-3) var(--space-4); }
-  .bubble--last { border-bottom-left-radius: 0; }
-  .bubble--last::before { content: ''; position: absolute; bottom: 0; left: -9px; width: 10px; height: 14px; background: var(--bubble); clip-path: polygon(100% 0, 100% 100%, 0 100%); }
-  .bubble p { margin: 0; font-family: var(--font-sans); word-spacing: normal; text-wrap: pretty; }
-  /* the emoji message: the emoji big, as in Signal, in a bubble that fits it */
-  .bubble--emoji { padding: var(--space-2) var(--space-4); }
-  .emoji { display: block; font-size: 3.5rem; line-height: 1.1; }
-  /* the chat plays when it scrolls into view (script below): the picture and the messages appear one after the other, each after a short "typing" bubble.
-     Hidden states only apply with JS (the .js flag), and not with reduced motion, so the text is always readable. The space stays reserved, nothing below moves.
-     The picture's pop-in is a scale only (its position is the separate `top` transition below, driven by inline style from the script). */
-  :global(.js) .chat .bubble { opacity: 0; transform: scale(0.92) translateY(8px); transform-origin: left bottom; transition: opacity 220ms ease, transform 300ms cubic-bezier(0.2, 1.3, 0.4, 1); }
-  :global(.js) .chat .bubble.is-in { opacity: 1; transform: none; }
-  :global(.js) .chat :global(.avatar) { opacity: 0; transform: scale(0.85); transition: opacity 220ms ease, transform 300ms cubic-bezier(0.2, 1.3, 0.4, 1), top 420ms cubic-bezier(0.3, 1, 0.4, 1); }
-  :global(.js) .chat :global(.avatar.is-in) { opacity: 1; transform: scale(1); }
-  .typing { position: absolute; left: 0; top: 0; display: flex; gap: 5px; align-items: center; padding: 11px 14px; border-radius: 12px; border-bottom-left-radius: 0; background: var(--bubble); opacity: 0; pointer-events: none; transition: opacity 160ms ease; }
-  .typing.is-on { opacity: 1; }
-  .typing i { width: 7px; height: 7px; border-radius: 50%; background: var(--text-default); opacity: 0.55; animation: typing-dot 1s ease-in-out infinite; }
-  .typing i:nth-child(2) { animation-delay: 0.15s; }
-  .typing i:nth-child(3) { animation-delay: 0.3s; }
-  @keyframes typing-dot { 0%, 60%, 100% { transform: translateY(0); opacity: 0.4; } 30% { transform: translateY(-4px); opacity: 0.9; } }
-  @media (prefers-reduced-motion: reduce) {
-    :global(.js) .chat :global(.avatar), :global(.js) .chat .bubble { opacity: 1; transform: none; transition: none; }
-    .typing { display: none; }
-  }
-  .intro-wrap { padding-top: var(--space-6); padding-bottom: var(--space-6); }
-  .statement { text-wrap: balance; }
-  .statement :global(em) { font-style: normal; font-weight: inherit; color: var(--accent-primary); } /* the highlighted word: salmon, same weight as the statement, as in the page titles */
+  .intro-wrap { padding-top: var(--space-6); padding-bottom: var(--space-4); }
   .intro { --stack-gap: var(--space-4); color: var(--text-strong); font-family: var(--font-sans); word-spacing: normal; font-weight: 400; }
   .intro :global(p) { font: inherit; text-wrap: pretty; }
 </style>
-
-<script>
-  /* The chat plays once when it scrolls into view: the sender's picture and the first message ("👋") appear together right away, no typing indicator for it
-     (it is already there, the way the opener of a chat usually is); each paragraph after it lands after a typing bubble whose length follows the length of
-     the message. The picture tracks the bottom of whichever message or typing bubble is currently the last/current one, sliding to meet each new one as it
-     lands (set via inline `top`, animated by the CSS transition on the avatar). With reduced motion everything is shown at once (CSS; the picture then
-     simply rests at the bottom via its default `bottom: 0`, no JS positioning needed). */
-  let stopChat: (() => void) | undefined;
-
-  function initChat() {
-    stopChat?.();
-    const chat = document.querySelector<HTMLElement>('[data-chat]');
-    const bubbles = document.querySelector<HTMLElement>('[data-bubbles]');
-    const typing = document.querySelector<HTMLElement>('[data-typing]');
-    if (!chat || !bubbles || !typing) return;
-    const msgs = [...chat.querySelectorAll<HTMLElement>('[data-msg]')];
-    const avatar = chat.querySelector<HTMLElement>('.avatar');
-    const showAll = () => { msgs.forEach((m) => m.classList.add('is-in')); avatar?.classList.add('is-in'); };
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { showAll(); return; }
-
-    // Moves the picture so its bottom lines up with the bottom of `el` — a message bubble or the typing bubble, both positioned relative to `chat`
-    // (since `bubbles` adds no top offset of its own) — and remembers it, so a reflow can re-track the same thing.
-    let currentTarget: HTMLElement | null = msgs[0] ?? null;
-    const trackAvatar = (el: HTMLElement) => {
-      if (!avatar) return;
-      currentTarget = el;
-      avatar.style.bottom = 'auto';
-      avatar.style.top = `${el.offsetTop + el.offsetHeight - avatar.offsetHeight}px`;
-    };
-    if (currentTarget) trackAvatar(currentTarget); // where the picture will be resting when it first fades in (invisible until then, so no jump to see)
-
-    const timers: number[] = [];
-    const wait = (ms: number) => new Promise<void>((done) => timers.push(window.setTimeout(done, ms)));
-    let played = false;
-
-    const play = async () => {
-      if (played) return;
-      played = true;
-
-      // the opener ("👋"): no typing indicator, it is simply there, with the picture, the moment the chat plays
-      const first = msgs.find((m) => m.dataset.first !== undefined) ?? msgs[0];
-      if (first) {
-        trackAvatar(first);
-        avatar?.classList.add('is-in');
-        await wait(150);
-        first.classList.add('is-in');
-        await wait(400);
-      }
-
-      for (const m of msgs) {
-        if (m === first) continue;
-        // the typing bubble sits at the top of the slot where the next message will appear (right under the previous one); longer text types longer.
-        // The picture already tracks it here, so it is sitting at the bottom of the typing bubble throughout, not still at the previous message.
-        typing.style.top = `${m.offsetTop}px`;
-        typing.classList.add('is-on');
-        trackAvatar(typing);
-        const chars = (m.textContent ?? '').trim().length;
-        await wait(Math.min(1300, 500 + chars * 4));
-        typing.classList.remove('is-on');
-        await wait(100);
-        m.classList.add('is-in');
-        trackAvatar(m); // slides the picture down (or up, if the message ends up shorter than the typing bubble) to meet this message the instant it lands
-        await wait(280);
-      }
-    };
-
-    // Starts when about 40% of the chat is in view. The observer alone can miss a jump to the anchor (menu link, "About me" button), so the scroll position is checked too.
-    const inView = () => { const r = chat.getBoundingClientRect(); const h = Math.min(r.bottom, innerHeight) - Math.max(r.top, 0); return h > r.height * 0.4; };
-    const check = () => { if (!played && inView()) play(); };
-    const io = new IntersectionObserver(([e]) => { if (e.isIntersecting) check(); }, { threshold: [0, 0.4, 0.8] });
-    io.observe(chat);
-    window.addEventListener('scroll', check, { passive: true });
-    window.addEventListener('hashchange', check);
-    const poll = window.setInterval(() => { if (played) window.clearInterval(poll); else check(); }, 400); // a slow tab or a smooth scroll that ends without another event
-    check();
-    // A reflow (font load, resize) can move things under the picture; snap it back to whatever it was last tracking.
-    const ro = new ResizeObserver(() => { if (currentTarget) trackAvatar(currentTarget); });
-    ro.observe(bubbles);
-    stopChat = () => { io.disconnect(); ro.disconnect(); window.removeEventListener('scroll', check); window.removeEventListener('hashchange', check); window.clearInterval(poll); timers.forEach(clearTimeout); stopChat = undefined; };
-  }
-
-  document.addEventListener('astro:page-load', initChat);
-  document.addEventListener('astro:before-swap', () => stopChat?.());
-</script>
