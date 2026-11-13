@@ -1,16 +1,12 @@
 ---
 /**
- * The About content on the home page (the site is a one-pager): intro, portrait, experience, career, education and the contact block.
- * Used by pages/index.astro inside the standard-context section #about.
+ * The rest of the About content on the home page (the site is a one-pager): experience, career and education. The intro and portrait are in AboutIntro.astro;
+ * Selected work sits between the two. Used by pages/index.astro in its own standard-context section.
  */
-import { highlight } from '../lib/site';
 import SectionTitle from './SectionTitle.astro';
 import CareerEntry from './CareerEntry.astro';
 import Timeline from './Timeline.astro';
-import Portrait from './Portrait.astro';
 import ExperienceList from './ExperienceList.astro';
-import ContactBlock from './ContactBlock.astro';
-import portrait from '../assets/portrait.webp';
 import wireLogo from '../assets/wire-logo-white.svg';
 import freshEnergyLogo from '../assets/freshenergy-logo.svg';
 import seereneLogo from '../assets/seerene-logo.svg';
@@ -28,20 +24,6 @@ const experience = [
 ---
 
 <div class="about">
-  <SectionTitle id="about-title" chapter>About me</SectionTitle>
-
-  <div class="container intro-wrap">
-    <div class="measure-text stack" style="--stack-gap: var(--space-5)">
-      <p class="t-heading statement reveal" set:html={highlight('Making complex things *simple* with an eye on what they could become.')} />
-      <div class="intro stack t-subheading reveal">
-        <p>Hi, I'm Wolfgang. With a background in communications design and years of agency work, I bring a strong eye for visual detail to every product I work on.</p>
-        <p>I own the full process from research to shipped detail, and I'm at my best when I can do both: design hands-on and set the vision for where the product goes next.</p>
-      </div>
-    </div>
-  </div>
-
-  <Portrait src={portrait} alt="Portrait of Wolfgang, looking to the side, in front of a blue background, wearing a mustard-yellow sweater" />
-
   <SectionTitle id="experience" level={3} chapter>Experience</SectionTitle>
 
   <div class="experience">
@@ -88,13 +70,8 @@ const experience = [
     <CareerEntry company="Max-Slevogt-Gymnasium Landau" role="Abitur" dates="1999" />
   </Timeline>
 
-  <ContactBlock />
 </div>
 
 <style>
   .about .experience { padding-top: var(--space-6); }
-  .intro-wrap { padding-top: var(--space-6); padding-bottom: var(--space-6); }
-  .statement { text-wrap: balance; }
-  .intro { --stack-gap: var(--space-4); color: var(--text-strong); font-family: var(--font-sans); word-spacing: normal; font-weight: 400; }
-  .intro :global(p) { font: inherit; text-wrap: pretty; }
 </style>

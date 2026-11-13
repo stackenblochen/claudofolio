@@ -1,6 +1,10 @@
 ---
 /** G3 Footer: one line at the text measure (8 columns on wide desktops, 9 on tablets, full width on phones): copyright + imprint left, contact links right (wraps on mobile). Links are quiet links (`.link--quiet`, base.css). */
 import { SITE, url } from '../lib/site';
+import logoSvg from '../assets/wolfgang-logo.svg?raw';
+
+// The full "wolfgang" wordmark, inline so it follows the text colour; decorative.
+const logo = logoSvg.replace(/fill="white"/g, 'fill="currentColor"').replace('<svg ', '<svg aria-hidden="true" focusable="false" ');
 
 const year = new Date().getFullYear();
 const links = [
@@ -12,7 +16,9 @@ const links = [
 
 <footer class="site-footer">
   <div class="container">
+    <div class="inner">
     <div class="bar measure-text t-label">
+    <span class="wordmark" set:html={logo} />
     <p>© {year} {SITE.name}. All rights reserved. <a class="link--quiet" href={url('/imprint/')}>Imprint</a></p>
     {links.length > 0 && (
       <ul class="links" role="list">
@@ -20,11 +26,20 @@ const links = [
       </ul>
     )}
     </div>
+    </div>
   </div>
 </footer>
 
 <style>
-  .site-footer { margin-top: var(--space-8); padding-block: var(--space-5) var(--space-8); background: var(--bg-primary); }
-  .bar { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2) var(--space-5); }
+  .site-footer { margin-top: var(--space-3); padding-block: calc(var(--space-8) + var(--space-5) * 2 - var(--space-3)) var(--space-8); background: var(--bg-primary); }
+  /* the wordmark sits on top of the footer content (above the first line), starting at the left edge of the footer text (the text measure, 8 columns on wide desktops).
+     It is absolutely placed, so the footer content does not move: the footer's top padding grew by as much as its top margin shrank (the extra 30 px of padding is room above the logo). Size: `width` below. */
+  .wordmark {
+    position: absolute; z-index: 2; left: 0; bottom: calc(100% + var(--space-5)); line-height: 0; color: var(--text-strong); pointer-events: none;
+    width: 7.5rem;
+  }
+  @media (min-width: 768px) { .wordmark { width: 10.5rem; } }
+  .wordmark :global(svg) { width: 100%; height: auto; display: block; }
+  .bar { position: relative; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2) var(--space-5); }
   .links { display: flex; flex-wrap: wrap; gap: var(--space-5); padding: 0; margin: 0; list-style: none; }
 </style>

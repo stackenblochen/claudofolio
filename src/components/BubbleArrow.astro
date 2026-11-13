@@ -1,0 +1,19 @@
+---
+/**
+ * Bubbly arrow for the back link and the back-to-top button: fat strokes with fully round ends and joins, to match the rounded W and the wolfgang wordmark.
+ * Drawn as strokes in the current text colour. `dir`: 'left' (back) or 'up' (to top). Decorative (aria-hidden): the link or button carries the label.
+ */
+interface Props {
+  dir?: 'left' | 'up';
+  size?: number;
+}
+const { dir = 'left', size = 28 } = Astro.props;
+const rotate = dir === 'up' ? 90 : 0;
+---
+
+<svg viewBox="0 0 24 24" width={size} height={size} fill="none" stroke="currentColor" stroke-width="4.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+  <g transform={rotate ? `rotate(${rotate} 12 12)` : undefined}>
+    <path d="M20 12H6.5" />
+    <path d="M12.5 5.5L6 12l6.5 6.5" />
+  </g>
+</svg>

@@ -45,8 +45,8 @@ button { font: inherit; color: inherit; }
 /* ---------- Type roles ----------
  * Six roles. Semantic level (h1/h2/…) and visual role (.t-*) are decoupled.
  *   .t-display     Home hero only
- *   .t-title       H1 page titles (Geist bold, highlights in Telma)
- *   .t-quote       The design vision statement (Geist bold, highlights in Telma)
+ *   .t-title       H1 page titles (highlights in salmon, same weight)
+ *   .t-quote       The design vision statement (highlights in salmon, same weight)
  *   .t-heading     Section titles, the home subline, company names
  *   .t-subheading  Sub-headings, card titles, roles, intro paragraphs
  *   .t-body        Paragraphs, lists, meta values, main navigation
@@ -97,8 +97,8 @@ button { font: inherit; color: inherit; }
 /* Section numbers ("— 01" above story section and outcome headings): Geist at the body weight (300 dark / 400 light), 24 px, 32 px from 992 px, in the accent colour. */
 .t-number { display: block; font-family: var(--font-sans); font-style: normal; font-weight: var(--text-body-weight); letter-spacing: var(--text-body-ls); font-size: 1.5rem; line-height: 1; color: var(--accent-primary); margin-bottom: var(--space-2); }
 @media (min-width: 992px) { .t-number { font-size: 2rem; } }
-/* Highlighted words inside a title (`*word*` in the text): Telma Bold (700) in salmon. */
-.t-title em { font-family: var(--font-highlight); font-style: normal; font-weight: 700; color: var(--accent-primary); }
+/* Highlighted words inside a title (`*word*` in the text): the same Clash Display weight as the rest of the headline, in salmon. (The Telma highlight is kept in tokens.css as --font-highlight for a quick switch back.) */
+.t-title em { font-family: var(--font-headline); font-style: normal; font-weight: inherit; color: var(--accent-primary); }
 /* In the quote the highlighted words are only coloured: same face, style and weight as the rest of the statement. */
 .t-quote em { font-style: normal; color: var(--accent-primary); }
 .t-upper { text-transform: uppercase; letter-spacing: 0.06em; }
@@ -211,7 +211,7 @@ a { color: var(--text-strong); }
 /* ---------- Utilities ---------- */
 /* Button: a ghost pill for a page-level action or link (`<a>` or `<button>`); one style, no variants. Spec: docs/foundations/01-styleguide.md section 8. */
 .btn { display: inline-flex; align-items: center; justify-content: center; padding: var(--space-3) var(--space-5); border: 1px solid var(--text-strong); border-radius: var(--radius-pill); background: transparent; color: var(--text-strong); font: inherit; font-weight: var(--weight-emphasis); line-height: 1.2; text-decoration: none; white-space: nowrap; cursor: pointer; transition: background 150ms ease, color 150ms ease, border-color 150ms ease; }
-.btn:hover { color: var(--accent-primary); border-color: var(--accent-primary); background: color-mix(in srgb, var(--accent-primary) 12%, transparent); }
+.btn:hover { color: light-dark(var(--color-white), var(--gray-950)); border-color: var(--accent-primary); background: var(--accent-primary); } /* the same hover as the main nav pills: solid salmon, white text in light mode, near-black in dark mode */
 .btn:focus-visible { outline: 2px solid var(--accent-primary); outline-offset: 2px; }
 
 /* Media bar: a centred caption with an icon button at the right, one row under media (Video). Both side columns are button-wide, so the caption stays centred as in Figure.

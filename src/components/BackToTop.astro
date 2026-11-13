@@ -1,9 +1,10 @@
 ---
-/** G4 Back-to-top button. Appears after one viewport of scrolling. */
+/** G4 Back-to-top button. Appears after one viewport of scrolling. The arrow is the bubbly one (BubbleArrow). */
+import BubbleArrow from './BubbleArrow.astro';
 ---
 
 <button class="to-top" type="button" aria-label="Back to top" hidden data-to-top>
-  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7" /></svg>
+  <BubbleArrow dir="up" size={22} />
 </button>
 
 <style>
@@ -11,7 +12,10 @@
     position: fixed; right: var(--space-4); bottom: var(--space-4); z-index: 90;
     width: 44px; height: 44px; display: grid; place-items: center;
     border-radius: 50%; border: 1px solid var(--border); background: var(--fill); color: var(--text-strong); cursor: pointer;
+    transition: background 200ms ease, color 200ms ease, border-color 200ms ease;
   }
+  /* the same hover as the nav pills: solid salmon */
+  .to-top:hover, .to-top:focus-visible { color: light-dark(var(--color-white), var(--gray-950)); background: var(--accent-primary); border-color: var(--accent-primary); }
   .to-top[hidden] { display: none; }
 </style>
 

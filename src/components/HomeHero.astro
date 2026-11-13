@@ -1,96 +1,158 @@
 ---
 /**
- * H1 Home intro: the headline across the 8 text columns with the buttons below, in front of a large crop of the glass prism cube (src/assets/crystal-cube-stage.webp),
- * placed like the Figma reference: its left corner about 40% in, bleeding off the top, right and bottom of the stage. Every page load tilts, scales and shifts the cube a
- * little differently, and it floats gently in place (CSS, about 1.5% and 1.4 degrees; still with reduced motion). The stage is only as high as its content.
- * The earlier prism shader background is kept in HomeHeroShader.astro; the doodles in DoodleStack.astro (neither is used).
+ * H1 Home intro: the headline across the 8 text columns with the buttons below, on the flat page background. The stage is only as high as its content.
  *
- * Slots: "intro" (the headline), "subline" (optional line below it), "actions" (optional row of `.btn` buttons under the text).
+ * Prism effect on the headline (see lib/prism.ts): while the pointer is anywhere on the stage (the whole hero), at full strength when it touches the type, slices of the text shear sideways and split into red / green / blue
+ * fringes around the cursor (stronger while it moves, a base level while it rests). The real DOM text stays in place; a transparent WebGL canvas on top only
+ * paints where there is distortion. The pointer reaction needs a fine hovering pointer; with reduced motion nothing moves. Now and then (every 5 to 9 s, when nobody is using the pointer) a short soft pass runs over "Wolfgang", "design lead" or "10+ years of experience".
+ * The glass cube background (with random tilt, float and blurred edges) is in git (commit 90065de); the prism shader background in HomeHeroShader.astro; the doodles in DoodleStack.astro.
+ *
+ * Slots: "intro" (the headline), "subline" (optional line below it, not part of the prism effect), "actions" (optional row of `.btn` buttons under the text).
  */
-import { Image } from 'astro:assets';
-import cube from '../assets/crystal-cube-stage.webp';
 ---
 
-<section class="home-hero">
-  <div class="edge-blur" aria-hidden="true"></div>
-  <div class="cube" data-cube aria-hidden="true"><Image src={cube} alt="" widths={[900, 1400, 2200]} sizes="(min-width: 1230px) 1100px, 900px" loading="eager" decoding="async" /></div>
+<section class="home-hero" data-hero>
   <div class="container">
-    <div class="stage measure-text">
+    <div class="stage measure-text" data-stage>
       <div class="text">
-        <h1 class="intro t-title"><slot name="intro" /></h1>
+        <h1 class="intro t-title" data-intro><slot name="intro" /></h1>
         {Astro.slots.has('subline') && <p class="subline t-subheading"><slot name="subline" /></p>}
         {Astro.slots.has('actions') && <div class="actions"><slot name="actions" /></div>}
       </div>
+      <canvas class="fx" data-fx aria-hidden="true"></canvas>
     </div>
   </div>
 </section>
 
 <style>
-  /* the stage is only as high as its content (no full-window height): the headline across the full 10 columns, the buttons below it */
   .home-hero {
     box-sizing: border-box; position: relative; display: flex; flex-direction: column;
-    padding-top: calc(var(--header-h) + var(--space-7)); padding-bottom: var(--space-8);
+    padding-top: calc(var(--header-h) + var(--space-9)); padding-bottom: var(--space-8);
     background: var(--bg-primary);
   }
   .stage { position: relative; }
-  /* the cube: 187% of the stage height (so it keeps the Figma proportions at any width), its top 43% above the stage, its right side pushed 18% of the stage height out
-     (translate is a share of the cube's own width). Tilt, scale and shift are random per page load (set by the script below). */
-  .home-hero { overflow: hidden; background: var(--bg-primary); }
-  .cube {
-    position: absolute; z-index: 0; top: -43%; right: 0; height: 187%; aspect-ratio: 1; pointer-events: none;
-    translate: calc(28% + var(--dx, 0%)) var(--dy, 0%); rotate: var(--rot, 0deg); scale: var(--scale, 1);
-    opacity: 0; transition: opacity 900ms ease;
-  }
-  .cube.is-ready { opacity: var(--cube-opacity, 0.5); } /* dimmed, so it sits behind the text */
-  @media (max-width: 767px) { .cube { --cube-opacity: 0.32; } } /* on phones the cube sits right behind the headline: dimmer still */
-  .cube :global(img) { display: block; width: 100%; height: 100%; object-fit: contain; user-select: none; }
-  @media (prefers-reduced-motion: no-preference) {
-    .cube :global(img) { animation: cube-float var(--float, 16s) ease-in-out var(--float-delay, 0s) infinite alternate; }
-  }
-  @keyframes cube-float {
-    from { transform: translate3d(-1.6%, 1.4%, 0) rotate(-1.4deg); }
-    to { transform: translate3d(1.6%, -1.4%, 0) rotate(1.4deg); }
-  }
-  /* blurred outer edges: a layer over the cube that blurs what is behind it, strongest at the four edges of the stage and fading out towards the middle
-     (blur strength: the first value of blur(); how far it reaches: the percentages) */
-  .edge-blur {
-    position: absolute; inset: 0; z-index: 1; pointer-events: none;
-    -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px);
-    --m: linear-gradient(to right, #000, transparent 14%, transparent 86%, #000), linear-gradient(to bottom, #000, transparent 22%, transparent 78%, #000);
-    -webkit-mask-image: var(--m); mask-image: var(--m);
-  }
-  .home-hero > .container { position: relative; z-index: 2; }
   .text { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-6); }
   .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
   .intro { text-wrap: pretty; }
-  /* below 1230 px: fixed font-size steps (line height 1.19), no fluid scaling; from 1230 px the .t-title size applies */
+  /* below 1230 px: fixed font-size steps (line height 1.19), no fluid scaling; from 1230 px the headline is 3.5rem */
   @media (max-width: 1229px) { .intro { font-size: 2rem; line-height: 1.19; } }
   @media (min-width: 768px) and (max-width: 1229px) { .intro { font-size: 2.75rem; } }
   @media (min-width: 992px) and (max-width: 1229px) { .intro { font-size: 3.25rem; } }
-  @media (min-width: 1230px) { .intro { font-size: 3.75rem; line-height: 1.15; } }
+  @media (min-width: 1230px) { .intro { font-size: 3.5rem; line-height: 1.15; } }
   .intro :global(em) { color: var(--accent-primary); }
   .subline { font-family: var(--font-sans); word-spacing: normal; font-weight: 400; text-wrap: pretty; }
+  /* effect canvas: the same box as the stage, transparent, only visible while there is distortion; above the text (it redraws the headline), never catches the pointer */
+  .fx { position: absolute; inset: 0; z-index: 4; width: 100%; height: 100%; opacity: 0; pointer-events: none; transition: opacity 260ms ease; }
+  .fx:global(.is-on) { opacity: 1; }
   /* optional designed line breaks (only where a page asks for them) */
   .intro :global(.br-md), .subline :global(.br-md) { display: none; }
   @media (min-width: 768px) { .intro :global(.br-md), .subline :global(.br-md) { display: inline; } }
 </style>
 
 <script>
-  /* Every load a slightly different cube: tilt, size, position and float speed are random within a small range. */
-  const rand = (a: number, b: number) => a + Math.random() * (b - a);
-  function initCube() {
-    const el = document.querySelector<HTMLElement>('[data-cube]');
-    if (!el) return;
-    el.style.setProperty('--rot', `${rand(-6, 6).toFixed(1)}deg`);
-    el.style.setProperty('--scale', rand(0.94, 1.1).toFixed(3));
-    el.style.setProperty('--dx', `${rand(-3, 3).toFixed(1)}%`);
-    el.style.setProperty('--dy', `${rand(-3, 3).toFixed(1)}%`);
-    el.style.setProperty('--float', `${rand(9, 13).toFixed(1)}s`);
-    el.style.setProperty('--float-delay', `${(-rand(0, 10)).toFixed(1)}s`);
-    // fade in once the picture has loaded (not before, or it would pop in)
-    const img = el.querySelector('img');
-    const show = () => requestAnimationFrame(() => el.classList.add('is-ready'));
-    if (!img || img.complete) show(); else { img.addEventListener('load', show, { once: true }); img.addEventListener('error', show, { once: true }); }
+  import { paintText, setupPrism, type Prism } from '../lib/prism';
+
+  let stop: (() => void) | undefined;
+
+  function init() {
+    stop?.();
+    const stage = document.querySelector<HTMLElement>('[data-stage]');
+    const canvas = document.querySelector<HTMLCanvasElement>('[data-fx]');
+    const intro = document.querySelector<HTMLElement>('[data-intro]');
+    const hero = document.querySelector<HTMLElement>('[data-hero]');
+    if (!stage || !canvas || !intro || !hero) return;
+    // Not with reduced motion. The pointer reaction needs a fine, hovering pointer; the occasional idle movement below runs everywhere else too.
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const finePointer = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+    const prism: Prism | null = setupPrism({
+      stage,
+      canvas,
+      bg: hero,
+      paint: (ctx, rect) => paintText(ctx, rect, intro),
+      repaintEachFrame: false,
+      idleRepaintMs: 0,
+      hoverStrength: 0.1, // the base level while the pointer rests (default 0.22)
+      // overall strength, toned down. Dark type on a light page shows the colour fringes much less than light type on a dark page, so light mode gets more.
+      gain: () => (document.documentElement.dataset.theme === 'light' ? 1.0 : 0.7),
+    });
+    if (!prism) return;
+
+    // The effect follows the pointer anywhere on the stage (the whole hero), and is at full strength when the pointer touches the type directly,
+    // weaker (`AWAY`) while it is elsewhere on the stage.
+    const AWAY = 0.4;
+    const range = document.createRange();
+    const overType = (x: number, y: number) => {
+      range.selectNodeContents(intro);
+      for (const r of range.getClientRects()) {
+        if (x >= r.left - 6 && x <= r.right + 6 && y >= r.top - 4 && y <= r.bottom + 4) return true;
+      }
+      return false;
+    };
+    let lastReal = 0; // when the real pointer last moved on the stage: the idle movement waits while someone is playing with it
+    const onMove = (e: PointerEvent) => {
+      if (e.pointerType === 'touch') return;
+      lastReal = performance.now();
+      const s = stage.getBoundingClientRect();
+      prism.pointer(e.clientX, e.clientY, e.clientX - s.left, e.clientY - s.top, overType(e.clientX, e.clientY) ? 1 : AWAY);
+    };
+    if (finePointer) {
+      hero.addEventListener('pointermove', onMove);
+      hero.addEventListener('pointerleave', prism.leave);
+    }
+
+    // ---- idle movement: now and then (every 5 to 9 s) a short, soft prism pass over the whole phrase "Wolfgang", "design lead" or "10+ years of experience"
+    const PHRASES: Array<() => Range | null> = [
+      () => { const em = intro.querySelector('em'); if (!em) return null; const r = document.createRange(); r.selectNodeContents(em); return r; },
+      () => phraseRange(intro, /design\s+lead/),
+      () => phraseRange(intro, /10\+\s*years\s+of\s+experience/),
+    ];
+    const FLASH_MS = 1600;  // how long one pass takes (eases in and out)
+    const FLASH_LEVEL = 0.3; // how strong an idle pass is (a real pointer on the type is about 0.4 to 0.6)
+    let visible = true, lastPhrase = -1, timer = 0;
+    const io = new IntersectionObserver(([e]) => { visible = e.isIntersecting; });
+    io.observe(hero);
+
+    // the whole phrase is distorted at once (one box per line if it wraps), not swept like the pointer
+    const flashPhrase = (range: Range) => {
+      const s = stage.getBoundingClientRect();
+      const boxes = [...range.getClientRects()].filter((r) => r.width > 4)
+        .map((r) => ({ left: r.left - s.left - 2, top: r.top - s.top, right: r.right - s.left + 2, bottom: r.bottom - s.top }));
+      prism.flash(boxes, FLASH_MS, FLASH_LEVEL);
+    };
+    const next = (ms: number) => {
+      timer = window.setTimeout(() => {
+        const quiet = performance.now() - lastReal > 2500;
+        if (visible && !document.hidden && quiet) {
+          let i = Math.floor(Math.random() * PHRASES.length);
+          if (i === lastPhrase) i = (i + 1) % PHRASES.length;
+          const range = PHRASES[i]();
+          if (range) { lastPhrase = i; flashPhrase(range); }
+        }
+        next(5000 + Math.random() * 4000);
+      }, ms);
+    };
+    next(2500); // the first pass comes a moment after the page has settled
+
+    stop = () => {
+      hero.removeEventListener('pointermove', onMove);
+      hero.removeEventListener('pointerleave', prism.leave);
+      window.clearTimeout(timer); io.disconnect();
+      prism.dispose();
+      stop = undefined;
+    };
   }
-  document.addEventListener('astro:page-load', initCube);
+
+  /** A range around the first text that matches `re`, inside `root` (the words can sit in a text node of the headline; non-breaking spaces count as spaces). */
+  function phraseRange(root: HTMLElement, re: RegExp): Range | null {
+    const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    for (let n = walker.nextNode() as Text | null; n; n = walker.nextNode() as Text | null) {
+      const m = re.exec(n.data);
+      if (m) { const r = document.createRange(); r.setStart(n, m.index); r.setEnd(n, m.index + m[0].length); return r; }
+    }
+    return null;
+  }
+
+  document.addEventListener('astro:page-load', init);
+  document.addEventListener('astro:before-swap', () => stop?.());
 </script>

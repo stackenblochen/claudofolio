@@ -3,11 +3,16 @@
 import { NAV, SITE, url } from '../lib/site';
 import logoSvg from '../assets/wolfgang-logo.svg?raw';
 import wlMark from '../assets/wl-mark.webp';
+import wSvg from '../assets/w-mark.svg?raw';
 import bubbleSvg from '../../public/favicon.svg?raw';
 import ThemeSwitch from './ThemeSwitch.astro';
+import BubbleArrow from './BubbleArrow.astro';
 
 // Logo trial: 'bubble' = the W in the bubble shape of the favicon (vector), 'w' = a W in Telma Black, 'wl' = the "wl" shape (a mask), 'wordmark' = the "wolfgang" wordmark.
-const logoStyle: 'bubble' | 'w' | 'wl' | 'wordmark' = 'w';
+// 'wmark' = the W of the wl logo (assets/w-mark.svg, a vector in the text colour), 'name' = the word "Wolfgang" in Clash Display Medium
+const logoStyle: 'wmark' | 'name' | 'bubble' | 'w' | 'wl' | 'wordmark' = 'wmark';
+// The W of the wl logo, inline so it follows the text colour; decorative (the link carries the accessible name).
+const wmark = wSvg.replace(/fill="black"/g, 'fill="currentColor"').replace(/<svg [^>]*>/, '<svg viewBox="0 0 705 444" aria-hidden="true" focusable="false" xmlns="http://www.w3.org/2000/svg">');
 // The favicon's vector, inline, in the text colour and cropped to the shape (its viewBox has empty space above and below).
 const bubble = bubbleSvg.replace(/<style>[\s\S]*?<\/style>/, '').replace('<svg ', '<svg aria-hidden="true" focusable="false" ').replace(/viewBox="[^"]*"/, 'viewBox="0 0 705 444"').replace('<path ', '<path fill="currentColor" ');
 // Inline so it can follow currentColor; decorative, the link carries the accessible name.
@@ -18,6 +23,13 @@ interface Props {
 }
 const { current } = Astro.props;
 
+// Sub pages (case studies, imprint, 404) show a back arrow instead of the logo. Case studies go back to the work list, other pages to the home page.
+const path = Astro.url.pathname.replace(/\/$/, '');
+const isHome = path === url('/').replace(/\/$/, '');
+const inProjects = path.startsWith(url('/projects'));
+const backHref = inProjects ? url('/#selected-work') : url('/');
+const backLabel = inProjects ? 'Back to selected work' : 'Back to home';
+
 const items = NAV.map((n) => ({ ...n, href: url(n.href) }));
 // The mobile menu also lists Home (on desktop the logo is the way home).
 const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
@@ -25,7 +37,13 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
 
 <header class="site-header" data-site-header>
   <div class="container bar">
-    {logoStyle === 'bubble'
+    {!isHome
+      ? <a class="logo logo--back" href={backHref} aria-label={backLabel}><BubbleArrow dir="left" size={20} /></a>
+      : logoStyle === 'wmark'
+      ? <a class="logo logo--wmark" href={url('/')} aria-label={`${SITE.name}, home`} set:html={wmark} />
+      : logoStyle === 'name'
+      ? <a class="logo logo--name" href={url('/')} aria-label={`${SITE.name}, home`}><span aria-hidden="true">Wolfgang</span></a>
+      : logoStyle === 'bubble'
       ? <a class="logo logo--bubble" href={url('/')} aria-label={`${SITE.name}, home`} set:html={bubble} />
       : logoStyle === 'w'
       ? <a class="logo logo--w" href={url('/')} aria-label={`${SITE.name}, home`}><span aria-hidden="true">W</span></a>
@@ -83,6 +101,19 @@ const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
   /* the bubble W (the favicon's vector) in the text colour */
   .logo--bubble { width: 50px; }
   @media (min-width: 768px) { .logo--bubble { width: 62px; } }
+  /* the W of the wl logo: a vector in the text colour */
+  .logo--wmark { width: 40px; }
+  @media (min-width: 768px) { .logo--wmark { width: 48px; } }
+  /* the name: "Wolfgang" in Clash Display Medium (500), in the text colour */
+  .logo--name { width: auto; font-family: var(--font-headline); font-weight: 500; font-size: 1.25rem; line-height: 1; letter-spacing: 0; word-spacing: normal; text-decoration: none; }
+  @media (min-width: 768px) { .logo--name { font-size: 1.5rem; } }
+  /* the back arrow on sub pages: a glass circle the size of the theme button, with the same hover as the nav pills (solid salmon) */
+  .logo--back {
+    width: calc(var(--text-body-lh) + var(--space-2) + 2px); height: calc(var(--text-body-lh) + var(--space-2) + 2px); display: grid; place-items: center; border-radius: 50%;
+    background: var(--bg-glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); transition: background 200ms ease, color 200ms ease;
+  }
+  .logo--back :global(svg) { display: block; width: 22px; height: 22px; } /* the same arrow size as the back-to-top button (the generic .logo svg rule would stretch it to the circle) */
+  .logo--back:hover, .logo--back:focus-visible { color: light-dark(var(--color-white), var(--gray-950)); background: var(--accent-primary); }
   /* the W: Telma Black in the text colour */
   .logo--w { width: auto; font-family: var(--font-highlight); font-weight: 900; font-size: 2.5rem; line-height: 1; letter-spacing: 0; text-decoration: none; }
   @media (min-width: 768px) { .logo--w { font-size: 3rem; } }

@@ -36,7 +36,7 @@ const { variant = 'icon' } = Astro.props;
     background: var(--bg-glass); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); /* same glass as the nav pills */
     transition: background 200ms ease, color 200ms ease;
   }
-  .toggle:hover { color: var(--text-strong); background: var(--fill); }
+  .toggle:hover, .toggle:focus-visible { color: light-dark(var(--color-white), var(--gray-950)); background: var(--accent-primary); } /* the same hover as the nav pills: solid salmon */
   .toggle svg { display: block; }
 
   .tabs-row { display: inline-flex; flex-direction: column; align-items: center; gap: var(--space-3); color: var(--text-default); }

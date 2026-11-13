@@ -23,6 +23,7 @@ const FRAG = `
   uniform float u_radius, u_strength, u_time, u_dpr;
   uniform float u_rmode, u_rp, u_rmax; // ripple mode: 1.0, progress 0..1 of the wave front, distance the front travels (device px)
   uniform vec3 u_bg;
+  uniform float u_nrect, u_fall; uniform vec4 u_rects[3]; // region mode: up to 3 boxes (x0, y0, x1, y1 in device px) distorted as a whole, with a soft edge of u_fall px
   float hash(float n){ return fract(sin(n * 127.1) * 43758.5453); }
   float vnoise(float x){ float i = floor(x); float f = fract(x); f = f * f * (3.0 - 2.0 * f); return mix(hash(i), hash(i + 1.0), f); }
   vec4 at(vec2 p){ return texture2D(u_tex, p / u_res); }
@@ -31,6 +32,14 @@ const FRAG = `
     vec2 toM = px - u_mouse;
     float d = length(toM);
     float f = pow(smoothstep(u_radius, 0.0, d), 1.3) * u_strength;
+    if (u_nrect > 0.5) {
+      // region mode (idle flash): the whole box is distorted at once, not around a point; the strength falls off over u_fall px outside the box
+      float dd = 1e5;
+      for (int i = 0; i < 3; i++) {
+        if (float(i) < u_nrect) { vec4 r = u_rects[i]; vec2 q = max(max(r.xy - px, px - r.zw), 0.0); dd = min(dd, length(q)); }
+      }
+      f = smoothstep(u_fall, 0.0, dd) * u_strength;
+    }
     if (u_rmode > 0.5) {
       // one-off ripple: a wave front travels from the touch point across the whole stage. Ahead of the front the distortion
       // rises steeply, behind it a longer wake fades out; the whole effect dies down towards the end.
@@ -72,7 +81,10 @@ const rgb = (s: string) => {
 export interface Prism {
   /** Ripple mode only: plays the one-off ripple from this point (css px in the stage). Ignored while one is running. */
   ripple: (x: number, y: number) => void;
-  pointer: (clientX: number, clientY: number, x: number, y: number) => void;
+  /** Distorts whole boxes at once (css px in the stage: left, top, right, bottom; up to 3), easing in and out over `ms`. `level` scales the strength (default 0.4). Does nothing while the pointer is active. */
+  flash: (boxes: Array<{ left: number; top: number; right: number; bottom: number }>, ms?: number, level?: number) => void;
+  /** `boost` (default 1) scales the effect for this pointer position, e.g. lower while the pointer is not over the type. */
+  pointer: (clientX: number, clientY: number, x: number, y: number, boost?: number) => void;
   leave: () => void;
   dispose: () => void;
 }
@@ -100,6 +112,8 @@ export interface PrismOptions {
    * Moving the pointer pushes it up to the maximum (0.6) and it eases back down to this level. Default 0.22.
    */
   hoverStrength?: number;
+  /** Overall strength multiplier (default 1): below 1 tones the whole effect down. */
+  gain?: number | (() => number);
   /** 'pointer' (default): distortion follows the pointer. 'ripple': no pointer tracking, `ripple(x, y)` plays one wave across the whole stage and the content is left untouched afterwards. */
   mode?: 'pointer' | 'ripple';
   /** Ripple mode: how long the wave takes to cross the stage, in ms. */
@@ -184,7 +198,7 @@ export function paintImage(ctx: CanvasRenderingContext2D, stage: DOMRect, img: H
   ctx.drawImage(img, (r.left - stage.left) * k, (r.top - stage.top) * k, r.width * k, r.height * k);
 }
 
-export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaintEachFrame = false, idleRepaintMs = 0, hoverStrength = 0.22, mode = 'pointer', rippleMs = 1100 }: PrismOptions): Prism | null {
+export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaintEachFrame = false, idleRepaintMs = 0, hoverStrength = 0.22, gain = 1, mode = 'pointer', rippleMs = 1100 }: PrismOptions): Prism | null {
   const gl = canvas.getContext('webgl', { antialias: false, alpha: true, premultipliedAlpha: true });
   if (!gl) return null;
 
@@ -209,8 +223,9 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
   gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
 
   const U = (n: string) => gl.getUniformLocation(prog, n);
-  const u = { res: U('u_res'), mouse: U('u_mouse'), radius: U('u_radius'), strength: U('u_strength'), time: U('u_time'), dpr: U('u_dpr'), bg: U('u_bg'), rmode: U('u_rmode'), rp: U('u_rp'), rmax: U('u_rmax') };
+  const u = { res: U('u_res'), mouse: U('u_mouse'), radius: U('u_radius'), strength: U('u_strength'), time: U('u_time'), dpr: U('u_dpr'), bg: U('u_bg'), rmode: U('u_rmode'), rp: U('u_rp'), rmax: U('u_rmax'), nrect: U('u_nrect'), fall: U('u_fall'), rects: U('u_rects') };
   gl.uniform1f(u.rmode, mode === 'ripple' ? 1 : 0);
+  gl.uniform1f(u.nrect, 0);
 
   const tex = gl.createTexture();
   gl.bindTexture(gl.TEXTURE_2D, tex);
@@ -261,6 +276,7 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
   let lastX = 0, lastY = 0, hasLast = false;
   let speed = 0;               // smoothed pointer speed
   let strength = 0;
+  let touch = 1, touchTarget = 1; // eased `boost` of the latest pointer position
   let lastPaint = 0;
   let inside = false;          // pointer is over the stage: the effect never drops below `hoverStrength`
   let leaving = false;         // pointer left the stage: let the effect die out quickly
@@ -275,6 +291,7 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
     const target = inside ? Math.max(hoverStrength, moving) : moving;
     // ease in gently, ease out slowly (frame-rate independent)
     strength += (target - strength) * (1 - Math.exp(-dt * (target > strength ? 5 : leaving ? 7 : 2.2)));
+    touch += (touchTarget - touch) * (1 - Math.exp(-dt * 9));
     const follow = 1 - Math.exp(-dt * 12);
     mx += (tx - mx) * follow;
     my += (ty - my) * follow;
@@ -286,7 +303,7 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
     gl.uniform2f(u.mouse, mx * dpr, my * dpr);
-    gl.uniform1f(u.strength, strength);
+    gl.uniform1f(u.strength, strength * (typeof gain === 'function' ? gain() : gain) * touch);
     gl.uniform1f(u.time, (now - t0) / 1000);
     gl.drawArrays(gl.TRIANGLES, 0, 3);
     raf = requestAnimationFrame(draw);
@@ -311,27 +328,66 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
     else { rippling = false; canvas.classList.remove('is-on'); gl.clear(gl.COLOR_BUFFER_BIT); }
   };
 
-  const kick = () => { if (!running) { running = true; raf = requestAnimationFrame(draw); } };
+  // ----- idle flash (region mode): whole boxes distorted at once, eased in and out
+  let flashing = false, fRaf = 0;
+  const endFlash = () => {
+    cancelAnimationFrame(fRaf);
+    if (!flashing) return;
+    flashing = false;
+    gl.uniform1f(u.nrect, 0);
+    if (!running) { canvas.classList.remove('is-on'); gl.clearColor(0, 0, 0, 0); gl.clear(gl.COLOR_BUFFER_BIT); }
+  };
+  const flash = (boxes: Array<{ left: number; top: number; right: number; bottom: number }>, ms = 1500, level = 0.4) => {
+    if (running || flashing || !boxes.length) return;
+    flashing = true;
+    const list = boxes.slice(0, 3);
+    const data = new Float32Array(12);
+    list.forEach((b, i) => { data[i * 4] = b.left * dpr; data[i * 4 + 1] = b.top * dpr; data[i * 4 + 2] = b.right * dpr; data[i * 4 + 3] = b.bottom * dpr; });
+    gl.uniform4fv(u.rects, data);
+    gl.uniform1f(u.nrect, list.length);
+    gl.uniform1f(u.fall, 14 * dpr);
+    const first = list[0];
+    gl.uniform2f(u.mouse, (first.left + first.right) / 2 * dpr, (first.top + first.bottom) / 2 * dpr);
+    const start = performance.now();
+    const frame = (now: number) => {
+      const t = Math.min(1, (now - start) / ms);
+      const env = Math.pow(Math.sin(Math.PI * t), 1.4); // in and out
+      canvas.classList.add('is-on');
+      gl.clearColor(0, 0, 0, 0);
+      gl.clear(gl.COLOR_BUFFER_BIT);
+      gl.uniform1f(u.strength, env * level * (typeof gain === 'function' ? gain() : gain));
+      gl.uniform1f(u.time, (now - t0) / 1000);
+      gl.drawArrays(gl.TRIANGLES, 0, 3);
+      if (t < 1) fRaf = requestAnimationFrame(frame);
+      else endFlash();
+    };
+    fRaf = requestAnimationFrame(frame);
+  };
+
+  const kick = () => { endFlash(); if (!running) { running = true; raf = requestAnimationFrame(draw); } };
 
   const rebuild = () => { drawText(); if (running) gl.drawArrays(gl.TRIANGLES, 0, 3); };
   (document.fonts?.ready ?? Promise.resolve()).then(rebuild);
   drawText();
   const ro = new ResizeObserver(rebuild);
   ro.observe(stage);
-  const mo = new MutationObserver(rebuild); // theme switch
+  // theme switch: the page colours fade over a moment, so read them again after the fade too (the text colour and the background are taken from the computed styles)
+  const mo = new MutationObserver(() => { rebuild(); [250, 700].forEach((ms) => window.setTimeout(rebuild, ms)); });
   mo.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   return {
+    flash,
     ripple(x, y) {
       if (mode !== 'ripple' || rippling) return;
       rippling = true; rx = x; ry = y; rStart = performance.now();
       cancelAnimationFrame(rRaf);
       rRaf = requestAnimationFrame(rippleFrame);
     },
-    pointer(clientX, clientY, x, y) {
+    pointer(clientX, clientY, x, y, boost = 1) {
       if (mode === 'ripple') return;
       leaving = false;
       inside = true;
+      touchTarget = boost;
       tx = x; ty = y;
       if (!running) { mx = tx; my = ty; }
       if (hasLast) speed = Math.min(140, speed + Math.hypot(clientX - lastX, clientY - lastY) * 0.6);
@@ -342,6 +398,8 @@ export function setupPrism({ stage, canvas, bg, paint, radius: radiusFn, repaint
     dispose() {
       cancelAnimationFrame(raf);
       cancelAnimationFrame(rRaf);
+      cancelAnimationFrame(fRaf);
+      flashing = false;
       rippling = false;
       running = false;
       inside = false;
