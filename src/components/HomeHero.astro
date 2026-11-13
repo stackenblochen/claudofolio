@@ -1,72 +1,96 @@
 ---
 /**
- * H1 Home intro: the headline and subline on the left, the doodles (DoodleStack) right next to them and never over them, on the page background.
- * Text and doodles form one group, centred in the stage (10 columns, media measure). Below 992 px the doodles sit under the text.
+ * H1 Home intro: the headline across the 8 text columns with the buttons below, in front of a large crop of the glass prism cube (src/assets/crystal-cube-stage.webp),
+ * placed like the Figma reference: its left corner about 40% in, bleeding off the top, right and bottom of the stage. Every page load tilts, scales and shifts the cube a
+ * little differently, and it floats gently in place (CSS, about 1.5% and 1.4 degrees; still with reduced motion). The stage is only as high as its content.
+ * The earlier prism shader background is kept in HomeHeroShader.astro; the doodles in DoodleStack.astro (neither is used).
  *
  * Slots: "intro" (the headline), "subline" (optional line below it), "actions" (optional row of `.btn` buttons under the text).
  */
-import DoodleStack from './DoodleStack.astro';
+import { Image } from 'astro:assets';
+import cube from '../assets/crystal-cube-stage.webp';
 ---
 
 <section class="home-hero">
+  <div class="edge-blur" aria-hidden="true"></div>
+  <div class="cube" data-cube aria-hidden="true"><Image src={cube} alt="" widths={[900, 1400, 2200]} sizes="(min-width: 1230px) 1100px, 900px" loading="eager" decoding="async" /></div>
   <div class="container">
-    <div class="stage measure-media">
-      <div class="group">
-        <div class="text">
-          <h1 class="intro t-title"><slot name="intro" /></h1>
-          {Astro.slots.has('subline') && <p class="subline t-subheading"><slot name="subline" /></p>}
-          {Astro.slots.has('actions') && <div class="actions"><slot name="actions" /></div>}
-        </div>
-        <DoodleStack />
+    <div class="stage measure-text">
+      <div class="text">
+        <h1 class="intro t-title"><slot name="intro" /></h1>
+        {Astro.slots.has('subline') && <p class="subline t-subheading"><slot name="subline" /></p>}
+        {Astro.slots.has('actions') && <div class="actions"><slot name="actions" /></div>}
       </div>
     </div>
   </div>
-  <a class="scroll-hint" href="#selected-work" aria-label="Scroll to selected work">
-    <svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 5v14" /><path d="M18 13l-6 6" /><path d="M6 13l6 6" /></svg>
-  </a>
 </section>
 
 <style>
-  /* the stage fills 90% of the window height (so the next section peeks in below the arrow) (below the header), its content centred */
+  /* the stage is only as high as its content (no full-window height): the headline across the full 10 columns, the buttons below it */
   .home-hero {
-    box-sizing: border-box; position: relative; min-height: 90vh; min-height: 90svh; display: flex; flex-direction: column;
-    padding-top: var(--header-h); padding-bottom: calc(var(--space-5) + 56px); /* clear of the arrow */
+    box-sizing: border-box; position: relative; display: flex; flex-direction: column;
+    padding-top: calc(var(--header-h) + var(--space-7)); padding-bottom: var(--space-8);
     background: var(--bg-primary);
   }
-  /* down arrow at the bottom of the stage: points to the work below (a link to it), bobs gently */
-  .scroll-hint {
-    position: absolute; left: 50%; bottom: var(--space-5); transform: translateX(-50%); display: grid; place-items: center;
-    width: 56px; height: 56px; border-radius: 50%; color: var(--text-default); opacity: 0.85; transition: opacity 200ms ease;
+  .stage { position: relative; }
+  /* the cube: 187% of the stage height (so it keeps the Figma proportions at any width), its top 43% above the stage, its right side pushed 18% of the stage height out
+     (translate is a share of the cube's own width). Tilt, scale and shift are random per page load (set by the script below). */
+  .home-hero { overflow: hidden; background: var(--bg-primary); }
+  .cube {
+    position: absolute; z-index: 0; top: -43%; right: 0; height: 187%; aspect-ratio: 1; pointer-events: none;
+    translate: calc(28% + var(--dx, 0%)) var(--dy, 0%); rotate: var(--rot, 0deg); scale: var(--scale, 1);
+    opacity: 0; transition: opacity 900ms ease;
   }
-  .scroll-hint:hover, .scroll-hint:focus-visible { opacity: 1; }
-  @media (prefers-reduced-motion: no-preference) { .scroll-hint svg { animation: hint-bob 2.2s ease-in-out infinite; } }
-  @keyframes hint-bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(5px); } }
-  .home-hero > .container { flex: 1; display: flex; flex-direction: column; justify-content: center; }
-  /* headline left, doodles right from 992 px; below that the doodles sit under the text */
-  .stage {
-    position: relative; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; gap: var(--space-5);
-    /* below 768 px the stage grows with its content (text + stack), centred in the window; padding keeps it clear of the header on short screens */
-    justify-content: center; padding-block: var(--space-4);
+  .cube.is-ready { opacity: var(--cube-opacity, 0.5); } /* dimmed, so it sits behind the text */
+  @media (max-width: 767px) { .cube { --cube-opacity: 0.32; } } /* on phones the cube sits right behind the headline: dimmer still */
+  .cube :global(img) { display: block; width: 100%; height: 100%; object-fit: contain; user-select: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .cube :global(img) { animation: cube-float var(--float, 16s) ease-in-out var(--float-delay, 0s) infinite alternate; }
   }
-  .group { display: flex; flex-direction: column; gap: var(--space-5); align-items: flex-start; width: 100%; }
-  .text { position: relative; z-index: 3; display: flex; flex-direction: column; gap: var(--space-6); }
+  @keyframes cube-float {
+    from { transform: translate3d(-1.6%, 1.4%, 0) rotate(-1.4deg); }
+    to { transform: translate3d(1.6%, -1.4%, 0) rotate(1.4deg); }
+  }
+  /* blurred outer edges: a layer over the cube that blurs what is behind it, strongest at the four edges of the stage and fading out towards the middle
+     (blur strength: the first value of blur(); how far it reaches: the percentages) */
+  .edge-blur {
+    position: absolute; inset: 0; z-index: 1; pointer-events: none;
+    -webkit-backdrop-filter: blur(22px); backdrop-filter: blur(22px);
+    --m: linear-gradient(to right, #000, transparent 14%, transparent 86%, #000), linear-gradient(to bottom, #000, transparent 22%, transparent 78%, #000);
+    -webkit-mask-image: var(--m); mask-image: var(--m);
+  }
+  .home-hero > .container { position: relative; z-index: 2; }
+  .text { position: relative; z-index: 3; display: flex; flex-direction: column; align-items: flex-start; gap: var(--space-6); }
   .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); }
-  .intro { text-wrap: pretty; } /* fill the text width instead of balancing short lines */
+  .intro { text-wrap: pretty; }
   /* below 1230 px: fixed font-size steps (line height 1.19), no fluid scaling; from 1230 px the .t-title size applies */
   @media (max-width: 1229px) { .intro { font-size: 2rem; line-height: 1.19; } }
-  @media (min-width: 768px) and (max-width: 1229px) { .intro { font-size: 2.5rem; } }
-  @media (min-width: 992px) and (max-width: 1229px) { .intro { font-size: 3rem; } }
+  @media (min-width: 768px) and (max-width: 1229px) { .intro { font-size: 2.75rem; } }
+  @media (min-width: 992px) and (max-width: 1229px) { .intro { font-size: 3.25rem; } }
+  @media (min-width: 1230px) { .intro { font-size: 3.75rem; line-height: 1.15; } }
   .intro :global(em) { color: var(--accent-primary); }
   .subline { font-family: var(--font-sans); word-spacing: normal; font-weight: 400; text-wrap: pretty; }
-  @media (min-width: 992px) {
-    .stage {
-      flex-direction: row; align-items: center; justify-content: center; padding-block: var(--space-6);
-    }
-    /* text and doodles form one group, centred in the stage (and so on the screen), a small gap apart; the doodles are as high as the text block, no higher or lower */
-    .group { flex-direction: row; align-items: stretch; gap: var(--space-5); width: auto; }
-    .text { flex: 0 1 auto; }
-  }
-  /* line breaks as designed on larger screens; the text reflows freely below 768 px */
+  /* optional designed line breaks (only where a page asks for them) */
   .intro :global(.br-md), .subline :global(.br-md) { display: none; }
   @media (min-width: 768px) { .intro :global(.br-md), .subline :global(.br-md) { display: inline; } }
 </style>
+
+<script>
+  /* Every load a slightly different cube: tilt, size, position and float speed are random within a small range. */
+  const rand = (a: number, b: number) => a + Math.random() * (b - a);
+  function initCube() {
+    const el = document.querySelector<HTMLElement>('[data-cube]');
+    if (!el) return;
+    el.style.setProperty('--rot', `${rand(-6, 6).toFixed(1)}deg`);
+    el.style.setProperty('--scale', rand(0.94, 1.1).toFixed(3));
+    el.style.setProperty('--dx', `${rand(-3, 3).toFixed(1)}%`);
+    el.style.setProperty('--dy', `${rand(-3, 3).toFixed(1)}%`);
+    el.style.setProperty('--float', `${rand(9, 13).toFixed(1)}s`);
+    el.style.setProperty('--float-delay', `${(-rand(0, 10)).toFixed(1)}s`);
+    // fade in once the picture has loaded (not before, or it would pop in)
+    const img = el.querySelector('img');
+    const show = () => requestAnimationFrame(() => el.classList.add('is-ready'));
+    if (!img || img.complete) show(); else { img.addEventListener('load', show, { once: true }); img.addEventListener('error', show, { once: true }); }
+  }
+  document.addEventListener('astro:page-load', initCube);
+</script>

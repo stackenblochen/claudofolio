@@ -5,17 +5,23 @@
  */
 import type { CardData } from '../lib/projects';
 import ProjectCard from './ProjectCard.astro';
+import ProjectCardBento from './ProjectCardBento.astro';
+
+/** 'rows' = the original one-teaser-per-row list (ProjectCard); 'bento' = two-column bento cards (ProjectCardBento). Change the default here to switch back. */
+export type GridVariant = 'rows' | 'bento';
+const DEFAULT_VARIANT: GridVariant = 'bento';
 
 interface Props {
   items: CardData[];
+  variant?: GridVariant;
 }
-const { items } = Astro.props;
+const { items, variant = DEFAULT_VARIANT } = Astro.props;
 ---
 
 {items.length > 0
   ? (
-    <ul class="grid" role="list">
-      {items.map((c) => <li class="reveal"><ProjectCard card={c} /></li>)}
+    <ul class:list={['grid', variant === 'bento' && 'grid--bento']} role="list">
+      {items.map((c) => <li class="reveal">{variant === 'bento' ? <ProjectCardBento card={c} /> : <ProjectCard card={c} />}</li>)}
     </ul>
   )
   : <p class="t-body">New case studies are on their way.</p>}
@@ -30,4 +36,10 @@ const { items } = Astro.props;
   .grid { gap: var(--space-3); }
   @media (min-width: 768px) { .grid { gap: var(--space-4); } }
   @media (min-width: 992px) { .grid { gap: var(--space-5); } }
+
+  /* bento: two equal columns from 768 px, three from 992 px, full media width */
+  .grid--bento { width: 100%; display: grid; grid-template-columns: minmax(0, 1fr); }
+  .grid--bento > li { min-width: 0; }
+  @media (min-width: 768px) { .grid--bento { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 992px) { .grid--bento { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
 </style>

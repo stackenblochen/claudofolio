@@ -1,0 +1,69 @@
+---
+/**
+ * The Seerene application details screen (Hadoop, 4 weeks), rebuilt from the dashboard components. CONFIDENTIAL case-study material
+ * (this folder is excluded via .git/info/exclude). Demo data from an open-source project.
+ */
+import DashApp from '../dashboard/DashApp.astro';
+import DashSidebar from '../dashboard/DashSidebar.astro';
+import DashControl from '../dashboard/DashControl.astro';
+import DashPanel from '../dashboard/DashPanel.astro';
+import DashKpi from '../dashboard/DashKpi.astro';
+import DashIcon from '../dashboard/DashIcon.astro';
+import DashLegend from '../dashboard/DashLegend.astro';
+import DashChart from '../dashboard/DashChart.astro';
+import DashTooltip from '../dashboard/DashTooltip.astro';
+import { axis } from '../dashboard/timeaxis';
+
+interface Props { open?: boolean; hover?: boolean }
+const { open = false, hover = false } = Astro.props;
+const HOVER = 18; // Aug 13, 2019: the data point shown in the hover state
+const menu = [
+  { title: 'Effort', items: [
+    { name: 'Effort', text: 'The time spent by all developers working on the relevant code in a single (or most recent) week.' },
+    { name: 'Effort (total)', state: 'hover', text: 'The time spent by all developers working on the relevant code within a selected time range (e.g., six months, one year).' },
+    { name: 'Resources (total)', state: 'selected', text: 'The total number of developers working on relevant code within the selected date range.' },
+  ] },
+  { title: 'Impediments', items: [
+    { name: '% Effort in defect fixing (rework)', text: 'The share of the time spent by all developers on fixing defects in the relevant code within the selected date range.' },
+    { name: '% Effort in complex code', text: 'The share of the time spent by all developers working on code with a high complexity.' },
+  ] },
+] as const;
+const ax = axis({ from: '2019-07-26', until: '2019-08-23', points: 29, tickDays: 7, tickFormat: 'day', pointExtent: 1 });
+const effort = [120, 120, 100, 100, 110, 110, 85, 85, 65, 65, 75, 75, 85, 75, 75, 65, 65, 95, 95, 85, 85, 75, 65, 55, 45, 55, 75, 75, 55];
+const complexity = [138, 142, 133, 122, 114, 108, 104, 118, 108, 104, 97, 96, 106, 117, 128, 142, 150, 157, 163, 168, 163, 155, 170, 182, 172, 160, 146, 140, 134];
+const commits = [55, 48, 54, 44, 36, 40, 44, 40, 36, 24, 8, 4, 46, 40, 36, 20, 12, 8, 52, 40, 54, 50, 40, 36, 24, 28, 32, 36, 28];
+---
+<DashApp nav={['Home', 'Applications', 'Projects', 'Teams', 'Maps']} active="Applications" user="Thomas M. McNeill" title="Hadoop" share={false}
+  description="This page provides a focussed view of your Application, with precise measurements for its performance and the coding activity."
+  chips={[{ label: 'Excludes Codeunits tagged as', value: 'test, generated, 3rd party', plain: true }, { label: 'Application owner', value: 'Wolfgang Lattermann' }, { label: 'Department', value: 'Sales' }]}>
+  <DashControl slot="controls" label="Timerange" value="Last 4 weeks" />
+  <DashSidebar slot="sidebar" footer="Manage home" sections={[
+    { icon: 'code', title: 'Select application', chevron: true, label: 'Recently used', items: [{ name: 'Hadoop', active: true }, { name: 'LuceneSolr' }, { name: 'Jackrabbit' }, { name: 'HBase' }, { name: 'LuceneNET' }] },
+    { label: 'Compare applications', items: [{ name: 'Application ranking' }] },
+  ]} />
+  <DashPanel>
+    <div class="dkpis">
+      <DashKpi label="Select KPI 1" name="Effort" open={open} menu={menu as any} rows={[
+        { label: 'As of Aug 23, 2019', value: '7.3', unit: 'Person Weeks' },
+        { label: 'Delta – last 4 weeks', value: '−1.8', unit: 'Person Weeks' },
+        { label: 'No Target set', action: 'Set Target' },
+      ]} />
+      <div class="dkpis__swap"><DashIcon name="compare" size={20} /></div>
+      <DashKpi label="Select KPI 2" name="Complexity" rows={[
+        { label: 'As of Aug 23, 2019', value: '21.25k', unit: 'Lines of Code' },
+        { label: 'Delta – last 4 weeks', value: '−76', unit: 'Lines of Code' },
+        { label: 'Target by Dec 31, 2019', value: '10.00k', unit: 'Lines of Code', edit: true },
+      ]} />
+    </div>
+    <div class="dkpichart">
+      <h3 class="dsection__title">KPI over time</h3>
+      <DashLegend items={[{ label: 'Effort', tone: 'blue' }, { label: 'Complexity', tone: 'teal' }, { label: 'Code Changes', tone: 'green' }]} />
+      <div class="dchart-stack">
+      <DashChart hover={hover ? HOVER : undefined} alt="Effort as stepped area and complexity as a line over the last four weeks" kind="combo" area={effort} line={complexity} areaMax={150} lineMax={300}
+        leftLabels={['0', '50', '100', '150']} rightLabels={['0', '100k', '200k', '300k']} unitLeft="Person days" unitRight="Lines of Code" ticks={ax.ticks} tickAt={ax.tickAt} />
+      <DashChart hover={hover ? HOVER : undefined} alt="Code changes per day over the last four weeks" kind="bars" bars={commits} ticks={ax.ticks} tickAt={ax.tickAt} />
+      {hover && <DashTooltip x={(40 + (HOVER + 0.5) * ((1120 - 92) / 29)) / 1120} top={70} title="Tue, Aug 13, 2019" rows={[{ tone: 'blue', label: 'Effort', value: String(effort[HOVER]), unit: 'Person days' }, { tone: 'teal', label: 'Complexity', value: complexity[HOVER] + 'k', unit: 'Lines of Code' }, { tone: 'green', label: 'Code Changes', value: String(commits[HOVER]) }]} />}
+      </div>
+    </div>
+  </DashPanel>
+</DashApp>

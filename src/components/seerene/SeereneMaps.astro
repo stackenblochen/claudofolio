@@ -1,0 +1,84 @@
+---
+/**
+ * The Seerene software map page (Maps, Hadoop, Complexity, last 4 weeks), rebuilt from the dashboard components around the 3D map.
+ * States: `panel` = the side panel (graph and revisions) is open (closed: a FAB at the upper left), `legend` = the legend is open in the lower right corner
+ * (closed: the info FAB), `selected` = a building is selected (blue) with its tooltip, and the code unit details overlay the side panel's place.
+ * CONFIDENTIAL case-study material (this folder is excluded via .git/info/exclude). Demo data.
+ */
+import DashApp from '../dashboard/DashApp.astro';
+import DashToolbar from '../dashboard/DashToolbar.astro';
+import DashField from '../dashboard/DashField.astro';
+import DashTags from '../dashboard/DashTags.astro';
+import DashButton from '../dashboard/DashButton.astro';
+import DashPanel from '../dashboard/DashPanel.astro';
+import DashLegend from '../dashboard/DashLegend.astro';
+import DashChart from '../dashboard/DashChart.astro';
+import DashTable from '../dashboard/DashTable.astro';
+import DashMapLegend from '../dashboard/DashMapLegend.astro';
+import DashFab from '../dashboard/DashFab.astro';
+import DashIcon from '../dashboard/DashIcon.astro';
+import SoftwareMap from './SoftwareMap.astro';
+
+interface Props { selected?: boolean; panel?: boolean; legend?: boolean }
+const { selected = false, panel = false, legend = false } = Astro.props;
+const SHIFT = panel || selected ? 236 : 0; // with the panel open (or the details over its place) the picture is shifted right, so the map is centred in the space beside it
+
+const line = [62, 70, 66, 58, 48, 40, 34, 38, 52, 64, 78, 92, 98, 90, 74, 60, 56, 62, 72, 84, 88, 80, 70, 66];
+const activity = [30, 44, 40, 34, 26, 22, 18, 14, 40, 46, 38, 28, 24, 20, 36, 44, 30, 26, 32, 38, 42, 36, 30, 34];
+const cols = [{ label: 'Commit date' }, { label: 'Author', chevron: true }, { label: 'Commit Message', chevron: true }];
+const widths = ['26%', '34%', '1fr'];
+const authors = ['Cayde-6@seerene.com', 'John Appleseed', 'John Carmack', 'Hung Wong III', 'Johnny Rotten', 'Akira Ashinja', 'Weiwei Yang', 'Erik Krogen', 'Inigo Goiri', 'Konstantin V Shvachko', 'sdeka', 'Wangda Tan'];
+const msgs = ['YARN-365. Normaliz…', 'HDFS-145. FileCharg…', 'HADOOP-325. Yasm…', 'fixed HDFS-145. File…', 'HDFS-576. Containe…', 'Reverted HADOOP-5…', 'YARN-4987. Motoriz…', 'SUBMARINE-54 [UI2]…', 'spellcheck YARN-45…', 'HADOOP-4378. Tran…', 'HADOOP-1657. Type…', 'HADOOP-1679. Canc…'];
+const dates = ['Aug 22, 2019', 'Aug 22, 2019', 'Aug 21, 2019', 'Aug 21, 2019', 'Aug 20, 2019', 'Aug 19, 2019', 'Aug 19, 2019', 'Aug 16, 2019', 'Aug 15, 2019', 'Aug 14, 2019', 'Aug 14, 2019', 'Aug 13, 2019'];
+const rows = (n: number, plain: boolean) => Array.from({ length: n }, (_, i) => [dates[i], authors[(i + (plain ? 0 : 5)) % authors.length], plain ? 'Never use default val…' : msgs[i % msgs.length]]);
+---
+<DashApp flush nav={['Home', 'Applications', 'Projects', 'Teams', 'Maps']} active="Maps" user="Thomas M. McNeill"
+  footerLinks={['Privacy Policy', 'Documentation', 'Release Notes', 'Terms of Use', 'Imprint', 'Support']}>
+  <div class="dmapview" data-panel={panel || selected ? 'open' : 'closed'} data-legend={legend ? 'open' : 'closed'}>
+    <div class="dmapfull">
+      <SoftwareMap width={1440} height={860} viewOffsetX={SHIFT} select={selected} tooltip={selected} selectAt={selected ? '[0.64,0.6]' : '[0.64,0.62]'} viewOffsetY={panel || selected ? 0 : 14} cam={selected ? '{"pos":[0,232,147],"target":[0,4,4],"fov":29}' : '{"pos":[0,262,166],"target":[0,4,4],"fov":29}'} />
+    </div>
+    <DashToolbar class="dtoolbar--float">
+      <DashField label="Map" value="Hadoop" badge width={256} />
+      <DashField label="KPI" value="Complexity" width={240} />
+      <DashField label="Timerange" value="Last 4 weeks" width={256} />
+      <DashTags tones={['teal', 'orange', 'pink', 'off']} />
+      <DashButton variant="secondary" icon="plus" label="Add filter" />
+      <DashButton label="Apply" />
+    </DashToolbar>
+    {panel ? (
+      <div class="dleft">
+        <DashPanel flush>
+          <span class="dleft__close" aria-label="Close panel"><DashIcon name="panel-collapse" size={22} /></span>
+          <div class="dside-panel__block">
+            <h3 class="dside-panel__title">The total number of complex lines of code (nesting level of four or higher) in the relevant code</h3>
+            <div style="margin-top:10px"><DashLegend items={[{ label: 'Complexity', tone: 'blue' }, { label: 'Activity', tone: 'green' }]} /></div>
+            <div style="margin-top:6px"><DashChart alt="Complex lines of code over the last day" kind="combo" line={line} lineMax={150} leftLabels={['', '', '']} rightLabels={['0', '75', '150']} unitRight="Lines of Code" width={408} height={92} /></div>
+            <DashChart alt="Activity over the last day" kind="bars" bars={activity} barsMax={50} width={408} height={76} ticks={['Aug 22', '06:00', '12:00', '18:00', 'Aug 23', '06:00']} />
+          </div>
+          <div class="dside-panel__block" style="padding-top:24px"><h3 class="dside-panel__h" style="font-size:18px">Revisions</h3></div>
+          <div style="margin-top:12px"><DashTable cols={cols} widths={widths} rows={rows(9, true)} /></div>
+        </DashPanel>
+      </div>
+    ) : (
+      <DashFab class="dfab--left" icon="panel-expand" label="Open graph and revisions" />
+    )}
+    {selected && (
+      <div class="dleft dleft--over">
+        <DashPanel flush>
+          <div class="dside-panel__block">
+            <h3 class="dside-panel__h">Code Unit Details<DashIcon name="x" size={20} /></h3>
+            <div class="dfieldrow"><div class="dfieldrow__cap">Code unit name</div><div class="dfieldrow__val dfieldrow__val--name" data-sel="name"></div></div>
+            <div class="dfieldrow"><div class="dfieldrow__cap">Full path</div><div class="dfieldrow__val" data-sel="path"></div></div>
+            <div class="dfieldrow"><div class="dfieldrow__cap">Tags</div>
+              <div class="dtagrow"><span class="dtagchip dtagchip--teal"><i></i>3rd party</span><span class="dtagchip dtagchip--orange"><i></i>generated</span><span class="dtagchip dtagchip--pink"><i></i>test</span><DashIcon name="pencil" size={18} /></div>
+            </div>
+          </div>
+          <div class="dside-panel__block" style="padding-top:24px"><h3 class="dside-panel__h" style="font-size:18px">Revisions</h3></div>
+          <div style="margin:12px 0 4px"><DashTable cols={cols} widths={widths} rows={rows(9, false)} /></div>
+        </DashPanel>
+      </div>
+    )}
+    {legend ? <DashMapLegend /> : <DashFab class="dfab--right" icon="info" label="Show map legend" />}
+  </div>
+</DashApp>

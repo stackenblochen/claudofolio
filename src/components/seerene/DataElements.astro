@@ -1,0 +1,81 @@
+---
+/**
+ * A board of the data-analysis elements of the Seerene platform: the charts, rankings, scorecards, targets and the 3D map, each one as the live component
+ * from the dashboard system (hover works on the small charts), on a gradient stage. Laid out at 1440 px and scaled to its frame like a DashApp
+ * (`lib/dashboard-hover.ts` fits every `.dapp-frame`). CONFIDENTIAL case-study material: this folder is excluded via .git/info/exclude.
+ *
+ *   <Diagram size="media" fixed ratio="auto" stage="linear-gradient(…)"><DataElements /></Diagram>
+ */
+import '../dashboard/dashboard.css';
+import './board.css';
+import DashCard from '../dashboard/DashCard.astro';
+import DashMetric from '../dashboard/DashMetric.astro';
+import DashSpark from '../dashboard/DashSpark.astro';
+import DashRanking from '../dashboard/DashRanking.astro';
+import DashChart from '../dashboard/DashChart.astro';
+import DashLegend from '../dashboard/DashLegend.astro';
+import DashTooltip from '../dashboard/DashTooltip.astro';
+import { axis } from '../dashboard/timeaxis';
+
+const ax = axis({ from: '2019-07-26', until: '2019-08-23', points: 29, tickDays: 7, tickFormat: 'day', pointExtent: 1 });
+const effort = [120, 120, 100, 100, 110, 110, 85, 85, 65, 65, 75, 75, 85, 75, 75, 65, 65, 95, 95, 85, 85, 75, 65, 55, 45, 55, 75, 75, 55];
+const complexity = [138, 142, 133, 122, 114, 108, 104, 118, 108, 104, 97, 96, 106, 117, 128, 142, 150, 157, 163, 168, 163, 155, 170, 182, 172, 160, 146, 140, 134];
+const commits = [55, 48, 54, 44, 36, 40, 44, 40, 36, 24, 8, 4, 46, 40, 36, 20, 12, 8, 52, 40, 54, 50, 40, 36, 24, 28, 32, 36, 28];
+const HOVER = 18;
+const W = 880; // viewBox width of the big chart (it is drawn at the width of its tile)
+const axCommits = axis({ from: '2019-03-01', until: '2019-08-23', points: 26, pointExtent: 7 });
+const axGreen = axis({ from: '2019-07-01', until: '2019-08-23', to: '2019-09-30', points: 54, tickFormat: 'day', includeEnd: true });
+const axRed = axis({ from: '2019-06-01', until: '2019-08-23', to: '2019-12-31', points: 42, tickEvery: 2, tickFormat: 'day' });
+---
+<div class="dapp-frame">
+  <div class="dash dapp dboard">
+    <div class="dboard__scene">
+    <div class="dboard__grid">
+      <section class="dboard__tile dboard__tile--wide">
+        <p class="dboard__cap"><b>01</b>Combined trend<span>Two KPIs on their own axes, with the day's values on hover</span></p>
+        <div class="dash dpanel dboard__panel">
+          <DashLegend items={[{ label: 'Effort', tone: 'blue' }, { label: 'Complexity', tone: 'teal' }, { label: 'Code Changes', tone: 'green' }]} />
+          <div class="dchart-stack">
+            <DashChart width={W} hover={HOVER} alt="Effort as stepped area and complexity as a line over four weeks" kind="combo" area={effort} line={complexity} areaMax={150} lineMax={300}
+              leftLabels={['0', '50', '100', '150']} rightLabels={['0', '100k', '200k', '300k']} unitLeft="Person days" unitRight="Lines of Code" height={250} />
+            <DashChart width={W} alt="Code changes per day over four weeks" kind="bars" bars={commits} ticks={ax.ticks} tickAt={ax.tickAt} height={84} />
+            <DashTooltip x={(40 + (HOVER + 0.5) * ((W - 92) / 29)) / W} top={46} title="Tue, Aug 13, 2019" rows={[{ tone: 'blue', label: 'Effort', value: String(effort[HOVER]), unit: 'Person days' }, { tone: 'teal', label: 'Complexity', value: complexity[HOVER] + 'k', unit: 'Lines of Code' }, { tone: 'green', label: 'Code Changes', value: String(commits[HOVER]) }]} />
+          </div>
+        </div>
+      </section>
+
+      <section class="dboard__tile">
+        <p class="dboard__cap"><b>02</b>Ranking<span>Applications side by side, bars scaled to the leader</span></p>
+        <DashCard title="Top-5 Complexity" scope="Last 3 month" foot="Rank 1-5 of 23">
+          <DashRanking head={['Application', 'Logic Points']} items={[{ name: 'LuceneSolr', value: 31.5, label: '31.5k' }, { name: 'Hadoop', value: 15.1, label: '15.1k' }, { name: 'Jackrabbit', value: 13.5, label: '13.5k' }, { name: 'HBase', value: 11, label: '11k' }, { name: 'LuceneNET', value: 10.9, label: '10.9k' }]} />
+        </DashCard>
+      </section>
+
+      <section class="dboard__tile">
+        <p class="dboard__cap"><b>03</b>Target, on track<span>The trend is projected to the goal date</span></p>
+        <DashCard title="Reduce Missing Doc. in Q3/19" scope="Jul 1, 2019 – Sep 30, 2019" entity="Lucene">
+          <DashMetric title="Missing Documentation" unit="Logic Points" rows={[{ label: 'Current Value', status: 'on track', value: '16k' }, { label: 'Target Value', value: '10k', chevron: false }]} />
+          <DashSpark alt="Missing documentation falls steadily; the dashed projection reaches the target by 30 September" mode="area" tone="green" now goal={10} forecast={10} span={axGreen.span} valueLabel="points" labels={axGreen.labels} values={Array.from({ length: 54 }, (_, i) => +(24 - i * 0.154 + ((i * 7) % 5 - 2) * 0.12).toFixed(2))} ticks={axGreen.ticks} tickAt={axGreen.tickAt} yLabels={['24k', '0']} />
+        </DashCard>
+      </section>
+
+      <section class="dboard__tile">
+        <p class="dboard__cap"><b>04</b>Scorecard and bars<span>Change in the period, activity underneath</span></p>
+        <DashCard title="Hadoop" badge scope="Last 6 month">
+          <DashMetric rows={[{ label: 'Knowledge Monopoly', value: '− 3.1%' }, { label: 'Missing Documentation', value: '− 0.3%' }, { label: 'Complexity', value: '+ 0.9%' }, { label: 'Code Changes', value: '32' }]} />
+          <DashSpark alt="Commits per week from March to August" mode="bars" unit="Commits" labels={axCommits.labels} valueLabel="commits" values={[6,5,8,5,7,4,6,5,2,7,7,5,3,2,9,3,10,5,9,3,6,5,2,4,6,3]} ticks={axCommits.ticks} tickAt={axCommits.tickAt} yLabels={['1K', '0']} />
+        </DashCard>
+      </section>
+
+      <section class="dboard__tile">
+        <p class="dboard__cap"><b>05</b>Target, off track<span>The chart turns red when the goal slips away</span></p>
+        <DashCard title="Cut Open Defects by Dec/19" scope="Jun 1, 2019 – Dec 31, 2019" entity="HBase">
+          <DashMetric title="Open Defects" unit="Count" rows={[{ label: 'Current Value', status: 'off track', statusTone: 'bad', value: '372' }, { label: 'Target Value', value: '250', chevron: false }]} />
+          <DashSpark alt="Open defects keep rising; the dashed projection ends well above the target by 31 December" mode="area" tone="red" now goal={250} forecast={486} span={axRed.span} valueLabel="defects" labels={axRed.labels} values={Array.from({ length: 42 }, (_, i) => +(300 + i * 1.76 + ((i * 7) % 5 - 2) * 1.2).toFixed(1))} ticks={axRed.ticks} tickAt={axRed.tickAt} yLabels={['490', '0']} />
+        </DashCard>
+      </section>
+
+    </div>
+    </div>
+  </div>
+</div>

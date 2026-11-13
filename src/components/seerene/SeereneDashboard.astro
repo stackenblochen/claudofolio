@@ -1,0 +1,50 @@
+---
+/**
+ * The Seerene dashboard (demo data from open-source projects), assembled from the dashboard components. CONFIDENTIAL case-study material:
+ * this folder is excluded via .git/info/exclude. Used live or as the source for the app screenshot in the Safari mock.
+ */
+import DashApp from '../dashboard/DashApp.astro';
+import DashSidebar from '../dashboard/DashSidebar.astro';
+import DashGrid from '../dashboard/DashGrid.astro';
+import DashCard from '../dashboard/DashCard.astro';
+import DashMetric from '../dashboard/DashMetric.astro';
+import DashSpark from '../dashboard/DashSpark.astro';
+import DashRanking from '../dashboard/DashRanking.astro';
+import { axis } from '../dashboard/timeaxis';
+
+const axCommits = axis({ from: '2019-03-01', until: '2019-08-23', points: 26, pointExtent: 7 });
+const axEffort = axis({ from: '2019-03-01', until: '2019-08-23', points: 13 });
+const axComplexity = axis({ from: '2018-08-24', until: '2019-08-23', points: 53, tickEvery: 3 });
+const axGreen = axis({ from: '2019-07-01', until: '2019-08-23', to: '2019-09-30', points: 54, tickFormat: 'day', includeEnd: true });
+const axRed = axis({ from: '2019-06-01', until: '2019-08-23', to: '2019-12-31', points: 42, tickEvery: 2, tickFormat: 'day' });
+---
+<DashApp nav={['Home', 'Applications', 'Projects', 'Teams', 'Maps']} active="Home" user="Thomas M. McNeill" title="Henry's Dashboard" chips={[{ label: 'Dashboard Owner', value: 'Wolfgang Lattermann' }, { label: 'Created on', value: 'Apr 23, 2019' }]}>
+<DashSidebar slot="sidebar" footer="Manage home" sections={[
+  { icon: 'grid', title: 'Select dashboard', chevron: true, label: 'Recently used', items: [{ name: "Henry's Dashboard", active: true }, { name: 'Apache Q2/2018', linked: true }, { name: 'HANA Migration' }], create: 'Create Dashboard' },
+]} />
+<DashGrid>
+  <DashCard title="Hadoop" badge scope="Last 6 month">
+    <DashMetric rows={[{ label: 'Knowledge Monopoly', value: '− 3.1%' }, { label: 'Missing Documentation', value: '− 0.3%' }, { label: 'Complexity', value: '+ 0.9%' }, { label: 'Code Changes', value: '32' }]} />
+    <DashSpark alt="Commits per week from March to August" mode="bars" unit="Commits" labels={axCommits.labels} valueLabel="commits" values={[6,5,8,5,7,4,6,5,2,7,7,5,3,2,9,3,10,5,9,3,6,5,2,4,6,3]} ticks={axCommits.ticks} tickAt={axCommits.tickAt} yLabels={['1K', '0']} />
+  </DashCard>
+  <DashCard title="A4 Migration Q3/18" scope="Last 6 month">
+    <DashMetric rows={[{ label: 'Logic Size (Functionality)', value: '+ 1.6%' }, { label: '% Effort in Complex Code', value: '36.1%' }, { label: '% Effort in Defect Fixing (Rework)', value: '12.6%' }, { label: 'Effort', value: '23' }]} />
+    <DashSpark alt="Effort in person weeks from March to August" mode="area" unit="Person Weeks" labels={axEffort.labels} valueLabel="person weeks" values={[38,42,41,40,43,44,46,45,43,42,41,40,30]} ticks={axEffort.ticks} tickAt={axEffort.tickAt} yLabels={['60', '0']} />
+  </DashCard>
+  <DashCard title="Top-5 Complexity" scope="Last 3 month" foot="Rank 1-5 of 23">
+    <DashRanking head={['Application', 'Logic Points']} items={[{ name: 'LuceneSolr', value: 31.5, label: '31.5k' }, { name: 'Hadoop', value: 15.1, label: '15.1k' }, { name: 'Jackrabbit', value: 13.5, label: '13.5k' }, { name: 'HBase', value: 11, label: '11k' }, { name: 'LuceneNET', value: 10.9, label: '10.9k' }]} />
+  </DashCard>
+  <DashCard title="Complexity in Max Story Points" scope="Last 12 month" entity="Apolo">
+    <DashMetric title="Complexity" unit="Lines of Code" rows={[{ label: 'Delta', value: '95' }]} />
+    <DashSpark alt="Complexity in lines of code over twelve months: a drop in the first weeks, then flat" mode="line" step valueLabel="lines" labels={axComplexity.labels} values={Array.from({ length: 53 }, (_, i) => (i < 2 ? 3400 : i < 33 ? 3300 : 3310))} ticks={axComplexity.ticks} tickAt={axComplexity.tickAt} yLabels={['3.4k', '3.35k', '3.3k']} />
+  </DashCard>
+  <DashCard title="Reduce Missing Doc. in Q3/19" scope="Jul 1, 2019 – Sep 30, 2019" entity="Lucene">
+    <DashMetric title="Missing Documentation" unit="Logic Points" rows={[{ label: 'Current Value', status: 'on track', value: '16k' }, { label: 'Target Value', value: '10k', chevron: false }]} />
+    <DashSpark alt="Missing documentation falls steadily; the dashed projection continues that slope and reaches the target by 30 September" mode="area" tone="green" now goal={10} forecast={10} span={axGreen.span} valueLabel="points" labels={axGreen.labels} values={Array.from({ length: 54 }, (_, i) => +(24 - i * 0.154 + ((i * 7) % 5 - 2) * 0.12).toFixed(2))} ticks={axGreen.ticks} tickAt={axGreen.tickAt} yLabels={['24k', '0']} />
+  </DashCard>
+  <DashCard title="Cut Open Defects by Dec/19" scope="Jun 1, 2019 – Dec 31, 2019" entity="HBase">
+    <DashMetric title="Open Defects" unit="Count" rows={[{ label: 'Current Value', status: 'off track', statusTone: 'bad', value: '372' }, { label: 'Target Value', value: '250', chevron: false }]} />
+    <DashSpark alt="Open defects keep rising and the dashed projection continues that trend, ending well above the target by 31 December" mode="area" tone="red" now goal={250} forecast={486} span={axRed.span} valueLabel="defects" labels={axRed.labels} values={Array.from({ length: 42 }, (_, i) => +(300 + i * 1.76 + ((i * 7) % 5 - 2) * 1.2).toFixed(1))} ticks={axRed.ticks} tickAt={axRed.tickAt} yLabels={['490', '0']} />
+  </DashCard>
+</DashGrid>
+</DashApp>

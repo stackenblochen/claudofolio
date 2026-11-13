@@ -1,0 +1,204 @@
+---
+title: Designing a shop for EDEKA's *retail partners*
+shortTitle: EDEKA StartHub
+summary: "Helping EDEKA store owners discover, judge and order products from startups."
+labels: [Product Design]
+tags: [Retail, B2B, Marketplace, Migration]
+teaserTint: green
+cover: ../../assets/projects/edeka-starthub/cover-products.webp
+coverAlt: "Product tiles from the shop: new and promoted products with price, a voting product with its votes, and a card to suggest a trend product"
+heroVariant: mockup
+heroGlow: true
+protected: true
+company: EDEKA StartHub
+role: UX Designer
+team: 1 PM, 2 developers
+timeline: 14 months
+year: 2026
+platforms: [Web]
+lead:
+  - EDEKA stores are run as franchises, and their owners decide to a large extent what goes into the range.
+  - StartHub (previously called 'foodstarter') connects them with startups and young brands. I redesigned the shop where merchants discover, judge and order these products, and added a way for them to vote on their region's range.
+order: 5
+status: local
+---
+
+{/*
+  DRAFT v1. Git-ignored until Wolfgang clears it for publishing.
+  Guidance (docs/case-studies/edeka-starthub/00-handoff.md): avoid the term "FEK" (needs too much explaining), no internal process diagram.
+  Screenshots are unblurred; Wolfgang blurs them himself if needed.
+  [TODO] marks content only Wolfgang can fill in. Placeholders: swap for exports from Figma (see refs/ thumbnails).
+*/}
+
+import screen from '../../assets/placeholders/screen.svg';
+import diagram from '../../assets/placeholders/diagram.svg';
+import insightSearch from '../../assets/projects/edeka-starthub/insight-search.svg';
+import insightRegional from '../../assets/projects/edeka-starthub/insight-regional.svg';
+import mockStart from '../../assets/projects/edeka-starthub/mock-start.png';
+import mockShop from '../../assets/projects/edeka-starthub/mock-shop.png';
+import mockVoting from '../../assets/projects/edeka-starthub/mock-voting.png';
+import insightList from '../../assets/projects/edeka-starthub/insight-list.svg';
+import photoChalkboard from '../../assets/projects/edeka-starthub/photos/chalkboard-fruit.webp';
+import photoShelf from '../../assets/projects/edeka-starthub/photos/testregal.jpg';
+import photoBanner from '../../assets/projects/edeka-starthub/photos/frame-18.svg';
+import photoFounders from '../../assets/projects/edeka-starthub/photos/wholey-founders.png';
+
+<PhotoWall columns={[
+  [
+    { src: photoChalkboard, alt: 'A chalkboard reading "Wir lieben Lebensmittel" with the EDEKA logo, in front of a pile of fresh fruit', ratio: 1 },
+    { src: photoShelf, alt: 'A wooden shelf in an EDEKA store stocked with products of start-ups: spirits, pasta, granola jars and sauces', ratio: 1, position: '50% 0%' },
+  ],
+  [
+    { src: photoBanner, alt: 'Illustration of a person carrying a long yellow STARTHUB banner, on a blue background', ratio: 1 },
+    { src: photoFounders, alt: 'Three founders of a start-up smiling into the camera, holding boxes of their cereal', ratio: 1, position: '50% 30%' },
+  ],
+]} />
+
+<StorySection number="01" title="Key user insights" id="insights">
+  We ran many interviews with merchants and EDEKA's Trend Team and documented them in an AI-supported research repository. I  aggregated these key insights.
+
+  <Fragment slot="media">
+    <ImageText mono image={insightSearch} alt="Illustration of a merchant arriving with a product already in mind" title="Search comes first">
+      Many merchants already know what they want. The idea comes from outside the portal: social media, other stores, campaigns.
+    </ImageText>
+    <ImageText mono image={insightRegional} alt="Illustration of a map divided into seven regions" title="The region decides">
+      EDEKA is organised in seven regions. A product is only orderable where the region offers it.
+    </ImageText>
+    <ImageText mono image={insightList} alt="Illustration of a merchant scrolling a long inventory list" title="At home in lists">
+      Merchants handle large inventory lists every day and are used to scanning, comparing and ordering from them.
+    </ImageText>
+  </Fragment>
+</StorySection>
+
+<StorySection number="02" title="Three ways in" id="structure">
+  <p slot="problem">Merchants come to StartHub with different intents: the most common scenario is to search for a product they heard about, but some are also open to be inspired and discover new proucts. Offering a direct channel to vote on what their region offers is another new entrypoint.</p>
+  <p slot="decision">We structured the shop around these three intents: a prominent product search across the whole product range, a start page and categories for discovery, and a separate area for voting.</p>
+
+  <Fragment slot="media">
+    <Diagram gallery size="media" fixed ratio="1467 / 1102" caption="Sitemap of the StartHub portal and shop">
+      <Schema width={1467} height={1102} alt="Sitemap of the StartHub portal as a tree from top to bottom. The home page (page 0) branches into the main navigation entries in their order: shop (product page with Abverkaufsdaten, Artikelstammdaten and the order process, which leads to the order confirmation), voting (open and closed voting pages), regional (with a detail page), orders (order overview) and profile. A dotted line leads from the order confirmation back to the orders overview">
+        <SchemaPill variant="accent" x={595} y={125} w={277} h={74} label="Home (Page 0)" />
+        <SchemaPill variant="accent" x={125} y={295} w={135} h={74} label="Shop" />
+        <SchemaPill variant="accent" x={419} y={295} w={166} h={74} label="Voting" />
+        <SchemaPill variant="quiet" x={700} y={295} w={198} h={74} label="Regional" />
+        <SchemaPill variant="quiet" x={946} y={295} w={166} h={74} label="Orders" />
+        <SchemaPill variant="quiet" x={1160} y={295} w={182} h={74} label="Profile" />
+        <SchemaPill variant="outline" x={479} y={417} w={193} h={64} label="Open voting" size={22} />
+        <SchemaPill variant="outline" x={479} y={513} w={220} h={64} label="Closed voting" size={22} />
+        <SchemaPill variant="outline" x={760} y={417} w={193} h={64} label="Detail page" size={22} />
+        <SchemaPill variant="outline" x={185} y={417} w={206} h={64} label="Product page" size={22} />
+        <SchemaPill variant="outline" x={245} y={609} w={246} h={64} label="Abverkaufsdaten" size={22} />
+        <SchemaPill variant="outline" x={245} y={705} w={272} h={64} label="Artikelstammdaten" size={22} />
+        <SchemaPill variant="outline" x={245} y={801} w={220} h={64} label="Order process" size={22} />
+        <SchemaPill variant="outline" x={252} y={913} w={206} h={64} label="Confirmation" size={22} />
+        <SchemaArrow points={[[733.5, 199], [733.5, 247], [192.5, 247], [192.5, 295]]} />
+        <SchemaArrow points={[[733.5, 199], [733.5, 247], [502, 247], [502, 295]]} />
+        <SchemaArrow points={[[733.5, 199], [733.5, 247], [799, 247], [799, 295]]} />
+        <SchemaArrow points={[[733.5, 199], [733.5, 247], [1029, 247], [1029, 295]]} />
+        <SchemaArrow points={[[733.5, 199], [733.5, 247], [1251, 247], [1251, 295]]} />
+        <SchemaArrow points={[[439, 369], [439, 449], [479, 449]]} />
+        <SchemaArrow points={[[439, 369], [439, 545], [479, 545]]} />
+        <SchemaArrow points={[[720, 369], [720, 449], [760, 449]]} />
+        <SchemaArrow points={[[145, 369], [145, 449], [185, 449]]} />
+        <SchemaArrow points={[[205, 481], [205, 641], [245, 641]]} />
+        <SchemaArrow points={[[205, 481], [205, 737], [245, 737]]} />
+        <SchemaArrow points={[[205, 481], [205, 833], [245, 833]]} />
+        <SchemaArrow points={[[355, 865], [355, 913]]} />
+        <SchemaArrow dotted points={[[458, 945], [1029, 945], [1029, 369]]} />
+      </Schema>
+    </Diagram>
+    <Mock gallery size="cover" width="media" align="cut-bottom" zoom={1.05} shadow="soft" stage="soft-violet:orb" caption="Home page ('Page 0')" devices={[
+      { device: 'browser', browser: 'safari', bar: 'starthub.edeka', ratio: '1 / 1', focus: 'top', src: mockStart, alt: 'The start page: a promotion banner, new products and sections for products in the shop, current votes and regional producers' },
+    ]} />
+    <Mock gallery size="cover" width="media" align="cut-bottom" zoom={1.05} shadow="soft" stage="soft-yellow:halo" caption="Merchant Shop" devices={[
+      { device: 'browser', browser: 'safari', bar: 'starthub.edeka', ratio: '1 / 1', focus: 'top', src: mockShop, alt: 'The shop: product categories and themes on the left, a grid of product tiles with price and sorting on the right' },
+    ]} />
+    <Mock gallery size="cover" width="media" align="cut-bottom" zoom={1.05} shadow="soft" stage="soft-blue:horizon" caption="Voting ('Abfragen')" devices={[
+      { device: 'browser', browser: 'safari', bar: 'starthub.edeka', ratio: '1 / 1', focus: 'top', src: mockVoting, alt: 'The voting area: an introduction, products presented per region with the votes so far, and a grid of products in voting' },
+    ]} />
+  </Fragment>
+</StorySection>
+
+<StorySection number="03" title="Decision data first" id="decision-data">
+  <p slot="problem">A merchant decides with numbers: purchase price, recommended retail price, margin, order unit, and how a product sells in other stores. A beautiful product page alone doesn't help them decide.</p>
+  <p slot="decision">Hovering a product tile shows price, margin and average sales; the product page leads with them, followed by sell-out data per region and the full master data, with article numbers ready to copy.</p>
+  <p slot="outcome">Merchants can judge a product before the first click, and the story of the brand and its team supports the numbers instead of replacing them.</p>
+
+  <Fragment slot="media">
+    <Figure gallery src={screen} alt="Product page with price, purchase price and margin at the top, master data below and sell-out figures for the last weeks" caption="Product page with key figures" />
+    <Figure gallery src={screen} alt="Sell-out view with average sales per store and week, total units and a breakdown by region" caption="Sell-out data per region" />
+  </Fragment>
+</StorySection>
+
+<StorySection number="04" title="Orders per store" id="stores">
+  <p slot="problem">Merchants often order for several stores, and some users work for more than one. A sample or a vote that lands at the wrong store is useless.</p>
+  <p slot="decision">Every action that has an effect in a store asks for the store, but only when there is a choice. Sample orders go to a selected store address, and voting asks which stores the vote is for only when the user works for several.</p>
+  <p slot="outcome">Merchants with one store never see the extra step, and those with several stay in control.</p>
+
+  <Fragment slot="media">
+    <Figure gallery src={screen} alt="Sample order dialog where the merchant picks the delivery address of one of their stores" caption="Ordering a sample for a store" />
+    <Diagram size="media" fixed caption="Voting adapts to the number of stores">
+      <Schema width={1400} height={810} alt="Two-step voting flow: the merchant opens a product; users with several stores first choose the stores they vote for, users with one store vote directly">
+        <SchemaPill variant="filled" x={40} y={368} w={260} h={74} label="Open product" />
+        <SchemaPill variant="filled" x={370} y={368} w={300} h={74} label="Several stores?" />
+        <SchemaPill variant="outline" x={760} y={218} w={300} h={74} label="Choose stores" />
+        <SchemaPill variant="filled" x={1100} y={368} w={260} h={74} label="Cast vote" />
+        <SchemaArrow points={[[300, 405], [370, 405]]} />
+        <SchemaArrow points={[[520, 368], [520, 255], [760, 255]]} />
+        <SchemaArrow points={[[1060, 255], [1230, 255], [1230, 368]]} />
+        <SchemaArrow points={[[520, 442], [520, 575], [1230, 575], [1230, 450]]} />
+        <SchemaList x={545} y={200} title="yes" />
+        <SchemaList x={545} y={540} title="no" />
+      </Schema>
+    </Diagram>
+  </Fragment>
+</StorySection>
+
+<StorySection number="05" title="Giving merchants a say" id="voting">
+  <p slot="problem">Whether a trend product is offered in a region is decided by a regional buying committee. Merchants had no direct way to influence this, and the StartHub team had little insight into what merchants actually wanted.</p>
+  <p slot="decision">I designed voting as a second area next to the shop. The Trend Team presents products per region, merchants vote with "I would order this", comment, and suggest products of their own. Each product shows its status: newly presented, in voting, accepted or not accepted.</p>
+  <p slot="outcome">Merchant votes inform the committee's decision, and accepted products become orderable in the shop. The StartHub team gets a direct view of merchants' wishes per region.</p>
+
+  <Fragment slot="media">
+    <Diagram size="media" fixed caption="From vote to shelf">
+      <Schema width={1400} height={810} alt="Simplified flow: merchants vote on a presented product, the regional buying committee decides, the product becomes orderable in the shop">
+        <SchemaPill variant="filled" x={60} y={360} w={360} h={90} label="Merchants vote" />
+        <SchemaPill variant="filled" x={520} y={360} w={360} h={90} label="Committee decides" />
+        <SchemaPill variant="filled" x={980} y={360} w={360} h={90} label="Orderable in shop" />
+        <SchemaArrow points={[[420, 405], [520, 405]]} />
+        <SchemaArrow points={[[880, 405], [980, 405]]} />
+        <SchemaList x={60} y={480} title="Voting area" />
+        <SchemaList x={520} y={480} title="Per region" />
+        <SchemaList x={980} y={480} title="Shop" />
+      </Schema>
+    </Diagram>
+    <Figure gallery src={screen} alt="Voting overview with newly presented products, products currently in voting and a card for suggesting a product" caption="Voting overview" />
+    <Figure gallery src={screen} alt="Product in voting with the number of merchants who would order it, their comments and the voting deadline" caption="A product in voting" />
+  </Fragment>
+</StorySection>
+
+<StorySection number="06" title="Bringing ideas inside" id="start-page">
+  <p slot="problem">The impulses that make merchants look for a product happen outside the portal, so StartHub was rarely where an idea started.</p>
+  <p slot="decision">I designed a start page that collects these impulses in one place: what's new, picks from the shop, current votes and regional products. I explored whether news should reuse the shop tiles or get a lighter variant of its own.</p>
+  <p slot="outcome">The start page shipped as the new entry point. Curated editorial content was outlined as the next step, beyond what the team could resource at the time.</p>
+
+  <Fragment slot="media">
+    <Figure gallery src={screen} alt="Start page with an introduction, news, picks from the shop, current votes and regional products" caption="The start page" />
+  </Fragment>
+</StorySection>
+
+<StorySection number="07" title="Shipping step by step" id="shipping">
+  <p slot="problem">The old portal was in daily use, and the team had two developers. A big-bang relaunch was not an option.</p>
+  <p slot="decision">We moved the whole portal into the new design and structure step by step. I kept the order process close to the existing one, with quality-of-life improvements, and moved a restructured, cart-like ordering experience to the roadmap: valuable, but too expensive for the team at the time and not our main goal.</p>
+  <p slot="outcome">Merchants could keep ordering throughout, while discovery and voting got the team's attention first.</p>
+
+  <Fragment slot="media">
+    <Figure gallery src={screen} alt="[TODO: before and after, the old portal next to the new shop]" caption="Then and now" />
+  </Fragment>
+</StorySection>
+
+<StorySection number="08" title="Outcome" id="outcome" closing>
+  1. Replaced the legacy portal with a new shop, voting and start page in 14 months, with a team of three.
+  2. Gives merchants a voice in their region's range through voting. [TODO: number of votes, participating merchants or accepted products]
+  3. [TODO: result first, then cause, e.g. orders, sample requests or merchant feedback after launch]
+</StorySection>

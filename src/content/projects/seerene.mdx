@@ -1,0 +1,140 @@
+---
+title: Bringing code *insights* to the boardroom
+shortTitle: Software analytics platform
+summary: "Redesigning a software analytics platform for architects, managers and executives."
+labels: [Product Design, Design Systems]
+tags: [B2B, SaaS, Data visualisation, Dashboards]
+teaserTint: salmon
+cover: ../../assets/projects/seerene/cover.png
+coverFill: true
+teaserImage: ../../assets/projects/seerene/card.png
+coverOutline: none
+teaserAlt: "An isometric software map: a floating plate with white, yellow, orange and red blocks, a few towers rising above the rest"
+coverAlt: "Close-up of a laptop in front of a blurred plant: the Seerene dashboard with a sidebar, KPI cards, rankings and charts on its screen"
+heroVariant: mockup
+company: Seerene
+role: Senior Product Designer
+team: Several squads, each 1 PM and 3–5 engineers
+year: 2019
+platforms: [Web (desktop)]
+lead:
+  - Seerene analyses the code of huge enterprise software systems and turns it into KPIs.
+  - Insight only matters when it reaches the people who decide. I redesigned the platform so findings travel from the architects who dig into the code to the executives who act on them.
+order: 6
+status: live
+---
+
+{/*
+  DRAFT v1. No longer marked confidential in the frontmatter (no password gate, no stamp). This file, src/assets/projects/seerene/, src/components/seerene/ and docs/case-studies/ are still excluded via .git/info/exclude until Wolfgang decides to publish.
+  Handoff: docs/case-studies/seerene/00-handoff.md. No customer names (SAP, Continental, Erste Bank) until Wolfgang decides.
+  [TODO] marks content only Wolfgang can fill in. Screens are cropped from the PDFs at modest resolution: check sharpness, ideally swap for Figma exports.
+  Open: title, cover, grid order, ranking screen (placeholder removed for now), learnings.
+*/}
+
+import mapsLegend from '../../assets/projects/seerene/maps-legend.png';
+import mapsSelected from '../../assets/projects/seerene/maps-selected.png';
+import detailsApp from '../../assets/projects/seerene/application-details.png';
+import chartHover from '../../assets/projects/seerene/application-details-hover.png';
+import detailsKpi from '../../assets/projects/seerene/application-details-kpi.png';
+import addWidget from '../../assets/projects/seerene/05-add-widget.png';
+import savedViews from '../../assets/projects/seerene/05-dashboard-saved-views.png';
+import usageChart from '../../assets/projects/seerene/06-usage-chart-heap.png';
+import ChartTypes from '../../components/seerene/ChartTypes.astro';
+import dashboardApp from '../../assets/projects/seerene/dashboard-app.png';
+
+
+<StorySection number="01" title="Three levels, one finding" id="levels">
+  <p slot="problem">Seerene serves three user groups with different questions. Software architects dig deep into the code. Mid-level management (engineering and team leads) prepares their findings for managers. The C-Level (CXO, CTO, CIO) doesn't want to read technical reports but wants to steer the direction.</p>
+  <p slot="decision">The platform connects the three levels in both directions. Each level has its own tool, and a finding travels up from the 3D software map through application details and rankings to the dashboard. Goals travel down from the C-Level to the development teams. Any dashboard widget leads back down to the code behind it.</p>
+
+  <Fragment slot="media">
+    <Diagram size="media" fixed ratio="1400 / 834" caption="Goals travel down, findings travel up.">
+      <Schema width={1400} height={834} alt="Four levels stacked: the C-Level on top, then Mid-Level Management, the software architect and development at the bottom. On the left, arrows lead downwards: the C-Level sets the goal, mid-level management puts it in context, the architect supervises the development. On the right, arrows lead upwards: the architect identifies problems in development, mid-level management analyzes them, and the C-Level gets the report. Each persona has a view: the C-Level uses the dashboard, mid-level management uses application details and ranking, the software architect uses the software map.">
+        {/* the drawing spans x 507 to 1189 and y 125 to 709 of the 1400 x 834 canvas; the group shifts it left so it is centred on both axes (700 / 417) */}
+        <g transform="translate(-148 0)">
+          <SchemaPill variant="filled" x={609} y={125} w={182} h={74} label="C-Level" />
+          <SchemaPill variant="filled" x={507} y={295} w={387} h={74} label="Mid-Level Management" />
+          <SchemaPill variant="filled" x={522} y={465} w={356} h={74} label="Software Architect" />
+          <SchemaPill variant="filled" x={578} y={635} w={245} h={74} label="Development" />
+          <SchemaPill variant="outline" size={22} x={815} y={130} w={167} h={64} label="Dashboard" />
+          <SchemaPill variant="outline" size={22} x={918} y={300} w={272} h={64} label="Details, Ranking" />
+          <SchemaPill variant="outline" size={22} x={902} y={470} w={206} h={64} label="Software Map" />
+          <SchemaArrow points={[[655, 199], [655, 295]]} />
+          <SchemaArrow points={[[655, 369], [655, 465]]} />
+          <SchemaArrow points={[[655, 539], [655, 635]]} />
+          <SchemaArrow points={[[745, 635], [745, 539]]} />
+          <SchemaArrow points={[[745, 465], [745, 369]]} />
+          <SchemaArrow points={[[745, 295], [745, 199]]} />
+          <text x={635} y={247} style="font: italic 400 21px var(--font-sans); fill: var(--schema-text-dim)" dominant-baseline="central" text-anchor="end">goal setting</text>
+          <text x={635} y={417} style="font: italic 400 21px var(--font-sans); fill: var(--schema-text-dim)" dominant-baseline="central" text-anchor="end">give context</text>
+          <text x={635} y={587} style="font: italic 400 21px var(--font-sans); fill: var(--schema-text-dim)" dominant-baseline="central" text-anchor="end">supervise</text>
+          <text x={765} y={247} style="font: italic 400 21px var(--font-sans); fill: var(--schema-text-dim)" dominant-baseline="central">report</text>
+          <text x={765} y={417} style="font: italic 400 21px var(--font-sans); fill: var(--schema-text-dim)" dominant-baseline="central">analyze</text>
+          <text x={765} y={587} style="font: italic 400 21px var(--font-sans); fill: var(--schema-text-dim)" dominant-baseline="central">identify problems</text>
+        </g>
+      </Schema>
+    </Diagram>
+  </Fragment>
+</StorySection>
+
+<StorySection number="02" title="The software map" id="map">
+  <p slot="problem">Across thousands of files, outliers are hard to see in a list. The map existed only as a desktop "rich client", and the old renderer's colours were muddy. There was no user data yet, so I interviewed customer success and internal developers with the architect profile.</p>
+  <p slot="decision">Files are buildings and folders are districts. Height, colour and area carry up to three KPIs, so outliers stand out at a glance. The map supports two jobs: identify outliers, then analyse their root cause. Selecting a point in the chart highlights the revisions and their buildings, and a click on a building opens the code unit inspector. A new renderer with exact colour scales replaced the old look.</p>
+  <p slot="outcome">The map moved into the web platform and became the architect's main tool.</p>
+
+  <Fragment slot="media">
+    <Mock gallery size="full" width="media" shadow="soft" caption="The software map: a 3D view of the code base, with the legend open; the graph and revisions are one click away." devices={[
+      { device: 'none', src: mapsLegend, alt: 'The new software map: a 3D map of a code base with colour-coded buildings, filters on top, the open legend and a round button for the graph panel' },
+    ]} />
+    <Mock gallery size="cover" width="media" align="cut-bottom" zoom={1.05} theme="dark" shadow="soft" stage="soft-blue:horizon" caption="Clicking a building opens the code unit inspector." devices={[
+      { device: 'browser', browser: 'safari', bar: 'app.seerene.com', src: mapsSelected, alt: 'The software map with one building selected in blue: a tooltip with its complexity and code size, and the code unit details with path, tags and revisions in the left panel' },
+    ]} />
+    {/* [TODO optional] interactive mini map (3D treemap with demo data) as an Embed */}
+  </Fragment>
+</StorySection>
+
+<StorySection number="03" title="Making KPIs comparable" id="kpis">
+  <p slot="problem">Putting different KPIs in relation to each other is key for managers. Customers were used to an expandable KPI list, but it served that need only indirectly.</p>
+  <p slot="decision">The application details page compares two KPIs side by side, with a chart over time. Customer feedback added Code Changes as a third, fixed chart to spot critical commits. KPI and page descriptions add guidance. A ranking compares applications with each other.</p>
+  <p slot="outcome">Managers get a comparison at a glance, and "Show on Map" leads each KPI back to the code.</p>
+
+  <Fragment slot="media">
+    <Mock gallery size="cover" width="media" align="cut-bottom" zoom={1.05} theme="dark" shadow="soft" stage="soft-violet:halo" caption="Application details with two KPIs" devices={[
+      { device: 'browser', browser: 'safari', bar: 'app.seerene.com', src: detailsApp, alt: 'Application details for Hadoop in a Safari window: two selectable KPIs with values, delta and target side by side, and a chart of both over time with code changes below' },
+    ]} />
+    <MediaRow>
+      <Mock gallery size="half" shadow="none" caption="Selecting a KPI, with a short description of each" devices={[
+        { device: 'none', zoom: 1.45, at: '35% 40%', src: detailsKpi, alt: 'The KPI selector open on the application details page: a grouped list of KPIs, each with a one-line description, with Effort (total) highlighted' },
+      ]} />
+      <Mock gallery size="half" shadow="none" caption="Hovering the chart shows all three KPIs" devices={[
+        { device: 'none', zoom: 1.97, at: '77.6% 66.1%', src: chartHover, alt: 'Hover state on the KPI over time chart: a cursor on one day with a tooltip listing effort in person days, complexity in lines of code and the code changes of that day' },
+      ]} />
+    </MediaRow>
+  </Fragment>
+</StorySection>
+
+<StorySection number="04" title="Reporting upward" id="reporting">
+  <p slot="problem">The map lost its state on every reload, and findings could not be passed on.</p>
+  <p slot="decision">Saved Views started as that fix and became the bridge: a filtered map state can be placed on a dashboard as a widget. Dashboards collect scorecards, Top-5 rankings, saved views and targets, and are shared with colleagues. Executives read a result; one click on "Show on Map" takes anyone back down to the evidence.</p>
+  <p slot="outcome">Mid-level management presents a finding in a form the C-Level can read without opening anything technical.</p>
+
+  <Fragment slot="media">
+    <Mock gallery size="cover" width="media" align="cut-bottom" zoom={1.05} theme="dark" shadow="soft" border="light" stage="fog" caption="Henry's Dashboard: scorecards, a Top-5 ranking and targets, on track and off track." devices={[
+      { device: 'browser', browser: 'safari', bar: 'app.seerene.com', src: dashboardApp, alt: 'The Seerene dashboard in a Safari window: a dark sidebar with dashboards, a top navigation, and six cards with KPI rows and charts, among them a green on-track and a red off-track target' },
+    ]} />
+    <Diagram size="media" fixed ratio="auto" gallery caption="overview of available chart types" stage="soft-gray:halo">
+      <ChartTypes />
+    </Diagram>
+  </Fragment>
+</StorySection>
+
+<StorySection number="05" title="Outcome" id="outcome" closing>
+  <Figure gallery size="text" kind="image" border="light-mode" src={usageChart} alt="Stacked bar chart of the share of use of the new and the old UI from January to October: the new UI grows from almost nothing to 85 percent" />
+
+  1. The new UI went from almost no use to 85 % of usage within ten months, tracked in Heap while both versions ran in parallel.
+  2. The old web client and the desktop rich client were retired in Q4/2018, after very positive customer feedback and training by customer success.
+  3. A unified design system on Angular Material, documented in Confluence, made rapid prototyping and implementation possible.
+
+</StorySection>
+
+{/* [TODO] Learnings. */}

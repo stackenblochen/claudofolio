@@ -34,10 +34,8 @@ const items = Object.entries(files).map(([path, mod]) => {
 <div class="doodles" data-doodles data-items={JSON.stringify(items)} aria-hidden="true"></div>
 
 <style>
-  /* under the text; from 992 px beside it, a fixed-width box right next to the text (HomeHero centres the group). Neither the box nor the pictures react to the pointer. */
-  .doodles { --doodle-shadow: 0.2; position: relative; width: 100%; height: 15rem; flex: none; user-select: none; }
-  @media (min-width: 768px) { .doodles { height: 18rem; } }
-  @media (min-width: 992px) { .doodles { flex: none; width: clamp(13rem, 22vw, 18rem); height: auto; align-self: stretch; } }
+  /* the box fills its slot (HomeHero places and sizes it: small, in the upper left corner of the headline). Neither the box nor the pictures react to the pointer. */
+  .doodles { --doodle-shadow: 0.2; position: relative; width: 100%; height: 100%; user-select: none; }
   :global(:root[data-theme='light']) .doodles { --doodle-shadow: 0.08; }
   .doodles :global(.doodle) {
     position: absolute; left: calc(var(--x) * 1%); top: calc(var(--y) * 1%);
@@ -91,7 +89,7 @@ const items = Object.entries(files).map(([path, mod]) => {
     if (!box) return;
     let items: Item[] = [];
     try { items = JSON.parse(box.dataset.items ?? '[]'); } catch {}
-    if (items.length < 6) return;
+    if (items.length < 2) return;
 
     const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
     let bag: Item[] = [];

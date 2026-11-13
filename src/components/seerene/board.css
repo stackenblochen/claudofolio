@@ -1,0 +1,23 @@
+/* shared by DataElements and ChartTypes: a 1440 px board on a gradient stage, scaled by lib/dashboard-hover.ts (.dapp-frame) */
+  /* the board reuses the 1440 px scaling frame of DashApp; it brings its own (transparent) page. The scene is tilted in perspective and runs off the frame edges, like a camera close to a wall of cards */
+  .dapp.dboard { background: transparent; box-sizing: border-box; font-family: var(--d-font); }
+    .dboard__scene { box-sizing: border-box; padding: 80px 80px 90px; }
+  .dboard__grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 72px 36px; align-items: stretch; }
+  .dboard__tile { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+  .dboard__tile--wide { grid-column: span 2; }
+  .dboard__tile .dcard { flex: 1; height: auto; min-height: 400px; border-radius: 20px; box-shadow: 0 1px 2px rgba(20, 40, 90, 0.06), 0 30px 60px -24px rgba(60, 90, 190, 0.45); }
+  .dboard__tile .dcard:hover { transform: none; }
+  .dboard__cap { margin: 0; display: flex; align-items: baseline; flex-wrap: wrap; gap: 4px 12px; font: 600 21px/1.2 var(--d-font); color: var(--text-strong); padding-inline: 0; }
+  .dboard__cap b { font: 500 14px/1 var(--d-font); letter-spacing: 0.08em; color: light-dark(#5a6fc0, #a9bdf5); }
+  .dboard__cap span { flex-basis: 100%; font: 400 16px/1.35 var(--d-font); color: light-dark(#4a5068, #c3c8d6); }
+  .dboard__panel { flex: 1; min-height: 400px; box-sizing: border-box; padding: 24px 28px 20px; gap: 22px; border-radius: 20px; box-shadow: 0 1px 2px rgba(20, 40, 90, 0.06), 0 30px 60px -24px rgba(60, 90, 190, 0.45); }
+  /* the chart types (ChartTypes): the chart alone on a pure white card, no title or app name */
+  .dboard__plot { flex: 1; display: flex; flex-direction: column; justify-content: flex-start; gap: 12px; box-sizing: border-box; padding: 22px 16px 18px; background: #fff; border-radius: var(--d-radius); }
+  .dboard__plot .dspark { max-height: none; }
+  .dboard__plot .dspark-wrap { margin-top: 0; }
+  .dboard__plot .dcard__chart { padding: 4px 0 8px; }
+  .dboard__plot .dcard__unit { padding: 0; }
+  .dboard__plot .dtable { width: 100%; }
+  /* tables, rankings and scorecards run edge to edge: no side padding on the card, the rows bring their own */
+  .dboard__plot--table { padding-inline: 0; }
+  .dboard__plot .dtable__head, .dboard__plot .dtable__row { padding: 0 24px; }

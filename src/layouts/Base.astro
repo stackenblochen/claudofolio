@@ -108,7 +108,14 @@ const clash = ['400:Regular','500:Medium','600:Semibold','700:Bold'].map((w) => 
       document.addEventListener('astro:after-swap', () => document.documentElement.classList.add('js'));
 
       // Scroll reveal: scale + opacity. CSS neutralises it for reduced motion.
+      // The observer alone can miss a jump to an anchor (menu link, "View work" button, a #hash in the address): the new position is reached without the observer
+      // getting a turn, so the content below the heading would stay hidden until the next scroll. A sweep after hash changes, clicks on in-page links and
+      // the end of a scroll reveals whatever is in view.
+      let revealOff: AbortController | undefined;
       document.addEventListener('astro:page-load', () => {
+        revealOff?.abort();
+        revealOff = new AbortController();
+        const { signal } = revealOff;
         const io = new IntersectionObserver(
           (entries) => entries.forEach((e) => {
             if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); }
@@ -116,6 +123,16 @@ const clash = ['400:Regular','500:Medium','600:Semibold','700:Bold'].map((w) => 
           { rootMargin: '0px 0px -8% 0px' },
         );
         document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+        const sweep = () => document.querySelectorAll('.reveal:not(.is-visible)').forEach((el) => {
+          const r = el.getBoundingClientRect();
+          if (r.top < innerHeight * 0.92 && r.bottom > 0) { el.classList.add('is-visible'); io.unobserve(el); }
+        });
+        const sweepSoon = () => [60, 400, 900].forEach((ms) => window.setTimeout(sweep, ms)); // the smooth scroll takes a moment to arrive
+        window.addEventListener('hashchange', sweepSoon, { signal });
+        window.addEventListener('scrollend', sweep, { signal });
+        document.addEventListener('click', (e) => { if ((e.target as Element).closest('a[href*="#"]')) sweepSoon(); }, { signal });
+        sweepSoon(); // also for a page opened with a #hash
       });
     </script>
   </body>

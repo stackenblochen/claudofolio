@@ -1,0 +1,44 @@
+---
+/**
+ * The 3D software map as a canvas (Three.js). CONFIDENTIAL case-study material (this folder is excluded via .git/info/exclude).
+ *   <SoftwareMap width={2400} height={1500} />                  static render, e.g. for a screenshot
+ *   <SoftwareMap width={1200} height={700} controls />          interactive: orbit, zoom, pan
+ *   <SoftwareMap width={936} height={660} select tooltip />     one building selected (blue) with the tooltip of the original map
+ * `select` picks a tall building in the lower left; its data fills the tooltip and any element with data-sel="name|path|complexity|size" on the page.
+ */
+interface Props { width?: number; height?: number; controls?: boolean; seed?: number; highlight?: string; callouts?: string[]; cam?: string; select?: boolean; selectAt?: string; viewOffsetX?: number; viewOffsetY?: number; tooltip?: boolean }
+const { width = 1600, height = 1000, controls = false, seed = 7, highlight, callouts = [], cam, select = false, selectAt, viewOffsetX, viewOffsetY, tooltip = false } = Astro.props;
+---
+<div class="dmap" style={`width:${width}px;height:${height}px`}>
+  <canvas class="software-map" width={width} height={height} style={`width:${width}px;height:${height}px;display:block`}
+    data-controls={controls ? '' : undefined} data-seed={seed} data-highlight={select ? '@auto' : highlight} data-callouts={callouts.join('|')} data-cam={cam} data-select-at={selectAt} data-view-offset-x={viewOffsetX} data-view-offset-y={viewOffsetY}></canvas>
+  {tooltip && (
+    <div class="dmaptip" hidden>
+      <div class="dmaptip__name" data-sel="name"></div>
+      <div class="dmaptip__row"><span>Complexity<small>Lines of Code</small></span><b data-sel="complexity"></b></div>
+      <div class="dmaptip__row"><span>Code Size<small>Lines of Code</small></span><b data-sel="size"></b></div>
+      <div class="dmaptip__link">View Source Code</div>
+    </div>
+  )}
+</div>
+
+<script>
+  import { renderMap } from './software-map/scene';
+  const k = (n: number) => (n >= 1000 ? `${(n / 1000).toFixed(n >= 10000 ? 0 : 1)}k` : String(n));
+  document.querySelectorAll<HTMLCanvasElement>('canvas.software-map').forEach((c) => {
+    const d = c.dataset;
+    renderMap(c, {
+      seed: +(d.seed || 7), width: c.width, height: c.height, controls: d.controls !== undefined, highlight: d.highlight || undefined,
+      callouts: d.callouts ? d.callouts.split('|').filter(Boolean) : undefined, camera: d.cam ? JSON.parse(d.cam) : undefined, selectAt: d.selectAt ? JSON.parse(d.selectAt) : undefined, viewOffsetX: d.viewOffsetX ? +d.viewOffsetX : undefined, viewOffsetY: d.viewOffsetY ? +d.viewOffsetY : undefined,
+    }).then((r) => {
+      const s = r.selection;
+      if (s) {
+        const values: Record<string, string> = { name: s.name, path: s.path, complexity: k(s.complexity), size: k(s.size) };
+        document.querySelectorAll<HTMLElement>('[data-sel]').forEach((el) => { el.textContent = values[el.dataset.sel!] ?? ''; });
+        const tip = c.parentElement!.querySelector<HTMLElement>('.dmaptip');
+        if (tip) { tip.style.left = `${s.x}px`; tip.style.top = `${s.y}px`; tip.hidden = false; }
+      }
+      document.title = `MAP ${r.count.folders} folders ${r.count.files} files ${r.count.callouts} callouts`;
+    });
+  });
+</script>

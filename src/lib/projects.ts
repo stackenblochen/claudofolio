@@ -22,6 +22,8 @@ export interface CardData {
   href: string;
   cover: ImageMetadata;
   coverAlt: string;
+  /** Subtle tint behind a cut-out cover in the bento card. */
+  tint?: string;
   /** Full-bleed cover (fills the image area) instead of a cut-out with transparent parts. */
   coverFill?: boolean;
   /** Which mode shows the thumb's thin outline (the mode where the cover would bleed into the card). Default 'dark'. */
@@ -59,6 +61,7 @@ export function toCard(p: ProjectEntry): CardData {
     href: url(`/projects/${p.id}/`),
     cover: p.data.teaserImage ?? p.data.cover,
     coverAlt: p.data.teaserAlt ?? p.data.coverAlt,
+    tint: p.data.teaserTint,
     coverFill: p.data.teaserImage ? p.data.teaserFill : p.data.coverFill,
     coverOutline: p.data.coverOutline,
     thumb: p.data.thumb,

@@ -1,0 +1,82 @@
+---
+/**
+ * A simplified, illustrative software map: an isometric city on a floating plate (a few dozen blocks in white, yellow, orange and red), on a transparent background.
+ * Used as the card image of the Seerene case study (a cut-out: the card adds its own shadow). Rendered with Three.js; take a screenshot at 2560 x 1600 with a transparent page background. CONFIDENTIAL path (excluded from git) like the other Seerene material.
+ */
+interface Props { width?: number; height?: number }
+const { width = 2560, height = 1600 } = Astro.props;
+---
+<div class="illu" style={`width:${width}px;height:${height}px`}>
+  <canvas id="illu-canvas" width={width} height={height} style={`width:${width}px;height:${height}px`}></canvas>
+</div>
+
+<style>
+  .illu { position: relative; overflow: hidden; background: transparent; }
+  canvas { position: absolute; inset: 0; display: block; }
+</style>
+
+<script>
+  import * as THREE from 'three';
+  
+  const canvas = document.getElementById('illu-canvas') as HTMLCanvasElement;
+  const W = canvas.width, H = canvas.height;
+  const rnd = (() => { let a = 11; return () => { a = (a + 0x6d2b79f5) >>> 0; let t = a; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }; })();
+
+  const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, preserveDrawingBuffer: true });
+  renderer.setPixelRatio(1); renderer.setSize(W, H, false); renderer.setClearColor(0x000000, 0);
+  const scene = new THREE.Scene();
+
+  // orthographic isometric view
+  const S = 13.6; // half height of the view in world units
+  const cam = new THREE.OrthographicCamera(-S * (W / H), S * (W / H), S, -S, 0.1, 200);
+  cam.position.set(30, 27, 30); cam.lookAt(0, 0.8, 0);
+
+  scene.add(new THREE.HemisphereLight(0xffffff, 0xb4bdd0, 2.15));
+  const sun = new THREE.DirectionalLight(0xffffff, 1.25); sun.position.set(-18, 34, 22); scene.add(sun);
+
+  const box = new THREE.BoxGeometry(1, 1, 1);
+  const mat = new THREE.MeshLambertMaterial();
+  const colors = { white: '#f7f8fa', gray: '#e5e8ed', yellow: '#f4cf86', amber: '#efaa55', orange: '#e87f3f', red: '#d84f38' };
+  const pick = (h: number) => h < 0.8 ? (rnd() < 0.6 ? colors.white : colors.gray) : h < 1.8 ? (rnd() < 0.55 ? colors.yellow : colors.white) : h < 4.2 ? colors.amber : h < 7.4 ? colors.orange : colors.red;
+
+  // the plate
+  const N = 6, LOT = 2.9, ST = 0.7, DIST = 1.3; // 6 x 6 lots in 2 x 2 districts, kept simple
+  const size = N * LOT + (N - 1) * ST + DIST;
+  const half = size / 2;
+  const plate = new THREE.Mesh(box, new THREE.MeshLambertMaterial({ color: '#edf0f5' }));
+  plate.scale.set(size + 1.6, 0.95, size + 1.6); plate.position.set(0, -0.475, 0); scene.add(plate);
+  // a darker band under the plate, like its underside
+  const under = new THREE.Mesh(box, new THREE.MeshLambertMaterial({ color: '#b4bcc8' }));
+  under.scale.set(size + 1.0, 0.3, size + 1.0); under.position.set(0, -1.1, 0); scene.add(under);
+
+  // blocks
+  const items: { x: number; z: number; w: number; d: number; h: number; c: string }[] = [];
+  const hot = new Set<string>(['1,1', '4,1', '2,4', '4,4']);
+  let towers = 0;
+  for (let i = 0; i < N; i++) for (let j = 0; j < N; j++) {
+    const x0 = -half + 0.8 + i * (LOT + ST) + (i >= 3 ? DIST : 0) + LOT / 2 - (N * (LOT + ST) - ST + DIST) / 2 + half - 0.8;
+    const z0 = -half + 0.8 + j * (LOT + ST) + (j >= 3 ? DIST : 0) + LOT / 2 - (N * (LOT + ST) - ST + DIST) / 2 + half - 0.8;
+    const isHot = hot.has(`${i},${j}`);
+    const split = isHot ? 2 : rnd() < 0.55 ? 1 : 2;
+    for (let a = 0; a < split; a++) for (let b = 0; b < split; b++) {
+      if (!isHot && rnd() < 0.08) continue; // an empty lot
+      const w = (LOT - (split - 1) * 0.14) / split, d = w;
+      const x = x0 - LOT / 2 + w / 2 + a * (w + 0.14), z = z0 - LOT / 2 + d / 2 + b * (d + 0.14);
+      // a hot lot has one tall block; every other block stays low
+      let h = 0.3 + Math.pow(rnd(), 3.4) * 1.9;
+      if (isHot && a === 0 && b === 0) { h = 5.4 + rnd() * 5.6; towers++; }
+      else if (!isHot && split === 2 && rnd() < 0.24) h = 1.8 + rnd() * 2.6;
+      items.push({ x, z, w: w * (0.84 + rnd() * 0.1), d: d * (0.84 + rnd() * 0.1), h, c: pick(h) });
+    }
+  }
+  const blocks = new THREE.InstancedMesh(box, mat, items.length);
+  const m = new THREE.Matrix4(), col = new THREE.Color();
+  items.forEach((it, k) => {
+    m.compose(new THREE.Vector3(it.x, it.h / 2, it.z), new THREE.Quaternion(), new THREE.Vector3(it.w, it.h, it.d));
+    blocks.setMatrixAt(k, m); blocks.setColorAt(k, col.set(it.c));
+  });
+  scene.add(blocks);
+
+  renderer.render(scene, cam);
+  document.title = `ILLU ${items.length}`;
+</script>

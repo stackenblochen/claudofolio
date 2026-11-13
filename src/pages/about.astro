@@ -1,91 +1,18 @@
 ---
-import Base from '../layouts/Base.astro';
-import PageHeader from '../components/PageHeader.astro';
-import SectionTitle from '../components/SectionTitle.astro';
-import CareerEntry from '../components/CareerEntry.astro';
-import Timeline from '../components/Timeline.astro';
-import Portrait from '../components/Portrait.astro';
-import ExperienceList from '../components/ExperienceList.astro';
-import ContactBlock from '../components/ContactBlock.astro';
-import portrait from '../assets/portrait.webp';
-import wireLogo from '../assets/wire-logo-white.svg';
-import freshEnergyLogo from '../assets/freshenergy-logo.svg';
-import seereneLogo from '../assets/seerene-logo.svg';
-
-const experience = [
-  { icon: 'shield-lock', title: 'Complex, regulated domains', text: '10+ years designing for technically demanding products: end-to-end encrypted messaging and VoIP, security and privacy, software analytics and data visualization.' },
-  { icon: 'building-skyscraper', title: 'Enterprise and B2B SaaS', text: 'Designing for organisations as well as individuals: admins, compliance requirements, procurement criteria and public-sector tenders, alongside the daily end user.' },
-  { icon: 'route', title: 'End-to-end ownership', text: 'Taking problems from research and framing through interaction design to shipped UI detail, across native iOS and Android apps and responsive web applications.' },
-  { icon: 'components', title: 'Design systems at scale', text: 'Building, modernizing and governing multiplatform design systems: shared token architecture, component libraries, accessibility (WCAG 2.2, BITV 2.0) and documentation for people and AI tooling.' },
-  { icon: 'telescope', title: 'Design vision and direction', text: 'Setting design direction beyond the roadmap and using it to align product, engineering and leadership.' },
-  { icon: 'users-group', title: 'Team building and leadership', text: 'Growing design teams from a single designer, establishing design process and standards, and mentoring designers while staying hands-on.' },
-  { icon: 'user-search', title: 'Research-led decisions', text: 'Working with UX researchers, or running research and synthesizing the insights myself, to turn findings into product direction.' },
-  { icon: 'code', title: 'Prototyping in code', text: 'Building interactive, AI-assisted prototypes to test and validate complex behaviour early and give engineering a precise target.' },
-];
+/** The About content now lives on the home page (#about). This old address forwards there, so existing links keep working. */
+import { url } from '../lib/site';
+const target = url('/#about');
 ---
 
-<Base
-  title="About me"
-  current="About me"
-  context="standard"
-  description="Wolfgang Lattermann is a product designer with a background in communications design. He owns the full process, from research to shipped detail."
->
-  <PageHeader title="Making complex things *simple* with an eye on what they could become.">
-    <p>Hi, I'm Wolfgang. With a background in communications design and years of agency work, I bring a strong eye for visual detail to every product I work on.</p>
-    <p>I own the full process from research to shipped detail, and I'm at my best when I can do both: design hands-on and set the vision for where the product goes next.</p>
-  </PageHeader>
-
-  <Portrait src={portrait} alt="Portrait of Wolfgang, looking to the side, in front of a blue background, wearing a mustard-yellow sweater" />
-
-  <SectionTitle id="experience" chapter>Experience</SectionTitle>
-
-  <div class="experience">
-    <ExperienceList items={experience} />
-  </div>
-
-  <SectionTitle id="career" chapter>Career</SectionTitle>
-
-  <Timeline>
-    <CareerEntry company="Wire" role="Lead Product Designer" dates="Jan 2021 – Nov 2026" logo={wireLogo} logoHeight={34}>
-      <p>As a longtime Wire user (and fan), I was thrilled to get the chance to work there. I started as the only designer, scaled the product design team twice, and grew into the role of Lead Product Designer.</p>
-      <p>I designed several critical new features, set up and shaped the design process, and managed a legacy design system in a highly regulated environment. I also created a design vision that finally replaces decade-old foundations and prepares the product for the years ahead. I supported the strategic shift from consumer product to enterprise and government.</p>
-    </CareerEntry>
-
-    <CareerEntry company="Fresh Energy" role="Sr. Product Designer" dates="Nov 2019 – Jan 2021" logo={freshEnergyLogo} logoHeight={38}>
-      <p>During my time at Fresh Energy, I helped establish and shape research and design processes, introduced rapid prototyping, launched a new marketing website, and introduced a design system based on Material UI.</p>
-      <p>I also designed and planned the implementation of several new features, such as the profile section, new user onboarding including hardware setup guides, and the compare feature.</p>
-    </CareerEntry>
-
-    <CareerEntry company="Seerene" role="Sr. Product Designer" dates="Feb 2017 – Nov 2019" logo={seereneLogo} logoHeight={32}>
-      <p>I designed all major customer-facing areas of the product end to end, including the dashboard experience and 3D software maps, defined standards for data visualization, and built a custom design system based on Material. I also created the brand guidelines, set up the design process, and helped grow the product design team to three designers.</p>
-    </CareerEntry>
-
-    <CareerEntry company="Freelance" dates="2006 – Feb 2017">
-      <p>While still studying communications design at the university of applied arts in Wiesbaden (I graduated with a diploma in 2006), I was already working for agencies in Berlin and the Rhine-Main area. After fully moving to Berlin in 2009, I continued freelancing for design agencies, including Fünfwerken, Novamondo, qbus and Interactive Tools. I also worked directly with clients, mostly independent music labels and bands.</p>
-    </CareerEntry>
-  </Timeline>
-
-  <SectionTitle id="education" chapter>Education</SectionTitle>
-
-  <Timeline>
-    <CareerEntry company="IDEO U" role="Insight for Innovations (certificate)" dates="May 2021" />
-
-    <CareerEntry company="University of Applied Arts Wiesbaden" role="Diploma, Communications Design" dates="2002 – 2006" />
-
-    <CareerEntry company="Internships in visual design" dates="2004 – 2005">
-      <ul>
-        <li>Die Gestalten, 6 months (integrated internship semester)</li>
-        <li>Aimaq Rapp Stolle, 3 months</li>
-        <li>Pommesmajo, 3 months</li>
-      </ul>
-    </CareerEntry>
-
-    <CareerEntry company="Max-Slevogt-Gymnasium Landau" role="Abitur" dates="1999" />
-  </Timeline>
-
-  <ContactBlock />
-</Base>
-
-<style>
-  .experience { padding-top: var(--space-6); }
-</style>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="refresh" content={`0; url=${target}`} />
+    <link rel="canonical" href={target} />
+    <meta name="robots" content="noindex" />
+    <title>About me</title>
+    <script is:inline define:vars={{ target }}>location.replace(target);</script>
+  </head>
+  <body><a href={target}>About me</a></body>
+</html>

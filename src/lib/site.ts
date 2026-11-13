@@ -12,7 +12,8 @@ export const SITE = {
 
 export const NAV = [
   { label: 'Work', href: '/#selected-work' },
-  { label: 'About me', href: '/about/' },
+  { label: 'About me', href: '/#about' },
+  { label: 'Contact', href: '/#contact' },
 ];
 
 /** Prefix an internal path with the configured base (e.g. /claudofolio). */

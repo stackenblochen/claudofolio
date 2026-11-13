@@ -17,7 +17,7 @@ const rows = [
 ].filter(Boolean) as { label: string; text: string; href: string }[];
 ---
 
-<section class="contact" aria-labelledby="contact-title">
+<section class="contact" id="contact" aria-labelledby="contact-title">
   <div class="container">
     <div class="measure-text reveal">
       <span class="t-number" aria-hidden="true">—</span>
@@ -36,7 +36,7 @@ const rows = [
 </section>
 
 <style>
-  .contact { padding-block: var(--chapter-gap) var(--space-7); }
+  .contact { padding-block: var(--chapter-gap) var(--space-7); scroll-margin-top: calc(var(--header-h) + var(--space-6) - var(--chapter-gap)); } /* the nav link lands with the dash clear of the header */
   .body { margin-top: var(--space-6); }
   .rows { margin: var(--space-6) 0 0; display: grid; gap: var(--space-4); }
   .row { display: grid; gap: var(--space-1); }

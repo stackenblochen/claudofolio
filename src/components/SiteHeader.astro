@@ -2,7 +2,7 @@
 /** G1/G2 Site header: wordmark left, text menu right, overlay menu below 768 px. */
 import { NAV, SITE, url } from '../lib/site';
 import logoSvg from '../assets/wolfgang-logo.svg?raw';
-import wlMark from '../assets/doodles/wl.webp';
+import wlMark from '../assets/wl-mark.webp';
 import bubbleSvg from '../../public/favicon.svg?raw';
 import ThemeSwitch from './ThemeSwitch.astro';
 
@@ -18,10 +18,7 @@ interface Props {
 }
 const { current } = Astro.props;
 
-const items = [
-  ...NAV.map((n) => ({ ...n, href: url(n.href) })),
-  ...(SITE.email ? [{ label: 'Contact', href: `mailto:${SITE.email}` }] : []),
-];
+const items = NAV.map((n) => ({ ...n, href: url(n.href) }));
 // The mobile menu also lists Home (on desktop the logo is the way home).
 const overlayItems = [{ label: 'Home', href: url('/') }, ...items];
 ---

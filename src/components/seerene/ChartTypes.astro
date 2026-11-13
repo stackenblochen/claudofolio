@@ -1,0 +1,104 @@
+---
+/**
+ * The chart types of the Seerene platform, on their own: no cards, no application names, just the chart (or list) with a caption, straight on the gradient stage.
+ * Same board frame as DataElements (1440 px, scaled by lib/dashboard-hover.ts). CONFIDENTIAL case-study material: this folder is excluded via .git/info/exclude.
+ *
+ *   <Diagram size="media" fixed ratio="auto" stage="linear-gradient(…)"><ChartTypes /></Diagram>
+ */
+import '../dashboard/dashboard.css';
+import './board.css';
+import DashSpark from '../dashboard/DashSpark.astro';
+import DashChart from '../dashboard/DashChart.astro';
+import DashRanking from '../dashboard/DashRanking.astro';
+import DashMetric from '../dashboard/DashMetric.astro';
+import DashTable from '../dashboard/DashTable.astro';
+import DashLegend from '../dashboard/DashLegend.astro';
+import { axis } from '../dashboard/timeaxis';
+
+const H = 240; // height of the small charts (viewBox, 360 wide)
+const axYear = axis({ from: '2018-08-24', until: '2019-08-23', points: 53, tickEvery: 3 });
+const axHalf = axis({ from: '2019-03-01', until: '2019-08-23', points: 26, pointExtent: 7 });
+const axEffort = axis({ from: '2019-03-01', until: '2019-08-23', points: 13 });
+const axGreen = axis({ from: '2019-07-01', until: '2019-08-23', to: '2019-09-30', points: 54, tickFormat: 'day', includeEnd: true });
+const axMonth = axis({ from: '2019-07-26', until: '2019-08-23', points: 29, tickDays: 7, tickFormat: 'day', pointExtent: 1 });
+const line = Array.from({ length: 53 }, (_, i) => +(120 + 34 * Math.sin(i / 7.5) + 18 * Math.sin(i / 2.7 + 1) + i * 0.9).toFixed(1));
+const effort = [120, 120, 100, 100, 110, 110, 85, 85, 65, 65, 75, 75, 85, 75, 75, 65, 65, 95, 95, 85, 85, 75, 65, 55, 45, 55, 75, 75, 55];
+const complexity = [138, 142, 133, 122, 114, 108, 104, 118, 108, 104, 97, 96, 106, 117, 128, 142, 150, 157, 163, 168, 163, 155, 170, 182, 172, 160, 146, 140, 134];
+---
+<div class="dapp-frame">
+  <div class="dash dapp dboard">
+    <div class="dboard__scene">
+      <div class="dboard__grid">
+        <section class="dboard__tile">
+          <p class="dboard__cap"><b>01</b>Line chart<span>A KPI over time, the value on hover</span></p>
+          <div class="dboard__plot">
+            <DashSpark grid alt="A line chart of complexity over twelve months" mode="line" height={H} unit="Lines of Code" valueLabel="lines" labels={axYear.labels} values={line} ticks={axYear.ticks} tickAt={axYear.tickAt} yLabels={['200k', '100k']} />
+          </div>
+        </section>
+
+        <section class="dboard__tile">
+          <p class="dboard__cap"><b>02</b>Step chart<span>A value that holds until the next change</span></p>
+          <div class="dboard__plot">
+            <DashSpark grid alt="A step chart: complexity drops in the first weeks, then stays flat" mode="line" step height={H} unit="Lines of Code" valueLabel="lines" labels={axYear.labels} values={Array.from({ length: 53 }, (_, i) => (i < 2 ? 3400 : i < 14 ? 3340 : i < 33 ? 3300 : 3310))} ticks={axYear.ticks} tickAt={axYear.tickAt} yLabels={['3.4k', '3.35k', '3.3k']} />
+          </div>
+        </section>
+
+        <section class="dboard__tile">
+          <p class="dboard__cap"><b>03</b>Area chart<span>Effort per period, filled from zero</span></p>
+          <div class="dboard__plot">
+            <DashSpark grid alt="An area chart of effort in person weeks from March to August" mode="area" height={H} unit="Person Weeks" valueLabel="person weeks" labels={axEffort.labels} values={[38, 42, 41, 40, 43, 44, 46, 45, 43, 42, 41, 40, 30]} ticks={axEffort.ticks} tickAt={axEffort.tickAt} yLabels={['60', '0']} />
+          </div>
+        </section>
+
+        <section class="dboard__tile">
+          <p class="dboard__cap"><b>04</b>Block diagram<span>Counts per week, one block each</span></p>
+          <div class="dboard__plot">
+            <DashSpark grid alt="A bar chart of commits per week from March to August" mode="bars" height={H} unit="Commits" valueLabel="commits" labels={axHalf.labels} values={[6, 5, 8, 5, 7, 4, 6, 5, 2, 7, 7, 5, 3, 2, 9, 3, 10, 5, 9, 3, 6, 5, 2, 4, 6, 3]} ticks={axHalf.ticks} tickAt={axHalf.tickAt} yLabels={['1K', '0']} />
+          </div>
+        </section>
+
+        <section class="dboard__tile">
+          <p class="dboard__cap"><b>05</b>Dual-axis chart<span>Two KPIs, each on its own scale</span></p>
+          <div class="dboard__plot">
+            <DashLegend items={[{ label: 'Effort', tone: 'blue' }, { label: 'Complexity', tone: 'teal' }]} />
+            <DashChart width={470} height={280} alt="Effort as a stepped area and complexity as a line, each on its own axis" kind="combo" area={effort} line={complexity} areaMax={150} lineMax={300}
+              leftLabels={['0', '50', '100', '150']} rightLabels={['0', '100k', '200k', '300k']} ticks={axMonth.ticks} tickAt={axMonth.tickAt} />
+          </div>
+        </section>
+
+        <section class="dboard__tile">
+          <p class="dboard__cap"><b>06</b>Projection to a target<span>The trend continues to the goal date</span></p>
+          <div class="dboard__plot">
+            <DashSpark grid alt="An area chart that falls steadily; a dashed projection reaches the target line by 30 September" mode="area" tone="green" now goal={10} forecast={10} span={axGreen.span} height={H} unit="Logic Points" valueLabel="points" labels={axGreen.labels}
+              values={Array.from({ length: 54 }, (_, i) => +(24 - i * 0.154 + ((i * 7) % 5 - 2) * 0.12).toFixed(2))} ticks={axGreen.ticks} tickAt={axGreen.tickAt} yLabels={['24k', '0']} />
+          </div>
+        </section>
+
+        <section class="dboard__tile">
+          <p class="dboard__cap"><b>07</b>Ranking<span>Applications side by side, bars scaled to the leader</span></p>
+          <div class="dboard__plot dboard__plot--table">
+            <DashRanking head={['Application', 'Logic Points']} items={[{ name: 'LuceneSolr', value: 31.5, label: '31.5k' }, { name: 'Hadoop', value: 15.1, label: '15.1k' }, { name: 'Jackrabbit', value: 13.5, label: '13.5k' }, { name: 'HBase', value: 11, label: '11k' }, { name: 'LuceneNET', value: 10.9, label: '10.9k' }]} />
+          </div>
+        </section>
+
+        <section class="dboard__tile">
+          <p class="dboard__cap"><b>08</b>Scorecard<span>The change of each KPI in the period</span></p>
+          <div class="dboard__plot dboard__plot--table">
+            <DashMetric title="KPI" unit="Delta, last 6 months" rows={[
+              { label: 'Knowledge Monopoly', value: '− 3.1%', chevron: false }, { label: 'Missing Documentation', value: '− 0.3%', chevron: false },
+              { label: 'Complexity', value: '+ 0.9%', chevron: false }, { label: 'Logic Size', value: '+ 1.6%', chevron: false }, { label: 'Code Changes', value: '32', chevron: false },
+            ]} />
+          </div>
+        </section>
+
+        <section class="dboard__tile">
+          <p class="dboard__cap"><b>09</b>Data table<span>Values, delta and share per application</span></p>
+          <div class="dboard__plot dboard__plot--table">
+            <DashTable widths={['1.5fr', '1fr', '0.8fr', '0.8fr']} cols={[{ label: 'Application' }, { label: 'Complexity', chevron: true, align: 'right' }, { label: 'Delta', align: 'right' }, { label: 'Effort', align: 'right' }]}
+              rows={[['Hadoop', '15.1k', '+ 0.9%', '23 PW'], ['HBase', '11k', '+ 4.2%', '17 PW'], ['Jackrabbit', '13.5k', '− 1.3%', '12 PW'], ['LuceneNET', '10.9k', '− 0.3%', '8 PW'], ['LuceneSolr', '31.5k', '+ 1.6%', '41 PW']]} />
+          </div>
+        </section>
+      </div>
+    </div>
+  </div>
+</div>
