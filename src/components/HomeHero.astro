@@ -65,7 +65,7 @@ const navItems = NAV.map((n) => ({ ...n, href: url(n.href) }));
 <style>
   .home-hero {
     box-sizing: border-box; position: relative; display: flex; flex-direction: column;
-    /* the hero fills the first screen and the chat (with the nav buttons) sits at its bottom edge, 120 px above it */
+    /* the hero fills the first screen. Phones: the chat (with the nav buttons) sits at its bottom edge, 88 px above it. From 768 px it is centred vertically (below). */
     min-height: 100vh; min-height: 100svh; justify-content: flex-end;
     padding-top: calc(var(--header-h) + var(--space-9)); padding-bottom: 88px;
     background: var(--bg-primary);
@@ -86,7 +86,8 @@ const navItems = NAV.map((n) => ({ ...n, href: url(n.href) }));
     filter: saturate(0.8); opacity: 0.5; /* 50% transparent: the stage colour shows through */
   }
   .home-hero > .container { position: relative; }
-  @media (min-width: 768px) { .home-hero { padding-bottom: 120px; } }
+  /* desktop: the chat and the nav buttons are centred vertically in the first screen (equal space above and below, never closer to the top than the header) */
+  @media (min-width: 768px) { .home-hero { justify-content: center; padding-top: var(--header-h); padding-bottom: var(--header-h); } }
   .stage { position: relative; }
 
   /* the chat: the sender's picture (a circle), bubbles like an incoming message (the last with a small tail pointing at the picture).
@@ -226,7 +227,7 @@ const navItems = NAV.map((n) => ({ ...n, href: url(n.href) }));
       shown.forEach((el, i) => {
         const d = tops[i] - el.getBoundingClientRect().top;
         if (Math.abs(d) < 1) return;
-        el.animate([{ transform: `translateY(${d}px)` }, { transform: 'translateY(0)' }], { duration: 320, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' });
+        el.animate([{ transform: `translateY(${d}px)` }, { transform: 'translateY(0)' }], { duration: 380, easing: 'cubic-bezier(0.22, 0.8, 0.3, 1)' });
       });
     };
 
@@ -241,17 +242,17 @@ const navItems = NAV.map((n) => ({ ...n, href: url(n.href) }));
         const m = msgs[i];
         // 1. the typing indicator (a small bubble with three dots) appears at the bottom: it rises a little from below while the earlier bubbles slide up
         flip(() => { m.classList.add('is-shown', 'is-typing'); });
-        m.animate([{ opacity: 0, transform: 'translateY(24px) scale(0.92)' }, { opacity: 1, transform: 'none' }], { duration: 280, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' });
+        m.animate([{ opacity: 0, transform: 'translateY(14px) scale(0.97)' }, { opacity: 1, transform: 'none' }], { duration: 420, easing: 'cubic-bezier(0.22, 0.8, 0.3, 1)' }); // a soft fade and a small rise
         const chars = (m.textContent ?? '').trim().length;
         await wait(jitter(i === 0 ? 700 : Math.min(950, 450 + chars * 3), 0.2)); // longer text types longer, and never exactly the same
 
         // 2. iMessage style swap in the same spot: the indicator fades out, then the message fades in with a small scale-up
-        const out = m.animate([{ opacity: 1 }, { opacity: 0 }], { duration: 120, easing: 'ease-out', fill: 'forwards' });
-        await wait(120);
+        const out = m.animate([{ opacity: 1 }, { opacity: 0.35 }], { duration: 110, easing: 'ease-out', fill: 'forwards' }); // only a dip, not a blink
+        await wait(110);
         flip(() => m.classList.remove('is-typing'), m);
         m.classList.add('is-in'); // the 👋 reaction pops onto the first message from here
         out.cancel();
-        m.animate([{ opacity: 0, transform: 'scale(0.94)' }, { opacity: 1, transform: 'none' }], { duration: 260, easing: 'cubic-bezier(0.2, 0.9, 0.3, 1)' });
+        m.animate([{ opacity: 0.35, transform: 'translateY(8px) scale(0.97)' }, { opacity: 1, transform: 'none' }], { duration: 340, easing: 'cubic-bezier(0.22, 0.8, 0.3, 1)' });
         await wait(jitter(520, 0.3)); // a short beat before the next one starts typing
       }
 
