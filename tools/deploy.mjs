@@ -1,4 +1,4 @@
-// Upload release/ to hallo-wl.de over FTP. Usage (see package.json): npm run deploy [-- --dry-run] [-- --backup-old-index]
+// Upload release/ to hallo-wl.de over FTP. Usage (see package.json): npm run deploy [-- --dry-run] [-- --full] [-- --record] [-- --backup-old-index]
 //
 // Settings come from .env (git-ignored), never from the repo:
 //   FTP_HOST      host name of the FTP server
@@ -9,11 +9,15 @@
 //   FTP_PORT      optional
 //   FTP_INSECURE_TLS  true only if your host's TLS certificate does not match the host name (still encrypted, but not verified)
 //
-// What it does: uploads everything in release/ (index.html, portfolio/ with its dotfiles) and overwrites files of the same name.
+// What it does: uploads the files of release/ (index.html, portfolio/ with its dotfiles) that are new or changed and overwrites files of the same name.
+// "Changed" is decided by a SHA-256 list the script keeps on the server (.deploy-manifest.json in the web root); --full ignores it and uploads everything.
+// Without that list (first run) everything is uploaded; --record writes the list for the current release/ without uploading anything (use it only when the server already holds exactly this release). The list is only written after files were uploaded; if a run breaks half way, the files done so far are recorded.
 // What it never does: delete anything on the server. The one file it could replace that is not ours is the old top-level index.html:
 // it stops unless that file is already ours or you pass --backup-old-index (which renames it to index-old.html first).
 import { Client } from 'basic-ftp';
+import { createHash } from 'node:crypto';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
+import { Readable, Writable } from 'node:stream';
 import { basename, dirname, join, posix, relative, sep } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -22,6 +26,9 @@ const local = join(root, 'release');
 const args = new Set(process.argv.slice(2));
 const dry = args.has('--dry-run');
 const backupOld = args.has('--backup-old-index');
+const full = args.has('--full');
+const record = args.has('--record');
+const MANIFEST = '.deploy-manifest.json';
 const OUR_MARK = 'Continue to the portfolio'; // text of tools/release-index.html
 
 const need = ['FTP_HOST', 'FTP_USER', 'FTP_PASSWORD'].filter((k) => !process.env[k]);
@@ -35,6 +42,7 @@ const files = (dir) => readdirSync(dir).flatMap((n) => {
   return statSync(p).isDirectory() ? files(p) : [p];
 });
 const all = files(local).filter((p) => !p.endsWith('.DS_Store'));
+const hashes = Object.fromEntries(all.map((p) => [relative(local, p).split(sep).join('/'), createHash('sha256').update(readFileSync(p)).digest('hex')]));
 const remoteDir = process.env.FTP_DIR || '/';
 const secureRaw = (process.env.FTP_SECURE ?? 'true').toLowerCase();
 const secure = secureRaw === 'implicit' ? 'implicit' : secureRaw !== 'false';
@@ -57,11 +65,14 @@ try {
   // the top-level index.html on the server: ours, absent, or the old site
   let oldIndex = false;
   if (here.some((f) => f.name === 'index.html')) {
-    const chunks = [];
-    const { Writable } = await import('node:stream');
-    await client.downloadTo(new Writable({ write(c, _e, cb) { chunks.push(c); cb(); } }), 'index.html');
-    oldIndex = !Buffer.concat(chunks).toString('utf8').includes(OUR_MARK);
+    oldIndex = !(await read('index.html')).includes(OUR_MARK);
   }
+  let known = {};
+  if (!full && here.some((f) => f.name === MANIFEST)) {
+    try { known = JSON.parse(await read(MANIFEST)); } catch { known = {}; }
+  }
+  const todo = all.filter((p) => { const r = relative(local, p).split(sep).join('/'); return known[r] !== hashes[r]; });
+  const skipped = all.length - todo.length;
   if (oldIndex && !backupOld) {
     fail(`The server's index.html is not the forwarder of this site, so I stopped before replacing it.\nRun with --backup-old-index to rename it to index-old.html first (nothing is deleted).`);
   }
@@ -69,15 +80,20 @@ try {
     fail('index-old.html already exists on the server; I will not overwrite it. Rename or move it first.');
   }
 
+  if (record) {
+    await client.uploadFrom(Readable.from([JSON.stringify(hashes)]), MANIFEST);
+    console.log(`Recorded ${all.length} files in ${MANIFEST}; nothing else was uploaded.`);
+    process.exit(0);
+  }
   console.log(`${dry ? 'DRY RUN, nothing is changed. ' : ''}Target: ${process.env.FTP_HOST}${remoteDir}`);
   if (oldIndex) console.log(`${dry ? 'Would rename' : 'Renaming'} index.html -> index-old.html`);
-  console.log(`${dry ? 'Would upload' : 'Uploading'} ${all.length} files from release/ (nothing on the server is deleted).`);
+  console.log(`${dry ? 'Would upload' : 'Uploading'} ${todo.length} of ${all.length} files from release/ (${skipped} unchanged${full ? ', --full' : ''}; nothing on the server is deleted).`);
   if (dry) {
-    for (const p of all.slice(0, 15)) console.log('  ' + relative(local, p));
-    if (all.length > 15) console.log(`  … and ${all.length - 15} more`);
+    for (const p of todo.slice(0, 30)) console.log('  ' + relative(local, p));
+    if (todo.length > 30) console.log(`  … and ${todo.length - 30} more`);
   } else {
     if (oldIndex) await client.rename('index.html', 'index-old.html');
-    await upload();
+    await upload(todo, known);
     console.log('Done. Check: the home page, a protected case study, and a nonexistent address under /portfolio/ (404 page).');
   }
 } catch (e) {
@@ -88,7 +104,14 @@ try {
 
 // Uploads file by file (same result as uploadFromDir, overwriting files of the same name) so there is a progress line:
 // percent of all bytes, files done, MB, speed and the file in flight. In a terminal it updates in place; in a log it prints a line every 5 %.
-async function upload() {
+async function read(name) {
+  const chunks = [];
+  await client.downloadTo(new Writable({ write(c, _e, cb) { chunks.push(c); cb(); } }), name);
+  return Buffer.concat(chunks).toString('utf8');
+}
+
+async function upload(all, known) {
+  if (!all.length) { console.log('Nothing to upload.'); return; }
   const sizes = all.map((p) => statSync(p).size);
   const total = sizes.reduce((a, b) => a + b, 0) || 1;
   const mb = (n) => (n / 1048576).toFixed(1);
@@ -111,6 +134,13 @@ async function upload() {
   };
   client.trackProgress((info) => { inFile = info.bytes; if (tty) show(); });
   let remoteHere = null;
+  const recorded = { ...known };
+  const saveManifest = async () => {
+    client.trackProgress();
+    await client.ensureDir(remoteDir);
+    await client.uploadFrom(Readable.from([JSON.stringify(recorded)]), MANIFEST);
+  };
+  try {
   for (let i = 0; i < all.length; i++) {
     const rel = relative(local, all[i]).split(sep).join('/');
     const dir = posix.join(remoteDir, dirname(rel) === '.' ? '' : dirname(rel));
@@ -118,11 +148,14 @@ async function upload() {
     current = rel;
     inFile = 0;
     await client.uploadFrom(all[i], basename(rel));
+    recorded[rel] = hashes[rel];
     done += sizes[i]; inFile = 0; count = i + 1;
     show();
   }
-  client.trackProgress();
   if (tty) process.stdout.write('\n'); else show(true);
+  } finally {
+    await saveManifest().catch(() => {});
+  }
 }
 
 function fail(msg) {
