@@ -12,7 +12,7 @@ Read this before you write a CV, a cover letter or an application for a specific
 
 Never put the bare `hallo-wl.de` or `hallo-wl.de/portfolio` into an application or a CV: those visits cannot be matched to a company.
 Write the link without `https://` in the visible text if space is tight; the PDF link target should be the full `https://hallo-wl.de/<slug>`.
-There is no `/<slug>/cv` path any more. Older CV PDFs that still link to it keep working: the build still writes `/<slug>/cv`, and it forwards exactly like `/<slug>` (so these visits count as `utm_medium=link`).
+There is no `/<slug>/cv` path any more. The build no longer writes a `cv` folder. Folders already on the server (older applications) stay there, because the upload never deletes.
 
 ## Choosing the slug
 
@@ -37,7 +37,7 @@ Wolfgang brings the JSON entry from the CV project ("register this application l
    { "slug": "acme", "company": "Acme GmbH", "role": "Staff Product Designer", "applied": "2026-11-16", "channel": "Application form", "notes": "" }
    ```
    Check the slug against the rules above. If it is taken or reserved, suggest a new one and tell Wolfgang that the CV and letter must use the new one.
-2. Run `npm run links`. It writes `release/acme/index.html` (and the legacy `release/acme/cv/index.html`, which forwards like `/acme`) and prints the URL. (A full `npm run build:release` runs it too.)
+2. Run `npm run links`. It writes `release/acme/index.html` and prints the URL. (A full `npm run build:release` runs it too.)
 3. Tell Wolfgang to upload the folder `release/acme/` into the web root of hallo-wl.de, next to `portfolio/`. Nothing else needs to be uploaded. You cannot upload.
 4. After the upload, ask him to open `hallo-wl.de/acme` once in a private window to check that it lands on the portfolio, then close that window (the visit counts as Acme otherwise; a throwaway slug is the cleaner test).
 

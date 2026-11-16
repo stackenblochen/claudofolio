@@ -4,7 +4,6 @@
 // Reads tools/application-links.json (git-ignored: the list of companies stays off GitHub; template: tools/application-links.example.json)
 // and writes small redirect pages into the web root of the release:
 //   release/<slug>/index.html     -> /portfolio/?utm_source=<slug>&utm_medium=link&utm_campaign=application
-//   release/<slug>/cv/index.html  -> same target as /<slug>. Legacy only: older CV PDFs link to /<slug>/cv, so the page stays and now just forwards like /<slug>.
 //   release/public/index.html     -> /portfolio/?utm_source=public&utm_medium=cv&utm_campaign=public-cv
 // The site (Base.astro) turns utm_campaign=application into an Umami Distinct ID (<slug>), so all visits from that link show up as one profile.
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
@@ -59,7 +58,6 @@ for (const a of apps) {
   if (why) { console.error(`Skipped "${slug}": ${why}.`); bad++; continue; }
   seen.add(slug);
   write(slug, page(target(slug, 'link', 'application')));
-  write(join(slug, 'cv'), page(target(slug, 'link', 'application'))); // legacy: /<slug>/cv forwards like /<slug>
   console.log(`${SITE}/${slug}  ->  ${a.company ?? slug}${a.role ? `, ${a.role}` : ''}`);
 }
 console.log(`\nUpload the folders listed above from release/ into the web root (next to portfolio/).`);
