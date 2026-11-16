@@ -94,6 +94,21 @@ const clash = ['400:Regular','500:Medium','600:Semibold','700:Bold'].map((w) => 
       })();
     </script>
     <ClientRouter />
+    {umamiId && (
+      <script is:inline>
+        // Application links (docs/application-links.md): hallo-wl.de/<slug> redirects here with utm_campaign=application&utm_source=<slug>.
+        // Send the slug to Umami as the Distinct ID for this visit only. Nothing is stored in the browser (no consent needed).
+        (function () {
+          var p = new URLSearchParams(location.search), id = p.get('utm_source');
+          if (p.get('utm_campaign') !== 'application' || !id) return;
+          var via = p.get('utm_medium') || 'link', tries = 0;
+          (function send() {
+            if (window.umami && umami.identify) umami.identify(id, { via: via });
+            else if (tries++ < 50) setTimeout(send, 200);
+          })();
+        })();
+      </script>
+    )}
     {umamiId && <script is:inline defer src={umamiSrc} data-website-id={umamiId} data-do-not-track="true"></script>}
   </head>
   <body>

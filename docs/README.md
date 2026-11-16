@@ -7,3 +7,4 @@
   `04-mocks.md` (device frames) and `05-schemas.md` (live SVG diagrams).
   The values themselves live in code: `src/styles/tokens.css` and `src/styles/base.css`.
 - Live reference: run the dev server and open `/claudofolio/styleguide/`.
+- `application-links.md`: per-application short links (`hallo-wl.de/<slug>`) and Umami tracking; read it before writing a CV or an application.

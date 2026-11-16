@@ -10,9 +10,10 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "build:release": "SITE_TARGET=production astro build && rm -rf release/portfolio/styleguide && cp tools/release-index.html release/index.html",
+    "build:release": "SITE_TARGET=production astro build && rm -rf release/portfolio/styleguide && cp tools/release-index.html release/index.html && node tools/build-links.mjs",
     "deploy": "node --env-file=.env tools/deploy.mjs",
-    "deploy:dry": "node --env-file=.env tools/deploy.mjs --dry-run"
+    "deploy:dry": "node --env-file=.env tools/deploy.mjs --dry-run",
+    "links": "node tools/build-links.mjs"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.2",

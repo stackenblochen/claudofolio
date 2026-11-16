@@ -26,3 +26,6 @@ pnpm-debug.log*
 # local original/source assets (not part of the site)
 design-source/
 release
+
+# companies I applied to (tracking short links, see docs/application-links.md)
+tools/application-links.json

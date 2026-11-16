@@ -126,6 +126,7 @@ const payload = enabled ? encryptHtml(await Astro.slots.render('default'), getCa
         const html = await decrypt(lock, input.value);
         try { sessionStorage.setItem(KEY, input.value); } catch {}
         unlock(gate, html);
+        (window as any).umami?.track?.('Case study unlocked', { page: location.pathname }); // Umami event (live build only)
       } catch {
         error.hidden = false;
         input.select();

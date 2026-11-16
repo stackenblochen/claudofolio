@@ -40,6 +40,10 @@ Manual upload (if the user prefers): on the server rename the old top-level `ind
 
 Dev notes: the dev password for protected pages is `dev`. After changing `src/content.config.ts` or case-study frontmatter that the dev server does not pick up, delete `.astro/data-store.json` and `node_modules/.astro` and restart it.
 
+## Applications and CVs (tracking links)
+
+Every application and every CV made for a specific company uses its own short link (`hallo-wl.de/<slug>` in forms and letters, `hallo-wl.de/<slug>/cv` in the CV PDF; `hallo-wl.de/public` in the public CV). Never use the bare domain there. The CVs are written in a separate claude.ai Project (brief: `docs/cv-project-brief.md`); it hands over a JSON entry, and you register it here. Rules, steps (`tools/application-links.json`, `npm run links`, upload `release/<slug>/`) and how to read the result in Umami: `docs/application-links.md`. Open setup steps: `docs/application-links-handoff.md` (delete it when done).
+
 ## Documentation
 
 Full documentation: https://docs.astro.build

@@ -1,5 +1,5 @@
 ---
-/** G3 Footer: one line at the text measure (8 columns on wide desktops, 9 on tablets, full width on phones): copyright + imprint left, contact links right (wraps on mobile). Links are quiet links (`.link--quiet`, base.css). */
+/** G3 Footer: two lines at the text measure (8 columns on wide desktops, 9 on tablets, full width on phones): line 1: copyright left, contact links right (wraps on mobile); line 2: imprint and privacy. Links are quiet links (`.link--quiet`, base.css). */
 import { SITE, url } from '../lib/site';
 import logoSvg from '../assets/wolfgang-logo.svg?raw';
 
@@ -8,10 +8,10 @@ const logo = logoSvg.replace(/fill="white"/g, 'fill="currentColor"').replace('<s
 
 const year = new Date().getFullYear();
 const links = [
-  SITE.email && { label: 'Email', href: `mailto:${SITE.email}` },
-  SITE.linkedin && { label: 'LinkedIn', href: SITE.linkedin },
-  SITE.cvUrl && { label: 'CV', href: url(SITE.cvUrl) },
-].filter(Boolean) as { label: string; href: string }[];
+  SITE.email && { label: 'Email', href: `mailto:${SITE.email}`, event: 'Email click' },
+  SITE.linkedin && { label: 'LinkedIn', href: SITE.linkedin, event: 'LinkedIn click' },
+  SITE.cvUrl && { label: 'CV', href: url(SITE.cvUrl), event: 'CV download' },
+].filter(Boolean) as { label: string; href: string; event: string }[];
 ---
 
 <footer class="site-footer">
@@ -19,12 +19,16 @@ const links = [
     <div class="inner">
     <div class="bar measure-text t-label">
     <span class="wordmark" set:html={logo} />
-    <p>© {year} {SITE.name}. All rights reserved. <a class="link--quiet" href={url('/imprint/')}>Imprint</a></p>
+    <p>© {year} {SITE.name}. All rights reserved.</p>
     {links.length > 0 && (
       <ul class="links" role="list">
-        {links.map((l) => <li><a class="link--quiet" href={l.href}>{l.label}</a></li>)}
+        {links.map((l) => <li><a class="link--quiet" href={l.href} data-umami-event={l.event} data-umami-event-where="footer">{l.label}</a></li>)}
       </ul>
     )}
+    <ul class="links legal" role="list">
+      <li><a class="link--quiet" href={url('/imprint/')}>Imprint</a></li>
+      <li><a class="link--quiet" href={url('/privacy/')}>Privacy</a></li>
+    </ul>
     </div>
     </div>
   </div>
@@ -41,5 +45,6 @@ const links = [
   @media (min-width: 768px) { .wordmark { width: 10.5rem; } }
   .wordmark :global(svg) { width: 100%; height: auto; display: block; }
   .bar { position: relative; display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2) var(--space-5); }
+  .legal { flex-basis: 100%; }
   .links { display: flex; flex-wrap: wrap; gap: var(--space-5); padding: 0; margin: 0; list-style: none; }
 </style>

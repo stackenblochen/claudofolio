@@ -1,0 +1,12 @@
+{
+  "applications": [
+    {
+      "slug": "acme",
+      "company": "Acme GmbH",
+      "role": "Staff Product Designer",
+      "applied": "2026-11-16",
+      "channel": "Application form on acme.com/careers",
+      "notes": ""
+    }
+  ]
+}
