@@ -7,12 +7,12 @@ Read this before you write a CV, a cover letter or an application for a specific
 
 | Where the link goes | Link to use | What Umami records |
 |---|---|---|
-| Application form, cover letter, email, LinkedIn message for company X | `hallo-wl.de/<slug>` | `utm_source=<slug>`, `utm_medium=link`, Distinct ID `<slug>` |
-| The CV PDF made for company X (every portfolio link in it) | `hallo-wl.de/<slug>/cv` | `utm_source=<slug>`, `utm_medium=cv`, Distinct ID `<slug>` |
+| Everything for company X: application form, cover letter, the CV PDF, email, LinkedIn message | `hallo-wl.de/<slug>` | `utm_source=<slug>`, `utm_medium=link`, Distinct ID `<slug>` |
 | The public CV (`public/cv/wolfgang-lattermann-cv.pdf`, downloadable on the site) | `hallo-wl.de/public` | `utm_source=public`, `utm_campaign=public-cv`, no Distinct ID |
 
 Never put the bare `hallo-wl.de` or `hallo-wl.de/portfolio` into an application or a CV: those visits cannot be matched to a company.
-Write the link without `https://` in the visible text if space is tight; the PDF link target should be the full `https://hallo-wl.de/<slug>/cv`.
+Write the link without `https://` in the visible text if space is tight; the PDF link target should be the full `https://hallo-wl.de/<slug>`.
+There is no `/<slug>/cv` path any more. Older CV PDFs that still link to it keep working: the build still writes `/<slug>/cv`, and it forwards exactly like `/<slug>` (so these visits count as `utm_medium=link`).
 
 ## Choosing the slug
 
@@ -37,7 +37,7 @@ Wolfgang brings the JSON entry from the CV project ("register this application l
    { "slug": "acme", "company": "Acme GmbH", "role": "Staff Product Designer", "applied": "2026-11-16", "channel": "Application form", "notes": "" }
    ```
    Check the slug against the rules above. If it is taken or reserved, suggest a new one and tell Wolfgang that the CV and letter must use the new one.
-2. Run `npm run links`. It writes `release/acme/index.html` and `release/acme/cv/index.html` and prints both URLs. (A full `npm run build:release` runs it too.)
+2. Run `npm run links`. It writes `release/acme/index.html` (and the legacy `release/acme/cv/index.html`, which forwards like `/acme`) and prints the URL. (A full `npm run build:release` runs it too.)
 3. Tell Wolfgang to upload the folder `release/acme/` into the web root of hallo-wl.de, next to `portfolio/`. Nothing else needs to be uploaded. You cannot upload.
 4. After the upload, ask him to open `hallo-wl.de/acme` once in a private window to check that it lands on the portfolio, then close that window (the visit counts as Acme otherwise; a throwaway slug is the cleaner test).
 
@@ -45,14 +45,14 @@ No commit is needed for a new application: the registry is git-ignored and the r
 
 ## How it works
 
-- `tools/build-links.mjs` writes tiny redirect pages into the web root of the release. They forward to `/portfolio/?utm_source=<slug>&utm_medium=link|cv&utm_campaign=application`.
+- `tools/build-links.mjs` writes tiny redirect pages into the web root of the release. They forward to `/portfolio/?utm_source=<slug>&utm_medium=link&utm_campaign=application`.
 - `src/layouts/Base.astro` (live build only, next to the Umami script) reads `utm_campaign=application` and calls `umami.identify(<slug>, { via })` for that visit. Nothing is stored in the browser (no cookie, no localStorage), so no consent banner is needed. Later visits of the same person without the link are not matched to the company.
 - Click events: `CV download`, `Email click`, `LinkedIn click` (property `where`: `footer` or `contact`), and `Case study unlocked` (property `page`) when someone enters the case study password.
 
 ## Reading it in Umami
 
 - **Sessions** → search for the slug: every visit, with pages, events, times and duration. Opening one session shows the combined timeline of all sessions with that Distinct ID (visits that came through the link).
-- **Filters** → `UTM source = acme`, or `UTM medium = cv` to compare CV links with form links; `UTM campaign = public-cv` for the public CV.
+- **Filters** → `UTM source = acme`; `UTM campaign = public-cv` for the public CV.
 - **Events** → who downloaded the CV or unlocked a case study.
 
 ## Limits

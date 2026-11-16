@@ -12,7 +12,7 @@ For an application to company X with the slug `<slug>`:
 
 | Where | Link |
 |---|---|
-| CV PDF made for company X: every link to the portfolio (header, contact line, footer) | `hallo-wl.de/<slug>/cv` (link target `https://hallo-wl.de/<slug>/cv`) |
+| CV PDF made for company X: every link to the portfolio (header, contact line, footer) | `hallo-wl.de/<slug>` (link target `https://hallo-wl.de/<slug>`, the same link as for the cover letter) |
 | Cover letter, application form, email, LinkedIn message | `hallo-wl.de/<slug>` (link target `https://hallo-wl.de/<slug>`) |
 | The general public CV (not made for one company) | `hallo-wl.de/public` |
 

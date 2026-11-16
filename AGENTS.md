@@ -42,7 +42,7 @@ Dev notes: the dev password for protected pages is `dev`. After changing `src/co
 
 ## Applications and CVs (tracking links)
 
-Every application and every CV made for a specific company uses its own short link (`hallo-wl.de/<slug>` in forms and letters, `hallo-wl.de/<slug>/cv` in the CV PDF; `hallo-wl.de/public` in the public CV). Never use the bare domain there. The CVs are written in a separate claude.ai Project (brief: `docs/cv-project-brief.md`); it hands over a JSON entry, and you register it here. Rules, steps (`tools/application-links.json`, `npm run links`, upload `release/<slug>/`) and how to read the result in Umami: `docs/application-links.md`. Open setup steps: `docs/application-links-handoff.md` (delete it when done).
+Every application and every CV made for a specific company uses its own short link (`hallo-wl.de/<slug>` in forms, letters and the CV PDF alike, no `/cv` path any more; `hallo-wl.de/public` in the public CV). Never use the bare domain there. The CVs are written in a separate claude.ai Project (brief: `docs/cv-project-brief.md`); it hands over a JSON entry, and you register it here. Rules, steps (`tools/application-links.json`, `npm run links`, upload `release/<slug>/`) and how to read the result in Umami: `docs/application-links.md`. Open setup steps: `docs/application-links-handoff.md` (delete it when done).
 
 ## Documentation
 

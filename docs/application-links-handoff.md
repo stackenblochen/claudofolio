@@ -4,7 +4,7 @@ Set up in a Claude chat session; the code is in place but was not built or commi
 
 ## What changed (uncommitted)
 
-- `tools/build-links.mjs` (new): writes the redirect pages `release/<slug>/`, `release/<slug>/cv/` and `release/public/`. Tested on its own.
+- `tools/build-links.mjs` (new): writes the redirect pages `release/<slug>/` (plus the legacy `release/<slug>/cv/`, forwarding like `/<slug>`) and `release/public/`. Tested on its own.
 - `tools/application-links.example.json` (new), `tools/application-links.json` added to `.gitignore`.
 - `package.json`: `npm run links`; `build:release` runs it at the end.
 - `src/layouts/Base.astro`: inline script before the Umami tag (live build only) that turns `utm_campaign=application` into `umami.identify(<slug>, { via })` and sends it for that visit only (nothing stored in the browser). Tested on its own in Node.
