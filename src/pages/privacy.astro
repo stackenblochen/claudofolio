@@ -4,7 +4,7 @@ import PageHeader from '../components/PageHeader.astro';
 import { SITE } from '../lib/site';
 ---
 
-<!-- TODO before going live (Wolfgang): check the three marked places: hosting provider, Umami location/transfer basis, retention period. -->
+<!-- TODO: confirm the data processing agreement (AVV) with Bytecamp, then delete this note and the one in the Hosting section. -->
 <Base title="Privacy" description="Privacy policy of Wolfgang Lattermann.">
   <PageHeader title="*Privacy*" />
 
@@ -23,17 +23,15 @@ import { SITE } from '../lib/site';
         </p>
 
         <h2 class="t-heading">Hosting</h2>
-        <!-- TODO: name the hosting provider and check that a data processing agreement (AVV) exists. -->
-        <p>The website is run by a hosting provider in Germany, with whom a data processing agreement exists. When you open a page, the server keeps technical log data: IP address, date and time, requested file, browser and operating system. This is needed to deliver the site and keep it secure (Art. 6(1)(f) GDPR). Log data is deleted after a short time.</p>
+        <!-- TODO: check that a data processing agreement (AVV) with Bytecamp exists (customer area). -->
+        <p>The website is run by Bytecamp, a hosting provider in Germany, with whom a data processing agreement exists. When you open a page, the server keeps technical log data: IP address, date and time, requested file, browser and operating system. This is needed to deliver the site and keep it secure (Art. 6(1)(f) GDPR). Log data is deleted after a short time.</p>
 
         <h2 class="t-heading">Analytics with Umami</h2>
         <p>I use <a href="https://umami.is">Umami</a> to understand which pages are read. Umami works without cookies and without storing anything in your browser. It records: pages viewed, time on page, where the visit came from (referrer and campaign details in the address), browser, operating system, device type, screen size and approximate location (country, region). Your IP address is not stored. A visitor ID is created only from a daily changing value that cannot be reversed, and it is not used to follow you across devices.</p>
         <p>A few clicks are counted as well: the CV, email and LinkedIn links, and unlocking a protected case study (without the password you entered).</p>
         <p>The legal basis is my legitimate interest in evaluating how the site is used and how my applications perform (Art. 6(1)(f) GDPR). If your browser sends "Do Not Track", nothing is measured.</p>
-        <!-- TODO: Umami Cloud is run by Umami Software, Inc. (USA). Check the data location and the transfer basis (standard contractual clauses / DPF) in the Umami account and name it here; or state the self-hosted server. -->
-        <p>The data is processed on my behalf by Umami (Umami Software, Inc.). Data may be transferred to the USA; the basis is the EU standard contractual clauses.</p>
-        <!-- TODO: set the real retention period in Umami and keep this sentence in line with it. -->
-        <p>Analytics data is deleted after 12 months at the latest.</p>
+        <p>The data is processed on my behalf by Umami (Umami Software, Inc.). Umami's servers are located in the USA and the EU, so data may be transferred to the USA; the basis is the EU standard contractual clauses in Umami's data processing agreement.</p>
+        <p>Analytics data is kept for 6 months and then deleted automatically.</p>
 
         <h2 class="t-heading">Personal links in applications</h2>
         <p>If you open this website through a link from one of my applications (for example <code>hallo-wl.de/companyname</code>), the link contains the name of your company. In the analytics I then see that this company visited the site, which pages were viewed and for how long. This applies to that visit only. Nothing is stored in your browser, and later visits without this link are not matched to the company. I use this to know whether an application was read (Art. 6(1)(f) GDPR). If you prefer not to be measured this way, open the site directly at <a href="https://hallo-wl.de">hallo-wl.de</a> or turn on "Do Not Track".</p>
