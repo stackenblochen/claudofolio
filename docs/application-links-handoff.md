@@ -10,7 +10,7 @@ Set up in a Claude chat session; the code is in place but was not built or commi
 - `src/layouts/Base.astro`: inline script before the Umami tag (live build only) that turns `utm_campaign=application` into `umami.identify(<slug>, { via })` and sends it for that visit only (nothing stored in the browser). Tested on its own in Node.
 - `SiteFooter.astro`, `ContactBlock.astro`: `data-umami-event` (`CV download`, `Email click`, `LinkedIn click`) with `data-umami-event-where`.
 - `Protected.astro`: `umami.track('Case study unlocked', { page })` after a successful password entry.
-- Docs: `docs/application-links.md`, `docs/cv-project-brief.md`, pointers in `AGENTS.md` and `docs/README.md`.
+- Docs: `docs/application-links.md`, pointers in `AGENTS.md` and `docs/README.md`.
 
 ## Open steps
 

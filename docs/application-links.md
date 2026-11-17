@@ -19,18 +19,14 @@ There is no `/<slug>/cv` path any more. The build no longer writes a `cv` folder
 - The company name, lower case, words joined with `-`: `acme`, `big-bank`. 2–41 characters, `a–z`, `0–9`, `-`.
 - Second application to the same company: add the role or year, `acme-staff`, `acme-2027`.
 - Reserved (the script refuses them): `portfolio`, `public`, `cv`, `index`, `wordpress`, `wordpress5`, `wp-*`, `cgi-bin`, `assets`, `admin`, `test`.
-- Optional: a short suffix (`acme-k7`) makes it harder for someone at one company to guess the links of others (a working `/othercompany` reveals that Wolfgang applied there).
 
 ## Who does what
 
-Two places work on applications, each with its own part:
-
-- **CV project** (a separate claude.ai Project that writes and updates the CVs and cover letters; it has no access to this repository). It picks the slug, puts the links into the CV and the letter, and gives Wolfgang a ready-made JSON entry. Its brief is `docs/cv-project-brief.md`; when the rules here change, update that brief and tell Wolfgang to replace it in the CV project.
-- **Claude Code in this repository** (has the local and the live site). It registers the slug, builds the redirect pages and tells Wolfgang what to upload.
+The `/bewerbung` skill (Claude Code) makes the CV and cover letter, picks the slug and puts the links into both PDFs. It then registers the slug here, builds the redirect pages and tells Wolfgang what to upload.
 
 ## Adding an application (Claude Code, steps)
 
-Wolfgang brings the JSON entry from the CV project ("register this application link" or similar).
+The `/bewerbung` skill does this as part of an application; the same steps apply when Wolfgang asks to register a link by hand.
 
 1. Add the entry to `tools/application-links.json` (git-ignored, so the company list never reaches GitHub; if the file does not exist, copy `tools/application-links.example.json` and replace the example entry):
    ```json
