@@ -33,6 +33,7 @@ import SchemaArrow from '../../components/schema/SchemaArrow.astro';
 import SchemaList from '../../components/schema/SchemaList.astro';
 import PositioningMap from '../../components/charts/PositioningMap.astro';
 import SpectrumStrips from '../../components/charts/SpectrumStrips.astro';
+import AdoptionCurve from '../../components/charts/AdoptionCurve.astro';
 
 export async function getStaticPaths() {
   const projects = await getProjects();
@@ -43,7 +44,7 @@ const { project } = Astro.props;
 const { Content } = await render(project);
 
 // Available in every case-study MDX without imports.
-const components = { DashApp, DashSidebar, DashGrid, DashBadge, DashCard, DashMetric, DashSpark, DashRanking, StorySection, ScreenGallery, Figure, Comparison, ImageText, Video, Embed, Arrow, Mock, Diagram, MediaText, MediaRow, ImageGrid, PhotoWall, Quote, Principles, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips };
+const components = { DashApp, DashSidebar, DashGrid, DashBadge, DashCard, DashMetric, DashSpark, DashRanking, StorySection, ScreenGallery, Figure, Comparison, ImageText, Video, Embed, Arrow, Mock, Diagram, MediaText, MediaRow, ImageGrid, PhotoWall, Quote, Principles, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips, AdoptionCurve };
 ---
 
 <CaseStudy project={project}>

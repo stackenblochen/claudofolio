@@ -1,0 +1,66 @@
+---
+/**
+ * I14 Adoption curve: share of one value over time as a single line with a soft area under it, the start and end values called out,
+ * and a band of key facts above (hairlines, no cards). Goes inside a `Diagram`. Styles: ./adoption-curve.css.
+ * Values are percent (0-100); `callouts` are indices into `points` that get a value label (the last one is the hero).
+ *
+ *   <AdoptionCurve alt="…" points={[{ label: 'Jan', value: 1 }, …]} callouts={[0, 3, 9]} facts={[{ value: '85 %', label: 'of usage on the new UI' }]} />
+ */
+import './adoption-curve.css';
+
+type Point = { label: string; value: number; display?: string };
+type Fact = { value: string; label: string };
+type Note = { index: number; text: string; level: number };
+interface Props { alt: string; points: Point[]; callouts?: number[]; notes?: Note[]; facts?: Fact[]; unit?: string }
+const { alt, points, callouts = [], notes = [], facts = [], unit = '%' } = Astro.props;
+
+// The drawing has a fixed 1000 x 500 box; labels are HTML on top (so they keep a readable size on small screens).
+const W = 1000, H = 500, L = 70, R = 30, T = 40, B = 70;
+const x = (i: number) => L + ((W - L - R) * i) / (points.length - 1);
+const y = (v: number) => T + (H - T - B) * (1 - v / 100);
+const line = points.map((p, i) => `${i ? 'L' : 'M'}${x(i).toFixed(1)} ${y(p.value).toFixed(1)}`).join(' ');
+const area = `${line} L${x(points.length - 1).toFixed(1)} ${y(0)} L${x(0)} ${y(0)} Z`;
+const pc = (n: number, total: number) => `${+((n / total) * 100).toFixed(2)}%`;
+const last = points.length - 1;
+const heroIndex = callouts.length ? callouts[callouts.length - 1] : last;
+const marked = [...callouts, ...notes.map((n) => n.index)];
+---
+
+<div class="adopt">
+  {facts.length > 0 && (
+    <dl class="adopt__facts">
+      {facts.map((f) => (
+        <div class="adopt__fact">
+          <dd class="adopt__num">{f.value}</dd>
+          <dt class="adopt__lbl">{f.label}</dt>
+        </div>
+      ))}
+    </dl>
+  )}
+
+  <div class="adopt__plot" role="img" aria-label={alt}>
+    <svg viewBox={`0 0 ${W} ${H}`} aria-hidden="true" focusable="false">
+      <defs>
+        <linearGradient id="adopt-fill" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stop-color="var(--accent-primary)" stop-opacity="0.28" />
+          <stop offset="1" stop-color="var(--accent-primary)" stop-opacity="0.02" />
+        </linearGradient>
+      </defs>
+      {[0, 50, 100].map((v) => <line class="adopt__grid" x1={L} x2={W - R} y1={y(v)} y2={y(v)} />)}
+      <path d={area} fill="url(#adopt-fill)" />
+      <path class="adopt__line" d={line} />
+      {callouts.map((i) => <line class="adopt__stem" x1={x(i)} x2={x(i)} y1={y(points[i].value)} y2={y(0)} />)}
+      {notes.map((n) => <line class="adopt__stem adopt__stem--note" x1={x(n.index)} x2={x(n.index)} y1={y(points[n.index].value)} y2={y(n.level)} />)}
+      {points.map((p, i) => <circle class:list={['adopt__dot', { 'is-callout': marked.includes(i), 'is-hero': i === heroIndex }]} cx={x(i)} cy={y(p.value)} r={i === heroIndex ? 9 : marked.includes(i) ? 6 : 3.5} />)}
+    </svg>
+
+    <div class="adopt__labels" aria-hidden="true">
+      {[0, 50, 100].map((v) => <span class="adopt__axis" style={`top:${pc(y(v), H)}`}>{v}{unit}</span>)}
+      {points.map((p, i) => <span class="adopt__month" style={`left:${pc(x(i), W)};top:${pc(H - B + 22, H)}`}>{p.label}</span>)}
+      {notes.map((n) => <span class="adopt__note" style={`left:${pc(x(n.index), W)};top:${pc(y(n.level), H)}`}>{n.text}</span>)}
+      {callouts.map((i) => (
+        <span class:list={['adopt__value', { 'is-hero': i === heroIndex, 'is-end': i === last }]} style={`left:${pc(x(i), W)};top:${pc(y(points[i].value) - (i === heroIndex ? 22 : 16), H)}`}>{points[i].display ?? `${points[i].value} ${unit}`}</span>
+      ))}
+    </div>
+  </div>
+</div>

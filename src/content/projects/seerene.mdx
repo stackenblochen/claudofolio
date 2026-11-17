@@ -38,7 +38,6 @@ import chartHover from '../../assets/projects/seerene/application-details-hover.
 import detailsKpi from '../../assets/projects/seerene/application-details-kpi.png';
 import addWidget from '../../assets/projects/seerene/05-add-widget.png';
 import savedViews from '../../assets/projects/seerene/05-dashboard-saved-views.png';
-import usageChart from '../../assets/projects/seerene/06-usage-chart-heap.png';
 import ChartTypes from '../../components/seerene/ChartTypes.astro';
 import dashboardApp from '../../assets/projects/seerene/dashboard-app.png';
 
@@ -129,9 +128,27 @@ import dashboardApp from '../../assets/projects/seerene/dashboard-app.png';
 </StorySection>
 
 <StorySection number="05" title="Outcome" id="outcome" closing>
-  <Figure gallery size="text" kind="image" border="light-mode" src={usageChart} alt="Stacked bar chart of the share of use of the new and the old UI from January to October: the new UI grows from almost nothing to 85 percent" />
+  <Diagram size="text" gallery caption="Share of use of the new UI by month, tracked in Heap">
+    <AdoptionCurve
+      alt="Line chart of the share of use of the new UI from January to October: it starts below 1 percent, reaches 40 percent in April and 85 percent in October. Notes mark the start of the internal beta in January, the external beta in March and the release in August."
+      points={[
+        { label: 'Jan', value: 1, display: '< 1 %' }, { label: 'Feb', value: 7 }, { label: 'Mar', value: 10 }, { label: 'Apr', value: 40 }, { label: 'May', value: 45 },
+        { label: 'Jun', value: 58 }, { label: 'Jul', value: 60 }, { label: 'Aug', value: 57 }, { label: 'Sep', value: 72 }, { label: 'Oct', value: 85 },
+      ]}
+      notes={[
+        { index: 0, level: 28, text: 'Internal beta starts' },
+        { index: 2, level: 62, text: 'External beta starts' },
+        { index: 7, level: 92, text: 'Release' },
+      ]}
+      facts={[
+        { value: '< 1 %', label: 'in January, internal beta starts' },
+        { value: '40 %', label: 'with the external beta tests' },
+        { value: '85 %', label: 'in October, after the release' },
+      ]}
+    />
+  </Diagram>
 
-  1. The new UI went from almost no use to 85 % of usage within ten months, tracked in Heap while both versions ran in parallel.
+  1. Internal tests and a beta phase with customers showed us where to go. Within ten months the new UI reached 85 % of usage, tracked in Heap while both versions ran in parallel.
   2. The old web client and the desktop rich client were retired in Q4/2018, after very positive customer feedback and training by customer success.
   3. A unified design system on Angular Material, documented in Confluence, made rapid prototyping and implementation possible.
 

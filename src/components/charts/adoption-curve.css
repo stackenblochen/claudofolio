@@ -1,0 +1,54 @@
+/* I14 Adoption curve — one accent line over a soft area, hairline grid, a band of facts above.
+ * Semantic tokens only (light-dark aware). Sizes scale with the Diagram figure (container `diagram`), reference width 995 px. */
+
+.adopt {
+  --ad-text: var(--text-default);
+  --ad-strong: var(--text-strong);
+  --ad-line: var(--border);
+  --ad-accent: var(--accent-primary);
+  --fs-lbl: clamp(10px, 1.3cqi, 13px);
+  --fs-fact: clamp(12px, 1.7cqi, 17px);
+  --fs-num: clamp(26px, 4.6cqi, 46px);
+  --fs-value: clamp(11px, 1.4cqi, 14px);
+  --fs-hero: clamp(18px, 3.2cqi, 32px);
+
+  display: flex;
+  flex-direction: column;
+  gap: clamp(20px, 4cqi, 40px);
+  min-width: 0;
+  font-family: var(--font-sans);
+}
+
+/* facts: three columns split by hairlines */
+.adopt__facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); margin: 0; }
+.adopt__fact { display: flex; flex-direction: column; gap: 4px; margin: 0; padding: 0 clamp(10px, 2cqi, 24px); }
+.adopt__fact + .adopt__fact { border-left: 1px solid var(--ad-line); }
+.adopt__fact:first-child { padding-left: 0; }
+.adopt__num { order: 1; margin: 0; font-weight: 600; font-size: var(--fs-num); line-height: 1.05; letter-spacing: -0.01em; color: var(--ad-strong); font-variant-numeric: tabular-nums; }
+.adopt__lbl { order: 2; font-size: var(--fs-fact); line-height: 1.4; color: var(--ad-text); }
+
+@container diagram (max-width: 520px) {
+  .adopt__facts { grid-template-columns: 1fr; }
+  .adopt__fact { flex-direction: row; align-items: baseline; gap: 12px; padding: 10px 0; }
+  .adopt__fact + .adopt__fact { border-left: 0; border-top: 1px solid var(--ad-line); }
+  .adopt__num { font-size: 24px; min-width: 5.5ch; }
+}
+
+/* plot: svg for the shapes, html on top for the text */
+.adopt__plot { position: relative; aspect-ratio: 2 / 1; }
+.adopt__plot svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.adopt__grid { stroke: var(--ad-line); stroke-width: 1; vector-effect: non-scaling-stroke; }
+.adopt__line { fill: none; stroke: var(--ad-accent); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; vector-effect: non-scaling-stroke; }
+.adopt__stem { stroke: var(--ad-accent); stroke-width: 1; stroke-dasharray: 2 4; opacity: 0.6; vector-effect: non-scaling-stroke; }
+.adopt__dot { fill: var(--bg-secondary); stroke: var(--ad-accent); stroke-width: 2; vector-effect: non-scaling-stroke; }
+.adopt__dot.is-callout { fill: var(--ad-accent); }
+.adopt__dot.is-hero { fill: var(--ad-accent); }
+
+.adopt__labels > span { position: absolute; white-space: nowrap; font-size: var(--fs-lbl); line-height: 1; color: var(--ad-text); font-variant-numeric: tabular-nums; }
+.adopt__axis { left: 0; transform: translateY(-50%); }
+.adopt__month { transform: translateX(-50%); }
+.adopt__labels .adopt__value { transform: translate(-50%, -100%); font-size: var(--fs-value); color: var(--ad-strong); font-weight: 600; }
+.adopt__labels .adopt__value.is-hero { font-size: var(--fs-hero); letter-spacing: -0.01em; }
+.adopt__labels .adopt__value.is-end { transform: translate(-100%, -100%); }
+.adopt__labels .adopt__note { transform: translateY(-50%); margin-left: clamp(6px, 1cqi, 10px); font-size: var(--fs-value); color: var(--ad-strong); font-weight: 600; }
+.adopt__stem--note { stroke-dasharray: none; opacity: 0.5; }
