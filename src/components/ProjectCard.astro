@@ -69,7 +69,7 @@ const { card } = Astro.props;
   .sum { display: none; } /* the summary only shows from 992 px, below that the teaser stays compact */
   /* the company's logo: small, pure white (black in light mode) and above the title (the labels are not shown on the teaser) */
   .logo { align-self: flex-start; line-height: 0; margin-bottom: var(--space-3); } /* extra room between the logo and the title, on top of the copy's gap */
-  .logo :global(img) { display: block; height: var(--logo-h); width: auto; filter: var(--filter-logo); }
+  .logo :global(img) { display: block; height: var(--logo-h); width: auto; filter: var(--filter-logo); opacity: 0.35; }
   .stage { display: grid; place-items: center; }
   .thumb { position: relative; width: 100%; --thumb-outline: var(--border-dark-mode); } /* the outline shows in dark mode; `coverOutline: light` in the frontmatter swaps it to light mode */
   .thumb--outline-light { --thumb-outline: var(--border-light-mode); }

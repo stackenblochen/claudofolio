@@ -13,12 +13,12 @@ interface Props {
 }
 const { card } = Astro.props;
 // each tinted card shows a different, zoomed-in area of the stage background image (see .panel[style*='--tint']::before)
-const BG_POS: Record<string, string> = { blue: '88% 25%', violet: '0% 45%', green: '85% 100%', salmon: '45% 60%' };
+const BG_POS: Record<string, string> = { blue: '88% 25%', violet: '0% 45%', green: '85% 100%', salmon: '45% 60%', yellow: '15% 5%' };
 ---
 
 <article class="bento">
   <a href={card.href} class="link-block">
-    <div class:list={['panel', !card.thumb && card.coverFill && 'panel--fill']} style={card.tint && !(!card.thumb && card.coverFill) ? `--tint:var(--tint-${card.tint});--bg-pos:${BG_POS[card.tint] ?? 'center'}` : undefined}>
+    <div class:list={['panel', !card.thumb && card.coverFill && 'panel--fill']} style={card.tint ? `--tint:var(--tint-${card.tint});--bg-pos:${BG_POS[card.tint] ?? 'center'}` : undefined}>
       <div class:list={['thumb', !card.thumb && (card.coverFill ? 'thumb--fill' : 'thumb--shape'), card.coverOutline === 'light' && 'thumb--outline-light', card.coverOutline === 'none' && 'thumb--outline-none']}>
         {card.thumb
           ? <Mock size="cover" stage={card.thumb.stage} theme={card.thumb.theme} layout={card.thumb.layout} phone={card.thumb.phone}
@@ -65,7 +65,9 @@ const BG_POS: Record<string, string> = { blue: '88% 25%', violet: '0% 45%', gree
   .foot { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--space-4); padding: var(--space-2) var(--space-3) var(--space-3); }
   .foot h3 { margin: 0; font-family: var(--font-headline); word-spacing: var(--ws-headline); font-weight: var(--text-subheading-weight); letter-spacing: 0; font-size: 1.125rem; line-height: var(--lh-headline); }
   .logo { flex: none; line-height: 0; margin-top: var(--space-1); }
-  .logo :global(img) { display: block; height: var(--logo-h); width: auto; max-width: 40vw; filter: var(--filter-logo); }
+  .logo :global(img) { display: block; height: var(--logo-h); width: auto; max-width: 40vw; filter: var(--filter-logo); opacity: 0.35; } /* the logo recedes behind the title */
+  /* from 768 px every title takes exactly two lines (clamped, and padded when it is shorter), so all cards are the same height */
+  @media (min-width: 768px) { .foot h3 { min-height: calc(2em * var(--lh-headline)); display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; overflow: hidden; } }
   @media (min-width: 992px) { .foot h3 { font-size: 1.25rem; } .foot { padding: var(--space-3) var(--space-3) var(--space-4); } }
 
   @media (min-width: 992px) and (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {

@@ -48,6 +48,10 @@ const projects = defineCollection({
         .optional(),
       heroVariant: z.enum(['mockup', 'backdrop']).default('mockup'),
       heroBackground: image().optional(), // for 'backdrop'
+      comingSoon: z.boolean().default(false), // the live release (SITE_TARGET=production) builds a "coming soon" page instead of this case study (its teaser still shows and links to it); dev and GitHub Pages show the full case study
+      showMeta: z.boolean().default(false), // show the meta row with only two of role, team, timeline, platforms (normally it needs three)
+      heroAlign: z.enum(['center', 'left']).default('center'), // 'backdrop' only: the title is left aligned and keeps clear of the right side of the image
+      heroDim: z.boolean().default(true), // 'backdrop' only: false shows the background image at full brightness
       heroGlow: z.boolean().default(false), // 'mockup' only: the soft teaser halo (lighter gray, a trace of salmon) behind the hero image
       protected: z.boolean().default(false), // password gate, see components/Protected.astro; also shows the confidential stamp
       company: z.string(),

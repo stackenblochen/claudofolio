@@ -1,0 +1,153 @@
+---
+title: A new corporate design for Wire
+shortTitle: New corporate design
+summary: "One consistent brand for a company that had many different voices."
+labels: [Design Systems]
+tags: [Branding, Corporate Design, Website]
+teaserTint: salmon
+cover: ../../assets/projects/wire/wave-landscape.png
+coverAlt: The Wire Wave, four thin colored lines flowing across a black background
+coverFill: true
+teaserImage: ../../assets/projects/wire/teaser.png
+teaserAlt: An iPhone with a chat conversation next to the colorful lines of the Wire Wave on black
+teaserFill: true
+heroVariant: backdrop
+heroBackground: ../../assets/projects/wire/wave-landscape.png
+heroAlign: left
+heroDim: false
+protected: false
+company: Wire
+role: Product and Brand Designer
+timeline: 4 weeks
+showMeta: true
+year: 2024
+lead:
+  - "Wire's brand needed a consistent look and voice that is serious, yet contemporary and inviting."
+  - "I redesigned the companies corporate design and built awareness for the strength of one consistent presence."
+order: 5
+status: live
+comingSoon: true
+---
+
+import newSite from '../../assets/projects/wire/new-site-figma.png';
+import subpage from '../../assets/projects/wire/subpage-figma.png';
+import heroEnterprise from '../../assets/projects/wire/hero-enterprise.png';
+import heroBusiness from '../../assets/projects/wire/hero-business.png';
+import heroLaptop from '../../assets/projects/wire/hero-laptop.png';
+import heroGovernment from '../../assets/projects/wire/hero-government.png';
+import waveSquare from '../../assets/projects/wire/wave-square.png';
+import illuEncryption from '../../assets/projects/wire/illu-encryption.png';
+import illuShield from '../../assets/projects/wire/illu-id-shield.png';
+import illuServers from '../../assets/projects/wire/illu-servers.png';
+import illuFederated from '../../assets/projects/wire/illu-federated.png';
+import icons from '../../assets/projects/wire/icons.png';
+import productShot from '../../assets/projects/wire/product-shot.png';
+
+<StorySection number="01" title="Many voices" id="many-voices">
+  Wire builds secure collaboration for companies and governments, yet its marketing didn't look professional. Depending on the page, the comms appeared as a black-and-white website for "boring officials" or as a feed of cat memes. There was no shared understanding of how to sound serious and still not dull or dated.
+
+  Behind that sat a bigger gap: the company hadn't understood that a strong, consistent brand supports the product. The marketing and sales team at the time was hesitant to support me in improving the situaion. That changed when the new CPO backed the idea, and I got about four weeks to unify the corporate design, starting with the company website.
+
+  {/* TODO: screenshots of the old website (archive link April 2024) */}
+</StorySection>
+
+<StorySection number="02" title="Starting from the brand" id="brand">
+  Everything starts with a management workshop in which we defined what Wire stands for. It produced the mission and the vision, and with them the foundation for much of what followed: the brand, the design and the way we talk about the product.
+
+  Based on that, I developed the brand image and the tone of voice, and aligned both with stakeholders across the company until they were shared. These four statements describe how Wire communicates and what it stands for, and they have to be visible in every medium, from the website to the booth and the slide deck.
+
+  <Fragment slot="media">
+    <StatementFlow groups={[
+      { items: [
+        { title: 'Mission', text: 'Help customers protect what matters through open innovation and a secure, easy-to-use collaboration platform.' },
+        { title: 'Vision', text: 'Pioneer the secure digital exchange of ideas and information.' },
+      ] },
+      { items: [
+        { title: 'Image', text: 'Simple and precise, experienced, smart and approachable.' },
+        { title: 'Tone of voice', text: 'Contemporary, to the point, easy to understand and inviting.' },
+      ] },
+    ]} />
+    <MediaText title="The tension to resolve">
+      <p>Security products tend to look cold and heavy. Wire's own words pointed the other way: precise, but easy and inviting. The design had to carry both, so that the brand feels trustworthy without feeling old.</p>
+    </MediaText>
+  </Fragment>
+</StorySection>
+
+<StorySection number="03" title="The Wave" id="wave">
+  The logo stayed as the fixed core of the brand. What it lacked was an element that could carry a page on its own.
+
+  I found it in Wire's subject itself: communication starts with language, and language, made visible, is a waveform. The Wave is a stylized audio waveform of a human voice. It reads as dynamic and connecting, and it stands for movement, energy and talking to each other.
+
+  To keep it recognizable, it follows a few strict rules: black backgrounds only, one color per line, no text on it, no magnified details or isolated curves.
+
+  <Fragment slot="media">
+    <Figure src={waveSquare} alt="The Wave: four thin lines in blue, yellow, green and violet on a black square" caption="The Wave on a black background" />
+  </Fragment>
+</StorySection>
+
+<StorySection number="04" title="Color and type" id="color-type">
+  The palette starts from a primary blue and adds five secondary colors: purple, green, amber, red and petrol. Each exists in two variants, a darker one for light backgrounds and a lighter one for dark backgrounds, so contrast meets at least AA in both. Light backgrounds take white text on the colors, dark backgrounds take black.
+
+  For type I chose Inter: inviting, very readable, available everywhere. Regular for body text, Semi Bold for headlines, Bold and Extra Bold for emphasis. No all caps and no rotated text.
+</StorySection>
+
+<StorySection number="05" title="Pictures and illustrations" id="imagery">
+  The old imagery was the quickest way to see the problem, so the new style rules start with what to avoid: gray corporate clichés, stern suited men, mirrored skyscrapers, glossy AI-looking pictures and photo montages.
+
+  Instead, Wire shows people using Wire in everyday places, with faces where possible, in warm and friendly colors.
+
+  <Fragment slot="media">
+    <ImageGrid columns={2} ratio="740 / 701" items={[
+      { src: heroEnterprise, alt: 'Photo of a team talking on a yellow sofa in a bright office' },
+      { src: heroBusiness, alt: 'Photo of a smiling woman with a laptop in a loft office' },
+      { src: heroGovernment, alt: 'Photo of a glass dome with a spiral walkway' },
+      { src: heroLaptop, alt: 'Photo of a woman working concentrated at a laptop' },
+    ]} />
+    <MediaText title="Illustrations">
+      <p>Complex topics such as federation or the ID shield are hard to capture in a photo. Simple, friendly illustrations explain them, sometimes with stylized parts of the Wire interface, and they stay uncomplicated.</p>
+    </MediaText>
+    <ImageGrid columns={2} ratio="1 / 1" items={[
+      { src: illuEncryption, alt: 'Illustration of an encrypted chat message' },
+      { src: illuShield, alt: 'Illustration of a black shield with the Wire logo' },
+      { src: illuServers, alt: 'Illustration of servers surrounded by European stars' },
+      { src: illuFederated, alt: 'Illustration of connected groups of people' },
+    ]} />
+    <MediaText title="Icons">
+      <p>A custom icon set with clear, simple lines matches the open and inviting messaging.</p>
+    </MediaText>
+    <Figure src={icons} alt="Set of custom line icons: devices, chat, shield, lock, key, fingerprint and more" caption="Custom icon set" />
+  </Fragment>
+</StorySection>
+
+<StorySection number="06" title="Product shots" id="product-shots">
+  Product shots show the relevant parts of the Wire app, so that the product speaks for itself. They use device-neutral frames and avoid specific device frames unless necessary.
+
+  <Fragment slot="media">
+    <Figure src={productShot} alt="Wire desktop app and a mobile video call in a neutral frame" caption="Product shot in a neutral frame" />
+  </Fragment>
+</StorySection>
+
+<StorySection number="07" title="Proving it on the website" id="website">
+  A guideline only convinces when people see it working. So I designed the first draft of the new company website and a sub page in Figma, built from the new elements: the Wave around a product shot on black, real people, clear headlines.
+
+  The design was beta tested and presented to the board together with the new corporate design. After the approval I built the site in HubSpot and filled it with content together with the team.
+
+  <Fragment slot="media">
+    <Figure src={newSite} alt="Draft of the new Wire homepage with the Wave around a product shot on a black hero" caption="First homepage draft" />
+    <Figure src={subpage} alt="Draft of a Wire sub page with the new design" caption="Sub page draft" />
+  </Fragment>
+</StorySection>
+
+<StorySection number="08" title="One brand portal" id="brand-portal">
+  Everything lives in a public brand portal at [wire.com/brand](https://wire.com/en/brand): vision, mission and tone of voice, logo, Wave, colors, typography, pictures, illustrations, product shots, icons and buttons. It is the single place for the marketing team, for sales, and for external agencies.
+
+  The same building blocks carry across every channel: the website, social media posts, trade show booths, rollouts, whitepapers, slide deck templates for internal and external communication, merchandise and office decoration.
+
+  {/* TODO: screenshot of the brand portal */}
+</StorySection>
+
+<StorySection number="09" title="Outcome" id="outcome" closing>
+  1. A new marketing team took over the website and increased Wire's visibility quickly, because the guidelines left little to guess.
+  2. Working with external agencies became simpler and more streamlined, since everyone started from the same brand portal.
+  3. Marketing and sales now share one understanding of how Wire looks and sounds: serious, but contemporary and inviting.
+</StorySection>

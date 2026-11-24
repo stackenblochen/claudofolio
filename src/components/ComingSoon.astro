@@ -1,0 +1,33 @@
+---
+/**
+ * Placeholder for a case study that is still in progress (frontmatter `comingSoon: true`). Only the live release (SITE_TARGET=production) builds it
+ * instead of the case study, so the teaser can already go live and its clicks show up in the analytics while the content itself is not published.
+ */
+import Base from '../layouts/Base.astro';
+import { highlight, url } from '../lib/site';
+
+interface Props { title: string }
+const { title } = Astro.props;
+---
+
+<Base title={title} description="This case study is still under construction." noindex context="standard">
+  <section class="soon">
+    <div class="container">
+      <div class="measure-text stack" style="--stack-gap: var(--space-2)">
+        <h1 class="t-title" set:html={highlight('Coming *soon*')} />
+        <p class="t-subheading subline">This case study is still under construction. Please check back soon.</p>
+        <div class="prose">
+          <p><a class="link" href={url('/#selected-work')}>Back to my work</a></p>
+        </div>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  /* Centre the content vertically between header and footer, as on the 404 page. */
+  :global(main) { flex: 1; display: flex; flex-direction: column; justify-content: center; padding-top: var(--header-h); }
+  :global(.site-footer.site-footer.site-footer) { margin-top: 0; }
+  .soon { padding-block: var(--space-6); }
+  .subline { color: var(--text-strong); font-family: var(--font-sans); word-spacing: normal; font-weight: 400; }
+</style>

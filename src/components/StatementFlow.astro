@@ -1,0 +1,33 @@
+---
+/**
+ * Statement flow: cards (`--bg-secondary`, on the text measure), one statement each, two per row from 768 px and all the same height, with the title as a salmon eyebrow
+ * and the sentence in the body face (Geist, never the headline face).
+ * In the media slot of a `StorySection`, e.g. mission and vision, then image and tone of voice.
+ *
+ *   <StatementFlow groups={[
+ *     { items: [{ title: 'Mission', text: '…' }, { title: 'Vision', text: '…' }] },
+ *     { items: [{ title: 'Image', text: '…' }, { title: 'Tone of voice', text: '…' }] },
+ *   ]} />
+ */
+interface Props { groups: { items: { title: string; text: string }[] }[] }
+const { groups } = Astro.props;
+---
+
+<ul class="flow measure-text reveal">
+  {groups.flatMap((group) => group.items).map((item) => (
+    <li>
+      <h3 class="t-body eyebrow">{item.title}</h3>
+      <p class="text">{item.text}</p>
+    </li>
+  ))}
+</ul>
+
+<style>
+  /* one grid for all cards: from 768 px two columns and rows of equal height, so every box is as tall as the tallest */
+  .flow { list-style: none; margin-block: 0; padding: 0; display: grid; grid-template-columns: 1fr; gap: var(--space-4) var(--gutter); }
+  @media (min-width: 768px) { .flow { grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: 1fr; } }
+  li { display: flex; flex-direction: column; gap: var(--space-2); background: var(--bg-secondary); border-radius: var(--radius-l); padding: var(--space-5); }
+  @media (min-width: 768px) { li { padding: var(--space-6); } }
+  .eyebrow { margin: 0; color: var(--accent-primary); font-weight: var(--text-body-weight); }
+  .text { margin: 0; color: var(--text-strong); font-family: var(--font-sans); font-size: var(--text-subheading-size, 1.5rem); line-height: 1.35; font-weight: 600; text-wrap: pretty; }
+</style>

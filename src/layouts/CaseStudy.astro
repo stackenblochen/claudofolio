@@ -38,9 +38,11 @@ const others = (await getProjects({ exclude: project.id })).map(toCard);
       background={d.heroBackground}
       confidential={d.protected}
       glow={d.heroGlow}
+      align={d.heroAlign}
+      dim={d.heroDim}
       fill={d.coverFill}
     />
-    <Overview sentences={d.lead} meta={meta.length >= 3 ? meta : []} />
+    <Overview sentences={d.lead} meta={meta.length >= 3 || (d.showMeta && meta.length >= 2) ? meta : []} />
     <div class="stories"><slot /></div>
     {others.length > 0 && (
       <section class="others section section--pure" aria-labelledby="others-title">

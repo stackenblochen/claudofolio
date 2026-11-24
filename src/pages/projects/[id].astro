@@ -1,6 +1,7 @@
 ---
 import { render } from 'astro:content';
 import CaseStudy from '../../layouts/CaseStudy.astro';
+import ComingSoon from '../../components/ComingSoon.astro';
 import { getProjects } from '../../lib/projects';
 import StorySection from '../../components/StorySection.astro';
 import ScreenGallery from '../../components/ScreenGallery.astro';
@@ -27,6 +28,7 @@ import ImageGrid from '../../components/ImageGrid.astro';
 import PhotoWall from '../../components/PhotoWall.astro';
 import Quote from '../../components/Quote.astro';
 import Principles from '../../components/Principles.astro';
+import StatementFlow from '../../components/StatementFlow.astro';
 import SchemaGroup from '../../components/schema/SchemaGroup.astro';
 import SchemaPill from '../../components/schema/SchemaPill.astro';
 import SchemaArrow from '../../components/schema/SchemaArrow.astro';
@@ -41,12 +43,14 @@ export async function getStaticPaths() {
 }
 
 const { project } = Astro.props;
-const { Content } = await render(project);
+// `comingSoon` case studies are only a placeholder in the live release: the case study (text, images) is not even rendered, so none of it ends up in the build.
+const comingSoon = project.data.comingSoon && process.env.SITE_TARGET === 'production';
+const Content = comingSoon ? undefined : (await render(project)).Content;
 
 // Available in every case-study MDX without imports.
-const components = { DashApp, DashSidebar, DashGrid, DashBadge, DashCard, DashMetric, DashSpark, DashRanking, StorySection, ScreenGallery, Figure, Comparison, ImageText, Video, Embed, Arrow, Mock, Diagram, MediaText, MediaRow, ImageGrid, PhotoWall, Quote, Principles, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips, AdoptionCurve };
+const components = { DashApp, DashSidebar, DashGrid, DashBadge, DashCard, DashMetric, DashSpark, DashRanking, StorySection, ScreenGallery, Figure, Comparison, ImageText, Video, Embed, Arrow, Mock, Diagram, MediaText, MediaRow, ImageGrid, PhotoWall, Quote, Principles, StatementFlow, Schema, SchemaGroup, SchemaPill, SchemaArrow, SchemaList, PositioningMap, SpectrumStrips, AdoptionCurve };
 ---
 
-<CaseStudy project={project}>
-  <Content components={components} />
-</CaseStudy>
+{comingSoon || !Content
+  ? <ComingSoon title={project.data.shortTitle} />
+  : <CaseStudy project={project}><Content components={components} /></CaseStudy>}

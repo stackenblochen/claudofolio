@@ -4,6 +4,7 @@ import { url } from './site';
 import wireLogo from '../assets/wire-logo-white.svg';
 import starthubLogo from '../assets/starthub-logo-white.svg';
 import seereneLogo from '../assets/seerene-logo.svg';
+import freshEnergyLogo from '../assets/freshenergy-logo.svg';
 
 export type ProjectEntry = CollectionEntry<'projects'>;
 
@@ -11,8 +12,9 @@ export type ProjectEntry = CollectionEntry<'projects'>;
 /** White company logos for the teaser cards, by the `company` of a case study, with the height (px) that makes each look equally big. A company without an entry shows no logo. */
 const COMPANY_LOGOS: Record<string, { src: ImageMetadata; height: number }> = {
   Wire: { src: wireLogo, height: 20 },
-  'EDEKA StartHub': { src: starthubLogo, height: 14 },
+  'EDEKA StartHub': { src: starthubLogo, height: 12 },
   Seerene: { src: seereneLogo, height: 16 },
+  'Fresh Energy': { src: freshEnergyLogo, height: 19 },
 };
 
 export interface CardData {
